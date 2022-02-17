@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Creating ADSL</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating ADSL</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This article describes creating an <code>ADSL</code> ADaM. Examples are currently presented and tested using <code>DM</code>, <code>EX</code> , <code>AE</code>, <code>LB</code> and <code>DS</code> SDTM domains. However, other domains could be used.</p>
+<p><strong>Note:</strong> <em>All examples assume CDISC SDTM and/or ADaM format as input unless otherwise specified.</em></p>
+</div>
+<div id="programming-flow" class="section level1">
+<h1>Programming Flow</h1>
+<ul>
+<li><a href="#readdata">Read in Data</a></li>
+<li><a href="#treatmentvar">Derive Treatment Variables (<code>TRT0xP</code>, <code>TRT0xA</code>)</a></li>
+<li><a href="#trtdatetime">Derive/Impute Numeric Treatment Date/Time and Duration (<code>TRTSDT</code>, <code>TRTEDT</code>, <code>TRTDURD</code>)</a></li>
+<li><a href="#disposition">Derive Disposition Variables</a>
+<ul>
+<li><a href="#disposition_date">Disposition Dates (e.g. <code>EOSDT</code>)</a></li>
+<li><a href="#disposition_status">Disposition Status (e.g. <code>EOSTT</code>)</a></li>
+<li><a href="#disposition_reason">Disposition Reason(s) (e.g. <code>DCSREAS</code>, <code>DCSREASP</code>)</a></li>
+</ul></li>
+<li><a href="#death">Derive Death Variables</a>
+<ul>
+<li><a href="#death_date">Death Date (<code>DTHDT</code>)</a></li>
+<li><a href="#death_cause">Cause of Death (<code>DTHCAUS</code>)</a></li>
+<li><a href="#death_other">Duration Relative to Death</a></li>
+</ul></li>
+<li><a href="#lstalvdt">Derive Last Known Date Alive (<code>LSTALVDT</code>)</a></li>
+<li><a href="#groupings">Derive Groupings and Populations</a>
+<ul>
+<li><a href="#groupings_ex">Grouping (e.g. <code>AGEGR1</code>)</a></li>
+<li><a href="#popflag">Population Flags (e.g. <code>SAFFL</code>)</a></li>
+</ul></li>
+<li><a href="#other">Derive Other Variables</a></li>
+<li><a href="#attributes">Add Labels and Attributes</a></li>
+</ul>
+<div id="readdata" class="section level2">
+<h2>Read in Data</h2>
+<p>To start, all data frames needed for the creation of <code>ADSL</code> should be read into the environment. This will be a company specific process. Some of the data frames needed may be <code>DM</code>, <code>EX</code>, <code>DS</code>, <code>AE</code>, and <code>LB</code>.</p>
+<p>For example purpose, the CDISC Pilot SDTM datasets—which are included in <code>{admiral.test}</code>—are used.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(admiral.test)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">library</span>(stringr)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">data</span>(<span class="st">&quot;dm&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">data</span>(<span class="st">&quot;ds&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="kw">data</span>(<span class="st">&quot;ex&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="kw">data</span>(<span class="st">&quot;ae&quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">data</span>(<span class="st">&quot;lb&quot;</span>)</span></code></pre></div>
+<p>The <code>DM</code> domain is used as the basis for <code>ADSL</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>adsl &lt;-<span class="st"> </span>dm <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>DOMAIN)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">RFSTDTC</th>
+<th align="left">COUNTRY</th>
+<th align="right">AGE</th>
+<th align="left">SEX</th>
+<th align="left">RACE</th>
+<th align="left">ETHNIC</th>
+<th align="left">ARM</th>
+<th align="left">ACTARM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">USA</td>
+<td align="right">63</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-05</td>
+<td align="left">USA</td>
+<td align="right">64</td>
+<td align="left">M</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">USA</td>
+<td align="right">71</td>
+<td align="left">M</td>
+<td align="left">WHITE</td>
+<td align="left">NOT HISPANIC OR LATINO</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">Xanomeline High Dose</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-03-18</td>
+<td align="left">USA</td>
+<td align="right">74</td>
+<td align="left">M</td>
+<td align="left">WHITE</td>
+<td align="left">NOT HISPANIC OR LATINO</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-07-01</td>
+<td align="left">USA</td>
+<td align="right">77</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">NOT HISPANIC OR LATINO</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">Xanomeline High Dose</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-02-12</td>
+<td align="left">USA</td>
+<td align="right">85</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">NOT HISPANIC OR LATINO</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1057</td>
+<td align="left"></td>
+<td align="left">USA</td>
+<td align="right">59</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Screen Failure</td>
+<td align="left">Screen Failure</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1097</td>
+<td align="left">2014-01-01</td>
+<td align="left">USA</td>
+<td align="right">68</td>
+<td align="left">M</td>
+<td align="left">WHITE</td>
+<td align="left">NOT HISPANIC OR LATINO</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-07</td>
+<td align="left">USA</td>
+<td align="right">81</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">NOT HISPANIC OR LATINO</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1115</td>
+<td align="left">2012-11-30</td>
+<td align="left">USA</td>
+<td align="right">84</td>
+<td align="left">M</td>
+<td align="left">WHITE</td>
+<td align="left">NOT HISPANIC OR LATINO</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="treatmentvar" class="section level2">
+<h2>Derive Treatment Variables (<code>TRT0xP</code>, <code>TRT0xA</code>)</h2>
+<p>The mapping of the treatment variables is left to the ADaM programmer. An example mapping may be:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>adsl &lt;-<span class="st"> </span>dm <span class="op">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">TRT01P =</span> ARM, <span class="dt">TRT01A =</span> ACTARM)</span></code></pre></div>
+</div>
+<div id="trtdatetime" class="section level2">
+<h2>Derive/Impute Numeric Treatment Date/Time and Duration (<code>TRTSDTM</code>, <code>TRTEDTM</code>, <code>TRTDURD</code>)</h2>
+<p>The functions <code>derive_var_trtsdtm()</code>, <code>derive_var_trtedtm()</code> can be used to derive the treatment start and end date/times using the <code>ex</code> domain.</p>
+<p>Example calls:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw">derive_var_trtsdtm</span>(<span class="dt">dataset_ex =</span> ex) <span class="op">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  </span><span class="kw">derive_var_trtedtm</span>(<span class="dt">dataset_ex =</span> ex)</span></code></pre></div>
+<p>This call returns the original data frame with the column <code>TRTSDTM</code> and <code>TRTEDTM</code> added. The datetime variables returned can be converted to dates using the <code>derive_vars_dtm_to_dt()</code> function.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="st">  </span><span class="kw">derive_vars_dtm_to_dt</span>(<span class="dt">source_vars =</span> <span class="kw">vars</span>(TRTSDTM, TRTEDTM))</span></code></pre></div>
+<p>Now, that <code>TRTSDT</code> and <code>TRTEDT</code> are derived, the function <code>derive_var_trtdurd()</code> can be used to calculate the Treatment duration (<code>TRTDURD</code>).</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw">derive_var_trtdurd</span>()</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">RFSTDTC</th>
+<th align="left">TRTSDTM</th>
+<th align="left">TRTSDT</th>
+<th align="left">TRTEDTM</th>
+<th align="left">TRTEDT</th>
+<th align="right">TRTDURD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02 23:59:59</td>
+<td align="left">2014-07-02</td>
+<td align="right">182</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01 23:59:59</td>
+<td align="left">2012-09-01</td>
+<td align="right">28</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">2013-07-19</td>
+<td align="left">2013-07-19</td>
+<td align="left">2014-01-14 23:59:59</td>
+<td align="left">2014-01-14</td>
+<td align="right">180</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-03-18</td>
+<td align="left">2014-03-18</td>
+<td align="left">2014-03-18</td>
+<td align="left">2014-03-31 23:59:59</td>
+<td align="left">2014-03-31</td>
+<td align="right">14</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-07-01</td>
+<td align="left">2014-07-01</td>
+<td align="left">2014-07-01</td>
+<td align="left">2014-12-30 23:59:59</td>
+<td align="left">2014-12-30</td>
+<td align="right">183</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-02-12</td>
+<td align="left">2013-02-12</td>
+<td align="left">2013-02-12</td>
+<td align="left">2013-03-09 23:59:59</td>
+<td align="left">2013-03-09</td>
+<td align="right">26</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1057</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1097</td>
+<td align="left">2014-01-01</td>
+<td align="left">2014-01-01</td>
+<td align="left">2014-01-01</td>
+<td align="left">2014-07-09 23:59:59</td>
+<td align="left">2014-07-09</td>
+<td align="right">190</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-07</td>
+<td align="left">2012-09-07</td>
+<td align="left">2012-09-07</td>
+<td align="left">2012-09-16 23:59:59</td>
+<td align="left">2012-09-16</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1115</td>
+<td align="left">2012-11-30</td>
+<td align="left">2012-11-30</td>
+<td align="left">2012-11-30</td>
+<td align="left">2013-01-23 23:59:59</td>
+<td align="left">2013-01-23</td>
+<td align="right">55</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="disposition" class="section level2">
+<h2>Derive Disposition Variables</h2>
+<div id="disposition_date" class="section level3">
+<h3>Disposition Dates (e.g. <code>EOSDT</code>)</h3>
+<p>The function <code>derive_var_disposition_dt()</code> can be used to derive a disposition date. The relevant disposition date (<code>DS.DSSTDTC</code>) is selected by adjusting the filter parameter.</p>
+<p>To derive the End of Study date (<code>EOSDT</code>), a call could be:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">derive_var_disposition_dt</span>(</span>
+<span id="cb7-3"><a href="#cb7-3"></a>    <span class="dt">dataset_ds =</span> ds,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    <span class="dt">new_var =</span> EOSDT,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>    <span class="dt">dtc =</span> DSSTDTC,</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="dt">filter =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span> <span class="op">&amp;</span><span class="st"> </span>DSDECOD <span class="op">!=</span><span class="st"> &quot;SCREEN FAILURE&quot;</span>,</span>
+<span id="cb7-7"><a href="#cb7-7"></a>    <span class="dt">date_imputation =</span> <span class="ot">NULL</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>  )</span></code></pre></div>
+<p>With <code>DS</code>: <a id="link_ds"></a></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">DSCAT</th>
+<th align="left">DSDECOD</th>
+<th align="left">DSTERM</th>
+<th align="left">DSSTDTC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DISPOSITION EVENT</td>
+<td align="left">COMPLETED</td>
+<td align="left">PROTOCOL COMPLETED</td>
+<td align="left">2014-07-02</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">OTHER EVENT</td>
+<td align="left">FINAL LAB VISIT</td>
+<td align="left">FINAL LAB VISIT</td>
+<td align="left">2014-07-02</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">DISPOSITION EVENT</td>
+<td align="left">ADVERSE EVENT</td>
+<td align="left">ADVERSE EVENT</td>
+<td align="left">2012-09-02</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">OTHER EVENT</td>
+<td align="left">FINAL LAB VISIT</td>
+<td align="left">FINAL LAB VISIT</td>
+<td align="left">2012-09-02</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">OTHER EVENT</td>
+<td align="left">FINAL RETRIEVAL VISIT</td>
+<td align="left">FINAL RETRIEVAL VISIT</td>
+<td align="left">2013-02-18</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">DISPOSITION EVENT</td>
+<td align="left">COMPLETED</td>
+<td align="left">PROTOCOL COMPLETED</td>
+<td align="left">2014-01-14</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">OTHER EVENT</td>
+<td align="left">FINAL LAB VISIT</td>
+<td align="left">FINAL LAB VISIT</td>
+<td align="left">2014-01-14</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">DISPOSITION EVENT</td>
+<td align="left">STUDY TERMINATED BY SPONSOR</td>
+<td align="left">SPONSOR DECISION (STUDY OR PATIENT DISCONTINUED BY THE SPONSOR)</td>
+<td align="left">2014-04-14</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1033</td>
+<td align="left">OTHER EVENT</td>
+<td align="left">FINAL LAB VISIT</td>
+<td align="left">FINAL LAB VISIT</td>
+<td align="left">2014-04-14</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">OTHER EVENT</td>
+<td align="left">FINAL RETRIEVAL VISIT</td>
+<td align="left">FINAL RETRIEVAL VISIT</td>
+<td align="left">2014-09-15</td>
+</tr>
+</tbody>
+</table>
+<p>We would get :</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">EOSDT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-07-02</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-09-02</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2014-01-14</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-04-14</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-12-30</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-03-29</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1057</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1097</td>
+<td align="left">2014-07-09</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-17</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1115</td>
+<td align="left">2013-01-23</td>
+</tr>
+</tbody>
+</table>
+<p>This call would return the input dataset with the column <code>EOSDT</code> added. This function allows the user to impute partial dates as well. If imputation is needed and the date is to be imputed to the first of the month, then set <code>date_imputation = &quot;FIRST&quot;</code>.</p>
+</div>
+<div id="disposition_status" class="section level3">
+<h3>Disposition Status (e.g. <code>EOSTT</code>)</h3>
+<p>The function <code>derive_var_disposition_status()</code> can be used to derive a disposition status at a specific timepoint. The relevant disposition variable (<code>DS.DSDECOD</code>) is selected by adjusting the filter parameter and used to derive <code>EOSSTT</code>.</p>
+<p>To derive the End of Study status (<code>EOSSTT</code>), a call could be:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="kw">derive_var_disposition_status</span>(</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    <span class="dt">dataset_ds =</span> ds,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="dt">new_var =</span> EOSSTT,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    <span class="dt">status_var =</span> DSDECOD,</span>
+<span id="cb8-6"><a href="#cb8-6"></a>    <span class="dt">filter =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">EOSDT</th>
+<th align="left">EOSSTT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-07-02</td>
+<td align="left">COMPLETED</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-09-02</td>
+<td align="left">DISCONTINUED</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2014-01-14</td>
+<td align="left">COMPLETED</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-04-14</td>
+<td align="left">DISCONTINUED</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-12-30</td>
+<td align="left">COMPLETED</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-03-29</td>
+<td align="left">DISCONTINUED</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1057</td>
+<td align="left">NA</td>
+<td align="left">DISCONTINUED</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1097</td>
+<td align="left">2014-07-09</td>
+<td align="left">COMPLETED</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-17</td>
+<td align="left">DISCONTINUED</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1115</td>
+<td align="left">2013-01-23</td>
+<td align="left">DISCONTINUED</td>
+</tr>
+<tr class="odd">
+<td align="left">[Link](#link_d</td>
+<td align="left">s) to <code>DS</code>.</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<p>This call would return the input dataset with the column <code>EOSSTT</code> added.</p>
+<p>By default, the function will derive <code>EOSSTT</code> as</p>
+<ul>
+<li><code>&quot;COMPLETED&quot;</code> if <code>DSDECOD == &quot;COMPLETED&quot;</code></li>
+<li><code>&quot;DISCONTINUED&quot;</code> if <code>DSDECOD</code> is not <code>&quot;COMPLETED&quot;</code> or <code>NA</code></li>
+<li><code>&quot;ONGOING&quot;</code> otherwise</li>
+</ul>
+<p>If the default derivation must be changed, the user can create his/her own function and pass it to the <code>format_new_var</code> argument of the function (<code>format_new_var = new_mapping</code>) to map <code>DSDECOD</code> to a suitable <code>EOSSTT</code> value.</p>
+<p>Example function <code>format_eosstt()</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>format_eosstt &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="kw">case_when</span>(</span>
+<span id="cb9-3"><a href="#cb9-3"></a>    x <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;COMPLETED&quot;</span>) <span class="op">~</span><span class="st"> &quot;COMPLETED&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    x <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SCREEN FAILURE&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="ot">NA_character_</span>,</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    <span class="op">!</span><span class="kw">is.na</span>(x) <span class="op">~</span><span class="st"> &quot;DISCONTINUED&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;ONGOING&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>  )</span>
+<span id="cb9-8"><a href="#cb9-8"></a>}</span></code></pre></div>
+<p>The customized mapping function <code>format_eosstt()</code> can now be passed to the main function:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="st">  </span><span class="kw">derive_var_disposition_status</span>(</span>
+<span id="cb10-4"><a href="#cb10-4"></a>    <span class="dt">dataset_ds =</span> ds,</span>
+<span id="cb10-5"><a href="#cb10-5"></a>    <span class="dt">new_var =</span> EOSSTT,</span>
+<span id="cb10-6"><a href="#cb10-6"></a>    <span class="dt">status_var =</span> DSDECOD,</span>
+<span id="cb10-7"><a href="#cb10-7"></a>    <span class="dt">format_new_var =</span> format_eosstt,</span>
+<span id="cb10-8"><a href="#cb10-8"></a>    <span class="dt">filter =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a>  )</span></code></pre></div>
+<p>This call would return the input dataset with the column <code>EOSSTT</code> added.</p>
+</div>
+<div id="disposition_reason" class="section level3">
+<h3>Disposition Reason(s) (e.g. <code>DCSREAS</code>, <code>DCSREASP</code>)</h3>
+<p>The main reason for discontinuation is usually stored in <code>DSDECOD</code> while <code>DSTERM</code> provides additional details regarding subject’s discontinuation (e.g., description of <code>&quot;OTHER&quot;</code>).</p>
+<p>The function <code>derive_vars_disposition_reason()</code> can be used to derive a disposition reason (along with the details, if required) at a specific timepoint. The relevant disposition variable(s) (<code>DS.DSDECOD</code>, <code>DS.DSTERM</code>) are selected by adjusting the filter parameter and used to derive the main reason (and details).</p>
+<p>To derive the End of Study reason(s) (<code>DCSREAS</code> and <code>DCSREASP</code>), the call would be:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="st">  </span><span class="kw">derive_vars_disposition_reason</span>(</span>
+<span id="cb11-3"><a href="#cb11-3"></a>    <span class="dt">dataset_ds =</span> ds,</span>
+<span id="cb11-4"><a href="#cb11-4"></a>    <span class="dt">new_var =</span> DCSREAS,</span>
+<span id="cb11-5"><a href="#cb11-5"></a>    <span class="dt">reason_var =</span> DSDECOD,</span>
+<span id="cb11-6"><a href="#cb11-6"></a>    <span class="dt">new_var_spe =</span> DCSREASP,</span>
+<span id="cb11-7"><a href="#cb11-7"></a>    <span class="dt">reason_var_spe =</span> DSTERM,</span>
+<span id="cb11-8"><a href="#cb11-8"></a>    <span class="dt">filter =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span> <span class="op">&amp;</span><span class="st"> </span>DSDECOD <span class="op">!=</span><span class="st"> &quot;SCREEN FAILURE&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">EOSDT</th>
+<th align="left">EOSSTT</th>
+<th align="left">DCSREAS</th>
+<th align="left">DCSREASP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-07-02</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-09-02</td>
+<td align="left">DISCONTINUED</td>
+<td align="left">ADVERSE EVENT</td>
+<td align="left">ADVERSE EVENT</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2014-01-14</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-04-14</td>
+<td align="left">DISCONTINUED</td>
+<td align="left">STUDY TERMINATED BY SPONSOR</td>
+<td align="left">SPONSOR DECISION (STUDY OR PATIENT DISCONTINUED BY THE SPONSOR)</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-12-30</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-03-29</td>
+<td align="left">DISCONTINUED</td>
+<td align="left">ADVERSE EVENT</td>
+<td align="left">ADVERSE EVENT</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1057</td>
+<td align="left">NA</td>
+<td align="left">DISCONTINUED</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1097</td>
+<td align="left">2014-07-09</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-17</td>
+<td align="left">DISCONTINUED</td>
+<td align="left">ADVERSE EVENT</td>
+<td align="left">ADVERSE EVENT</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1115</td>
+<td align="left">2013-01-23</td>
+<td align="left">DISCONTINUED</td>
+<td align="left">ADVERSE EVENT</td>
+<td align="left">ADVERSE EVENT</td>
+</tr>
+</tbody>
+</table>
+<p><a href="#link_ds">Link</a> to <code>DS</code>.</p>
+<p>This call would return the input dataset with the column <code>DCSREAS</code> and <code>DCSREASP</code> added.</p>
+<p>By default, the function will map</p>
+<ul>
+<li><code>DCSREAS</code> as <code>DSDECOD</code> if <code>DSDECOD</code> is not <code>&quot;COMPLETED&quot;</code> or <code>NA</code>, <code>NA</code> otherwise</li>
+<li><code>DCSREASP</code> as <code>DSTERM</code> if <code>DSDECOD</code> is not <code>&quot;COMPLETED&quot;</code> or <code>NA</code>, <code>NA</code> otherwise</li>
+</ul>
+<p>If the default derivation must be changed, the user can create his/her own function and pass it to the <code>format_new_var</code> argument of the function (<code>format_new_var = new_mapping</code>) to map <code>DSDECOD</code> and <code>DSTERM</code> to a suitable <code>DCSREAS</code>/<code>DCSREASP</code> value.</p>
+<p>Example function <code>format_dcsreas()</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>format_dcsreas &lt;-<span class="st"> </span><span class="cf">function</span>(dsdecod, <span class="dt">dsterm =</span> <span class="ot">NULL</span>) {</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  out &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">is.null</span>(dsterm)) dsdecod <span class="cf">else</span> dsterm</span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="kw">case_when</span>(</span>
+<span id="cb12-4"><a href="#cb12-4"></a>    <span class="op">!</span>dsdecod <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;COMPLETED&quot;</span>, <span class="st">&quot;SCREEN FAILURE&quot;</span>) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(dsdecod) <span class="op">~</span><span class="st"> </span>out,</span>
+<span id="cb12-5"><a href="#cb12-5"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="ot">NA_character_</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  )</span>
+<span id="cb12-7"><a href="#cb12-7"></a>}</span></code></pre></div>
+<p>The customized mapping function <code>format_dcsreas()</code> can now be passed to the main function:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span><span class="kw">derive_var_disposition_reason</span>(</span>
+<span id="cb13-3"><a href="#cb13-3"></a>    <span class="dt">dataset_ds =</span> ds,</span>
+<span id="cb13-4"><a href="#cb13-4"></a>    <span class="dt">new_var =</span> DCSREAS,</span>
+<span id="cb13-5"><a href="#cb13-5"></a>    <span class="dt">reason_var =</span> DSDECOD,</span>
+<span id="cb13-6"><a href="#cb13-6"></a>    <span class="dt">new_var_spe =</span> DCSREASP,</span>
+<span id="cb13-7"><a href="#cb13-7"></a>    <span class="dt">reason_var_spe =</span> DSTERM,</span>
+<span id="cb13-8"><a href="#cb13-8"></a>    <span class="dt">format_new_vars =</span> format_dcsreas,</span>
+<span id="cb13-9"><a href="#cb13-9"></a>    <span class="dt">filter_ds =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a>  )</span></code></pre></div>
+</div>
+</div>
+<div id="death" class="section level2">
+<h2>Derive Death Variables</h2>
+<div id="death_date" class="section level3">
+<h3>Death Date (<code>DTHDT</code>)</h3>
+<p>The function <code>derive_vars_dt()</code> can be used to derive <code>DTHDT</code>. This function allows the user to impute the date as well.</p>
+<p>Example calls:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="st">  </span><span class="kw">derive_vars_dt</span>(</span>
+<span id="cb14-3"><a href="#cb14-3"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;DTH&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4"></a>    <span class="dt">dtc =</span> DTHDTC</span>
+<span id="cb14-5"><a href="#cb14-5"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">TRTEDT</th>
+<th align="left">DTHDTC</th>
+<th align="left">DTHDT</th>
+<th align="left">DTHFL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-07-02</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-09-01</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2014-01-14</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-03-31</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-12-30</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-03-09</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1057</td>
+<td align="left">NA</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1097</td>
+<td align="left">2014-07-09</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-16</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1115</td>
+<td align="left">2013-01-23</td>
+<td align="left"></td>
+<td align="left">NA</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<p>This call would return the input dataset with the columns <code>DTHDT</code> added and, by default, the associated date imputation flag (<code>DTHDTF</code>) populated with the controlled terminology outlined in the ADaM IG for date imputations. If the imputation flag is not required, the user must set the argument <code>flag_imputation</code> to <code>FALSE</code>.</p>
+<p>If imputation is needed and the date is to be imputed to the first day of the month/year the call would be:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="st">  </span><span class="kw">derive_vars_dt</span>(</span>
+<span id="cb15-3"><a href="#cb15-3"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;DTH&quot;</span>,</span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="dt">dtc =</span> DTHDTC,</span>
+<span id="cb15-5"><a href="#cb15-5"></a>    <span class="dt">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a>  )</span></code></pre></div>
+<p>See also <a href="imputation.html">Date and Time Imputation</a>.</p>
+</div>
+<div id="death_cause" class="section level3">
+<h3>Cause of Death (<code>DTHCAUS</code>)</h3>
+<p>The cause of death <code>DTHCAUS</code> can be derived using the function <code>derive_var_dthcaus()</code>.</p>
+<p>Since the cause of death could be collected/mapped in different domains (e.g. <code>DS</code>, <code>AE</code>, <code>DD</code>), it is important the user specifies the right source(s) to derive the cause of death from.</p>
+<p>For example, if the date of death is collected in the AE form when the AE is Fatal, the cause of death would be set to the preferred term (<code>AEDECOD</code>) of that Fatal AE, while if the date of death is collected in the <code>DS</code> form, the cause of death would be set to the disposition term (<code>DSTERM</code>). To achieve this, the <code>dthcaus_source()</code> objects must be specified and defined such as it fits the study requirement.</p>
+<p><code>dthcause_source()</code> specifications:</p>
+<ul>
+<li><code>dataset_name</code>: the name of the dataset where to search for death information,</li>
+<li><code>filter</code>: the condition to define death,</li>
+<li><code>date</code>: the date of death,</li>
+<li><code>mode</code>: <code>first</code> or <code>last</code> to select the first/last date of death if multiple dates are collected,</li>
+<li><code>dthcaus</code>: variable or text used to populate <code>DTHCAUS</code>.</li>
+<li><code>traceability_vars</code>: whether the traceability variables need to be added (e.g source domain, sequence, variable)</li>
+</ul>
+<p>An example call to define the sources would be:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>src_ae &lt;-<span class="st"> </span><span class="kw">dthcaus_source</span>(</span>
+<span id="cb16-2"><a href="#cb16-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="dt">filter =</span> AEOUT <span class="op">==</span><span class="st"> &quot;FATAL&quot;</span>,</span>
+<span id="cb16-4"><a href="#cb16-4"></a>  <span class="dt">date =</span> AESTDTC,</span>
+<span id="cb16-5"><a href="#cb16-5"></a>  <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6"></a>  <span class="dt">dthcaus =</span> AEDECOD</span>
+<span id="cb16-7"><a href="#cb16-7"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">AESTDTC</th>
+<th align="left">AEENDTC</th>
+<th align="left">AEDECOD</th>
+<th align="left">AEOUT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1211</td>
+<td align="left">2013-01-14</td>
+<td align="left">2013-01-14</td>
+<td align="left">SUDDEN DEATH</td>
+<td align="left">FATAL</td>
+</tr>
+<tr class="even">
+<td align="left">01-704-1445</td>
+<td align="left">2014-10-31</td>
+<td align="left">2014-10-31</td>
+<td align="left">COMPLETED SUICIDE</td>
+<td align="left">FATAL</td>
+</tr>
+<tr class="odd">
+<td align="left">01-710-1083</td>
+<td align="left">2013-08-02</td>
+<td align="left">2013-08-02</td>
+<td align="left">MYOCARDIAL INFARCTION</td>
+<td align="left">FATAL</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>src_ds &lt;-<span class="st"> </span><span class="kw">dthcaus_source</span>(</span>
+<span id="cb17-2"><a href="#cb17-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ds&quot;</span>,</span>
+<span id="cb17-3"><a href="#cb17-3"></a>  <span class="dt">filter =</span> DSDECOD <span class="op">==</span><span class="st"> &quot;DEATH&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;DEATH DUE TO&quot;</span>, DSTERM),</span>
+<span id="cb17-4"><a href="#cb17-4"></a>  <span class="dt">date =</span> DSSTDTC,</span>
+<span id="cb17-5"><a href="#cb17-5"></a>  <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb17-6"><a href="#cb17-6"></a>  <span class="dt">dthcaus =</span> <span class="st">&quot;Death in DS&quot;</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">DSDECOD</th>
+<th align="left">DSTERM</th>
+<th align="left">DSSTDTC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1211</td>
+<td align="left">DEATH</td>
+<td align="left">DEATH</td>
+<td align="left">2013-01-14</td>
+</tr>
+<tr class="even">
+<td align="left">01-704-1445</td>
+<td align="left">DEATH</td>
+<td align="left">DEATH</td>
+<td align="left">2014-11-01</td>
+</tr>
+<tr class="odd">
+<td align="left">01-710-1083</td>
+<td align="left">DEATH</td>
+<td align="left">DEATH</td>
+<td align="left">2013-08-02</td>
+</tr>
+</tbody>
+</table>
+<p>Once the sources are defined, the function <code>derive_var_dthcaus()</code> can be used to derive <code>DTHCAUS</code>:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="st">  </span><span class="kw">derive_var_dthcaus</span>(src_ae, src_ds, <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">ae =</span> ae, <span class="dt">ds =</span> ds))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">EOSDT</th>
+<th align="left">DTHDTC</th>
+<th align="left">DTHDT</th>
+<th align="left">DTHCAUS</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1211</td>
+<td align="left">2013-01-14</td>
+<td align="left">2013-01-14</td>
+<td align="left">2013-01-14</td>
+<td align="left">SUDDEN DEATH</td>
+</tr>
+<tr class="even">
+<td align="left">01-704-1445</td>
+<td align="left">2014-11-01</td>
+<td align="left">2014-11-01</td>
+<td align="left">2014-11-01</td>
+<td align="left">COMPLETED SUICIDE</td>
+</tr>
+<tr class="odd">
+<td align="left">01-710-1083</td>
+<td align="left">2013-08-02</td>
+<td align="left">2013-08-02</td>
+<td align="left">2013-08-02</td>
+<td align="left">MYOCARDIAL INFARCTION</td>
+</tr>
+</tbody>
+</table>
+<p>The function also offers the option to add some traceability variables (e.g. <code>DTHDOM</code> would store the domain where the date of death is collected, and <code>DTHSEQ</code> would store the <code>xxSEQ</code> value of that domain). To add them, the <code>traceability_vars</code> argument must be added to the <code>dthcaus_source()</code> arguments:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>src_ae &lt;-<span class="st"> </span><span class="kw">dthcaus_source</span>(</span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb19-3"><a href="#cb19-3"></a>  <span class="dt">filter =</span> AEOUT <span class="op">==</span><span class="st"> &quot;FATAL&quot;</span>,</span>
+<span id="cb19-4"><a href="#cb19-4"></a>  <span class="dt">date =</span> AESTDTC,</span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb19-6"><a href="#cb19-6"></a>  <span class="dt">dthcaus =</span> AEDECOD,</span>
+<span id="cb19-7"><a href="#cb19-7"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">DTHDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="dt">DTHSEQ =</span> AESEQ)</span>
+<span id="cb19-8"><a href="#cb19-8"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9"></a></span>
+<span id="cb19-10"><a href="#cb19-10"></a>src_ds &lt;-<span class="st"> </span><span class="kw">dthcaus_source</span>(</span>
+<span id="cb19-11"><a href="#cb19-11"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ds&quot;</span>,</span>
+<span id="cb19-12"><a href="#cb19-12"></a>  <span class="dt">filter =</span> DSDECOD <span class="op">==</span><span class="st"> &quot;DEATH&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;DEATH DUE TO&quot;</span>, DSTERM),</span>
+<span id="cb19-13"><a href="#cb19-13"></a>  <span class="dt">date =</span> DSSTDTC,</span>
+<span id="cb19-14"><a href="#cb19-14"></a>  <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb19-15"><a href="#cb19-15"></a>  <span class="dt">dthcaus =</span> DSTERM,</span>
+<span id="cb19-16"><a href="#cb19-16"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">DTHDOM =</span> <span class="st">&quot;DS&quot;</span>, <span class="dt">DTHSEQ =</span> DSSEQ)</span>
+<span id="cb19-17"><a href="#cb19-17"></a>)</span>
+<span id="cb19-18"><a href="#cb19-18"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb19-19"><a href="#cb19-19"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>DTHCAUS) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># remove it before deriving it again</span></span>
+<span id="cb19-20"><a href="#cb19-20"></a><span class="st">  </span><span class="kw">derive_var_dthcaus</span>(src_ae, src_ds, <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">ae =</span> ae, <span class="dt">ds =</span> ds))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">TRTEDT</th>
+<th align="left">DTHDTC</th>
+<th align="left">DTHDT</th>
+<th align="left">DTHCAUS</th>
+<th align="left">DTHDOM</th>
+<th align="right">DTHSEQ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1211</td>
+<td align="left">2013-01-12</td>
+<td align="left">2013-01-14</td>
+<td align="left">2013-01-14</td>
+<td align="left">SUDDEN DEATH</td>
+<td align="left">AE</td>
+<td align="right">9</td>
+</tr>
+<tr class="even">
+<td align="left">01-704-1445</td>
+<td align="left">2014-11-01</td>
+<td align="left">2014-11-01</td>
+<td align="left">2014-11-01</td>
+<td align="left">COMPLETED SUICIDE</td>
+<td align="left">AE</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">01-710-1083</td>
+<td align="left">2013-08-01</td>
+<td align="left">2013-08-02</td>
+<td align="left">2013-08-02</td>
+<td align="left">MYOCARDIAL INFARCTION</td>
+<td align="left">AE</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="death_other" class="section level3">
+<h3>Duration Relative to Death</h3>
+<p>The function <code>derive_vars_duration()</code> can be used to derive duration relative to death like the Relative Day of Death (<code>DTHADY</code>) or the numbers of days from last dose to death (<code>LDDTHELD</code>).</p>
+<p>Example calls:</p>
+<ul>
+<li>Relative Day of Death</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="st">  </span><span class="kw">derive_vars_duration</span>(</span>
+<span id="cb20-3"><a href="#cb20-3"></a>    <span class="dt">new_var =</span> DTHADY,</span>
+<span id="cb20-4"><a href="#cb20-4"></a>    <span class="dt">start_date =</span> TRTSDT,</span>
+<span id="cb20-5"><a href="#cb20-5"></a>    <span class="dt">end_date =</span> DTHDT</span>
+<span id="cb20-6"><a href="#cb20-6"></a>  )</span></code></pre></div>
+<ul>
+<li>Elapsed Days from Last Dose to Death</li>
+</ul>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="st">  </span><span class="kw">derive_vars_duration</span>(</span>
+<span id="cb21-3"><a href="#cb21-3"></a>    <span class="dt">new_var =</span> LDDTHELD,</span>
+<span id="cb21-4"><a href="#cb21-4"></a>    <span class="dt">start_date =</span> TRTEDT,</span>
+<span id="cb21-5"><a href="#cb21-5"></a>    <span class="dt">end_date =</span> DTHDT,</span>
+<span id="cb21-6"><a href="#cb21-6"></a>    <span class="dt">add_one =</span> <span class="ot">FALSE</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">TRTEDT</th>
+<th align="left">DTHDTC</th>
+<th align="left">DTHDT</th>
+<th align="left">DTHCAUS</th>
+<th align="right">DTHADY</th>
+<th align="right">LDDTHELD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1211</td>
+<td align="left">2013-01-12</td>
+<td align="left">2013-01-14</td>
+<td align="left">2013-01-14</td>
+<td align="left">SUDDEN DEATH</td>
+<td align="right">61</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">01-704-1445</td>
+<td align="left">2014-11-01</td>
+<td align="left">2014-11-01</td>
+<td align="left">2014-11-01</td>
+<td align="left">COMPLETED SUICIDE</td>
+<td align="right">175</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-710-1083</td>
+<td align="left">2013-08-01</td>
+<td align="left">2013-08-02</td>
+<td align="left">2013-08-02</td>
+<td align="left">MYOCARDIAL INFARCTION</td>
+<td align="right">12</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="lstalvdt" class="section level2">
+<h2>Derive the Last Date Known Alive (<code>LSTALVDT</code>)</h2>
+<p>Similarly as for the cause of death (<code>DTHCAUS</code>), the last known alive date (<code>LSTALVDT</code>) can be derived from multiples sources and the user must ensure the sources (<code>lstalvdt_source</code>) are correctly defined.</p>
+<p><code>lstalvdt_source()</code> specifications:</p>
+<ul>
+<li><code>dataset_name</code>: the name of the dataset where to search for date information,</li>
+<li><code>filter</code>: the filter to apply on the datasets,</li>
+<li><code>date</code>: the date of interest,</li>
+<li><code>date_imputation</code>: whether and how to impute partial dates,</li>
+<li><code>traceability_vars</code>: whether the traceability variables need to be added (e.g source domain, sequence, variable)</li>
+</ul>
+<p>An example could be :</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>ae_src1 &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="dt">date =</span> AESTDTC,</span>
+<span id="cb22-4"><a href="#cb22-4"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a>)</span>
+<span id="cb22-6"><a href="#cb22-6"></a>ae_src2 &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
+<span id="cb22-7"><a href="#cb22-7"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb22-8"><a href="#cb22-8"></a>  <span class="dt">date =</span> AEENDTC,</span>
+<span id="cb22-9"><a href="#cb22-9"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;LAST&quot;</span></span>
+<span id="cb22-10"><a href="#cb22-10"></a>)</span>
+<span id="cb22-11"><a href="#cb22-11"></a>lb_src &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
+<span id="cb22-12"><a href="#cb22-12"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;lb&quot;</span>,</span>
+<span id="cb22-13"><a href="#cb22-13"></a>  <span class="dt">date =</span> LBDTC,</span>
+<span id="cb22-14"><a href="#cb22-14"></a>  <span class="dt">filter =</span> <span class="kw">str_length</span>(LBDTC) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span></span>
+<span id="cb22-15"><a href="#cb22-15"></a>)</span>
+<span id="cb22-16"><a href="#cb22-16"></a>adsl_src &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
+<span id="cb22-17"><a href="#cb22-17"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb22-18"><a href="#cb22-18"></a>  <span class="dt">date =</span> TRTEDT</span>
+<span id="cb22-19"><a href="#cb22-19"></a>)</span></code></pre></div>
+<p>Once the sources are defined, the function <code>derive_var_lstalvdt()</code> can be used to derive <code>LSTALVDT</code>:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="st">  </span><span class="kw">derive_var_lstalvdt</span>(</span>
+<span id="cb23-3"><a href="#cb23-3"></a>    ae_src1, ae_src2, lb_src, adsl_src,</span>
+<span id="cb23-4"><a href="#cb23-4"></a>    <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">ae =</span> ae, <span class="dt">adsl =</span> adsl, <span class="dt">lb =</span> lb)</span>
+<span id="cb23-5"><a href="#cb23-5"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">TRTEDT</th>
+<th align="left">DTHDTC</th>
+<th align="left">LSTALVDT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-07-02</td>
+<td align="left"></td>
+<td align="left">2014-07-02</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-09-01</td>
+<td align="left"></td>
+<td align="left">2012-09-02</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2014-01-14</td>
+<td align="left"></td>
+<td align="left">2014-01-14</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-03-31</td>
+<td align="left"></td>
+<td align="left">2014-04-14</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-12-30</td>
+<td align="left"></td>
+<td align="left">2014-12-30</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-03-09</td>
+<td align="left"></td>
+<td align="left">2013-04-07</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1097</td>
+<td align="left">2014-07-09</td>
+<td align="left"></td>
+<td align="left">2014-07-09</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-16</td>
+<td align="left"></td>
+<td align="left">2012-09-17</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1115</td>
+<td align="left">2013-01-23</td>
+<td align="left"></td>
+<td align="left">2013-01-23</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1118</td>
+<td align="left">2014-09-09</td>
+<td align="left"></td>
+<td align="left">2014-09-09</td>
+</tr>
+</tbody>
+</table>
+<p>Similarly to <code>dthcaus_source()</code>, the traceability variables can be added by specifying the <code>traceability_vars</code> argument in <code>lstalvdt_source()</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>ae_src1 &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb24-3"><a href="#cb24-3"></a>  <span class="dt">date =</span> AESTDTC,</span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span>,</span>
+<span id="cb24-5"><a href="#cb24-5"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">LALVDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="dt">LALVSEQ =</span> AESEQ, <span class="dt">LALVVAR =</span> <span class="st">&quot;AESTDTC&quot;</span>)</span>
+<span id="cb24-6"><a href="#cb24-6"></a>)</span>
+<span id="cb24-7"><a href="#cb24-7"></a>ae_src2 &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
+<span id="cb24-8"><a href="#cb24-8"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb24-9"><a href="#cb24-9"></a>  <span class="dt">date =</span> AEENDTC,</span>
+<span id="cb24-10"><a href="#cb24-10"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;LAST&quot;</span>,</span>
+<span id="cb24-11"><a href="#cb24-11"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">LALVDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="dt">LALVSEQ =</span> AESEQ, <span class="dt">LALVVAR =</span> <span class="st">&quot;AEENDTC&quot;</span>)</span>
+<span id="cb24-12"><a href="#cb24-12"></a>)</span>
+<span id="cb24-13"><a href="#cb24-13"></a>lb_src &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
+<span id="cb24-14"><a href="#cb24-14"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;lb&quot;</span>,</span>
+<span id="cb24-15"><a href="#cb24-15"></a>  <span class="dt">date =</span> LBDTC,</span>
+<span id="cb24-16"><a href="#cb24-16"></a>  <span class="dt">filter =</span> <span class="kw">str_length</span>(LBDTC) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span>,</span>
+<span id="cb24-17"><a href="#cb24-17"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">LALVDOM =</span> <span class="st">&quot;LB&quot;</span>, <span class="dt">LALVSEQ =</span> LBSEQ, <span class="dt">LALVVAR =</span> <span class="st">&quot;LBDTC&quot;</span>)</span>
+<span id="cb24-18"><a href="#cb24-18"></a>)</span>
+<span id="cb24-19"><a href="#cb24-19"></a>adsl_src &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
+<span id="cb24-20"><a href="#cb24-20"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb24-21"><a href="#cb24-21"></a>  <span class="dt">date =</span> TRTEDTM,</span>
+<span id="cb24-22"><a href="#cb24-22"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">LALVDOM =</span> <span class="st">&quot;ADSL&quot;</span>, <span class="dt">LALVSEQ =</span> <span class="ot">NA_integer_</span>, <span class="dt">LALVVAR =</span> <span class="st">&quot;TRTEDTM&quot;</span>)</span>
+<span id="cb24-23"><a href="#cb24-23"></a>)</span>
+<span id="cb24-24"><a href="#cb24-24"></a></span>
+<span id="cb24-25"><a href="#cb24-25"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb24-26"><a href="#cb24-26"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>LSTALVDT) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># created in the previous call</span></span>
+<span id="cb24-27"><a href="#cb24-27"></a><span class="st">  </span><span class="kw">derive_var_lstalvdt</span>(</span>
+<span id="cb24-28"><a href="#cb24-28"></a>    ae_src1, ae_src2, lb_src, adsl_src,</span>
+<span id="cb24-29"><a href="#cb24-29"></a>    <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">ae =</span> ae, <span class="dt">adsl =</span> adsl, <span class="dt">lb =</span> lb)</span>
+<span id="cb24-30"><a href="#cb24-30"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">TRTEDT</th>
+<th align="left">DTHDTC</th>
+<th align="left">LSTALVDT</th>
+<th align="left">LALVDOM</th>
+<th align="right">LALVSEQ</th>
+<th align="left">LALVVAR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-07-02</td>
+<td align="left"></td>
+<td align="left">2014-07-02</td>
+<td align="left">ADSL</td>
+<td align="right">NA</td>
+<td align="left">TRTEDTM</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-09-01</td>
+<td align="left"></td>
+<td align="left">2012-09-02</td>
+<td align="left">LB</td>
+<td align="right">107</td>
+<td align="left">LBDTC</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2014-01-14</td>
+<td align="left"></td>
+<td align="left">2014-01-14</td>
+<td align="left">ADSL</td>
+<td align="right">NA</td>
+<td align="left">TRTEDTM</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-03-31</td>
+<td align="left"></td>
+<td align="left">2014-04-14</td>
+<td align="left">LB</td>
+<td align="right">107</td>
+<td align="left">LBDTC</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-12-30</td>
+<td align="left"></td>
+<td align="left">2014-12-30</td>
+<td align="left">ADSL</td>
+<td align="right">NA</td>
+<td align="left">TRTEDTM</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-03-09</td>
+<td align="left"></td>
+<td align="left">2013-04-07</td>
+<td align="left">LB</td>
+<td align="right">134</td>
+<td align="left">LBDTC</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1097</td>
+<td align="left">2014-07-09</td>
+<td align="left"></td>
+<td align="left">2014-07-09</td>
+<td align="left">ADSL</td>
+<td align="right">NA</td>
+<td align="left">TRTEDTM</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-16</td>
+<td align="left"></td>
+<td align="left">2012-09-17</td>
+<td align="left">LB</td>
+<td align="right">73</td>
+<td align="left">LBDTC</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1115</td>
+<td align="left">2013-01-23</td>
+<td align="left"></td>
+<td align="left">2013-01-23</td>
+<td align="left">ADSL</td>
+<td align="right">NA</td>
+<td align="left">TRTEDTM</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1118</td>
+<td align="left">2014-09-09</td>
+<td align="left"></td>
+<td align="left">2014-09-09</td>
+<td align="left">ADSL</td>
+<td align="right">NA</td>
+<td align="left">TRTEDTM</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="groupings" class="section level2">
+<h2>Derive Groupings and Populations</h2>
+<div id="groupings_ex" class="section level3">
+<h3>Grouping (e.g. <code>AGEGR1</code> or <code>REGION1</code>)</h3>
+<p>Numeric and categorical variables (<code>AGE</code>, <code>RACE</code>, <code>COUNTRY</code>, etc.) may need to be grouped to perform the required analysis. <code>{admiral}</code> does not <strong>currently</strong> have functionality to assist with all required groupings. Some functions exist for age grouping according to FDA or EMA conventions. For others, the user can create his/her own function to meet his/her study requirement.</p>
+<p>To derive <code>AGEGR1</code> as categorized <code>AGE</code> in <code>&lt; 18</code>, <code>18-65</code>, <code>&gt;= 65</code> (FDA convention):</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a><span class="st">  </span><span class="kw">derive_agegr_fda</span>(</span>
+<span id="cb25-3"><a href="#cb25-3"></a>    <span class="dt">age_var =</span> AGE,</span>
+<span id="cb25-4"><a href="#cb25-4"></a>    <span class="dt">new_var =</span> AGEGR1</span>
+<span id="cb25-5"><a href="#cb25-5"></a>  )</span>
+<span id="cb25-6"><a href="#cb25-6"></a><span class="co">#&gt; Warning: `derive_agegr_fda()` was deprecated in admiral 0.6.0.</span></span>
+<span id="cb25-7"><a href="#cb25-7"></a><span class="co">#&gt; Please use `derive_var_agegr_fda()` instead.</span></span></code></pre></div>
+<p>However for example if</p>
+<ul>
+<li><code>AGEGR2</code> would categorize <code>AGE</code> in <code>&lt; 65</code>, <code>&gt;= 65</code>,</li>
+<li><code>REGION1</code> would categorize <code>COUNTRY</code> in <code>North America</code>, <code>Rest of the World</code>,</li>
+</ul>
+<p>the user defined function(s) would be like:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>format_agegr2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb26-2"><a href="#cb26-2"></a>  <span class="kw">case_when</span>(</span>
+<span id="cb26-3"><a href="#cb26-3"></a>    <span class="op">!</span><span class="kw">is.na</span>(x) <span class="op">&amp;</span><span class="st"> </span>x <span class="op">&lt;</span><span class="st"> </span><span class="dv">65</span> <span class="op">~</span><span class="st"> &quot;&lt; 65&quot;</span>,</span>
+<span id="cb26-4"><a href="#cb26-4"></a>    x <span class="op">&gt;=</span><span class="st"> </span><span class="dv">65</span> <span class="op">~</span><span class="st"> &quot;&gt;= 65&quot;</span>,</span>
+<span id="cb26-5"><a href="#cb26-5"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="ot">NA_character_</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a>  )</span>
+<span id="cb26-7"><a href="#cb26-7"></a>}</span>
+<span id="cb26-8"><a href="#cb26-8"></a></span>
+<span id="cb26-9"><a href="#cb26-9"></a>format_region1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb26-10"><a href="#cb26-10"></a>  <span class="kw">case_when</span>(</span>
+<span id="cb26-11"><a href="#cb26-11"></a>    x <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CAN&quot;</span>, <span class="st">&quot;USA&quot;</span>) <span class="op">~</span><span class="st"> &quot;North America&quot;</span>,</span>
+<span id="cb26-12"><a href="#cb26-12"></a>    <span class="op">!</span><span class="kw">is.na</span>(x) <span class="op">~</span><span class="st"> &quot;Rest of the World&quot;</span>,</span>
+<span id="cb26-13"><a href="#cb26-13"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;Missing&quot;</span></span>
+<span id="cb26-14"><a href="#cb26-14"></a>  )</span>
+<span id="cb26-15"><a href="#cb26-15"></a>}</span></code></pre></div>
+<p>These functions are then used in a <code>mutate()</code> statement to derive the required grouping variables:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb27-3"><a href="#cb27-3"></a>    <span class="dt">AGEGR2 =</span> <span class="kw">format_agegr2</span>(AGE),</span>
+<span id="cb27-4"><a href="#cb27-4"></a>    <span class="dt">REGION1 =</span> <span class="kw">format_region1</span>(COUNTRY)</span>
+<span id="cb27-5"><a href="#cb27-5"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="right">AGE</th>
+<th align="left">SEX</th>
+<th align="left">COUNTRY</th>
+<th align="left">AGEGR1</th>
+<th align="left">AGEGR2</th>
+<th align="left">REGION1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="right">63</td>
+<td align="left">F</td>
+<td align="left">USA</td>
+<td align="left">18-64</td>
+<td align="left">&lt; 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="right">64</td>
+<td align="left">M</td>
+<td align="left">USA</td>
+<td align="left">18-64</td>
+<td align="left">&lt; 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">71</td>
+<td align="left">M</td>
+<td align="left">USA</td>
+<td align="left">&gt;=65</td>
+<td align="left">&gt;= 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="right">74</td>
+<td align="left">M</td>
+<td align="left">USA</td>
+<td align="left">&gt;=65</td>
+<td align="left">&gt;= 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="right">77</td>
+<td align="left">F</td>
+<td align="left">USA</td>
+<td align="left">&gt;=65</td>
+<td align="left">&gt;= 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="right">85</td>
+<td align="left">F</td>
+<td align="left">USA</td>
+<td align="left">&gt;=65</td>
+<td align="left">&gt;= 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1057</td>
+<td align="right">59</td>
+<td align="left">F</td>
+<td align="left">USA</td>
+<td align="left">18-64</td>
+<td align="left">&lt; 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1097</td>
+<td align="right">68</td>
+<td align="left">M</td>
+<td align="left">USA</td>
+<td align="left">&gt;=65</td>
+<td align="left">&gt;= 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1111</td>
+<td align="right">81</td>
+<td align="left">F</td>
+<td align="left">USA</td>
+<td align="left">&gt;=65</td>
+<td align="left">&gt;= 65</td>
+<td align="left">North America</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1115</td>
+<td align="right">84</td>
+<td align="left">M</td>
+<td align="left">USA</td>
+<td align="left">&gt;=65</td>
+<td align="left">&gt;= 65</td>
+<td align="left">North America</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="popflag" class="section level3">
+<h3>Population Flags (e.g. <code>SAFFL</code>)</h3>
+<p>Since the populations flags are mainly company/study specific and that it can easily be derived using an <code>if_else()</code> statement, <code>{admiral}</code> did not implement a functionality to assist with populations flags.</p>
+<p>An example of a simple implementation could be:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb28-3"><a href="#cb28-3"></a>    <span class="dt">SAFFL =</span> <span class="kw">if_else</span>(<span class="op">!</span><span class="kw">is.na</span>(TRTSDT), <span class="st">&quot;Y&quot;</span>, <span class="ot">NA_character_</span>)</span>
+<span id="cb28-4"><a href="#cb28-4"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">TRTSDT</th>
+<th align="left">ARM</th>
+<th align="left">ACTARM</th>
+<th align="left">SAFFL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-05</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">2014-03-18</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1034</td>
+<td align="left">2014-07-01</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1047</td>
+<td align="left">2013-02-12</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1057</td>
+<td align="left">NA</td>
+<td align="left">Screen Failure</td>
+<td align="left">Screen Failure</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1097</td>
+<td align="left">2014-01-01</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1111</td>
+<td align="left">2012-09-07</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1115</td>
+<td align="left">2012-11-30</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Y</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="other" class="section level2">
+<h2>Derive Other Variables</h2>
+<p>The users can add specific code to cover their need for the analysis.</p>
+</div>
+<div id="attributes" class="section level2">
+<h2>Add Labels and Attributes</h2>
+<p>Adding labels and attributes for SAS transport files is supported by the following packages:</p>
+<ul>
+<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>: establish a common foundation for the use of metadata within an R session.</p></li>
+<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>: enable the use of metacore objects. Metatools can be used to build datasets or enhance columns in existing datasets as well as checking datasets against the metadata.</p></li>
+<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>: functionality to associate all metadata information to a local R data frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport v5 file(xpt)</a>.</p></li>
+</ul>
+<p>NOTE: All these packages are in the experimental phase, but the vision is to have them associated with an End to End pipeline under the umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>.</p>
+</div>
+</div>
+<div id="example-script" class="section level1">
+<h1>Example Script</h1>
+<table>
+<thead>
+<tr class="header">
+<th>ADaM</th>
+<th>Sample Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ADSL</td>
+<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adsl.R" target="_blank">ad_adsl.R</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

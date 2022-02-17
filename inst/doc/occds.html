@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Creating an OCCDS ADaM</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating an OCCDS ADaM</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This article describes creating an OCCDS ADaM. Examples are currently presented and tested in the context of ADAE. However, the examples could be applied to other OCCDS ADaMs such as ADCM, ADMH, ADDV, etc.</p>
+<p><strong>Note</strong>: <em>All examples assume CDISC SDTM and/or ADaM format as input unless otherwise specified.</em></p>
+</div>
+<div id="programming-workflow" class="section level1">
+<h1>Programming Workflow</h1>
+<ul>
+<li><a href="#readdata">Read in Data</a></li>
+<li><a href="#datetime">Derive/Impute End and Start Analysis Date/time and Relative Day</a></li>
+<li><a href="#duration">Derive Durations</a></li>
+<li><a href="#atc">Derive ATC variables</a></li>
+<li><a href="#trtpa">Derive Planned and Actual Treatment</a></li>
+<li><a href="#last_dose">Derive Date/Date-time of Last Dose</a></li>
+<li><a href="#severity">Derive Severity, Causality, and Toxicity Grade</a></li>
+<li><a href="#trtflag">Derive Treatment Emergent Flag</a></li>
+<li><a href="#occflag">Derive Occurrence Flags</a></li>
+<li><a href="#query">Derive Query Variables</a></li>
+<li><a href="#adsl_vars">Add ADSL variables</a></li>
+</ul>
+<div id="readdata" class="section level2">
+<h2>Read in Data</h2>
+<p>To start, all data frames needed for the creation of <code>ADAE</code> should be read into the environment. This will be a company specific process. Some of the data frames needed may be <code>AE</code>, <code>ADSL</code>, <code>SUPPAE</code>, ’SUPPDM`.</p>
+<p>For example purpose, the CDISC Pilot SDTM and ADaM datasets—which are included in <code>{admiral}</code>—are used.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(admiral.test)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">data</span>(<span class="st">&quot;ae&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">data</span>(<span class="st">&quot;suppae&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">data</span>(<span class="st">&quot;adsl&quot;</span>)</span></code></pre></div>
+<p>The <code>SUPPAE</code> domain can be joined to the ’AE<code>domain using the function</code>derive_vars_suppqual()`.</p>
+<p>This function will transpose the supplemental SDTM domain (e.g. <code>SUPPAE</code>) and join the transposed data to the parent domain (e.g. <code>ae</code>) by <code>STUDYID</code>, <code>USUBJID</code> using the <code>IDVAR</code> and <code>IDVARVAL</code> as an additional join variable.</p>
+<p>Example call:</p>
+<p>To derive Supplemental Qualifiers, <code>derive_vars_suppqual()</code> can be used.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>ae &lt;-<span class="st"> </span><span class="kw">derive_vars_suppqual</span>(ae, suppae)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">AETERM</th>
+<th align="left">AEDECOD</th>
+<th align="left">AESTDTC</th>
+<th align="left">AETRTEM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="left">2014-01-03</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">2014-01-03</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DIARRHOEA</td>
+<td align="left">DIARRHOEA</td>
+<td align="left">2014-01-09</td>
+<td align="left">Y</td>
+</tr>
+</tbody>
+</table>
+<p>At this step, it may be useful to join <code>ADSL</code> to your <code>AE</code> domain. Only the <code>ADSL</code> variables used for derivations are selected at this step. The rest of the relevant <code>ADSL</code> would be added later.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2"></a>adsl_vars &lt;-<span class="st"> </span><span class="kw">vars</span>(TRTSDT, TRTEDT, TRT01A, TRT01P, DTHDT, EOSDT)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>adae &lt;-<span class="st"> </span><span class="kw">left_join</span>(</span>
+<span id="cb3-5"><a href="#cb3-5"></a>  ae,</span>
+<span id="cb3-6"><a href="#cb3-6"></a>  <span class="kw">select</span>(adsl, STUDYID, USUBJID, <span class="op">!!!</span>adsl_vars),</span>
+<span id="cb3-7"><a href="#cb3-7"></a>  <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;STUDYID&quot;</span>, <span class="st">&quot;USUBJID&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="right">AESEQ</th>
+<th align="left">AETERM</th>
+<th align="left">AESTDTC</th>
+<th align="left">TRTSDT</th>
+<th align="left">TRTEDT</th>
+<th align="left">TRT01A</th>
+<th align="left">TRT01P</th>
+<th align="left">DTHDT</th>
+<th align="left">EOSDT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="right">1</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="left">2014-01-03</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Pbo</td>
+<td align="left">Pbo</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="right">2</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">2014-01-03</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Pbo</td>
+<td align="left">Pbo</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="right">3</td>
+<td align="left">DIARRHOEA</td>
+<td align="left">2014-01-09</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Pbo</td>
+<td align="left">Pbo</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="right">3</td>
+<td align="left">ATRIOVENTRICULAR BLOCK SECOND DEGREE</td>
+<td align="left">2012-08-26</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01</td>
+<td align="left">Pbo</td>
+<td align="left">Pbo</td>
+<td align="left">NA</td>
+<td align="left">2012-09-02</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="right">1</td>
+<td align="left">ERYTHEMA</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01</td>
+<td align="left">Pbo</td>
+<td align="left">Pbo</td>
+<td align="left">NA</td>
+<td align="left">2012-09-02</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="right">2</td>
+<td align="left">ERYTHEMA</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01</td>
+<td align="left">Pbo</td>
+<td align="left">Pbo</td>
+<td align="left">NA</td>
+<td align="left">2012-09-02</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="right">4</td>
+<td align="left">ERYTHEMA</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01</td>
+<td align="left">Pbo</td>
+<td align="left">Pbo</td>
+<td align="left">NA</td>
+<td align="left">2012-09-02</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">1</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="left">2013-07-21</td>
+<td align="left">2013-07-19</td>
+<td align="left">2014-01-14</td>
+<td align="left">Xan_Hi</td>
+<td align="left">Xan_Hi</td>
+<td align="left">NA</td>
+<td align="left">2014-01-14</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">2</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">2013-08-08</td>
+<td align="left">2013-07-19</td>
+<td align="left">2014-01-14</td>
+<td align="left">Xan_Hi</td>
+<td align="left">Xan_Hi</td>
+<td align="left">NA</td>
+<td align="left">2014-01-14</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1034</td>
+<td align="right">1</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">2014-08-27</td>
+<td align="left">2014-07-01</td>
+<td align="left">2014-12-30</td>
+<td align="left">Xan_Hi</td>
+<td align="left">Xan_Hi</td>
+<td align="left">NA</td>
+<td align="left">2014-12-30</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="datetime" class="section level2">
+<h2>Derive/Impute End and Start Analysis Date/time and Relative Day</h2>
+<p>This part derives <code>ASTDTM</code>, <code>ASTDT</code>, <code>ASTDY</code>, <code>AENDTM</code>, <code>AENDT</code>, and <code>AENDY</code>. The function <code>derive_vars_dtm()</code> can be used to derive <code>ASTDTM</code> and <code>AENDTM</code> where <code>ASTDTM</code> could be company-specific. <code>ASTDT</code> and <code>AENDT</code> can be derived from <code>ASTDTM</code> and <code>AENDTM</code>, respectively using function <code>derive_vars_dtm_to_dt</code>. <code>derive_var_astdy()</code> and <code>derive_var_aendy()</code> can be used to create <code>ASTDY</code> and <code>AENDY</code>, respectively.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>adae &lt;-<span class="st"> </span>adae <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw">derive_vars_dtm</span>(</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    <span class="dt">dtc =</span> AESTDTC,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    <span class="dt">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    <span class="dt">time_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7"></a>    <span class="dt">min_dates =</span> <span class="kw">vars</span>(TRTSDT)</span>
+<span id="cb4-8"><a href="#cb4-8"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="st">  </span><span class="kw">derive_vars_dtm</span>(</span>
+<span id="cb4-10"><a href="#cb4-10"></a>    <span class="dt">dtc =</span> AEENDTC,</span>
+<span id="cb4-11"><a href="#cb4-11"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
+<span id="cb4-12"><a href="#cb4-12"></a>    <span class="dt">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb4-13"><a href="#cb4-13"></a>    <span class="dt">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb4-14"><a href="#cb4-14"></a>    <span class="dt">max_dates =</span> <span class="kw">vars</span>(DTHDT, EOSDT)</span>
+<span id="cb4-15"><a href="#cb4-15"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="st">  </span><span class="kw">derive_vars_dtm_to_dt</span>(<span class="kw">vars</span>(ASTDTM, AENDTM)</span>
+<span id="cb4-17"><a href="#cb4-17"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="st">  </span><span class="kw">derive_var_astdy</span>(</span>
+<span id="cb4-19"><a href="#cb4-19"></a>    <span class="dt">reference_date =</span> TRTSDT, </span>
+<span id="cb4-20"><a href="#cb4-20"></a>    <span class="dt">date =</span> ASTDT</span>
+<span id="cb4-21"><a href="#cb4-21"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="st">  </span><span class="kw">derive_var_aendy</span>(</span>
+<span id="cb4-23"><a href="#cb4-23"></a>    <span class="dt">reference_date =</span> TRTSDT, </span>
+<span id="cb4-24"><a href="#cb4-24"></a>    <span class="dt">date =</span> AENDT</span>
+<span id="cb4-25"><a href="#cb4-25"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">AESTDTC</th>
+<th align="left">AEENDTC</th>
+<th align="left">ASTDTM</th>
+<th align="left">ASTDT</th>
+<th align="right">ASTDY</th>
+<th align="left">AENDTM</th>
+<th align="left">AENDT</th>
+<th align="right">AENDY</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-03</td>
+<td align="left"></td>
+<td align="left">2014-01-03</td>
+<td align="left">2014-01-03</td>
+<td align="right">2</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-03</td>
+<td align="left"></td>
+<td align="left">2014-01-03</td>
+<td align="left">2014-01-03</td>
+<td align="right">2</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-09</td>
+<td align="left">2014-01-11</td>
+<td align="left">2014-01-09</td>
+<td align="left">2014-01-09</td>
+<td align="right">8</td>
+<td align="left">2014-01-11 23:59:59</td>
+<td align="left">2014-01-11</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-26</td>
+<td align="left"></td>
+<td align="left">2012-08-26</td>
+<td align="left">2012-08-26</td>
+<td align="right">22</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-07</td>
+<td align="right">3</td>
+<td align="left">2012-08-30 23:59:59</td>
+<td align="left">2012-08-30</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left"></td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-07</td>
+<td align="right">3</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-07</td>
+<td align="right">3</td>
+<td align="left">2012-08-30 23:59:59</td>
+<td align="left">2012-08-30</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-21</td>
+<td align="left"></td>
+<td align="left">2013-07-21</td>
+<td align="left">2013-07-21</td>
+<td align="right">3</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-08-08</td>
+<td align="left"></td>
+<td align="left">2013-08-08</td>
+<td align="left">2013-08-08</td>
+<td align="right">21</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1034</td>
+<td align="left">2014-08-27</td>
+<td align="left"></td>
+<td align="left">2014-08-27</td>
+<td align="left">2014-08-27</td>
+<td align="right">58</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<p>See also <a href="imputation.html">Date and Time Imputation</a>.</p>
+</div>
+<div id="duration" class="section level2">
+<h2>Derive Durations</h2>
+<p>The function <code>derive_vars_duration()</code> can be used to create the variables <code>ADURN</code> and <code>ADURU</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>adae &lt;-<span class="st"> </span>adae <span class="op">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="st">  </span><span class="kw">derive_vars_duration</span>(</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="dt">new_var =</span> ADURN,</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    <span class="dt">new_var_unit =</span> ADURU,</span>
+<span id="cb5-5"><a href="#cb5-5"></a>    <span class="dt">start_date =</span> ASTDT,</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    <span class="dt">end_date =</span> AENDT</span>
+<span id="cb5-7"><a href="#cb5-7"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">AESTDTC</th>
+<th align="left">AEENDTC</th>
+<th align="left">ASTDT</th>
+<th align="left">AENDT</th>
+<th align="right">ADURN</th>
+<th align="left">ADURU</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-03</td>
+<td align="left"></td>
+<td align="left">2014-01-03</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-03</td>
+<td align="left"></td>
+<td align="left">2014-01-03</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-09</td>
+<td align="left">2014-01-11</td>
+<td align="left">2014-01-09</td>
+<td align="left">2014-01-11</td>
+<td align="right">3</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-26</td>
+<td align="left"></td>
+<td align="left">2012-08-26</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="right">24</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left"></td>
+<td align="left">2012-08-07</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="right">24</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-21</td>
+<td align="left"></td>
+<td align="left">2013-07-21</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-08-08</td>
+<td align="left"></td>
+<td align="left">2013-08-08</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">DAYS</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1034</td>
+<td align="left">2014-08-27</td>
+<td align="left"></td>
+<td align="left">2014-08-27</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">DAYS</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="atc" class="section level2">
+<h2>Derive ATC variables</h2>
+<p>The function <code>derive_vars_atc()</code> can be used to derive ATC Class Variables.</p>
+<p>It helps to add Anatomical Therapeutic Chemical class variables from <code>FACM</code> to <code>ADCM</code>.</p>
+<p>The expected result is the input dataset with ATC variables added.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>cm &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tribble</span>(</span>
+<span id="cb6-2"><a href="#cb6-2"></a>         <span class="op">~</span>USUBJID, <span class="op">~</span>CMGRPID,  <span class="op">~</span>CMREFID,            <span class="op">~</span>CMDECOD,</span>
+<span id="cb6-3"><a href="#cb6-3"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;14&quot;</span>, <span class="st">&quot;1192056&quot;</span>,       <span class="st">&quot;PARACETAMOL&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;18&quot;</span>, <span class="st">&quot;2007001&quot;</span>,        <span class="st">&quot;SOLUMEDROL&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5"></a>   <span class="st">&quot;BP40257-1002&quot;</span>,     <span class="st">&quot;19&quot;</span>, <span class="st">&quot;2791596&quot;</span>,    <span class="st">&quot;SPIRONOLACTONE&quot;</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a> )</span>
+<span id="cb6-7"><a href="#cb6-7"></a> facm &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tribble</span>(</span>
+<span id="cb6-8"><a href="#cb6-8"></a>         <span class="op">~</span>USUBJID, <span class="op">~</span>FAGRPID,  <span class="op">~</span>FAREFID,   <span class="op">~</span>FATESTCD, <span class="op">~</span>FASTRESC,</span>
+<span id="cb6-9"><a href="#cb6-9"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>,  <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb6-10"><a href="#cb6-10"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>,  <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;N02&quot;</span>,</span>
+<span id="cb6-11"><a href="#cb6-11"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>,  <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;N02B&quot;</span>,</span>
+<span id="cb6-12"><a href="#cb6-12"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>,  <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;N02BE&quot;</span>,</span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;D&quot;</span>,</span>
+<span id="cb6-15"><a href="#cb6-15"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;D10&quot;</span>,</span>
+<span id="cb6-16"><a href="#cb6-16"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;D10A&quot;</span>,</span>
+<span id="cb6-17"><a href="#cb6-17"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;D10AA&quot;</span>,</span>
+<span id="cb6-18"><a href="#cb6-18"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;D&quot;</span>,</span>
+<span id="cb6-19"><a href="#cb6-19"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;D07&quot;</span>,</span>
+<span id="cb6-20"><a href="#cb6-20"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;D07A&quot;</span>,</span>
+<span id="cb6-21"><a href="#cb6-21"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;D07AA&quot;</span>,</span>
+<span id="cb6-22"><a href="#cb6-22"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;H&quot;</span>,</span>
+<span id="cb6-23"><a href="#cb6-23"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;H02&quot;</span>,</span>
+<span id="cb6-24"><a href="#cb6-24"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;H02A&quot;</span>,</span>
+<span id="cb6-25"><a href="#cb6-25"></a>   <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>,  <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;H02AB&quot;</span>,</span>
+<span id="cb6-26"><a href="#cb6-26"></a></span>
+<span id="cb6-27"><a href="#cb6-27"></a>   <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>,  <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;C&quot;</span>,</span>
+<span id="cb6-28"><a href="#cb6-28"></a>   <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>,  <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;C03&quot;</span>,</span>
+<span id="cb6-29"><a href="#cb6-29"></a>   <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>,  <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;C03D&quot;</span>,</span>
+<span id="cb6-30"><a href="#cb6-30"></a>   <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>,  <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;C03DA&quot;</span></span>
+<span id="cb6-31"><a href="#cb6-31"></a> )</span>
+<span id="cb6-32"><a href="#cb6-32"></a></span>
+<span id="cb6-33"><a href="#cb6-33"></a><span class="kw">derive_vars_atc</span>(cm, facm)</span>
+<span id="cb6-34"><a href="#cb6-34"></a><span class="co">#&gt; # A tibble: 5 x 8</span></span>
+<span id="cb6-35"><a href="#cb6-35"></a><span class="co">#&gt;   USUBJID      CMGRPID CMREFID CMDECOD        ATC1CD ATC2CD ATC3CD ATC4CD</span></span>
+<span id="cb6-36"><a href="#cb6-36"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; </span></span>
+<span id="cb6-37"><a href="#cb6-37"></a><span class="co">#&gt; 1 BP40257-1001 14      1192056 PARACETAMOL    N      N02    N02B   N02BE </span></span>
+<span id="cb6-38"><a href="#cb6-38"></a><span class="co">#&gt; 2 BP40257-1001 18      2007001 SOLUMEDROL     D      D10    D10A   D10AA </span></span>
+<span id="cb6-39"><a href="#cb6-39"></a><span class="co">#&gt; 3 BP40257-1001 18      2007001 SOLUMEDROL     D      D07    D07A   D07AA </span></span>
+<span id="cb6-40"><a href="#cb6-40"></a><span class="co">#&gt; 4 BP40257-1001 18      2007001 SOLUMEDROL     H      H02    H02A   H02AB </span></span>
+<span id="cb6-41"><a href="#cb6-41"></a><span class="co">#&gt; 5 BP40257-1002 19      2791596 SPIRONOLACTONE C      C03    C03D   C03DA</span></span></code></pre></div>
+</div>
+<div id="trtpa" class="section level2">
+<h2>Derive Planned and Actual Treatment</h2>
+<p><code>TRTA</code> and <code>TRTP</code> must correlate to treatment <code>TRTxxP</code> and/or <code>TRTxxA</code> in ADSL. The derivation of <code>TRTA</code> and <code>TRTP</code> for a record are protocol and analysis specific. <code>{admiral}</code>does not currently have functionality to assist with <code>TRTA</code> and <code>TRTP</code> assignment.</p>
+<p>However, an example of a simple implementation could be:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>adae &lt;-<span class="st"> </span><span class="kw">mutate</span>(adae, <span class="dt">TRTP =</span> TRT01P, <span class="dt">TRTA =</span> TRT01A)</span>
+<span id="cb7-2"><a href="#cb7-2"></a></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="kw">count</span>(adae, TRTP, TRTA, TRT01P, TRT01A)</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt; # A tibble: 3 x 5</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt;   TRTP   TRTA   TRT01P TRT01A     n</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt;   &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt; 1 Pbo    Pbo    Pbo    Pbo      301</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; 2 Xan_Hi Xan_Hi Xan_Hi Xan_Hi   455</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; 3 Xan_Lo Xan_Lo Xan_Lo Xan_Lo   435</span></span></code></pre></div>
+</div>
+<div id="last_dose" class="section level2">
+<h2>Derive Date/Date-time of Last Dose</h2>
+<p>The function <code>derive_var_last_dose_date()</code> can be used to derive the last dose date before the start of the event.</p>
+<p>Additionally, this function can also provide the traceability variables (e.g. <code>LDOSEDOM</code>, <code>LDOSESEQ</code>) using the <code>traceability_vars</code> argument.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">data</span>(ex_single)</span>
+<span id="cb8-2"><a href="#cb8-2"></a>adae &lt;-<span class="st"> </span>adae <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span><span class="kw">derive_var_last_dose_date</span>(</span>
+<span id="cb8-4"><a href="#cb8-4"></a>    ex_single,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    <span class="dt">filter_ex =</span> (EXDOSE <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span> <span class="op">|</span><span class="st"> </span>(EXDOSE <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="op">&amp;</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="st">      </span><span class="kw">nchar</span>(EXENDTC) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span>,</span>
+<span id="cb8-7"><a href="#cb8-7"></a>    <span class="dt">dose_date =</span> EXSTDTC,</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    <span class="dt">analysis_date =</span> ASTDT,</span>
+<span id="cb8-9"><a href="#cb8-9"></a>    <span class="dt">single_dose_condition =</span> (EXSTDTC <span class="op">==</span><span class="st"> </span>EXENDTC),</span>
+<span id="cb8-10"><a href="#cb8-10"></a>    <span class="dt">new_var =</span> LDOSEDTM,</span>
+<span id="cb8-11"><a href="#cb8-11"></a>    <span class="dt">output_datetime =</span> <span class="ot">TRUE</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">AEDECOD</th>
+<th align="right">AESEQ</th>
+<th align="left">AESTDTC</th>
+<th align="left">AEENDTC</th>
+<th align="left">ASTDT</th>
+<th align="left">AENDT</th>
+<th align="left">LDOSEDTM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="right">1</td>
+<td align="left">2014-01-03</td>
+<td align="left"></td>
+<td align="left">2014-01-03</td>
+<td align="left">NA</td>
+<td align="left">2014-01-03</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="right">2</td>
+<td align="left">2014-01-03</td>
+<td align="left"></td>
+<td align="left">2014-01-03</td>
+<td align="left">NA</td>
+<td align="left">2014-01-03</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DIARRHOEA</td>
+<td align="right">3</td>
+<td align="left">2014-01-09</td>
+<td align="left">2014-01-11</td>
+<td align="left">2014-01-09</td>
+<td align="left">2014-01-11</td>
+<td align="left">2014-01-09</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">ATRIOVENTRICULAR BLOCK SECOND DEGREE</td>
+<td align="right">3</td>
+<td align="left">2012-08-26</td>
+<td align="left"></td>
+<td align="left">2012-08-26</td>
+<td align="left">NA</td>
+<td align="left">2012-08-26</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">ERYTHEMA</td>
+<td align="right">1</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="left">2012-08-07</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">ERYTHEMA</td>
+<td align="right">2</td>
+<td align="left">2012-08-07</td>
+<td align="left"></td>
+<td align="left">2012-08-07</td>
+<td align="left">NA</td>
+<td align="left">2012-08-07</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">ERYTHEMA</td>
+<td align="right">4</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-30</td>
+<td align="left">2012-08-07</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="right">1</td>
+<td align="left">2013-07-21</td>
+<td align="left"></td>
+<td align="left">2013-07-21</td>
+<td align="left">NA</td>
+<td align="left">2013-07-21</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="right">2</td>
+<td align="left">2013-08-08</td>
+<td align="left"></td>
+<td align="left">2013-08-08</td>
+<td align="left">NA</td>
+<td align="left">2013-08-01</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1034</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="right">1</td>
+<td align="left">2014-08-27</td>
+<td align="left"></td>
+<td align="left">2014-08-27</td>
+<td align="left">NA</td>
+<td align="left">2014-07-15</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="severity" class="section level2">
+<h2>Derive Severity, Causality, and Toxicity Grade</h2>
+<p>The variables <code>ASEV</code>, <code>AREL</code>, and <code>ATOXGR</code> can be added by simply <code>mutate()</code> if no imputation is required.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>adae &lt;-<span class="st"> </span>adae <span class="op">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3"></a>    <span class="dt">ASEV =</span> AESEV, </span>
+<span id="cb9-4"><a href="#cb9-4"></a>    <span class="dt">AREL =</span> AEREL</span>
+<span id="cb9-5"><a href="#cb9-5"></a>  )</span></code></pre></div>
+</div>
+<div id="trtflag" class="section level2">
+<h2>Derive Treatment Emergent Flag</h2>
+<p>To derive the treatment emergent flag <code>TRTEMFL</code>, one can use simple <code>dplyr::mutate()</code>. In the example below, we use 30 days in the flag derivation.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>adae &lt;-<span class="st"> </span>adae <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb10-3"><a href="#cb10-3"></a>    <span class="dt">TRTEMFL =</span> <span class="kw">ifelse</span>(ASTDT <span class="op">&gt;=</span><span class="st"> </span>TRTSDT <span class="op">&amp;</span><span class="st"> </span>ASTDT <span class="op">&lt;=</span><span class="st"> </span>TRTEDT <span class="op">+</span><span class="st"> </span><span class="kw">days</span>(<span class="dv">30</span>), <span class="st">&quot;Y&quot;</span>, <span class="ot">NA_character_</span>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">TRTSDT</th>
+<th align="left">TRTEDT</th>
+<th align="left">AESTDTC</th>
+<th align="left">ASTDT</th>
+<th align="left">TRTEMFL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-03</td>
+<td align="left">2014-01-03</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-03</td>
+<td align="left">2014-01-03</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-09</td>
+<td align="left">2014-01-09</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01</td>
+<td align="left">2012-08-26</td>
+<td align="left">2012-08-26</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-07</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-07</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-01</td>
+<td align="left">2012-08-07</td>
+<td align="left">2012-08-07</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">2014-01-14</td>
+<td align="left">2013-07-21</td>
+<td align="left">2013-07-21</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">2014-01-14</td>
+<td align="left">2013-08-08</td>
+<td align="left">2013-08-08</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1034</td>
+<td align="left">2014-07-01</td>
+<td align="left">2014-12-30</td>
+<td align="left">2014-08-27</td>
+<td align="left">2014-08-27</td>
+<td align="left">Y</td>
+</tr>
+</tbody>
+</table>
+<p>To derive on-treatment flag (<code>ONTRTFL</code>) in an ADaM dataset with a single assessment date, we use <code>derive_var_ontrtfl()</code>.</p>
+<p>The expected result is the input dataset with an additional column named <code>ONTRTFL</code> with a value of <code>&quot;Y&quot;</code> or <code>NA</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>bds1 &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tribble</span>(</span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="op">~</span>USUBJID, <span class="op">~</span>ADT,              <span class="op">~</span>TRTSDT,           <span class="op">~</span>TRTEDT,</span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="st">&quot;P01&quot;</span>,    <span class="kw">ymd</span>(<span class="st">&quot;2020-02-24&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="st">&quot;P02&quot;</span>,    <span class="kw">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="st">&quot;P03&quot;</span>,    <span class="kw">ymd</span>(<span class="st">&quot;2019-12-31&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>)</span>
+<span id="cb11-6"><a href="#cb11-6"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="kw">derive_var_ontrtfl</span>(</span>
+<span id="cb11-8"><a href="#cb11-8"></a>  bds1,</span>
+<span id="cb11-9"><a href="#cb11-9"></a>  <span class="dt">start_date =</span> ADT,</span>
+<span id="cb11-10"><a href="#cb11-10"></a>  <span class="dt">ref_start_date =</span> TRTSDT,</span>
+<span id="cb11-11"><a href="#cb11-11"></a>  <span class="dt">ref_end_date =</span> TRTEDT</span>
+<span id="cb11-12"><a href="#cb11-12"></a>)</span>
+<span id="cb11-13"><a href="#cb11-13"></a><span class="co">#&gt; # A tibble: 3 x 5</span></span>
+<span id="cb11-14"><a href="#cb11-14"></a><span class="co">#&gt;   USUBJID ADT        TRTSDT     TRTEDT     ONTRTFL</span></span>
+<span id="cb11-15"><a href="#cb11-15"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;  </span></span>
+<span id="cb11-16"><a href="#cb11-16"></a><span class="co">#&gt; 1 P01     2020-02-24 2020-01-01 2020-03-01 Y      </span></span>
+<span id="cb11-17"><a href="#cb11-17"></a><span class="co">#&gt; 2 P02     2020-01-01 2020-01-01 2020-03-01 Y      </span></span>
+<span id="cb11-18"><a href="#cb11-18"></a><span class="co">#&gt; 3 P03     2019-12-31 2020-01-01 2020-03-01 &lt;NA&gt;</span></span>
+<span id="cb11-19"><a href="#cb11-19"></a></span>
+<span id="cb11-20"><a href="#cb11-20"></a>bds2 &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tribble</span>(</span>
+<span id="cb11-21"><a href="#cb11-21"></a>  <span class="op">~</span>USUBJID, <span class="op">~</span>ADT,              <span class="op">~</span>TRTSDT,           <span class="op">~</span>TRTEDT,</span>
+<span id="cb11-22"><a href="#cb11-22"></a>  <span class="st">&quot;P01&quot;</span>,    <span class="kw">ymd</span>(<span class="st">&quot;2020-07-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
+<span id="cb11-23"><a href="#cb11-23"></a>  <span class="st">&quot;P02&quot;</span>,    <span class="kw">ymd</span>(<span class="st">&quot;2020-04-30&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
+<span id="cb11-24"><a href="#cb11-24"></a>  <span class="st">&quot;P03&quot;</span>,    <span class="kw">ymd</span>(<span class="st">&quot;2020-03-15&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>)</span>
+<span id="cb11-25"><a href="#cb11-25"></a>)</span>
+<span id="cb11-26"><a href="#cb11-26"></a><span class="kw">derive_var_ontrtfl</span>(</span>
+<span id="cb11-27"><a href="#cb11-27"></a>  bds2,</span>
+<span id="cb11-28"><a href="#cb11-28"></a>  <span class="dt">start_date =</span> ADT,</span>
+<span id="cb11-29"><a href="#cb11-29"></a>  <span class="dt">ref_start_date =</span> TRTSDT,</span>
+<span id="cb11-30"><a href="#cb11-30"></a>  <span class="dt">ref_end_date =</span> TRTEDT,</span>
+<span id="cb11-31"><a href="#cb11-31"></a>  <span class="dt">ref_end_window =</span> <span class="dv">60</span></span>
+<span id="cb11-32"><a href="#cb11-32"></a>)</span>
+<span id="cb11-33"><a href="#cb11-33"></a><span class="co">#&gt; # A tibble: 3 x 5</span></span>
+<span id="cb11-34"><a href="#cb11-34"></a><span class="co">#&gt;   USUBJID ADT        TRTSDT     TRTEDT     ONTRTFL</span></span>
+<span id="cb11-35"><a href="#cb11-35"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;  </span></span>
+<span id="cb11-36"><a href="#cb11-36"></a><span class="co">#&gt; 1 P01     2020-07-01 2020-01-01 2020-03-01 &lt;NA&gt;   </span></span>
+<span id="cb11-37"><a href="#cb11-37"></a><span class="co">#&gt; 2 P02     2020-04-30 2020-01-01 2020-03-01 Y      </span></span>
+<span id="cb11-38"><a href="#cb11-38"></a><span class="co">#&gt; 3 P03     2020-03-15 2020-01-01 2020-03-01 Y</span></span>
+<span id="cb11-39"><a href="#cb11-39"></a></span>
+<span id="cb11-40"><a href="#cb11-40"></a>bds3 &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tribble</span>(</span>
+<span id="cb11-41"><a href="#cb11-41"></a>  <span class="op">~</span>ADTM,              <span class="op">~</span>TRTSDTM,           <span class="op">~</span>TRTEDTM,           <span class="op">~</span>TPT,</span>
+<span id="cb11-42"><a href="#cb11-42"></a>  <span class="st">&quot;2020-01-02T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="ot">NA</span>,</span>
+<span id="cb11-43"><a href="#cb11-43"></a>  <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="st">&quot;PRE&quot;</span>,</span>
+<span id="cb11-44"><a href="#cb11-44"></a>  <span class="st">&quot;2019-12-31T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="ot">NA</span></span>
+<span id="cb11-45"><a href="#cb11-45"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb11-46"><a href="#cb11-46"></a><span class="st"> </span><span class="kw">mutate</span>(</span>
+<span id="cb11-47"><a href="#cb11-47"></a>  <span class="dt">ADTM =</span> <span class="kw">ymd_hm</span>(ADTM),</span>
+<span id="cb11-48"><a href="#cb11-48"></a>  <span class="dt">TRTSDTM =</span> <span class="kw">ymd_hm</span>(TRTSDTM),</span>
+<span id="cb11-49"><a href="#cb11-49"></a>  <span class="dt">TRTEDTM =</span> <span class="kw">ymd_hm</span>(TRTEDTM)</span>
+<span id="cb11-50"><a href="#cb11-50"></a> )</span>
+<span id="cb11-51"><a href="#cb11-51"></a><span class="kw">derive_var_ontrtfl</span>(</span>
+<span id="cb11-52"><a href="#cb11-52"></a>  bds3,</span>
+<span id="cb11-53"><a href="#cb11-53"></a>  <span class="dt">start_date =</span> ADTM,</span>
+<span id="cb11-54"><a href="#cb11-54"></a>  <span class="dt">ref_start_date =</span> TRTSDTM,</span>
+<span id="cb11-55"><a href="#cb11-55"></a>  <span class="dt">ref_end_date =</span> TRTEDTM,</span>
+<span id="cb11-56"><a href="#cb11-56"></a>  <span class="dt">filter_pre_timepoint =</span> TPT <span class="op">==</span><span class="st"> &quot;PRE&quot;</span></span>
+<span id="cb11-57"><a href="#cb11-57"></a>)</span>
+<span id="cb11-58"><a href="#cb11-58"></a><span class="co">#&gt; # A tibble: 3 x 5</span></span>
+<span id="cb11-59"><a href="#cb11-59"></a><span class="co">#&gt;   ADTM                TRTSDTM             TRTEDTM             TPT   ONTRTFL</span></span>
+<span id="cb11-60"><a href="#cb11-60"></a><span class="co">#&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt; &lt;chr&gt;  </span></span>
+<span id="cb11-61"><a href="#cb11-61"></a><span class="co">#&gt; 1 2020-01-02 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 &lt;NA&gt;  Y      </span></span>
+<span id="cb11-62"><a href="#cb11-62"></a><span class="co">#&gt; 2 2020-01-01 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 PRE   &lt;NA&gt;   </span></span>
+<span id="cb11-63"><a href="#cb11-63"></a><span class="co">#&gt; 3 2019-12-31 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 &lt;NA&gt;  &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div id="occflag" class="section level2">
+<h2>Derive Occurrence Flags</h2>
+<p>The function <code>derive_var_extreme_flag()</code> can help derive variables such as <code>AOCCIFL</code>, <code>AOCCPIFL</code>, <code>AOCCSIFL</code>, <code>AOCXIFL</code>, <code>AOCXPIFL</code>, and <code>AOCXSIFL</code>.</p>
+<p>If grades were collected, the following can be used to flag first occurrence of maximum toxicity grade.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>adae &lt;-<span class="st"> </span>adae <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="st">  </span><span class="kw">derive_var_extreme_flag</span>(</span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="dt">by_vars =</span> <span class="kw">vars</span>(USUBJID),</span>
+<span id="cb12-4"><a href="#cb12-4"></a>    <span class="dt">order =</span> <span class="kw">vars</span>(<span class="kw">desc</span>(ATOXGR), ASTDTM, AESEQ),</span>
+<span id="cb12-5"><a href="#cb12-5"></a>    <span class="dt">new_var =</span> AOCCIFL,</span>
+<span id="cb12-6"><a href="#cb12-6"></a>    <span class="dt">filter =</span> TRTEMFL <span class="op">==</span><span class="st"> &quot;Y&quot;</span>, </span>
+<span id="cb12-7"><a href="#cb12-7"></a>    <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a>  )</span></code></pre></div>
+<p>Similarly, <code>ASEV</code> can also be used to derive the occurrence flags if severity is collected. In this case, the variable may need to be firstly recorded into a numeric one. Flag first occurrence of most severe adverse event:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>adae &lt;-<span class="st"> </span>adae <span class="op">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb13-3"><a href="#cb13-3"></a>    <span class="dt">ASEVN =</span> <span class="kw">as.integer</span>(<span class="kw">factor</span>(ASEV, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;MILD&quot;</span>, <span class="st">&quot;MODERATE&quot;</span>, <span class="st">&quot;SEVERE&quot;</span>, <span class="st">&quot;DEATH THREATENING&quot;</span>)))</span>
+<span id="cb13-4"><a href="#cb13-4"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="st">  </span><span class="kw">derive_var_extreme_flag</span>(</span>
+<span id="cb13-6"><a href="#cb13-6"></a>    <span class="dt">by_vars =</span> <span class="kw">vars</span>(USUBJID),</span>
+<span id="cb13-7"><a href="#cb13-7"></a>    <span class="dt">order =</span> <span class="kw">vars</span>(<span class="kw">desc</span>(ASEVN), ASTDTM, AESEQ),</span>
+<span id="cb13-8"><a href="#cb13-8"></a>    <span class="dt">new_var =</span> AOCCIFL,</span>
+<span id="cb13-9"><a href="#cb13-9"></a>    <span class="dt">filter =</span> TRTEMFL <span class="op">==</span><span class="st"> &quot;Y&quot;</span>, </span>
+<span id="cb13-10"><a href="#cb13-10"></a>    <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">ASTDTM</th>
+<th align="left">ASEV</th>
+<th align="right">ASEVN</th>
+<th align="right">AESEQ</th>
+<th align="left">TRTEMFL</th>
+<th align="left">AOCCIFL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-03</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Y</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-03</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">2014-01-09</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left">MODERATE</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="left">Y</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-07</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">2012-08-26</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-21</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Y</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-08-08</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1034</td>
+<td align="left">2014-08-27</td>
+<td align="left">MILD</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">Y</td>
+<td align="left">Y</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="query" class="section level2">
+<h2>Derive Query Variables</h2>
+<p>It is necessary for the dictionary query information to be passed into this function in a particular format which is detailed in <code>derive_vars_query()</code> to an ADaM.</p>
+<p>For example, in ADAE, MedDRA SMQs and/or Customized Query variables may be needed.</p>
+<p>This function expects the dictionary and/or lookup information to be provided as input in a standard structure.</p>
+<p>The expected result is the input dataset with query variables added: See also <a href="queries_dataset.html">Queries dataset documentation</a>.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">data</span>(<span class="st">&quot;queries&quot;</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">VAR_PREFIX</th>
+<th align="left">QUERY_NAME</th>
+<th align="right">QUERY_ID</th>
+<th align="left">QUERY_SCOPE</th>
+<th align="right">QUERY_SCOPE_NUM</th>
+<th align="left">TERM_LEVEL</th>
+<th align="left">TERM_NAME</th>
+<th align="right">TERM_ID</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CQ01</td>
+<td align="left">Dermatologic events</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">AELLT</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CQ01</td>
+<td align="left">Dermatologic events</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">AELLT</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CQ01</td>
+<td align="left">Dermatologic events</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">AELLT</td>
+<td align="left">ERYTHEMA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CQ01</td>
+<td align="left">Dermatologic events</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">AELLT</td>
+<td align="left">LOCALIZED ERYTHEMA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CQ01</td>
+<td align="left">Dermatologic events</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">AELLT</td>
+<td align="left">GENERALIZED PRURITUS</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">SMQ02</td>
+<td align="left">Immune-Mediated Hypothyroidism</td>
+<td align="right">20000160</td>
+<td align="left">BROAD</td>
+<td align="right">1</td>
+<td align="left">AEDECOD</td>
+<td align="left">BIOPSY THYROID GLAND ABNORMAL</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">SMQ02</td>
+<td align="left">Immune-Mediated Hypothyroidism</td>
+<td align="right">20000160</td>
+<td align="left">BROAD</td>
+<td align="right">1</td>
+<td align="left">AEDECOD</td>
+<td align="left">BLOOD THYROID STIMULATING HORMONE ABNORMAL</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">SMQ02</td>
+<td align="left">Immune-Mediated Hypothyroidism</td>
+<td align="right">20000160</td>
+<td align="left">NARROW</td>
+<td align="right">1</td>
+<td align="left">AEDECOD</td>
+<td align="left">BIOPSY THYROID GLAND INCREASED</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">SMQ03</td>
+<td align="left">Immune-Mediated Guillain-Barre Syndrome</td>
+<td align="right">20000131</td>
+<td align="left">NARROW</td>
+<td align="right">2</td>
+<td align="left">AEDECOD</td>
+<td align="left">GUILLAIN-BARRE SYNDROME</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">SMQ03</td>
+<td align="left">Immune-Mediated Guillain-Barre Syndrome</td>
+<td align="right">20000131</td>
+<td align="left">NARROW</td>
+<td align="right">2</td>
+<td align="left">AEDECOD</td>
+<td align="left">MILLER FISHER SYNDROME</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>adae1 &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tribble</span>(</span>
+<span id="cb15-2"><a href="#cb15-2"></a>  <span class="op">~</span>USUBJID, <span class="op">~</span>ASTDTM, <span class="op">~</span>AETERM, <span class="op">~</span>AESEQ, <span class="op">~</span>AEDECOD, <span class="op">~</span>AELLT, <span class="op">~</span>AELLTCD,</span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="st">&quot;01&quot;</span>, <span class="st">&quot;2020-06-02 23:59:59&quot;</span>, <span class="st">&quot;ALANINE AMINOTRANSFERASE ABNORMAL&quot;</span>,</span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="dv">3</span>, <span class="st">&quot;Alanine aminotransferase abnormal&quot;</span>, <span class="ot">NA_character_</span>, <span class="ot">NA_integer_</span>,</span>
+<span id="cb15-5"><a href="#cb15-5"></a>  <span class="st">&quot;02&quot;</span>, <span class="st">&quot;2020-06-05 23:59:59&quot;</span>, <span class="st">&quot;BASEDOW&#39;S DISEASE&quot;</span>,</span>
+<span id="cb15-6"><a href="#cb15-6"></a>    <span class="dv">5</span>, <span class="st">&quot;Basedow&#39;s disease&quot;</span>, <span class="ot">NA_character_</span>, 1L,</span>
+<span id="cb15-7"><a href="#cb15-7"></a>  <span class="st">&quot;03&quot;</span>, <span class="st">&quot;2020-06-07 23:59:59&quot;</span>, <span class="st">&quot;SOME TERM&quot;</span>,</span>
+<span id="cb15-8"><a href="#cb15-8"></a>    <span class="dv">2</span>, <span class="st">&quot;Some query&quot;</span>, <span class="st">&quot;Some term&quot;</span>, <span class="ot">NA_integer_</span>,</span>
+<span id="cb15-9"><a href="#cb15-9"></a>  <span class="st">&quot;05&quot;</span>, <span class="st">&quot;2020-06-09 23:59:59&quot;</span>, <span class="st">&quot;ALVEOLAR PROTEINOSIS&quot;</span>,</span>
+<span id="cb15-10"><a href="#cb15-10"></a>    <span class="dv">7</span>, <span class="st">&quot;Alveolar proteinosis&quot;</span>, <span class="ot">NA_character_</span>,  <span class="ot">NA_integer_</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a>)</span>
+<span id="cb15-12"><a href="#cb15-12"></a>  </span>
+<span id="cb15-13"><a href="#cb15-13"></a>adae_query &lt;-<span class="st"> </span><span class="kw">derive_vars_query</span>(<span class="dt">dataset =</span> adae1 , <span class="dt">dataset_queries =</span> queries)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">ASTDTM</th>
+<th align="left">AETERM</th>
+<th align="right">AESEQ</th>
+<th align="left">AEDECOD</th>
+<th align="left">AELLT</th>
+<th align="right">AELLTCD</th>
+<th align="left">SMQ02NAM</th>
+<th align="right">SMQ02CD</th>
+<th align="left">SMQ02SC</th>
+<th align="right">SMQ02SCN</th>
+<th align="left">SMQ03NAM</th>
+<th align="right">SMQ03CD</th>
+<th align="left">SMQ03SC</th>
+<th align="right">SMQ03SCN</th>
+<th align="left">SMQ05NAM</th>
+<th align="right">SMQ05CD</th>
+<th align="left">SMQ05SC</th>
+<th align="right">SMQ05SCN</th>
+<th align="left">CQ01NAM</th>
+<th align="left">CQ04NAM</th>
+<th align="right">CQ04CD</th>
+<th align="left">CQ06NAM</th>
+<th align="right">CQ06CD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01</td>
+<td align="left">2020-06-02 23:59:59</td>
+<td align="left">ALANINE AMINOTRANSFERASE ABNORMAL</td>
+<td align="right">3</td>
+<td align="left">Alanine aminotransferase abnormal</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">02</td>
+<td align="left">2020-06-05 23:59:59</td>
+<td align="left">BASEDOW’S DISEASE</td>
+<td align="right">5</td>
+<td align="left">Basedow’s disease</td>
+<td align="left">NA</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">Immune-Mediated Colitis</td>
+<td align="right">10009888</td>
+</tr>
+<tr class="odd">
+<td align="left">03</td>
+<td align="left">2020-06-07 23:59:59</td>
+<td align="left">SOME TERM</td>
+<td align="right">2</td>
+<td align="left">Some query</td>
+<td align="left">Some term</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">05</td>
+<td align="left">2020-06-09 23:59:59</td>
+<td align="left">ALVEOLAR PROTEINOSIS</td>
+<td align="right">7</td>
+<td align="left">Alveolar proteinosis</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">Immune-Mediated Pneumonitis</td>
+<td align="right">20000042</td>
+<td align="left">NARROW</td>
+<td align="right">2</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<p>Similarly to SMQ, the <code>derive_vars_query()</code> function can be used to derive Standardized Drug Groupings (SDG).</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>sdg &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tribble</span>(</span>
+<span id="cb16-2"><a href="#cb16-2"></a>  <span class="op">~</span>VAR_PREFIX, <span class="op">~</span>QUERY_NAME,       <span class="op">~</span>SDG_ID, <span class="op">~</span>QUERY_SCOPE, <span class="op">~</span>QUERY_SCOPE_NUM, <span class="op">~</span>TERM_LEVEL, <span class="op">~</span>TERM_NAME,         <span class="op">~</span>TERM_ID,</span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,       <span class="dv">11</span>,      <span class="st">&quot;BROAD&quot;</span>,      <span class="dv">1</span>,                <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 1&quot;</span>,       <span class="ot">NA</span>,</span>
+<span id="cb16-4"><a href="#cb16-4"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,       <span class="dv">11</span>,      <span class="st">&quot;BROAD&quot;</span>,      <span class="dv">2</span>,                <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 2&quot;</span>,       <span class="ot">NA</span>,</span>
+<span id="cb16-5"><a href="#cb16-5"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>, <span class="dv">12</span>,      <span class="st">&quot;BROAD&quot;</span>,      <span class="dv">1</span>,                <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 1&quot;</span>, <span class="ot">NA</span>,</span>
+<span id="cb16-6"><a href="#cb16-6"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>, <span class="dv">12</span>,      <span class="st">&quot;BROAD&quot;</span>,      <span class="dv">2</span>,                <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 2&quot;</span>, <span class="ot">NA</span>,</span>
+<span id="cb16-7"><a href="#cb16-7"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>, <span class="dv">12</span>,      <span class="st">&quot;BROAD&quot;</span>,      <span class="dv">2</span>,                <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 3&quot;</span>, <span class="ot">NA</span>,</span>
+<span id="cb16-8"><a href="#cb16-8"></a>)          </span>
+<span id="cb16-9"><a href="#cb16-9"></a>adcm &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">tribble</span>(</span>
+<span id="cb16-10"><a href="#cb16-10"></a>  <span class="op">~</span>USUBJID, <span class="op">~</span>ASTDTM,               <span class="op">~</span>CMDECOD,</span>
+<span id="cb16-11"><a href="#cb16-11"></a>  <span class="st">&quot;01&quot;</span>,     <span class="st">&quot;2020-06-02 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 1&quot;</span>,</span>
+<span id="cb16-12"><a href="#cb16-12"></a>  <span class="st">&quot;02&quot;</span>,     <span class="st">&quot;2020-06-05 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 1&quot;</span>,</span>
+<span id="cb16-13"><a href="#cb16-13"></a>  <span class="st">&quot;03&quot;</span>,     <span class="st">&quot;2020-06-07 23:59:59&quot;</span>, <span class="st">&quot;Costicosteroid 2&quot;</span>,</span>
+<span id="cb16-14"><a href="#cb16-14"></a>  <span class="st">&quot;05&quot;</span>,     <span class="st">&quot;2020-06-09 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 2&quot;</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a>)</span>
+<span id="cb16-16"><a href="#cb16-16"></a>adcm_query &lt;-<span class="st"> </span><span class="kw">derive_vars_query</span>(adcm, sdg)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">ASTDTM</th>
+<th align="left">CMDECOD</th>
+<th align="left">SDG01NAM</th>
+<th align="left">SDG01SC</th>
+<th align="right">SDG01SCN</th>
+<th align="left">SDG02NAM</th>
+<th align="left">SDG02SC</th>
+<th align="right">SDG02SCN</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01</td>
+<td align="left">2020-06-02 23:59:59</td>
+<td align="left">Diuretic 1</td>
+<td align="left">Diuretics</td>
+<td align="left">BROAD</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">02</td>
+<td align="left">2020-06-05 23:59:59</td>
+<td align="left">Diuretic 1</td>
+<td align="left">Diuretics</td>
+<td align="left">BROAD</td>
+<td align="right">1</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">03</td>
+<td align="left">2020-06-07 23:59:59</td>
+<td align="left">Costicosteroid 2</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">Costicosteroids</td>
+<td align="left">BROAD</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">05</td>
+<td align="left">2020-06-09 23:59:59</td>
+<td align="left">Diuretic 2</td>
+<td align="left">Diuretics</td>
+<td align="left">BROAD</td>
+<td align="right">2</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="adsl_vars" class="section level2">
+<h2>Add the <code>ADSL</code> variables</h2>
+<p>If needed, the other <code>ADSL</code> variables can now be added:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>adae &lt;-<span class="st"> </span>adae <span class="op">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="st">  </span><span class="kw">left_join</span>(<span class="kw">select</span>(adsl, <span class="op">!!!</span>admiral<span class="op">:::</span><span class="kw">negate_vars</span>(adsl_vars)),</span>
+<span id="cb17-3"><a href="#cb17-3"></a>            <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;STUDYID&quot;</span>, <span class="st">&quot;USUBJID&quot;</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a>  )</span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="co">#&gt; Warning: Column `STUDYID` has different attributes on LHS and RHS of join</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a><span class="co">#&gt; Warning: Column `USUBJID` has different attributes on LHS and RHS of join</span></span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">AEDECOD</th>
+<th align="left">ASTDTM</th>
+<th align="left">DTHDT</th>
+<th align="left">RFSTDTC</th>
+<th align="left">RFENDTC</th>
+<th align="right">AGE</th>
+<th align="left">AGEU</th>
+<th align="left">SEX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="left">2014-01-03</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">2014-01-03</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DIARRHOEA</td>
+<td align="left">2014-01-09</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">ERYTHEMA</td>
+<td align="left">2012-08-07</td>
+<td align="left">NA</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-02</td>
+<td align="right">64</td>
+<td align="left">YEARS</td>
+<td align="left">M</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">ERYTHEMA</td>
+<td align="left">2012-08-07</td>
+<td align="left">NA</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-02</td>
+<td align="right">64</td>
+<td align="left">YEARS</td>
+<td align="left">M</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1023</td>
+<td align="left">ERYTHEMA</td>
+<td align="left">2012-08-07</td>
+<td align="left">NA</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-02</td>
+<td align="right">64</td>
+<td align="left">YEARS</td>
+<td align="left">M</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">ATRIOVENTRICULAR BLOCK SECOND DEGREE</td>
+<td align="left">2012-08-26</td>
+<td align="left">NA</td>
+<td align="left">2012-08-05</td>
+<td align="left">2012-09-02</td>
+<td align="right">64</td>
+<td align="left">YEARS</td>
+<td align="left">M</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="left">2013-07-21</td>
+<td align="left">NA</td>
+<td align="left">2013-07-19</td>
+<td align="left">2014-01-14</td>
+<td align="right">71</td>
+<td align="left">YEARS</td>
+<td align="left">M</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">2013-08-08</td>
+<td align="left">NA</td>
+<td align="left">2013-07-19</td>
+<td align="left">2014-01-14</td>
+<td align="right">71</td>
+<td align="left">YEARS</td>
+<td align="left">M</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1034</td>
+<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">2014-08-27</td>
+<td align="left">NA</td>
+<td align="left">2014-07-01</td>
+<td align="left">2014-12-30</td>
+<td align="right">77</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="example-scripts" class="section level1">
+<h1>Example Scripts</h1>
+<table>
+<thead>
+<tr class="header">
+<th>ADaM</th>
+<th>Sample Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ADAE</td>
+<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adae.R" target="_blank">ad_adae.R</a></td>
+</tr>
+<tr class="even">
+<td>ADCM</td>
+<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adcm.R" target="_blank">ad_adcm.R</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

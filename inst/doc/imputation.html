@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Date and Time Imputation</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Date and Time Imputation</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Date and time is collected in SDTM as character values using the extended <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> format. For example, <code>&quot;2019-10-9T13:42:00&quot;</code>. It allows that some parts of the date or time are missing, e.g., <code>&quot;2019-10&quot;</code> if the day and the time is unknown.</p>
+<p>The ADaM timing variables like <code>ADTM</code> (Analysis Datetime) or <code>ADY</code> (Analysis Relative Day) are numeric variables. They can be derived only if the date or datetime is complete. Therefore <code>{admiral}</code> provides imputation functions which fill in missing date or time parts according to certain imputation rules.</p>
+<div id="required-packages" class="section level2">
+<h2>Required Packages</h2>
+<p>The examples of this vignette require the following packages.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(lubridate)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(tibble)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
+</div>
+</div>
+<div id="imputation-rules" class="section level1">
+<h1>Imputation Rules</h1>
+<p>The simplest imputation rule is to set the missing parts to a fixed value. For example</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">impute_dtc</span>(</span>
+<span id="cb2-2"><a href="#cb2-2"></a>  <span class="st">&quot;2019-10&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;01-01&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4"></a>  <span class="dt">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt; [1] &quot;2019-10-01T00:00:00&quot;</span></span></code></pre></div>
+<p>Sometimes this does not work as it would result in invalid dates, e.g.,</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">impute_dtc</span>(</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;02-31&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  <span class="dt">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; [1] &quot;2019-02-31T00:00:00&quot;</span></span></code></pre></div>
+<p>Therefore the keywords <code>&quot;first&quot;</code> or <code>&quot;last&quot;</code> can be specified to request that missing parts are replaced by the first or last possible value:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">impute_dtc</span>(</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="dt">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt; [1] &quot;2019-02-28T00:00:00&quot;</span></span></code></pre></div>
+<div id="minimummaximum-dates" class="section level2">
+<h2>Minimum/Maximum Dates</h2>
+<p>In some scenarios the imputed date should not be before or after certain dates. For example an imputed date after data cut off date or death date is not desirable. The <code>{admiral}</code> imputation functions provide the <code>min_dates</code> and <code>max_dates</code> parameter to specify those dates. For example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">impute_dtc</span>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="dt">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="dt">max_dates =</span> <span class="kw">list</span>(<span class="kw">ymd</span>(<span class="st">&quot;2019-01-14&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2019-02-25&quot;</span>))</span>
+<span id="cb5-6"><a href="#cb5-6"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; [1] &quot;2019-02-25T00:00:00&quot;</span></span></code></pre></div>
+<p>It is ensured that the imputed date is not after any of the specified dates. Only dates which are in the range of possible dates of the dtc value are considered. The possible dates are defined by the missing parts of the dtc date, i.e., for “2019-02” the possible dates range from “2019-02-01” to “2019-02-28”. Thus “2019-01-14” is ignored. This ensures that the non-missing parts of the dtc date are not changed.</p>
+</div>
+</div>
+<div id="imputation-flags" class="section level1">
+<h1>Imputation Flags</h1>
+<p>ADaM requires that date or datetime variables for which imputation was used are accompanied by date and/or time imputation flag variables (<code>*DTF</code> and <code>*TMF</code>, e.g., <code>ADTF</code> and <code>ATMF</code> for <code>ADTM</code>). These variables indicate the highest level that was imputed, e.g., if minutes and seconds were imputed, the imputation flag is set to <code>&quot;M&quot;</code>. The <code>{admiral}</code> functions which derive imputed variables are also adding the corresponding imputation flag variables.</p>
+</div>
+<div id="imputation-functions" class="section level1">
+<h1>Imputation Functions</h1>
+<p><code>{admiral}</code> provides the following functions for imputation:</p>
+<ul>
+<li><code>derive_vars_dt()</code>: Adds a date variable and a date imputation flag variable (optional) based on a –DTC variable and imputation rules.</li>
+<li><code>derive_vars_dtm()</code>: Adds a datetime variable, a date imputation flag variable, and a time imputation flag variable (both optional) based on a –DTC variable and imputation rules.</li>
+<li><code>impute_dtc()</code>: Returns a complete ISO 8601 date or <code>NA</code> based on a partial ISO 8601 date and imputation rules.</li>
+<li><code>convert_dtc_to_dt()</code>: Returns a date if the input ISO 8601 date is complete. Otherwise, <code>NA</code> is returned.</li>
+<li><code>convert_dtc_to_dtm()</code>: Returns a datetime if the input ISO 8601 date and time is complete. Otherwise, <code>NA</code> is returned.</li>
+<li><code>compute_dtf()</code>: Returns the date imputation flag.</li>
+<li><code>compute_tmf()</code>: Returns the time imputation flag.</li>
+</ul>
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<div id="create-an-imputed-datetime-and-date-variable-and-imputation-flag-variables" class="section level2">
+<h2>Create an Imputed Datetime and Date Variable and Imputation Flag Variables</h2>
+<p>The <code>derive_vars_dtm()</code> function derives an imputed datetime variable and the corresponding date and time imputation flags. The imputed date variable can be derived by a simple <code>mutate()</code> call. It is not necessary and advisable to perform the imputation for the date variable if it was already done for the datetime variable. CDISC considers the datetime and the date variable as two representation of the same date. Thus the imputation must be the same and the imputation flags are valid for both the datetime and the date variable.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>ae &lt;-<span class="st"> </span><span class="kw">tribble</span>(<span class="op">~</span><span class="st"> </span>AESTDTC,</span>
+<span id="cb6-2"><a href="#cb6-2"></a>              <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3"></a>              <span class="st">&quot;2019-04-12&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4"></a>              <span class="st">&quot;2010-09&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5"></a>              <span class="ot">NA_character_</span>) <span class="op">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="st">  </span><span class="kw">derive_vars_dtm</span>(</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    <span class="dt">dtc =</span> AESTDTC,</span>
+<span id="cb6-8"><a href="#cb6-8"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="dt">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb6-10"><a href="#cb6-10"></a>    <span class="dt">time_imputation =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ASTDT =</span> <span class="kw">date</span>(ASTDTM))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">AESTDTC</th>
+<th align="left">ASTDTM</th>
+<th align="left">ASTDTF</th>
+<th align="left">ASTTMF</th>
+<th align="left">ASTDT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2019-08-09T12:34:56</td>
+<td align="left">2019-08-09 12:34:56</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">2019-08-09</td>
+</tr>
+<tr class="even">
+<td align="left">2019-04-12</td>
+<td align="left">2019-04-12 00:00:00</td>
+<td align="left">NA</td>
+<td align="left">H</td>
+<td align="left">2019-04-12</td>
+</tr>
+<tr class="odd">
+<td align="left">2010-09</td>
+<td align="left">2010-09-01 00:00:00</td>
+<td align="left">D</td>
+<td align="left">H</td>
+<td align="left">2010-09-01</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="create-an-imputed-date-variable-and-imputation-flag-variable" class="section level2">
+<h2>Create an Imputed Date Variable and Imputation Flag Variable</h2>
+<p>If an imputed date variable without a corresponding datetime variable is required, it can be derived by the <code>derive_vars_dt()</code> function.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>ae &lt;-<span class="st"> </span><span class="kw">tribble</span>(<span class="op">~</span><span class="st"> </span>AESTDTC,</span>
+<span id="cb7-2"><a href="#cb7-2"></a>              <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3"></a>              <span class="st">&quot;2019-04-12&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>              <span class="st">&quot;2010-09&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>              <span class="ot">NA_character_</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="st">  </span><span class="kw">derive_vars_dt</span>(<span class="dt">dtc =</span> AESTDTC,</span>
+<span id="cb7-7"><a href="#cb7-7"></a>                 <span class="dt">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb7-8"><a href="#cb7-8"></a>                 <span class="dt">date_imputation =</span> <span class="st">&quot;first&quot;</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">AESTDTC</th>
+<th align="left">ASTDT</th>
+<th align="left">ASTDTF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2019-08-09T12:34:56</td>
+<td align="left">2019-08-09</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">2019-04-12</td>
+<td align="left">2019-04-12</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">2010-09</td>
+<td align="left">2010-09-01</td>
+<td align="left">D</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="impute-time-without-imputing-date" class="section level2">
+<h2>Impute Time without Imputing Date</h2>
+<p>If the time should be imputed but not the date, the <code>date_imputation</code> parameter should be set to <code>NULL</code>. This results in <code>NA</code> if the date is partial. As no date is imputed the date imputation flag is not created.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>ae &lt;-<span class="st"> </span><span class="kw">tribble</span>(<span class="op">~</span><span class="st"> </span>AESTDTC,</span>
+<span id="cb8-2"><a href="#cb8-2"></a>              <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>              <span class="st">&quot;2019-04-12&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>              <span class="st">&quot;2010-09&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>              <span class="ot">NA_character_</span>) <span class="op">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="st">  </span><span class="kw">derive_vars_dtm</span>(</span>
+<span id="cb8-7"><a href="#cb8-7"></a>    <span class="dt">dtc =</span> AESTDTC,</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb8-9"><a href="#cb8-9"></a>    <span class="dt">date_imputation =</span> <span class="ot">NULL</span>,</span>
+<span id="cb8-10"><a href="#cb8-10"></a>    <span class="dt">time_imputation =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">AESTDTC</th>
+<th align="left">ASTDTM</th>
+<th align="left">ASTTMF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2019-08-09T12:34:56</td>
+<td align="left">2019-08-09 12:34:56</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">2019-04-12</td>
+<td align="left">2019-04-12 00:00:00</td>
+<td align="left">H</td>
+</tr>
+<tr class="odd">
+<td align="left">2010-09</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="avoid-imputed-dates-before-a-particular-date" class="section level2">
+<h2>Avoid Imputed Dates Before a Particular Date</h2>
+<p>Usually the adverse event start date is imputed as the earliest date of all possible dates when filling the missing parts. The result may be a date before treatment start date. This is not desirable because the adverse event would not be considered as treatment emergent and excluded from the adverse event summaries. This can be avoided by specifying the treatment start date variable (<code>TRTSDTM</code>) for the <code>min_dates</code> parameter.</p>
+<p>Please note that <code>TRTSDTM</code> is used as imputed date only if the non missing date and time parts of <code>AESTDTC</code> coincide with those of <code>TRTSDTM</code>. Therefore <code>2019-10</code> is not imputed as <code>2019-11-11 12:34:56</code>. This ensures that collected information is not changed by the imputation.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>ae &lt;-<span class="st"> </span><span class="kw">tribble</span>(</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="op">~</span>AESTDTC,              <span class="op">~</span>TRTSDTM,</span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="kw">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="st">&quot;2019-10&quot;</span>,             <span class="kw">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="st">&quot;2019-11&quot;</span>,             <span class="kw">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
+<span id="cb9-6"><a href="#cb9-6"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="kw">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>)</span>
+<span id="cb9-7"><a href="#cb9-7"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="st">  </span><span class="kw">derive_vars_dtm</span>(</span>
+<span id="cb9-9"><a href="#cb9-9"></a>    <span class="dt">dtc =</span> AESTDTC,</span>
+<span id="cb9-10"><a href="#cb9-10"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb9-11"><a href="#cb9-11"></a>    <span class="dt">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb9-12"><a href="#cb9-12"></a>    <span class="dt">time_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb9-13"><a href="#cb9-13"></a>    <span class="dt">min_dates =</span> <span class="kw">vars</span>(TRTSDTM)</span>
+<span id="cb9-14"><a href="#cb9-14"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">AESTDTC</th>
+<th align="left">TRTSDTM</th>
+<th align="left">ASTDTM</th>
+<th align="left">ASTDTF</th>
+<th align="left">ASTTMF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2019-08-09T12:34:56</td>
+<td align="left">2019-11-11 12:34:56</td>
+<td align="left">2019-08-09 12:34:56</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">2019-10</td>
+<td align="left">2019-11-11 12:34:56</td>
+<td align="left">2019-10-01 00:00:00</td>
+<td align="left">D</td>
+<td align="left">H</td>
+</tr>
+<tr class="odd">
+<td align="left">2019-11</td>
+<td align="left">2019-11-11 12:34:56</td>
+<td align="left">2019-11-11 12:34:56</td>
+<td align="left">D</td>
+<td align="left">H</td>
+</tr>
+<tr class="even">
+<td align="left">2019-12-04</td>
+<td align="left">2019-11-11 12:34:56</td>
+<td align="left">2019-12-04 00:00:00</td>
+<td align="left">NA</td>
+<td align="left">H</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="avoid-imputed-dates-after-a-particular-date" class="section level2">
+<h2>Avoid Imputed Dates After a Particular Date</h2>
+<p>If a date is imputed as the latest date of all possible dates when filling the missing parts, it should not result in dates after data cut off or death. This can be achieved by specifying the dates for the <code>max_dates</code> parameter.</p>
+<p>Please note that non missing date parts are not changed. Thus <code>2019-12-04</code> is imputed as <code>2019-12-04 23:59:59</code> although it is after the data cut off date. It may make sense to replace it by the data cut off date but this is not part of the imputation. It should be done in a separate data cleaning or data cut off step.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>ae &lt;-<span class="st"> </span><span class="kw">tribble</span>(</span>
+<span id="cb10-2"><a href="#cb10-2"></a>  <span class="op">~</span>AEENDTC,              <span class="op">~</span>DTHDT,            <span class="op">~</span>DCUTDT,</span>
+<span id="cb10-3"><a href="#cb10-3"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="kw">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb10-4"><a href="#cb10-4"></a>  <span class="st">&quot;2019-11&quot;</span>,             <span class="kw">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="kw">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb10-5"><a href="#cb10-5"></a>  <span class="st">&quot;2019-12&quot;</span>,             <span class="ot">NA</span>,                <span class="kw">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb10-6"><a href="#cb10-6"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="ot">NA</span>,                <span class="kw">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>)</span>
+<span id="cb10-7"><a href="#cb10-7"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="st">  </span><span class="kw">derive_vars_dtm</span>(</span>
+<span id="cb10-9"><a href="#cb10-9"></a>    <span class="dt">dtc =</span> AEENDTC,</span>
+<span id="cb10-10"><a href="#cb10-10"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
+<span id="cb10-11"><a href="#cb10-11"></a>    <span class="dt">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb10-12"><a href="#cb10-12"></a>    <span class="dt">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb10-13"><a href="#cb10-13"></a>    <span class="dt">max_dates =</span> <span class="kw">vars</span>(DTHDT, DCUTDT)</span>
+<span id="cb10-14"><a href="#cb10-14"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">AEENDTC</th>
+<th align="left">DTHDT</th>
+<th align="left">DCUTDT</th>
+<th align="left">AENDTM</th>
+<th align="left">AENDTF</th>
+<th align="left">AENTMF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2019-08-09T12:34:56</td>
+<td align="left">2019-11-11</td>
+<td align="left">2019-12-02</td>
+<td align="left">2019-08-09 12:34:56</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">2019-11</td>
+<td align="left">2019-11-11</td>
+<td align="left">2019-12-02</td>
+<td align="left">2019-11-30 23:59:59</td>
+<td align="left">D</td>
+<td align="left">H</td>
+</tr>
+<tr class="odd">
+<td align="left">2019-12</td>
+<td align="left">NA</td>
+<td align="left">2019-12-02</td>
+<td align="left">2019-12-31 23:59:59</td>
+<td align="left">D</td>
+<td align="left">H</td>
+</tr>
+<tr class="even">
+<td align="left">2019-12-04</td>
+<td align="left">NA</td>
+<td align="left">2019-12-02</td>
+<td align="left">2019-12-04 23:59:59</td>
+<td align="left">NA</td>
+<td align="left">H</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="imputation-without-creating-a-new-variable" class="section level2">
+<h2>Imputation Without Creating a New Variable</h2>
+<p>If imputation is required without creating a new variable the <code>convert_dtc_to_dt()</code> function can be called to obtain a vector of imputed dates. It can be used for example in conditions:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>mh &lt;-<span class="st"> </span><span class="kw">tribble</span>(</span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="op">~</span>MHSTDTC,     <span class="op">~</span>TRTSDT,</span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="st">&quot;2019-04&quot;</span>,    <span class="kw">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="st">&quot;2019-04-01&quot;</span>, <span class="kw">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="st">&quot;2019-05&quot;</span>,    <span class="kw">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
+<span id="cb11-6"><a href="#cb11-6"></a>  <span class="st">&quot;2019-06-21&quot;</span>, <span class="kw">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>)</span>
+<span id="cb11-7"><a href="#cb11-7"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="kw">filter</span>(</span>
+<span id="cb11-9"><a href="#cb11-9"></a>  <span class="kw">convert_dtc_to_dt</span>(MHSTDTC, <span class="dt">date_imputation =</span> <span class="st">&quot;first&quot;</span>) <span class="op">&lt;</span><span class="st"> </span>TRTSDT</span>
+<span id="cb11-10"><a href="#cb11-10"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">MHSTDTC</th>
+<th align="left">TRTSDT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2019-04</td>
+<td align="left">2019-04-15</td>
+</tr>
+<tr class="even">
+<td align="left">2019-04-01</td>
+<td align="left">2019-04-15</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="using-more-than-one-imputation-rule-for-a-variable" class="section level2">
+<h2>Using More Than One Imputation Rule for a Variable</h2>
+<p>Using different imputation rules depending on the observation can be done by creating the variables with <code>mutate()</code>. First the imputed datetime variable is created calling <code>if_else()</code> and <code>convert_dtc_to_dtm()</code>. Then the time imputation flag is created calling <code>compute_tmf()</code>. Here no date imputation flag is created because no date imputation is performed (<code>date_imputation = NULL</code>).</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>vs &lt;-<span class="st"> </span><span class="kw">tribble</span>(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="op">~</span>VSDTC,                <span class="op">~</span>VSTPT,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="ot">NA</span>,</span>
+<span id="cb12-4"><a href="#cb12-4"></a>  <span class="st">&quot;2019-10-12&quot;</span>,          <span class="st">&quot;PRE-DOSE&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5"></a>  <span class="st">&quot;2019-11-10&quot;</span>,          <span class="ot">NA</span>,</span>
+<span id="cb12-6"><a href="#cb12-6"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="ot">NA</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="kw">mutate</span>(</span>
+<span id="cb12-9"><a href="#cb12-9"></a>  <span class="dt">ADTM =</span> <span class="kw">if_else</span>(</span>
+<span id="cb12-10"><a href="#cb12-10"></a>    VSTPT <span class="op">==</span><span class="st"> &quot;PRE-DOSE&quot;</span>,</span>
+<span id="cb12-11"><a href="#cb12-11"></a>    <span class="kw">convert_dtc_to_dtm</span>(</span>
+<span id="cb12-12"><a href="#cb12-12"></a>      <span class="dt">dtc =</span> VSDTC,</span>
+<span id="cb12-13"><a href="#cb12-13"></a>      <span class="dt">date_imputation =</span> <span class="ot">NULL</span>,</span>
+<span id="cb12-14"><a href="#cb12-14"></a>      <span class="dt">time_imputation =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a>    ),</span>
+<span id="cb12-16"><a href="#cb12-16"></a>    <span class="kw">convert_dtc_to_dtm</span>(</span>
+<span id="cb12-17"><a href="#cb12-17"></a>      <span class="dt">dtc =</span> VSDTC,</span>
+<span id="cb12-18"><a href="#cb12-18"></a>      <span class="dt">date_imputation =</span> <span class="ot">NULL</span>,</span>
+<span id="cb12-19"><a href="#cb12-19"></a>      <span class="dt">time_imputation =</span> <span class="st">&quot;last&quot;</span></span>
+<span id="cb12-20"><a href="#cb12-20"></a>    )</span>
+<span id="cb12-21"><a href="#cb12-21"></a>  ),</span>
+<span id="cb12-22"><a href="#cb12-22"></a>  <span class="dt">ADTMF =</span> <span class="kw">compute_tmf</span>(</span>
+<span id="cb12-23"><a href="#cb12-23"></a>    <span class="dt">dtc =</span> VSDTC,</span>
+<span id="cb12-24"><a href="#cb12-24"></a>    <span class="dt">dtm =</span> ADTM</span>
+<span id="cb12-25"><a href="#cb12-25"></a>  )</span>
+<span id="cb12-26"><a href="#cb12-26"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">VSDTC</th>
+<th align="left">VSTPT</th>
+<th align="left">ADTM</th>
+<th align="left">ADTMF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2019-08-09T12:34:56</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">2019-10-12</td>
+<td align="left">PRE-DOSE</td>
+<td align="left">2019-10-12</td>
+<td align="left">H</td>
+</tr>
+<tr class="odd">
+<td align="left">2019-11-10</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">2019-12-04</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
