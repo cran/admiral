@@ -32,6 +32,37 @@ impute_dtc(
 )
 
 ## -----------------------------------------------------------------------------
+dates <- c(
+  "2019-02",
+  "2019",
+  "2019---01"
+)
+impute_dtc(
+  dates,
+  date_imputation = "mid",
+  time_imputation = "00:00:00",
+  preserve = FALSE
+)
+impute_dtc(
+  dates,
+  date_imputation = "mid",
+  time_imputation = "00:00:00",
+  preserve = TRUE
+)
+
+## -----------------------------------------------------------------------------
+dates <- c(
+  "2019-02",
+  "2019",
+  "2019---01"
+)
+impute_dtc(
+  dates,
+  date_imputation = "06-15",
+  time_imputation = "00:00:00"
+)
+
+## -----------------------------------------------------------------------------
 impute_dtc(
   "2019-02",
   date_imputation = "last",
@@ -40,41 +71,49 @@ impute_dtc(
 )
 
 ## -----------------------------------------------------------------------------
-ae <- tribble(~ AESTDTC,
-              "2019-08-09T12:34:56",
-              "2019-04-12",
-              "2010-09",
-              NA_character_) %>%
+ae <- tribble(
+  ~AESTDTC,
+  "2019-08-09T12:34:56",
+  "2019-04-12",
+  "2010-09",
+  NA_character_
+) %>%
   derive_vars_dtm(
     dtc = AESTDTC,
     new_vars_prefix = "AST",
     date_imputation = "first",
     time_imputation = "first"
   ) %>%
-  mutate(ASTDT = date(ASTDTM))
+  derive_vars_dtm_to_dt(vars(ASTDTM))
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(ae)
 
 ## -----------------------------------------------------------------------------
-ae <- tribble(~ AESTDTC,
-              "2019-08-09T12:34:56",
-              "2019-04-12",
-              "2010-09",
-              NA_character_) %>%
-  derive_vars_dt(dtc = AESTDTC,
-                 new_vars_prefix = "AST",
-                 date_imputation = "first")
+ae <- tribble(
+  ~AESTDTC,
+  "2019-08-09T12:34:56",
+  "2019-04-12",
+  "2010-09",
+  NA_character_
+) %>%
+  derive_vars_dt(
+    dtc = AESTDTC,
+    new_vars_prefix = "AST",
+    date_imputation = "first"
+  )
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(ae)
 
 ## -----------------------------------------------------------------------------
-ae <- tribble(~ AESTDTC,
-              "2019-08-09T12:34:56",
-              "2019-04-12",
-              "2010-09",
-              NA_character_) %>%
+ae <- tribble(
+  ~AESTDTC,
+  "2019-08-09T12:34:56",
+  "2019-04-12",
+  "2010-09",
+  NA_character_
+) %>%
   derive_vars_dtm(
     dtc = AESTDTC,
     new_vars_prefix = "AST",
@@ -130,10 +169,10 @@ mh <- tribble(
   "2019-04-01", ymd("2019-04-15"),
   "2019-05",    ymd("2019-04-15"),
   "2019-06-21", ymd("2019-04-15")
-) %>% 
-filter(
-  convert_dtc_to_dt(MHSTDTC, date_imputation = "first") < TRTSDT
-)
+) %>%
+  filter(
+    convert_dtc_to_dt(MHSTDTC, date_imputation = "first") < TRTSDT
+  )
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(mh)
@@ -145,26 +184,23 @@ vs <- tribble(
   "2019-10-12",          "PRE-DOSE",
   "2019-11-10",          NA,
   "2019-12-04",          NA
-) %>% 
-mutate(
-  ADTM = if_else(
-    VSTPT == "PRE-DOSE",
-    convert_dtc_to_dtm(
+) %>%
+  slice_derivation(
+    derivation = derive_vars_dtm,
+    args = params(
       dtc = VSDTC,
-      date_imputation = NULL,
-      time_imputation = "first"
+      new_vars_prefix = "A",
+      date_imputation = NULL
     ),
-    convert_dtc_to_dtm(
-      dtc = VSDTC,
-      date_imputation = NULL,
-      time_imputation = "last"
+    derivation_slice(
+      filter = VSTPT == "PRE-DOSE",
+      args = params(time_imputation = "first")
+    ),
+    derivation_slice(
+      filter = TRUE,
+      args = params(time_imputation = "last")
     )
-  ),
-  ADTMF = compute_tmf(
-    dtc = VSDTC,
-    dtm = ADTM
   )
-)
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(vs)

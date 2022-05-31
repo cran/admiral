@@ -14,26 +14,32 @@
 
 <title>Creating a BDS Time-to-Event ADaM</title>
 
-<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
-// be compatible with the behavior of Pandoc < 2.8).
-document.addEventListener('DOMContentLoaded', function(e) {
-  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
-  var i, h, a;
-  for (i = 0; i < hs.length; i++) {
-    h = hs[i];
-    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
-    a = h.attributes;
-    while (a.length > 0) h.removeAttribute(a[0].name);
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
   }
-});
-</script>
-
-
-<style type="text/css">code{white-space: pre;}</style>
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -119,187 +125,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
-}
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
-}
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
-}
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
-}
-#TOC ul ul {
-margin-left: -2em;
-}
-#TOC li {
-line-height: 16px;
-}
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
-}
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
-}
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
-}
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
-}
-pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
-}
-pre:not([class]) {
-background-color: #f7f7f7;
-}
-code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
-}
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
-}
-h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
-}
-a {
-color: #0033dd;
-text-decoration: none;
-}
-a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
 
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; } 
-code > span.er { color: #a61717; background-color: #e3d2d2; } 
-</style>
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
 
 
 
@@ -323,9 +150,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="required-packages" class="section level2">
 <h2>Required Packages</h2>
 <p>The examples of this vignette require the following packages.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(admiral.test)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span></code></pre></div>
 </div>
 </div>
 <div id="programming-workflow" class="section level1">
@@ -341,8 +168,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Read in Data</h2>
 <p>To start, all datasets needed for the creation of the time-to-event dataset should be read into the environment. This will be a company specific process.</p>
 <p>For example purpose, the ADaM datasets—which are included in <code>{admiral}</code>—are used.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">data</span>(<span class="st">&quot;adsl&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">data</span>(<span class="st">&quot;adae&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_ae&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adae&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> admiral_adae</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> admiral_ae</span></code></pre></div>
 </div>
 <div id="parameters" class="section level2">
 <h2>Derive Parameters (<code>CNSR</code>, <code>ADT</code>, <code>STARTDT</code>)</h2>
@@ -361,6 +193,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h3>Pre-Defined Time-to-Event Source Objects</h3>
 <p>The table below shows all pre-defined <code>tte_source</code> objects which should cover the most common use cases.</p>
 <table>
+<colgroup>
+<col width="8%" />
+<col width="6%" />
+<col width="23%" />
+<col width="4%" />
+<col width="3%" />
+<col width="53%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">object</th>
@@ -373,44 +213,28 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">ae_ser_event</td>
+<td align="left">ae_gr35_event</td>
 <td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; AESER == “Y”</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR %in% c(“3”, “4”, “5”)</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
-<td align="left">EVNTDESC: “SERIOUS ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+<td align="left">EVNTDESC: “GRADE 3-5 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">
-<td align="left">ae_gr2_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “2”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 2 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="odd">
-<td align="left">ae_sev_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; AESEV == “SEVERE”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “SEVERE ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="even">
-<td align="left">ae_gr4_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “4”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 4 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="odd">
 <td align="left">ae_gr3_event</td>
 <td align="left">adae</td>
 <td align="left">TRTEMFL == “Y” &amp; ATOXGR == “3”</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
 <td align="left">EVNTDESC: “GRADE 3 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="odd">
+<td align="left">ae_gr5_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “5”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 5 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">
 <td align="left">lastalive_censor</td>
@@ -429,22 +253,6 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <td align="left">EVNTDESC: “ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">
-<td align="left">death_event</td>
-<td align="left">adsl</td>
-<td align="left">DTHFL == “Y”</td>
-<td align="left">DTHDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “DEATH”<br>SRCDOM: “ADSL”<br>SRCVAR: “DTHDT”</td>
-</tr>
-<tr class="odd">
-<td align="left">ae_gr35_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR %in% c(“3”, “4”, “5”)</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 3-5 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="even">
 <td align="left">ae_wd_event</td>
 <td align="left">adae</td>
 <td align="left">TRTEMFL == “Y” &amp; AEACN == “DRUG WITHDRAWN”</td>
@@ -453,6 +261,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <td align="left">EVNTDESC: “ADVERSE EVENT LEADING TO DRUG WITHDRAWAL”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="odd">
+<td align="left">ae_gr4_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “4”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 4 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="even">
 <td align="left">ae_gr1_event</td>
 <td align="left">adae</td>
 <td align="left">TRTEMFL == “Y” &amp; ATOXGR == “1”</td>
@@ -460,25 +276,49 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <td align="right">0</td>
 <td align="left">EVNTDESC: “GRADE 1 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
-<tr class="even">
-<td align="left">ae_gr5_event</td>
+<tr class="odd">
+<td align="left">ae_sev_event</td>
 <td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “5”</td>
+<td align="left">TRTEMFL == “Y” &amp; AESEV == “SEVERE”</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 5 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+<td align="left">EVNTDESC: “SEVERE ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="even">
+<td align="left">ae_ser_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; AESER == “Y”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “SERIOUS ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="odd">
+<td align="left">ae_gr2_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “2”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 2 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="even">
+<td align="left">death_event</td>
+<td align="left">adsl</td>
+<td align="left">DTHFL == “Y”</td>
+<td align="left">DTHDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “DEATH”<br>SRCDOM: “ADSL”<br>SRCVAR: “DTHDT”</td>
 </tr>
 </tbody>
 </table>
 <p>These pre-defined objects can be passed directly to <code>derive_param_tte()</code> to create a new time-to-event parameter.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>adtte &lt;-<span class="st"> </span><span class="kw">derive_param_tte</span>(</span>
-<span id="cb3-2"><a href="#cb3-2"></a>  <span class="dt">dataset_adsl =</span> adsl,</span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="dt">start_date =</span> TRTSDT,</span>
-<span id="cb3-4"><a href="#cb3-4"></a>  <span class="dt">event_conditions =</span> <span class="kw">list</span>(ae_ser_event),</span>
-<span id="cb3-5"><a href="#cb3-5"></a>  <span class="dt">censor_conditions =</span> <span class="kw">list</span>(lastalive_censor),</span>
-<span id="cb3-6"><a href="#cb3-6"></a>  <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">adsl =</span> adsl, <span class="dt">adae =</span> adae),</span>
-<span id="cb3-7"><a href="#cb3-7"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(<span class="dt">PARAMCD =</span> <span class="st">&quot;TTAESER&quot;</span>, <span class="dt">PARAM =</span> <span class="st">&quot;Time to First Serious AE&quot;</span>)</span>
-<span id="cb3-8"><a href="#cb3-8"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adtte <span class="ot">&lt;-</span> <span class="fu">derive_param_tte</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> TRTSDT,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_conditions =</span> <span class="fu">list</span>(ae_ser_event),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(lastalive_censor),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">adsl =</span> adsl, <span class="at">adae =</span> adae),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTAESER&quot;</span>, <span class="at">PARAM =</span> <span class="st">&quot;Time to First Serious AE&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -577,25 +417,25 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="single-event" class="section level3">
 <h3>Single Event</h3>
 <p>For example, the overall survival time could be defined from treatment start to death. Patients alive or lost to follow-up would be censored to the last alive date. The following call defines a death event based on ADSL variables.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>death &lt;-<span class="st"> </span><span class="kw">event_source</span>(</span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">filter =</span> DTHFL <span class="op">==</span><span class="st"> &quot;Y&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4"></a>  <span class="dt">date =</span> DTHDT</span>
-<span id="cb4-5"><a href="#cb4-5"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>death <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> DTHFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> DTHDT</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>A corresponding censoring based on the last known alive date can be defined by the following call.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>lstalv &lt;-<span class="st"> </span><span class="kw">censor_source</span>(</span>
-<span id="cb5-2"><a href="#cb5-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb5-3"><a href="#cb5-3"></a>  <span class="dt">date =</span> LSTALVDT</span>
-<span id="cb5-4"><a href="#cb5-4"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lstalv <span class="ot">&lt;-</span> <span class="fu">censor_source</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> LSTALVDT</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>The definitions can be passed to <code>derive_param_tte()</code> to create a new time-to-event parameter.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>adtte &lt;-<span class="st"> </span><span class="kw">derive_param_tte</span>(</span>
-<span id="cb6-2"><a href="#cb6-2"></a>  <span class="dt">dataset_adsl =</span> adsl,</span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">adsl =</span> adsl),</span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="dt">start_date =</span> TRTSDT,</span>
-<span id="cb6-5"><a href="#cb6-5"></a>  <span class="dt">event_conditions =</span> <span class="kw">list</span>(death),</span>
-<span id="cb6-6"><a href="#cb6-6"></a>  <span class="dt">censor_conditions =</span> <span class="kw">list</span>(lstalv),</span>
-<span id="cb6-7"><a href="#cb6-7"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(<span class="dt">PARAMCD =</span> <span class="st">&quot;OS&quot;</span>, <span class="dt">PARAM =</span> <span class="st">&quot;Overall Survival&quot;</span>)</span>
-<span id="cb6-8"><a href="#cb6-8"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adtte <span class="ot">&lt;-</span> <span class="fu">derive_param_tte</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">adsl =</span> adsl),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> TRTSDT,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_conditions =</span> <span class="fu">list</span>(death),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(lstalv),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;OS&quot;</span>, <span class="at">PARAM =</span> <span class="st">&quot;Overall Survival&quot;</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -695,37 +535,37 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="add-additional-information-for-events-and-censoring-evntdesc-srcvar" class="section level3">
 <h3>Add Additional Information for Events and Censoring (<code>EVNTDESC</code>, <code>SRCVAR</code>, …)</h3>
 <p>To add additional information like event or censoring description (<code>EVNTDESC</code>) or source variable (<code>SRCVAR</code>) the <code>set_values_to</code> parameter can be specified in the event/censoring definition.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># define death event #</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>death &lt;-<span class="st"> </span><span class="kw">event_source</span>(</span>
-<span id="cb7-3"><a href="#cb7-3"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb7-4"><a href="#cb7-4"></a>  <span class="dt">filter =</span> DTHFL <span class="op">==</span><span class="st"> &quot;Y&quot;</span>,</span>
-<span id="cb7-5"><a href="#cb7-5"></a>  <span class="dt">date =</span> DTHDT,</span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="dt">set_values_to =</span><span class="kw">vars</span>(</span>
-<span id="cb7-7"><a href="#cb7-7"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;DEATH&quot;</span>,</span>
-<span id="cb7-8"><a href="#cb7-8"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
-<span id="cb7-9"><a href="#cb7-9"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;DTHDT&quot;</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a>  )</span>
-<span id="cb7-11"><a href="#cb7-11"></a>)</span>
-<span id="cb7-12"><a href="#cb7-12"></a></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="co"># define censoring at last known alive date #</span></span>
-<span id="cb7-14"><a href="#cb7-14"></a>lstalv &lt;-<span class="st"> </span><span class="kw">censor_source</span>(</span>
-<span id="cb7-15"><a href="#cb7-15"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb7-16"><a href="#cb7-16"></a>  <span class="dt">date =</span> LSTALVDT,</span>
-<span id="cb7-17"><a href="#cb7-17"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb7-18"><a href="#cb7-18"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;LAST KNOWN ALIVE DATE&quot;</span>,</span>
-<span id="cb7-19"><a href="#cb7-19"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
-<span id="cb7-20"><a href="#cb7-20"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;LSTALVDT&quot;</span></span>
-<span id="cb7-21"><a href="#cb7-21"></a>  )</span>
-<span id="cb7-22"><a href="#cb7-22"></a>)</span>
-<span id="cb7-23"><a href="#cb7-23"></a></span>
-<span id="cb7-24"><a href="#cb7-24"></a><span class="co"># derive time-to-event parameter #</span></span>
-<span id="cb7-25"><a href="#cb7-25"></a>adtte &lt;-<span class="st"> </span><span class="kw">derive_param_tte</span>(</span>
-<span id="cb7-26"><a href="#cb7-26"></a>  <span class="dt">dataset_adsl =</span> adsl,</span>
-<span id="cb7-27"><a href="#cb7-27"></a>  <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">adsl =</span> adsl),</span>
-<span id="cb7-28"><a href="#cb7-28"></a>  <span class="dt">event_conditions =</span> <span class="kw">list</span>(death),</span>
-<span id="cb7-29"><a href="#cb7-29"></a>  <span class="dt">censor_conditions =</span> <span class="kw">list</span>(lstalv),</span>
-<span id="cb7-30"><a href="#cb7-30"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(<span class="dt">PARAMCD =</span> <span class="st">&quot;OS&quot;</span>, <span class="dt">PARAM =</span> <span class="st">&quot;Overall Survival&quot;</span>)</span>
-<span id="cb7-31"><a href="#cb7-31"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define death event #</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>death <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> DTHFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> DTHDT,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;DEATH&quot;</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;DTHDT&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># define censoring at last known alive date #</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>lstalv <span class="ot">&lt;-</span> <span class="fu">censor_source</span>(</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> LSTALVDT,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;LAST KNOWN ALIVE DATE&quot;</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;LSTALVDT&quot;</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co"># derive time-to-event parameter #</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>adtte <span class="ot">&lt;-</span> <span class="fu">derive_param_tte</span>(</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">adsl =</span> adsl),</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_conditions =</span> <span class="fu">list</span>(death),</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(lstalv),</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;OS&quot;</span>, <span class="at">PARAM =</span> <span class="st">&quot;Overall Survival&quot;</span>)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -824,7 +664,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="handling-subjects-without-assessment" class="section level3">
 <h3>Handling Subjects Without Assessment</h3>
 <p>If a subject has no event and has no record meeting the censoring rule, it will not be included in the output dataset. In order to have a record for this subject in the output dataset, another <code>censoring_source()</code> object should be created to specify how those patients will be censored. Therefore the <code>start</code> censoring is defined below to achieve that subjects without data in <code>adrs</code> are censored at the start date.</p>
-<p>The ADaM IG requires that computed date must be accompanied by imputation flags. If the start date is imputed, the date imputation flag can be specified by the <code>start_date_imputation_flag</code> parameter. If a date variable from one of the event or censoring source datasets is imputed, the imputation flag can be specified for the <code>set_values_to</code> parameter in <code>event_source()</code> or <code>censor_source()</code> (see definition of the <code>start</code> censoring below).</p>
+<p>The ADaM IG requires that a computed date must be accompanied by imputation flags. Thus, if the function detects a <code>--DTF</code> and/or <code>--TMF</code> variable corresponding to <code>start_date</code> then <code>STARTDTF</code> and <code>STARTTMF</code> are set automatically to the values of these variables. If a date variable from one of the event or censoring source datasets is imputed, the imputation flag can be specified for the <code>set_values_to</code> parameter in <code>event_source()</code> or <code>censor_source()</code> (see definition of the <code>start</code> censoring below).</p>
 <p>As the CDISC pilot does not contain a <code>RS</code> dataset, the following example for progression free survival uses manually created datasets.</p>
 <pre><code>View(adsl)</code></pre>
 <table>
@@ -957,65 +797,64 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>death</code> for death.</li>
 </ul>
 <p>Some subjects may experience both events. In this case the first one is selected by <code>derive_param_tte()</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># progressive disease event #</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a>pd &lt;-<span class="st"> </span><span class="kw">event_source</span>(</span>
-<span id="cb10-3"><a href="#cb10-3"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adrs&quot;</span>,</span>
-<span id="cb10-4"><a href="#cb10-4"></a>  <span class="dt">filter =</span> AVALC <span class="op">==</span><span class="st"> &quot;PD&quot;</span>,</span>
-<span id="cb10-5"><a href="#cb10-5"></a>  <span class="dt">date =</span> ADT,</span>
-<span id="cb10-6"><a href="#cb10-6"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb10-7"><a href="#cb10-7"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;PD&quot;</span>,</span>
-<span id="cb10-8"><a href="#cb10-8"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;ADRS&quot;</span>,</span>
-<span id="cb10-9"><a href="#cb10-9"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;ADT&quot;</span>,</span>
-<span id="cb10-10"><a href="#cb10-10"></a>    <span class="dt">SRCSEQ =</span> ASEQ</span>
-<span id="cb10-11"><a href="#cb10-11"></a>  )</span>
-<span id="cb10-12"><a href="#cb10-12"></a>)</span>
-<span id="cb10-13"><a href="#cb10-13"></a></span>
-<span id="cb10-14"><a href="#cb10-14"></a><span class="co"># death event #</span></span>
-<span id="cb10-15"><a href="#cb10-15"></a>death &lt;-<span class="st"> </span><span class="kw">event_source</span>(</span>
-<span id="cb10-16"><a href="#cb10-16"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb10-17"><a href="#cb10-17"></a>  <span class="dt">filter =</span> DTHFL <span class="op">==</span><span class="st"> &quot;Y&quot;</span>,</span>
-<span id="cb10-18"><a href="#cb10-18"></a>  <span class="dt">date =</span> DTHDT,</span>
-<span id="cb10-19"><a href="#cb10-19"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb10-20"><a href="#cb10-20"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;DEATH&quot;</span>,</span>
-<span id="cb10-21"><a href="#cb10-21"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
-<span id="cb10-22"><a href="#cb10-22"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;DTHDT&quot;</span></span>
-<span id="cb10-23"><a href="#cb10-23"></a>  )</span>
-<span id="cb10-24"><a href="#cb10-24"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># progressive disease event #</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adrs&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> AVALC <span class="sc">==</span> <span class="st">&quot;PD&quot;</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> ADT,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;PD&quot;</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADRS&quot;</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;ADT&quot;</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> ASEQ</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># death event #</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>death <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> DTHFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> DTHDT,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;DEATH&quot;</span>,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;DTHDT&quot;</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Subjects without event must be censored at the last tumor assessment. For the censoring the <code>lastvisit</code> object is defined as <em>all</em> tumor assessments. Please note that it is not necessary to select the last one or exclude assessments which resulted in progression of disease. This is handled within <code>derive_param_tte()</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># last tumor assessment censoring (CNSR = 1 by default) #</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a>lastvisit &lt;-<span class="st"> </span><span class="kw">censor_source</span>(</span>
-<span id="cb11-3"><a href="#cb11-3"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adrs&quot;</span>,</span>
-<span id="cb11-4"><a href="#cb11-4"></a>  <span class="dt">date =</span> ADT,</span>
-<span id="cb11-5"><a href="#cb11-5"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb11-6"><a href="#cb11-6"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;LAST TUMOR ASSESSMENT&quot;</span>,</span>
-<span id="cb11-7"><a href="#cb11-7"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;ADRS&quot;</span>,</span>
-<span id="cb11-8"><a href="#cb11-8"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;ADT&quot;</span></span>
-<span id="cb11-9"><a href="#cb11-9"></a>  )</span>
-<span id="cb11-10"><a href="#cb11-10"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># last tumor assessment censoring (CNSR = 1 by default) #</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>lastvisit <span class="ot">&lt;-</span> <span class="fu">censor_source</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adrs&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> ADT,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;LAST TUMOR ASSESSMENT&quot;</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADRS&quot;</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;ADT&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Patients without tumor assessment should be censored at the start date. Therefore the <code>start</code> object is defined with the treatment start date as censoring date. It is not necessary to exclude patient with tumor assessment in the definition of <code>start</code> because <code>derive_param_tte()</code> selects the last date across all <code>censor_source()</code> objects as censoring date.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># start date censoring (for patients without tumor assessment) (CNSR = 2) #</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a>start &lt;-<span class="st"> </span><span class="kw">censor_source</span>(</span>
-<span id="cb12-3"><a href="#cb12-3"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb12-4"><a href="#cb12-4"></a>  <span class="dt">date =</span> TRTSDT,</span>
-<span id="cb12-5"><a href="#cb12-5"></a>  <span class="dt">censor =</span> <span class="dv">2</span>,</span>
-<span id="cb12-6"><a href="#cb12-6"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb12-7"><a href="#cb12-7"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;TREATMENT START&quot;</span>,</span>
-<span id="cb12-8"><a href="#cb12-8"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
-<span id="cb12-9"><a href="#cb12-9"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;TRTSDT&quot;</span>,</span>
-<span id="cb12-10"><a href="#cb12-10"></a>    <span class="dt">ADTF =</span> TRTSDTF</span>
-<span id="cb12-11"><a href="#cb12-11"></a>  )</span>
-<span id="cb12-12"><a href="#cb12-12"></a>)</span>
-<span id="cb12-13"><a href="#cb12-13"></a></span>
-<span id="cb12-14"><a href="#cb12-14"></a><span class="co"># derive time-to-event parameter #</span></span>
-<span id="cb12-15"><a href="#cb12-15"></a>adtte &lt;-<span class="st"> </span><span class="kw">derive_param_tte</span>(</span>
-<span id="cb12-16"><a href="#cb12-16"></a>  <span class="dt">dataset_adsl =</span> adsl,</span>
-<span id="cb12-17"><a href="#cb12-17"></a>  <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">adsl =</span> adsl, <span class="dt">adrs =</span> adrs),</span>
-<span id="cb12-18"><a href="#cb12-18"></a>  <span class="dt">start_date =</span> TRTSDT,</span>
-<span id="cb12-19"><a href="#cb12-19"></a>  <span class="dt">start_date_imputation_flag =</span> TRTSDTF,</span>
-<span id="cb12-20"><a href="#cb12-20"></a>  <span class="dt">event_conditions =</span> <span class="kw">list</span>(pd, death),</span>
-<span id="cb12-21"><a href="#cb12-21"></a>  <span class="dt">censor_conditions =</span> <span class="kw">list</span>(lastvisit, start),</span>
-<span id="cb12-22"><a href="#cb12-22"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(<span class="dt">PARAMCD =</span> <span class="st">&quot;PFS&quot;</span>, <span class="dt">PARAM =</span> <span class="st">&quot;Progression Free Survival&quot;</span>)</span>
-<span id="cb12-23"><a href="#cb12-23"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># start date censoring (for patients without tumor assessment) (CNSR = 2) #</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> <span class="fu">censor_source</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> TRTSDT,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">censor =</span> <span class="dv">2</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;TREATMENT START&quot;</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;TRTSDT&quot;</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">ADTF =</span> TRTSDTF</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># derive time-to-event parameter #</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>adtte <span class="ot">&lt;-</span> <span class="fu">derive_param_tte</span>(</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">adsl =</span> adsl, <span class="at">adrs =</span> adrs),</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> TRTSDT,</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_conditions =</span> <span class="fu">list</span>(pd, death),</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(lastvisit, start),</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;PFS&quot;</span>, <span class="at">PARAM =</span> <span class="st">&quot;Progression Free Survival&quot;</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1081,74 +920,74 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h3>Deriving a Series of Time-to-Event Parameters</h3>
 <p>If several similar time-to-event parameters need to be derived the <code>call_derivation()</code> function is useful.</p>
 <p>In the following example parameters for time to first AE, time to first serious AE, and time to first related AE are derived. The censoring is the same for all three. Only the definition of the event differs.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># define censoring #</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a>observation_end &lt;-<span class="st"> </span><span class="kw">censor_source</span>(</span>
-<span id="cb13-3"><a href="#cb13-3"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb13-4"><a href="#cb13-4"></a>  <span class="dt">date =</span> EOSDT,</span>
-<span id="cb13-5"><a href="#cb13-5"></a>  <span class="dt">censor =</span> <span class="dv">1</span>,</span>
-<span id="cb13-6"><a href="#cb13-6"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb13-7"><a href="#cb13-7"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;END OF STUDY&quot;</span>,</span>
-<span id="cb13-8"><a href="#cb13-8"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
-<span id="cb13-9"><a href="#cb13-9"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;EOSDT&quot;</span></span>
-<span id="cb13-10"><a href="#cb13-10"></a>  )</span>
-<span id="cb13-11"><a href="#cb13-11"></a>)</span>
-<span id="cb13-12"><a href="#cb13-12"></a></span>
-<span id="cb13-13"><a href="#cb13-13"></a><span class="co"># define time to first AE #</span></span>
-<span id="cb13-14"><a href="#cb13-14"></a>tt_ae &lt;-<span class="st"> </span><span class="kw">event_source</span>(</span>
-<span id="cb13-15"><a href="#cb13-15"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb13-16"><a href="#cb13-16"></a>  <span class="dt">date =</span> AESTDTC,</span>
-<span id="cb13-17"><a href="#cb13-17"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb13-18"><a href="#cb13-18"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;ADVERSE EVENT&quot;</span>,</span>
-<span id="cb13-19"><a href="#cb13-19"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
-<span id="cb13-20"><a href="#cb13-20"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
-<span id="cb13-21"><a href="#cb13-21"></a>  )</span>
-<span id="cb13-22"><a href="#cb13-22"></a>)</span>
-<span id="cb13-23"><a href="#cb13-23"></a></span>
-<span id="cb13-24"><a href="#cb13-24"></a><span class="co"># define time to first serious AE #</span></span>
-<span id="cb13-25"><a href="#cb13-25"></a>tt_ser_ae &lt;-<span class="st"> </span><span class="kw">event_source</span>(</span>
-<span id="cb13-26"><a href="#cb13-26"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb13-27"><a href="#cb13-27"></a>  <span class="dt">filter =</span> AESER <span class="op">==</span><span class="st"> &quot;Y&quot;</span>,</span>
-<span id="cb13-28"><a href="#cb13-28"></a>  <span class="dt">date =</span> AESTDTC,</span>
-<span id="cb13-29"><a href="#cb13-29"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb13-30"><a href="#cb13-30"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;SERIOUS ADVERSE EVENT&quot;</span>,</span>
-<span id="cb13-31"><a href="#cb13-31"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
-<span id="cb13-32"><a href="#cb13-32"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
-<span id="cb13-33"><a href="#cb13-33"></a>  )</span>
-<span id="cb13-34"><a href="#cb13-34"></a>)</span>
-<span id="cb13-35"><a href="#cb13-35"></a></span>
-<span id="cb13-36"><a href="#cb13-36"></a><span class="co"># define time to first related AE #</span></span>
-<span id="cb13-37"><a href="#cb13-37"></a>tt_rel_ae &lt;-<span class="st"> </span><span class="kw">event_source</span>(</span>
-<span id="cb13-38"><a href="#cb13-38"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb13-39"><a href="#cb13-39"></a>  <span class="dt">filter =</span> AEREL <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;PROBABLE&quot;</span>, <span class="st">&quot;POSSIBLE&quot;</span>, <span class="st">&quot;REMOTE&quot;</span>),</span>
-<span id="cb13-40"><a href="#cb13-40"></a>  <span class="dt">date =</span> AESTDTC,</span>
-<span id="cb13-41"><a href="#cb13-41"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb13-42"><a href="#cb13-42"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;RELATED ADVERSE EVENT&quot;</span>,</span>
-<span id="cb13-43"><a href="#cb13-43"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
-<span id="cb13-44"><a href="#cb13-44"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
-<span id="cb13-45"><a href="#cb13-45"></a>  )</span>
-<span id="cb13-46"><a href="#cb13-46"></a>)</span>
-<span id="cb13-47"><a href="#cb13-47"></a></span>
-<span id="cb13-48"><a href="#cb13-48"></a><span class="co"># derive all three time to event parameters #</span></span>
-<span id="cb13-49"><a href="#cb13-49"></a>adaette &lt;-<span class="st"> </span><span class="kw">call_derivation</span>(</span>
-<span id="cb13-50"><a href="#cb13-50"></a>  <span class="dt">derivation =</span> derive_param_tte,</span>
-<span id="cb13-51"><a href="#cb13-51"></a>  <span class="dt">variable_params =</span> <span class="kw">list</span>(</span>
-<span id="cb13-52"><a href="#cb13-52"></a>    <span class="kw">params</span>(</span>
-<span id="cb13-53"><a href="#cb13-53"></a>      <span class="dt">event_conditions =</span> <span class="kw">list</span>(tt_ae),</span>
-<span id="cb13-54"><a href="#cb13-54"></a>      <span class="dt">set_values_to =</span> <span class="kw">vars</span>(<span class="dt">PARAMCD =</span> <span class="st">&quot;TTAE&quot;</span>)</span>
-<span id="cb13-55"><a href="#cb13-55"></a>    ),</span>
-<span id="cb13-56"><a href="#cb13-56"></a>    <span class="kw">params</span>(</span>
-<span id="cb13-57"><a href="#cb13-57"></a>      <span class="dt">event_conditions =</span> <span class="kw">list</span>(tt_ser_ae),</span>
-<span id="cb13-58"><a href="#cb13-58"></a>      <span class="dt">set_values_to =</span> <span class="kw">vars</span>(<span class="dt">PARAMCD =</span> <span class="st">&quot;TTSERAE&quot;</span>)</span>
-<span id="cb13-59"><a href="#cb13-59"></a>    ),</span>
-<span id="cb13-60"><a href="#cb13-60"></a>    <span class="kw">params</span>(</span>
-<span id="cb13-61"><a href="#cb13-61"></a>      <span class="dt">event_conditions =</span> <span class="kw">list</span>(tt_rel_ae),</span>
-<span id="cb13-62"><a href="#cb13-62"></a>      <span class="dt">set_values_to =</span> <span class="kw">vars</span>(<span class="dt">PARAMCD =</span> <span class="st">&quot;TTRELAE&quot;</span>)</span>
-<span id="cb13-63"><a href="#cb13-63"></a>    )</span>
-<span id="cb13-64"><a href="#cb13-64"></a>  ),</span>
-<span id="cb13-65"><a href="#cb13-65"></a>  <span class="dt">dataset_adsl =</span> adsl,</span>
-<span id="cb13-66"><a href="#cb13-66"></a>  <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">adsl =</span> adsl, <span class="dt">ae =</span> ae),</span>
-<span id="cb13-67"><a href="#cb13-67"></a>  <span class="dt">censor_conditions =</span> <span class="kw">list</span>(observation_end)</span>
-<span id="cb13-68"><a href="#cb13-68"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define censoring #</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>observation_end <span class="ot">&lt;-</span> <span class="fu">censor_source</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> EOSDT,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">censor =</span> <span class="dv">1</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;END OF STUDY&quot;</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;EOSDT&quot;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># define time to first AE #</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>tt_ae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AESTDTC,</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;ADVERSE EVENT&quot;</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="co"># define time to first serious AE #</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>tt_ser_ae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> AESER <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AESTDTC,</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;SERIOUS ADVERSE EVENT&quot;</span>,</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co"># define time to first related AE #</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>tt_rel_ae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> AEREL <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;PROBABLE&quot;</span>, <span class="st">&quot;POSSIBLE&quot;</span>, <span class="st">&quot;REMOTE&quot;</span>),</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AESTDTC,</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;RELATED ADVERSE EVENT&quot;</span>,</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="co"># derive all three time to event parameters #</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>adaette <span class="ot">&lt;-</span> <span class="fu">call_derivation</span>(</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">derivation =</span> derive_param_tte,</span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable_params =</span> <span class="fu">list</span>(</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">params</span>(</span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_ae),</span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">vars</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTAE&quot;</span>)</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">params</span>(</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_ser_ae),</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">vars</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTSERAE&quot;</span>)</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">params</span>(</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_rel_ae),</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">vars</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTRELAE&quot;</span>)</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">adsl =</span> adsl, <span class="at">ae =</span> ae),</span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(observation_end)</span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1331,44 +1170,44 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># define time to first adverse event event #</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a>ttae &lt;-<span class="st"> </span><span class="kw">event_source</span>(</span>
-<span id="cb16-3"><a href="#cb16-3"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb16-4"><a href="#cb16-4"></a>  <span class="dt">date =</span> AESTDTC,</span>
-<span id="cb16-5"><a href="#cb16-5"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb16-6"><a href="#cb16-6"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;AE&quot;</span>,</span>
-<span id="cb16-7"><a href="#cb16-7"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
-<span id="cb16-8"><a href="#cb16-8"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span>,</span>
-<span id="cb16-9"><a href="#cb16-9"></a>    <span class="dt">SRCSEQ =</span> AESEQ</span>
-<span id="cb16-10"><a href="#cb16-10"></a>  )</span>
-<span id="cb16-11"><a href="#cb16-11"></a>)</span>
-<span id="cb16-12"><a href="#cb16-12"></a></span>
-<span id="cb16-13"><a href="#cb16-13"></a><span class="co"># define censoring at end of study #</span></span>
-<span id="cb16-14"><a href="#cb16-14"></a>eos &lt;-<span class="st"> </span><span class="kw">censor_source</span>(</span>
-<span id="cb16-15"><a href="#cb16-15"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb16-16"><a href="#cb16-16"></a>  <span class="dt">date =</span> EOSDT,</span>
-<span id="cb16-17"><a href="#cb16-17"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb16-18"><a href="#cb16-18"></a>    <span class="dt">EVNTDESC =</span> <span class="st">&quot;END OF STUDY&quot;</span>,</span>
-<span id="cb16-19"><a href="#cb16-19"></a>    <span class="dt">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
-<span id="cb16-20"><a href="#cb16-20"></a>    <span class="dt">SRCVAR =</span> <span class="st">&quot;EOSDT&quot;</span></span>
-<span id="cb16-21"><a href="#cb16-21"></a>  )</span>
-<span id="cb16-22"><a href="#cb16-22"></a>)</span>
-<span id="cb16-23"><a href="#cb16-23"></a></span>
-<span id="cb16-24"><a href="#cb16-24"></a><span class="co"># derive time-to-event parameter #</span></span>
-<span id="cb16-25"><a href="#cb16-25"></a>adtte &lt;-<span class="st"> </span><span class="kw">derive_param_tte</span>(</span>
-<span id="cb16-26"><a href="#cb16-26"></a>  <span class="dt">dataset_adsl =</span> adsl,</span>
-<span id="cb16-27"><a href="#cb16-27"></a>  <span class="dt">by_vars =</span> <span class="kw">vars</span>(AEDECOD),</span>
-<span id="cb16-28"><a href="#cb16-28"></a>  <span class="dt">start_date =</span> TRTSDT,</span>
-<span id="cb16-29"><a href="#cb16-29"></a>  <span class="dt">event_conditions =</span> <span class="kw">list</span>(ttae),</span>
-<span id="cb16-30"><a href="#cb16-30"></a>  <span class="dt">censor_conditions =</span> <span class="kw">list</span>(eos),</span>
-<span id="cb16-31"><a href="#cb16-31"></a>  <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">adsl =</span> adsl, <span class="dt">ae =</span> ae),</span>
-<span id="cb16-32"><a href="#cb16-32"></a>  <span class="dt">set_values_to =</span> <span class="kw">vars</span>(</span>
-<span id="cb16-33"><a href="#cb16-33"></a>    <span class="dt">PARAMCD =</span> <span class="kw">paste0</span>(<span class="st">&quot;TTAE&quot;</span>, <span class="kw">as.numeric</span>(<span class="kw">as.factor</span>(AEDECOD))),</span>
-<span id="cb16-34"><a href="#cb16-34"></a>    <span class="dt">PARAM =</span> <span class="kw">paste</span>(<span class="st">&quot;Time to First&quot;</span>, AEDECOD, <span class="st">&quot;Adverse Event&quot;</span>),</span>
-<span id="cb16-35"><a href="#cb16-35"></a>    <span class="dt">PARCAT1 =</span> <span class="st">&quot;TTAE&quot;</span>,</span>
-<span id="cb16-36"><a href="#cb16-36"></a>    <span class="dt">PARCAT2 =</span> AEDECOD</span>
-<span id="cb16-37"><a href="#cb16-37"></a>  )</span>
-<span id="cb16-38"><a href="#cb16-38"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define time to first adverse event event #</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ttae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AESTDTC,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;AE&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> AESEQ</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># define censoring at end of study #</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>eos <span class="ot">&lt;-</span> <span class="fu">censor_source</span>(</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> EOSDT,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;END OF STUDY&quot;</span>,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADSL&quot;</span>,</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;EOSDT&quot;</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co"># derive time-to-event parameter #</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>adtte <span class="ot">&lt;-</span> <span class="fu">derive_param_tte</span>(</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">vars</span>(AEDECOD),</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> TRTSDT,</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_conditions =</span> <span class="fu">list</span>(ttae),</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(eos),</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">adsl =</span> adsl, <span class="at">ae =</span> ae),</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">vars</span>(</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="fu">paste0</span>(<span class="st">&quot;TTAE&quot;</span>, <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(AEDECOD))),</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAM =</span> <span class="fu">paste</span>(<span class="st">&quot;Time to First&quot;</span>, AEDECOD, <span class="st">&quot;Adverse Event&quot;</span>),</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARCAT1 =</span> <span class="st">&quot;TTAE&quot;</span>,</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARCAT2 =</span> AEDECOD</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1426,13 +1265,26 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Derive Analysis Value (<code>AVAL</code>)</h2>
 <p>The analysis value (<code>AVAL</code>) can be derived by calling <code>derive_vars_duration()</code>.</p>
 <p>This example derives the time to event in days. Other units can be requested by the specifying the <code>out_unit</code> parameter.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>adtte &lt;-<span class="st"> </span><span class="kw">derive_vars_duration</span>(</span>
-<span id="cb17-2"><a href="#cb17-2"></a>  adtte,</span>
-<span id="cb17-3"><a href="#cb17-3"></a>  <span class="dt">new_var =</span> AVAL,</span>
-<span id="cb17-4"><a href="#cb17-4"></a>  <span class="dt">start_date =</span> STARTDT,</span>
-<span id="cb17-5"><a href="#cb17-5"></a>  <span class="dt">end_date =</span> ADT</span>
-<span id="cb17-6"><a href="#cb17-6"></a>)</span></code></pre></div>
-<table>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>adtte <span class="ot">&lt;-</span> <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  adtte,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_var =</span> AVAL,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> STARTDT,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">end_date =</span> ADT</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="10%" />
+<col width="10%" />
+<col width="18%" />
+<col width="5%" />
+<col width="7%" />
+<col width="4%" />
+<col width="9%" />
+<col width="9%" />
+<col width="6%" />
+<col width="14%" />
+<col width="4%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">STUDYID</th>
@@ -1585,13 +1437,27 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="aseq" class="section level2">
 <h2>Derive Analysis Sequence Number (<code>ASEQ</code>)</h2>
 <p>The <code>{admiral}</code> function <code>derive_var_obs_number()</code> can be used to derive <code>ASEQ</code>:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>adtte &lt;-<span class="st"> </span><span class="kw">derive_var_obs_number</span>(</span>
-<span id="cb18-2"><a href="#cb18-2"></a>  adtte,</span>
-<span id="cb18-3"><a href="#cb18-3"></a>  <span class="dt">by_vars =</span> <span class="kw">vars</span>(STUDYID, USUBJID),</span>
-<span id="cb18-4"><a href="#cb18-4"></a>  <span class="dt">order =</span> <span class="kw">vars</span>(PARAMCD),</span>
-<span id="cb18-5"><a href="#cb18-5"></a>  <span class="dt">check_type =</span> <span class="st">&quot;error&quot;</span></span>
-<span id="cb18-6"><a href="#cb18-6"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>adtte <span class="ot">&lt;-</span> <span class="fu">derive_var_obs_number</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  adtte,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">vars</span>(PARAMCD),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
+<colgroup>
+<col width="10%" />
+<col width="9%" />
+<col width="17%" />
+<col width="5%" />
+<col width="7%" />
+<col width="4%" />
+<col width="8%" />
+<col width="8%" />
+<col width="6%" />
+<col width="13%" />
+<col width="4%" />
+<col width="4%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">STUDYID</th>
@@ -1754,235 +1620,113 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="adslvars" class="section level2">
 <h2>Add ADSL Variables</h2>
-<p>Variables from ADSL which are required for time-to-event analyses, e.g., treatment variables or covariates can be added using <code>left_join()</code>.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>adtte &lt;-<span class="st"> </span><span class="kw">left_join</span>(</span>
-<span id="cb19-2"><a href="#cb19-2"></a>  adtte,</span>
-<span id="cb19-3"><a href="#cb19-3"></a>  <span class="kw">select</span>(adsl, STUDYID, USUBJID, ARMCD, ARM, ACTARMCD, ACTARM, AGE, SEX),</span>
-<span id="cb19-4"><a href="#cb19-4"></a>  <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;STUDYID&quot;</span>, <span class="st">&quot;USUBJID&quot;</span>)</span>
-<span id="cb19-5"><a href="#cb19-5"></a>)</span>
-<span id="cb19-6"><a href="#cb19-6"></a><span class="co">#&gt; Warning: Column `STUDYID` has different attributes on LHS and RHS of join</span></span>
-<span id="cb19-7"><a href="#cb19-7"></a><span class="co">#&gt; Warning: Column `USUBJID` has different attributes on LHS and RHS of join</span></span></code></pre></div>
+<p>Variables from ADSL which are required for time-to-event analyses, e.g., treatment variables or covariates can be added using <code>derive_vars_merged()</code>.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>adtte <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  adtte,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> adsl,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">vars</span>(ARMCD, ARM, ACTARMCD, ACTARM, AGE, SEX),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
-<th align="left">STUDYID</th>
 <th align="left">USUBJID</th>
-<th align="left">EVNTDESC</th>
-<th align="left">SRCDOM</th>
-<th align="left">SRCVAR</th>
-<th align="right">CNSR</th>
-<th align="left">ADT</th>
-<th align="left">STARTDT</th>
 <th align="left">PARAMCD</th>
-<th align="left">PARAM</th>
+<th align="right">CNSR</th>
 <th align="right">AVAL</th>
-<th align="right">ASEQ</th>
 <th align="left">ARMCD</th>
-<th align="left">ARM</th>
-<th align="left">ACTARMCD</th>
-<th align="left">ACTARM</th>
 <th align="right">AGE</th>
 <th align="left">SEX</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2014-07-02</td>
-<td align="left">2014-01-02</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">182</td>
 <td align="right">1</td>
+<td align="right">182</td>
 <td align="left">Pbo</td>
-<td align="left">Placebo</td>
-<td align="left">Pbo</td>
-<td align="left">Placebo</td>
 <td align="right">63</td>
 <td align="left">F</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1023</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2012-09-02</td>
-<td align="left">2012-08-05</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">29</td>
 <td align="right">1</td>
+<td align="right">29</td>
 <td align="left">Pbo</td>
-<td align="left">Placebo</td>
-<td align="left">Pbo</td>
-<td align="left">Placebo</td>
 <td align="right">64</td>
 <td align="left">M</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2014-01-14</td>
-<td align="left">2013-07-19</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">180</td>
 <td align="right">1</td>
+<td align="right">180</td>
 <td align="left">Xan_Hi</td>
-<td align="left">Xanomeline High Dose</td>
-<td align="left">Xan_Hi</td>
-<td align="left">Xanomeline High Dose</td>
 <td align="right">71</td>
 <td align="left">M</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1033</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2014-04-14</td>
-<td align="left">2014-03-18</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">28</td>
 <td align="right">1</td>
+<td align="right">28</td>
 <td align="left">Xan_Lo</td>
-<td align="left">Xanomeline Low Dose</td>
-<td align="left">Xan_Lo</td>
-<td align="left">Xanomeline Low Dose</td>
 <td align="right">74</td>
 <td align="left">M</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1034</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2014-12-30</td>
-<td align="left">2014-07-01</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">183</td>
 <td align="right">1</td>
+<td align="right">183</td>
 <td align="left">Xan_Hi</td>
-<td align="left">Xanomeline High Dose</td>
-<td align="left">Xan_Hi</td>
-<td align="left">Xanomeline High Dose</td>
 <td align="right">77</td>
 <td align="left">F</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1047</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2013-04-07</td>
-<td align="left">2013-02-12</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">55</td>
 <td align="right">1</td>
+<td align="right">55</td>
 <td align="left">Pbo</td>
-<td align="left">Placebo</td>
-<td align="left">Pbo</td>
-<td align="left">Placebo</td>
 <td align="right">85</td>
 <td align="left">F</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1097</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2014-07-09</td>
-<td align="left">2014-01-01</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">190</td>
 <td align="right">1</td>
+<td align="right">190</td>
 <td align="left">Xan_Lo</td>
-<td align="left">Xanomeline Low Dose</td>
-<td align="left">Xan_Lo</td>
-<td align="left">Xanomeline Low Dose</td>
 <td align="right">68</td>
 <td align="left">M</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1111</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2012-09-17</td>
-<td align="left">2012-09-07</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">11</td>
 <td align="right">1</td>
+<td align="right">11</td>
 <td align="left">Xan_Lo</td>
-<td align="left">Xanomeline Low Dose</td>
-<td align="left">Xan_Lo</td>
-<td align="left">Xanomeline Low Dose</td>
 <td align="right">81</td>
 <td align="left">F</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1115</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2013-01-23</td>
-<td align="left">2012-11-30</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">55</td>
 <td align="right">1</td>
+<td align="right">55</td>
 <td align="left">Xan_Lo</td>
-<td align="left">Xanomeline Low Dose</td>
-<td align="left">Xan_Lo</td>
-<td align="left">Xanomeline Low Dose</td>
 <td align="right">84</td>
 <td align="left">M</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1118</td>
-<td align="left">LAST KNOWN ALIVE DATE</td>
-<td align="left">ADSL</td>
-<td align="left">LSTALVDT</td>
-<td align="right">1</td>
-<td align="left">2014-09-09</td>
-<td align="left">2014-03-12</td>
 <td align="left">OS</td>
-<td align="left">Overall Survival</td>
-<td align="right">182</td>
 <td align="right">1</td>
+<td align="right">182</td>
 <td align="left">Pbo</td>
-<td align="left">Placebo</td>
-<td align="left">Pbo</td>
-<td align="left">Placebo</td>
 <td align="right">52</td>
 <td align="left">M</td>
 </tr>

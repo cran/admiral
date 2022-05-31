@@ -20,10 +20,10 @@ Filters the input dataset if the provided expression is not \code{NULL}
 }
 \examples{
 library(admiral.test)
-data(vs)
+data(admiral_vs)
 
-filter_if(vs, rlang::quo(NULL))
-filter_if(vs, rlang::quo(VSTESTCD == "Weight"))
+admiral::filter_if(admiral_vs, rlang::quo(NULL))
+admiral::filter_if(admiral_vs, rlang::quo(VSTESTCD == "WEIGHT"))
 }
 \author{
 Thomas Neitmann

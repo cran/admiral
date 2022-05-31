@@ -14,26 +14,32 @@
 
 <title>Creating ADSL</title>
 
-<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
-// be compatible with the behavior of Pandoc < 2.8).
-document.addEventListener('DOMContentLoaded', function(e) {
-  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
-  var i, h, a;
-  for (i = 0; i < hs.length; i++) {
-    h = hs[i];
-    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
-    a = h.attributes;
-    while (a.length > 0) h.removeAttribute(a[0].name);
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
   }
-});
-</script>
-
-
-<style type="text/css">code{white-space: pre;}</style>
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -119,187 +125,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
-}
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
-}
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
-}
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
-}
-#TOC ul ul {
-margin-left: -2em;
-}
-#TOC li {
-line-height: 16px;
-}
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
-}
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
-}
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
-}
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
-}
-pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
-}
-pre:not([class]) {
-background-color: #f7f7f7;
-}
-code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
-}
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
-}
-h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
-}
-a {
-color: #0033dd;
-text-decoration: none;
-}
-a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
 
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; } 
-code > span.er { color: #a61717; background-color: #e3d2d2; } 
-</style>
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
 
 
 
@@ -351,21 +178,38 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Read in Data</h2>
 <p>To start, all data frames needed for the creation of <code>ADSL</code> should be read into the environment. This will be a company specific process. Some of the data frames needed may be <code>DM</code>, <code>EX</code>, <code>DS</code>, <code>AE</code>, and <code>LB</code>.</p>
 <p>For example purpose, the CDISC Pilot SDTM datasets—which are included in <code>{admiral.test}</code>—are used.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(admiral.test)</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(lubridate)</span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">library</span>(stringr)</span>
-<span id="cb1-6"><a href="#cb1-6"></a></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">data</span>(<span class="st">&quot;dm&quot;</span>)</span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">data</span>(<span class="st">&quot;ds&quot;</span>)</span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="kw">data</span>(<span class="st">&quot;ex&quot;</span>)</span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="kw">data</span>(<span class="st">&quot;ae&quot;</span>)</span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="kw">data</span>(<span class="st">&quot;lb&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_dm&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_ds&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_ex&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_ae&quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_lb&quot;</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>dm <span class="ot">&lt;-</span> admiral_dm</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>ds <span class="ot">&lt;-</span> admiral_ds</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> admiral_ex</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> admiral_ae</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>lb <span class="ot">&lt;-</span> admiral_lb</span></code></pre></div>
 <p>The <code>DM</code> domain is used as the basis for <code>ADSL</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>adsl &lt;-<span class="st"> </span>dm <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>DOMAIN)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> dm <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>DOMAIN)</span></code></pre></div>
 <table>
+<colgroup>
+<col width="10%" />
+<col width="10%" />
+<col width="7%" />
+<col width="3%" />
+<col width="3%" />
+<col width="5%" />
+<col width="20%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -496,23 +340,54 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="treatmentvar" class="section level2">
 <h2>Derive Treatment Variables (<code>TRT0xP</code>, <code>TRT0xA</code>)</h2>
 <p>The mapping of the treatment variables is left to the ADaM programmer. An example mapping may be:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>adsl &lt;-<span class="st"> </span>dm <span class="op">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">TRT01P =</span> ARM, <span class="dt">TRT01A =</span> ACTARM)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> dm <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">TRT01P =</span> ARM, <span class="at">TRT01A =</span> ACTARM)</span></code></pre></div>
 </div>
 <div id="trtdatetime" class="section level2">
 <h2>Derive/Impute Numeric Treatment Date/Time and Duration (<code>TRTSDTM</code>, <code>TRTEDTM</code>, <code>TRTDURD</code>)</h2>
-<p>The functions <code>derive_var_trtsdtm()</code>, <code>derive_var_trtedtm()</code> can be used to derive the treatment start and end date/times using the <code>ex</code> domain.</p>
+<p>The function <code>derive_vars_merged_dtm()</code> can be used to derive the treatment start and end date/times using the <code>ex</code> domain.</p>
 <p>Example calls:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw">derive_var_trtsdtm</span>(<span class="dt">dataset_ex =</span> ex) <span class="op">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  </span><span class="kw">derive_var_trtedtm</span>(<span class="dt">dataset_ex =</span> ex)</span></code></pre></div>
-<p>This call returns the original data frame with the column <code>TRTSDTM</code> and <code>TRTEDTM</code> added. The datetime variables returned can be converted to dates using the <code>derive_vars_dtm_to_dt()</code> function.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="st">  </span><span class="kw">derive_vars_dtm_to_dt</span>(<span class="dt">source_vars =</span> <span class="kw">vars</span>(TRTSDTM, TRTEDTM))</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged_dtm</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">str_detect</span>(EXTRT, <span class="st">&quot;PLACEBO&quot;</span>))) <span class="sc">&amp;</span> <span class="fu">nchar</span>(EXSTDTC) <span class="sc">&gt;=</span> <span class="dv">10</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;TRTS&quot;</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> EXSTDTC,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">vars</span>(TRTSDTM, EXSEQ),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged_dtm</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">str_detect</span>(EXTRT, <span class="st">&quot;PLACEBO&quot;</span>))) <span class="sc">&amp;</span> <span class="fu">nchar</span>(EXENDTC) <span class="sc">&gt;=</span> <span class="dv">10</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;TRTE&quot;</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> EXENDTC,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">vars</span>(TRTEDTM, EXSEQ),</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p>This call returns the original data frame with the column <code>TRTSDTM</code> and <code>TRTEDTM</code> added. Exposure observations with incomplete date and zero doses of non placebo treatments are ignored. Missing time parts are imputed as first or last for start and end date respectively.</p>
+<p>The datetime variables returned can be converted to dates using the <code>derive_vars_dtm_to_dt()</code> function.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="at">source_vars =</span> <span class="fu">vars</span>(TRTSDTM, TRTEDTM))</span></code></pre></div>
 <p>Now, that <code>TRTSDT</code> and <code>TRTEDT</code> are derived, the function <code>derive_var_trtdurd()</code> can be used to calculate the Treatment duration (<code>TRTDURD</code>).</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw">derive_var_trtdurd</span>()</span></code></pre></div>
-<table>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_trtdurd</span>()</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="14%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+<col width="23%" />
+<col width="13%" />
+<col width="9%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -624,16 +499,24 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h3>Disposition Dates (e.g. <code>EOSDT</code>)</h3>
 <p>The function <code>derive_var_disposition_dt()</code> can be used to derive a disposition date. The relevant disposition date (<code>DS.DSSTDTC</code>) is selected by adjusting the filter parameter.</p>
 <p>To derive the End of Study date (<code>EOSDT</code>), a call could be:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="st">  </span><span class="kw">derive_var_disposition_dt</span>(</span>
-<span id="cb7-3"><a href="#cb7-3"></a>    <span class="dt">dataset_ds =</span> ds,</span>
-<span id="cb7-4"><a href="#cb7-4"></a>    <span class="dt">new_var =</span> EOSDT,</span>
-<span id="cb7-5"><a href="#cb7-5"></a>    <span class="dt">dtc =</span> DSSTDTC,</span>
-<span id="cb7-6"><a href="#cb7-6"></a>    <span class="dt">filter =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span> <span class="op">&amp;</span><span class="st"> </span>DSDECOD <span class="op">!=</span><span class="st"> &quot;SCREEN FAILURE&quot;</span>,</span>
-<span id="cb7-7"><a href="#cb7-7"></a>    <span class="dt">date_imputation =</span> <span class="ot">NULL</span></span>
-<span id="cb7-8"><a href="#cb7-8"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged_dt</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ds,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;EOS&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> DSSTDTC,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> DSCAT <span class="sc">==</span> <span class="st">&quot;DISPOSITION EVENT&quot;</span> <span class="sc">&amp;</span> DSDECOD <span class="sc">!=</span> <span class="st">&quot;SCREEN FAILURE&quot;</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="cn">NULL</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p>With <code>DS</code>: <a id="link_ds"></a></p>
 <table>
+<colgroup>
+<col width="9%" />
+<col width="13%" />
+<col width="21%" />
+<col width="48%" />
+<col width="8%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -770,16 +653,16 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>This call would return the input dataset with the column <code>EOSDT</code> added. This function allows the user to impute partial dates as well. If imputation is needed and the date is to be imputed to the first of the month, then set <code>date_imputation = &quot;FIRST&quot;</code>.</p>
 </div>
 <div id="disposition_status" class="section level3">
-<h3>Disposition Status (e.g. <code>EOSTT</code>)</h3>
+<h3>Disposition Status (e.g. <code>EOSSTT</code>)</h3>
 <p>The function <code>derive_var_disposition_status()</code> can be used to derive a disposition status at a specific timepoint. The relevant disposition variable (<code>DS.DSDECOD</code>) is selected by adjusting the filter parameter and used to derive <code>EOSSTT</code>.</p>
 <p>To derive the End of Study status (<code>EOSSTT</code>), a call could be:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="kw">derive_var_disposition_status</span>(</span>
-<span id="cb8-3"><a href="#cb8-3"></a>    <span class="dt">dataset_ds =</span> ds,</span>
-<span id="cb8-4"><a href="#cb8-4"></a>    <span class="dt">new_var =</span> EOSSTT,</span>
-<span id="cb8-5"><a href="#cb8-5"></a>    <span class="dt">status_var =</span> DSDECOD,</span>
-<span id="cb8-6"><a href="#cb8-6"></a>    <span class="dt">filter =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_disposition_status</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_ds =</span> ds,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> EOSSTT,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">status_var =</span> DSDECOD,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_ds =</span> DSCAT <span class="sc">==</span> <span class="st">&quot;DISPOSITION EVENT&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -839,13 +722,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <td align="left">2013-01-23</td>
 <td align="left">DISCONTINUED</td>
 </tr>
-<tr class="odd">
-<td align="left">[Link](#link_d</td>
-<td align="left">s) to <code>DS</code>.</td>
-<td align="left"></td>
-</tr>
 </tbody>
 </table>
+<p><a href="#link_ds">Link</a> to <code>DS</code>.</p>
 <p>This call would return the input dataset with the column <code>EOSSTT</code> added.</p>
 <p>By default, the function will derive <code>EOSSTT</code> as</p>
 <ul>
@@ -855,24 +734,24 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </ul>
 <p>If the default derivation must be changed, the user can create his/her own function and pass it to the <code>format_new_var</code> argument of the function (<code>format_new_var = new_mapping</code>) to map <code>DSDECOD</code> to a suitable <code>EOSSTT</code> value.</p>
 <p>Example function <code>format_eosstt()</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>format_eosstt &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="kw">case_when</span>(</span>
-<span id="cb9-3"><a href="#cb9-3"></a>    x <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;COMPLETED&quot;</span>) <span class="op">~</span><span class="st"> &quot;COMPLETED&quot;</span>,</span>
-<span id="cb9-4"><a href="#cb9-4"></a>    x <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;SCREEN FAILURE&quot;</span>) <span class="op">~</span><span class="st"> </span><span class="ot">NA_character_</span>,</span>
-<span id="cb9-5"><a href="#cb9-5"></a>    <span class="op">!</span><span class="kw">is.na</span>(x) <span class="op">~</span><span class="st"> &quot;DISCONTINUED&quot;</span>,</span>
-<span id="cb9-6"><a href="#cb9-6"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;ONGOING&quot;</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a>  )</span>
-<span id="cb9-8"><a href="#cb9-8"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>format_eosstt <span class="ot">&lt;-</span> <span class="cf">function</span>(DSDECOD) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    DSDECOD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;COMPLETED&quot;</span>) <span class="sc">~</span> <span class="st">&quot;COMPLETED&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    DSDECOD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;SCREEN FAILURE&quot;</span>) <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(DSDECOD) <span class="sc">~</span> <span class="st">&quot;DISCONTINUED&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;ONGOING&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The customized mapping function <code>format_eosstt()</code> can now be passed to the main function:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a></span>
-<span id="cb10-2"><a href="#cb10-2"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="st">  </span><span class="kw">derive_var_disposition_status</span>(</span>
-<span id="cb10-4"><a href="#cb10-4"></a>    <span class="dt">dataset_ds =</span> ds,</span>
-<span id="cb10-5"><a href="#cb10-5"></a>    <span class="dt">new_var =</span> EOSSTT,</span>
-<span id="cb10-6"><a href="#cb10-6"></a>    <span class="dt">status_var =</span> DSDECOD,</span>
-<span id="cb10-7"><a href="#cb10-7"></a>    <span class="dt">format_new_var =</span> format_eosstt,</span>
-<span id="cb10-8"><a href="#cb10-8"></a>    <span class="dt">filter =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_disposition_status</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_ds =</span> ds,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> EOSSTT,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">status_var =</span> DSDECOD,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">format_new_var =</span> format_eosstt,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_ds =</span> DSCAT <span class="sc">==</span> <span class="st">&quot;DISPOSITION EVENT&quot;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p>This call would return the input dataset with the column <code>EOSSTT</code> added.</p>
 </div>
 <div id="disposition_reason" class="section level3">
@@ -880,15 +759,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>The main reason for discontinuation is usually stored in <code>DSDECOD</code> while <code>DSTERM</code> provides additional details regarding subject’s discontinuation (e.g., description of <code>&quot;OTHER&quot;</code>).</p>
 <p>The function <code>derive_vars_disposition_reason()</code> can be used to derive a disposition reason (along with the details, if required) at a specific timepoint. The relevant disposition variable(s) (<code>DS.DSDECOD</code>, <code>DS.DSTERM</code>) are selected by adjusting the filter parameter and used to derive the main reason (and details).</p>
 <p>To derive the End of Study reason(s) (<code>DCSREAS</code> and <code>DCSREASP</code>), the call would be:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="st">  </span><span class="kw">derive_vars_disposition_reason</span>(</span>
-<span id="cb11-3"><a href="#cb11-3"></a>    <span class="dt">dataset_ds =</span> ds,</span>
-<span id="cb11-4"><a href="#cb11-4"></a>    <span class="dt">new_var =</span> DCSREAS,</span>
-<span id="cb11-5"><a href="#cb11-5"></a>    <span class="dt">reason_var =</span> DSDECOD,</span>
-<span id="cb11-6"><a href="#cb11-6"></a>    <span class="dt">new_var_spe =</span> DCSREASP,</span>
-<span id="cb11-7"><a href="#cb11-7"></a>    <span class="dt">reason_var_spe =</span> DSTERM,</span>
-<span id="cb11-8"><a href="#cb11-8"></a>    <span class="dt">filter =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span> <span class="op">&amp;</span><span class="st"> </span>DSDECOD <span class="op">!=</span><span class="st"> &quot;SCREEN FAILURE&quot;</span></span>
-<span id="cb11-9"><a href="#cb11-9"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_disposition_reason</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_ds =</span> ds,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> DCSREAS,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">reason_var =</span> DSDECOD,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var_spe =</span> DCSREASP,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">reason_var_spe =</span> DSTERM,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_ds =</span> DSCAT <span class="sc">==</span> <span class="st">&quot;DISPOSITION EVENT&quot;</span> <span class="sc">&amp;</span> DSDECOD <span class="sc">!=</span> <span class="st">&quot;SCREEN FAILURE&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -912,7 +791,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <td align="left">2012-09-02</td>
 <td align="left">DISCONTINUED</td>
 <td align="left">ADVERSE EVENT</td>
-<td align="left">ADVERSE EVENT</td>
+<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1028</td>
@@ -926,7 +805,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <td align="left">2014-04-14</td>
 <td align="left">DISCONTINUED</td>
 <td align="left">STUDY TERMINATED BY SPONSOR</td>
-<td align="left">SPONSOR DECISION (STUDY OR PATIENT DISCONTINUED BY THE SPONSOR)</td>
+<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1034</td>
@@ -940,7 +819,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <td align="left">2013-03-29</td>
 <td align="left">DISCONTINUED</td>
 <td align="left">ADVERSE EVENT</td>
-<td align="left">ADVERSE EVENT</td>
+<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1057</td>
@@ -961,14 +840,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <td align="left">2012-09-17</td>
 <td align="left">DISCONTINUED</td>
 <td align="left">ADVERSE EVENT</td>
-<td align="left">ADVERSE EVENT</td>
+<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1115</td>
 <td align="left">2013-01-23</td>
 <td align="left">DISCONTINUED</td>
 <td align="left">ADVERSE EVENT</td>
-<td align="left">ADVERSE EVENT</td>
+<td align="left">NA</td>
 </tr>
 </tbody>
 </table>
@@ -977,28 +856,28 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>By default, the function will map</p>
 <ul>
 <li><code>DCSREAS</code> as <code>DSDECOD</code> if <code>DSDECOD</code> is not <code>&quot;COMPLETED&quot;</code> or <code>NA</code>, <code>NA</code> otherwise</li>
-<li><code>DCSREASP</code> as <code>DSTERM</code> if <code>DSDECOD</code> is not <code>&quot;COMPLETED&quot;</code> or <code>NA</code>, <code>NA</code> otherwise</li>
+<li><code>DCSREASP</code> as <code>DSTERM</code> if <code>DSDECOD</code> is equal to <code>OTHER</code>, <code>NA</code> otherwise</li>
 </ul>
 <p>If the default derivation must be changed, the user can create his/her own function and pass it to the <code>format_new_var</code> argument of the function (<code>format_new_var = new_mapping</code>) to map <code>DSDECOD</code> and <code>DSTERM</code> to a suitable <code>DCSREAS</code>/<code>DCSREASP</code> value.</p>
 <p>Example function <code>format_dcsreas()</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>format_dcsreas &lt;-<span class="st"> </span><span class="cf">function</span>(dsdecod, <span class="dt">dsterm =</span> <span class="ot">NULL</span>) {</span>
-<span id="cb12-2"><a href="#cb12-2"></a>  out &lt;-<span class="st"> </span><span class="cf">if</span> (<span class="kw">is.null</span>(dsterm)) dsdecod <span class="cf">else</span> dsterm</span>
-<span id="cb12-3"><a href="#cb12-3"></a>  <span class="kw">case_when</span>(</span>
-<span id="cb12-4"><a href="#cb12-4"></a>    <span class="op">!</span>dsdecod <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;COMPLETED&quot;</span>, <span class="st">&quot;SCREEN FAILURE&quot;</span>) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(dsdecod) <span class="op">~</span><span class="st"> </span>out,</span>
-<span id="cb12-5"><a href="#cb12-5"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="ot">NA_character_</span></span>
-<span id="cb12-6"><a href="#cb12-6"></a>  )</span>
-<span id="cb12-7"><a href="#cb12-7"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>format_dctreas <span class="ot">&lt;-</span> <span class="cf">function</span>(dsdecod, <span class="at">dsterm =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(dsterm)) {</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">if_else</span>(dsdecod <span class="sc">%notin%</span> <span class="fu">c</span>(<span class="st">&quot;COMPLETED&quot;</span>, <span class="st">&quot;SCREEN FAILURE&quot;</span>) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(dsdecod), dsdecod, <span class="cn">NA_character_</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">if_else</span>(dsdecod <span class="sc">==</span> <span class="st">&quot;OTHER&quot;</span>, dsterm, <span class="cn">NA_character_</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>The customized mapping function <code>format_dcsreas()</code> can now be passed to the main function:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span><span class="kw">derive_var_disposition_reason</span>(</span>
-<span id="cb13-3"><a href="#cb13-3"></a>    <span class="dt">dataset_ds =</span> ds,</span>
-<span id="cb13-4"><a href="#cb13-4"></a>    <span class="dt">new_var =</span> DCSREAS,</span>
-<span id="cb13-5"><a href="#cb13-5"></a>    <span class="dt">reason_var =</span> DSDECOD,</span>
-<span id="cb13-6"><a href="#cb13-6"></a>    <span class="dt">new_var_spe =</span> DCSREASP,</span>
-<span id="cb13-7"><a href="#cb13-7"></a>    <span class="dt">reason_var_spe =</span> DSTERM,</span>
-<span id="cb13-8"><a href="#cb13-8"></a>    <span class="dt">format_new_vars =</span> format_dcsreas,</span>
-<span id="cb13-9"><a href="#cb13-9"></a>    <span class="dt">filter_ds =</span> DSCAT <span class="op">==</span><span class="st"> &quot;DISPOSITION EVENT&quot;</span></span>
-<span id="cb13-10"><a href="#cb13-10"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_disposition_reason</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_ds =</span> ds,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> DCSREAS,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">reason_var =</span> DSDECOD,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var_spe =</span> DCSREASP,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">reason_var_spe =</span> DSTERM,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">format_new_vars =</span> format_dcsreas,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_ds =</span> DSCAT <span class="sc">==</span> <span class="st">&quot;DISPOSITION EVENT&quot;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 </div>
 </div>
 <div id="death" class="section level2">
@@ -1007,11 +886,11 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h3>Death Date (<code>DTHDT</code>)</h3>
 <p>The function <code>derive_vars_dt()</code> can be used to derive <code>DTHDT</code>. This function allows the user to impute the date as well.</p>
 <p>Example calls:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="st">  </span><span class="kw">derive_vars_dt</span>(</span>
-<span id="cb14-3"><a href="#cb14-3"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;DTH&quot;</span>,</span>
-<span id="cb14-4"><a href="#cb14-4"></a>    <span class="dt">dtc =</span> DTHDTC</span>
-<span id="cb14-5"><a href="#cb14-5"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dt</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;DTH&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> DTHDTC</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1095,14 +974,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tr>
 </tbody>
 </table>
-<p>This call would return the input dataset with the columns <code>DTHDT</code> added and, by default, the associated date imputation flag (<code>DTHDTF</code>) populated with the controlled terminology outlined in the ADaM IG for date imputations. If the imputation flag is not required, the user must set the argument <code>flag_imputation</code> to <code>FALSE</code>.</p>
+<p>This call would return the input dataset with the columns <code>DTHDT</code> added and, by default, the associated date imputation flag (<code>DTHDTF</code>) populated with the controlled terminology outlined in the ADaM IG for date imputations. If the imputation flag is not required, the user must set the argument <code>flag_imputation</code> to “none”.</p>
 <p>If imputation is needed and the date is to be imputed to the first day of the month/year the call would be:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="st">  </span><span class="kw">derive_vars_dt</span>(</span>
-<span id="cb15-3"><a href="#cb15-3"></a>    <span class="dt">new_vars_prefix =</span> <span class="st">&quot;DTH&quot;</span>,</span>
-<span id="cb15-4"><a href="#cb15-4"></a>    <span class="dt">dtc =</span> DTHDTC,</span>
-<span id="cb15-5"><a href="#cb15-5"></a>    <span class="dt">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span></span>
-<span id="cb15-6"><a href="#cb15-6"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dt</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;DTH&quot;</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> DTHDTC,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p>See also <a href="imputation.html">Date and Time Imputation</a>.</p>
 </div>
 <div id="death_cause" class="section level3">
@@ -1110,7 +989,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>The cause of death <code>DTHCAUS</code> can be derived using the function <code>derive_var_dthcaus()</code>.</p>
 <p>Since the cause of death could be collected/mapped in different domains (e.g. <code>DS</code>, <code>AE</code>, <code>DD</code>), it is important the user specifies the right source(s) to derive the cause of death from.</p>
 <p>For example, if the date of death is collected in the AE form when the AE is Fatal, the cause of death would be set to the preferred term (<code>AEDECOD</code>) of that Fatal AE, while if the date of death is collected in the <code>DS</code> form, the cause of death would be set to the disposition term (<code>DSTERM</code>). To achieve this, the <code>dthcaus_source()</code> objects must be specified and defined such as it fits the study requirement.</p>
-<p><code>dthcause_source()</code> specifications:</p>
+<p><code>dthcaus_source()</code> specifications:</p>
 <ul>
 <li><code>dataset_name</code>: the name of the dataset where to search for death information,</li>
 <li><code>filter</code>: the condition to define death,</li>
@@ -1120,13 +999,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>traceability_vars</code>: whether the traceability variables need to be added (e.g source domain, sequence, variable)</li>
 </ul>
 <p>An example call to define the sources would be:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>src_ae &lt;-<span class="st"> </span><span class="kw">dthcaus_source</span>(</span>
-<span id="cb16-2"><a href="#cb16-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb16-3"><a href="#cb16-3"></a>  <span class="dt">filter =</span> AEOUT <span class="op">==</span><span class="st"> &quot;FATAL&quot;</span>,</span>
-<span id="cb16-4"><a href="#cb16-4"></a>  <span class="dt">date =</span> AESTDTC,</span>
-<span id="cb16-5"><a href="#cb16-5"></a>  <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb16-6"><a href="#cb16-6"></a>  <span class="dt">dthcaus =</span> AEDECOD</span>
-<span id="cb16-7"><a href="#cb16-7"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>src_ae <span class="ot">&lt;-</span> <span class="fu">dthcaus_source</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> AEOUT <span class="sc">==</span> <span class="st">&quot;FATAL&quot;</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AESTDTC,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dthcaus =</span> AEDECOD</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1161,13 +1040,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>src_ds &lt;-<span class="st"> </span><span class="kw">dthcaus_source</span>(</span>
-<span id="cb17-2"><a href="#cb17-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ds&quot;</span>,</span>
-<span id="cb17-3"><a href="#cb17-3"></a>  <span class="dt">filter =</span> DSDECOD <span class="op">==</span><span class="st"> &quot;DEATH&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;DEATH DUE TO&quot;</span>, DSTERM),</span>
-<span id="cb17-4"><a href="#cb17-4"></a>  <span class="dt">date =</span> DSSTDTC,</span>
-<span id="cb17-5"><a href="#cb17-5"></a>  <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb17-6"><a href="#cb17-6"></a>  <span class="dt">dthcaus =</span> <span class="st">&quot;Death in DS&quot;</span></span>
-<span id="cb17-7"><a href="#cb17-7"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>src_ds <span class="ot">&lt;-</span> <span class="fu">dthcaus_source</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ds&quot;</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> DSDECOD <span class="sc">==</span> <span class="st">&quot;DEATH&quot;</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;DEATH DUE TO&quot;</span>, DSTERM),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> DSSTDTC,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dthcaus =</span> <span class="st">&quot;Death in DS&quot;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1199,8 +1078,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tbody>
 </table>
 <p>Once the sources are defined, the function <code>derive_var_dthcaus()</code> can be used to derive <code>DTHCAUS</code>:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb18-2"><a href="#cb18-2"></a><span class="st">  </span><span class="kw">derive_var_dthcaus</span>(src_ae, src_ds, <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">ae =</span> ae, <span class="dt">ds =</span> ds))</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_dthcaus</span>(src_ae, src_ds, <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">ae =</span> ae, <span class="at">ds =</span> ds))</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1236,26 +1115,26 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tbody>
 </table>
 <p>The function also offers the option to add some traceability variables (e.g. <code>DTHDOM</code> would store the domain where the date of death is collected, and <code>DTHSEQ</code> would store the <code>xxSEQ</code> value of that domain). To add them, the <code>traceability_vars</code> argument must be added to the <code>dthcaus_source()</code> arguments:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>src_ae &lt;-<span class="st"> </span><span class="kw">dthcaus_source</span>(</span>
-<span id="cb19-2"><a href="#cb19-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb19-3"><a href="#cb19-3"></a>  <span class="dt">filter =</span> AEOUT <span class="op">==</span><span class="st"> &quot;FATAL&quot;</span>,</span>
-<span id="cb19-4"><a href="#cb19-4"></a>  <span class="dt">date =</span> AESTDTC,</span>
-<span id="cb19-5"><a href="#cb19-5"></a>  <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb19-6"><a href="#cb19-6"></a>  <span class="dt">dthcaus =</span> AEDECOD,</span>
-<span id="cb19-7"><a href="#cb19-7"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">DTHDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="dt">DTHSEQ =</span> AESEQ)</span>
-<span id="cb19-8"><a href="#cb19-8"></a>)</span>
-<span id="cb19-9"><a href="#cb19-9"></a></span>
-<span id="cb19-10"><a href="#cb19-10"></a>src_ds &lt;-<span class="st"> </span><span class="kw">dthcaus_source</span>(</span>
-<span id="cb19-11"><a href="#cb19-11"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ds&quot;</span>,</span>
-<span id="cb19-12"><a href="#cb19-12"></a>  <span class="dt">filter =</span> DSDECOD <span class="op">==</span><span class="st"> &quot;DEATH&quot;</span> <span class="op">&amp;</span><span class="st"> </span><span class="kw">grepl</span>(<span class="st">&quot;DEATH DUE TO&quot;</span>, DSTERM),</span>
-<span id="cb19-13"><a href="#cb19-13"></a>  <span class="dt">date =</span> DSSTDTC,</span>
-<span id="cb19-14"><a href="#cb19-14"></a>  <span class="dt">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb19-15"><a href="#cb19-15"></a>  <span class="dt">dthcaus =</span> DSTERM,</span>
-<span id="cb19-16"><a href="#cb19-16"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">DTHDOM =</span> <span class="st">&quot;DS&quot;</span>, <span class="dt">DTHSEQ =</span> DSSEQ)</span>
-<span id="cb19-17"><a href="#cb19-17"></a>)</span>
-<span id="cb19-18"><a href="#cb19-18"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb19-19"><a href="#cb19-19"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>DTHCAUS) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># remove it before deriving it again</span></span>
-<span id="cb19-20"><a href="#cb19-20"></a><span class="st">  </span><span class="kw">derive_var_dthcaus</span>(src_ae, src_ds, <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">ae =</span> ae, <span class="dt">ds =</span> ds))</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>src_ae <span class="ot">&lt;-</span> <span class="fu">dthcaus_source</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> AEOUT <span class="sc">==</span> <span class="st">&quot;FATAL&quot;</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AESTDTC,</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dthcaus =</span> AEDECOD,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">traceability_vars =</span> <span class="fu">vars</span>(<span class="at">DTHDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="at">DTHSEQ =</span> AESEQ)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>src_ds <span class="ot">&lt;-</span> <span class="fu">dthcaus_source</span>(</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ds&quot;</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> DSDECOD <span class="sc">==</span> <span class="st">&quot;DEATH&quot;</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;DEATH DUE TO&quot;</span>, DSTERM),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> DSSTDTC,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">dthcaus =</span> DSTERM,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">traceability_vars =</span> <span class="fu">vars</span>(<span class="at">DTHDOM =</span> <span class="st">&quot;DS&quot;</span>, <span class="at">DTHSEQ =</span> DSSEQ)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>DTHCAUS) <span class="sc">%&gt;%</span> <span class="co"># remove it before deriving it again</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_dthcaus</span>(src_ae, src_ds, <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">ae =</span> ae, <span class="at">ds =</span> ds))</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1306,22 +1185,22 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <ul>
 <li>Relative Day of Death</li>
 </ul>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb20-2"><a href="#cb20-2"></a><span class="st">  </span><span class="kw">derive_vars_duration</span>(</span>
-<span id="cb20-3"><a href="#cb20-3"></a>    <span class="dt">new_var =</span> DTHADY,</span>
-<span id="cb20-4"><a href="#cb20-4"></a>    <span class="dt">start_date =</span> TRTSDT,</span>
-<span id="cb20-5"><a href="#cb20-5"></a>    <span class="dt">end_date =</span> DTHDT</span>
-<span id="cb20-6"><a href="#cb20-6"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> DTHADY,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> TRTSDT,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> DTHDT</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <ul>
 <li>Elapsed Days from Last Dose to Death</li>
 </ul>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb21-2"><a href="#cb21-2"></a><span class="st">  </span><span class="kw">derive_vars_duration</span>(</span>
-<span id="cb21-3"><a href="#cb21-3"></a>    <span class="dt">new_var =</span> LDDTHELD,</span>
-<span id="cb21-4"><a href="#cb21-4"></a>    <span class="dt">start_date =</span> TRTEDT,</span>
-<span id="cb21-5"><a href="#cb21-5"></a>    <span class="dt">end_date =</span> DTHDT,</span>
-<span id="cb21-6"><a href="#cb21-6"></a>    <span class="dt">add_one =</span> <span class="ot">FALSE</span></span>
-<span id="cb21-7"><a href="#cb21-7"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> LDDTHELD,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> TRTEDT,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> DTHDT,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">add_one =</span> <span class="cn">FALSE</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1368,8 +1247,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="lstalvdt" class="section level2">
 <h2>Derive the Last Date Known Alive (<code>LSTALVDT</code>)</h2>
-<p>Similarly as for the cause of death (<code>DTHCAUS</code>), the last known alive date (<code>LSTALVDT</code>) can be derived from multiples sources and the user must ensure the sources (<code>lstalvdt_source</code>) are correctly defined.</p>
-<p><code>lstalvdt_source()</code> specifications:</p>
+<p>Similarly as for the cause of death (<code>DTHCAUS</code>), the last known alive date (<code>LSTALVDT</code>) can be derived from multiples sources and the user must ensure the sources (<code>date_source()</code>) are correctly defined.</p>
+<p><code>date_source()</code> specifications:</p>
 <ul>
 <li><code>dataset_name</code>: the name of the dataset where to search for date information,</li>
 <li><code>filter</code>: the filter to apply on the datasets,</li>
@@ -1378,31 +1257,33 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><code>traceability_vars</code>: whether the traceability variables need to be added (e.g source domain, sequence, variable)</li>
 </ul>
 <p>An example could be :</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>ae_src1 &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb22-3"><a href="#cb22-3"></a>  <span class="dt">date =</span> AESTDTC,</span>
-<span id="cb22-4"><a href="#cb22-4"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span></span>
-<span id="cb22-5"><a href="#cb22-5"></a>)</span>
-<span id="cb22-6"><a href="#cb22-6"></a>ae_src2 &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
-<span id="cb22-7"><a href="#cb22-7"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb22-8"><a href="#cb22-8"></a>  <span class="dt">date =</span> AEENDTC,</span>
-<span id="cb22-9"><a href="#cb22-9"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;LAST&quot;</span></span>
-<span id="cb22-10"><a href="#cb22-10"></a>)</span>
-<span id="cb22-11"><a href="#cb22-11"></a>lb_src &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
-<span id="cb22-12"><a href="#cb22-12"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;lb&quot;</span>,</span>
-<span id="cb22-13"><a href="#cb22-13"></a>  <span class="dt">date =</span> LBDTC,</span>
-<span id="cb22-14"><a href="#cb22-14"></a>  <span class="dt">filter =</span> <span class="kw">str_length</span>(LBDTC) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span></span>
-<span id="cb22-15"><a href="#cb22-15"></a>)</span>
-<span id="cb22-16"><a href="#cb22-16"></a>adsl_src &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
-<span id="cb22-17"><a href="#cb22-17"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb22-18"><a href="#cb22-18"></a>  <span class="dt">date =</span> TRTEDT</span>
-<span id="cb22-19"><a href="#cb22-19"></a>)</span></code></pre></div>
-<p>Once the sources are defined, the function <code>derive_var_lstalvdt()</code> can be used to derive <code>LSTALVDT</code>:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb23-2"><a href="#cb23-2"></a><span class="st">  </span><span class="kw">derive_var_lstalvdt</span>(</span>
-<span id="cb23-3"><a href="#cb23-3"></a>    ae_src1, ae_src2, lb_src, adsl_src,</span>
-<span id="cb23-4"><a href="#cb23-4"></a>    <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">ae =</span> ae, <span class="dt">adsl =</span> adsl, <span class="dt">lb =</span> lb)</span>
-<span id="cb23-5"><a href="#cb23-5"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>ae_src1 <span class="ot">&lt;-</span> <span class="fu">date_source</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AESTDTC,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>ae_src2 <span class="ot">&lt;-</span> <span class="fu">date_source</span>(</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AEENDTC,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;LAST&quot;</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>lb_src <span class="ot">&lt;-</span> <span class="fu">date_source</span>(</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;lb&quot;</span>,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> LBDTC,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> <span class="fu">str_length</span>(LBDTC) <span class="sc">&gt;=</span> <span class="dv">10</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>adsl_src <span class="ot">&lt;-</span> <span class="fu">date_source</span>(</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> TRTEDT</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Once the sources are defined, the function <code>derive_var_extreme_dt()</code> can be used to derive <code>LSTALVDT</code>:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_extreme_dt</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> LSTALVDT,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    ae_src1, ae_src2, lb_src, adsl_src,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">ae =</span> ae, <span class="at">adsl =</span> adsl, <span class="at">lb =</span> lb),</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1475,37 +1356,39 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </tr>
 </tbody>
 </table>
-<p>Similarly to <code>dthcaus_source()</code>, the traceability variables can be added by specifying the <code>traceability_vars</code> argument in <code>lstalvdt_source()</code>.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>ae_src1 &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
-<span id="cb24-2"><a href="#cb24-2"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb24-3"><a href="#cb24-3"></a>  <span class="dt">date =</span> AESTDTC,</span>
-<span id="cb24-4"><a href="#cb24-4"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span>,</span>
-<span id="cb24-5"><a href="#cb24-5"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">LALVDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="dt">LALVSEQ =</span> AESEQ, <span class="dt">LALVVAR =</span> <span class="st">&quot;AESTDTC&quot;</span>)</span>
-<span id="cb24-6"><a href="#cb24-6"></a>)</span>
-<span id="cb24-7"><a href="#cb24-7"></a>ae_src2 &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
-<span id="cb24-8"><a href="#cb24-8"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb24-9"><a href="#cb24-9"></a>  <span class="dt">date =</span> AEENDTC,</span>
-<span id="cb24-10"><a href="#cb24-10"></a>  <span class="dt">date_imputation =</span> <span class="st">&quot;LAST&quot;</span>,</span>
-<span id="cb24-11"><a href="#cb24-11"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">LALVDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="dt">LALVSEQ =</span> AESEQ, <span class="dt">LALVVAR =</span> <span class="st">&quot;AEENDTC&quot;</span>)</span>
-<span id="cb24-12"><a href="#cb24-12"></a>)</span>
-<span id="cb24-13"><a href="#cb24-13"></a>lb_src &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
-<span id="cb24-14"><a href="#cb24-14"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;lb&quot;</span>,</span>
-<span id="cb24-15"><a href="#cb24-15"></a>  <span class="dt">date =</span> LBDTC,</span>
-<span id="cb24-16"><a href="#cb24-16"></a>  <span class="dt">filter =</span> <span class="kw">str_length</span>(LBDTC) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span>,</span>
-<span id="cb24-17"><a href="#cb24-17"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">LALVDOM =</span> <span class="st">&quot;LB&quot;</span>, <span class="dt">LALVSEQ =</span> LBSEQ, <span class="dt">LALVVAR =</span> <span class="st">&quot;LBDTC&quot;</span>)</span>
-<span id="cb24-18"><a href="#cb24-18"></a>)</span>
-<span id="cb24-19"><a href="#cb24-19"></a>adsl_src &lt;-<span class="st"> </span><span class="kw">lstalvdt_source</span>(</span>
-<span id="cb24-20"><a href="#cb24-20"></a>  <span class="dt">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
-<span id="cb24-21"><a href="#cb24-21"></a>  <span class="dt">date =</span> TRTEDTM,</span>
-<span id="cb24-22"><a href="#cb24-22"></a>  <span class="dt">traceability_vars =</span> <span class="kw">vars</span>(<span class="dt">LALVDOM =</span> <span class="st">&quot;ADSL&quot;</span>, <span class="dt">LALVSEQ =</span> <span class="ot">NA_integer_</span>, <span class="dt">LALVVAR =</span> <span class="st">&quot;TRTEDTM&quot;</span>)</span>
-<span id="cb24-23"><a href="#cb24-23"></a>)</span>
-<span id="cb24-24"><a href="#cb24-24"></a></span>
-<span id="cb24-25"><a href="#cb24-25"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb24-26"><a href="#cb24-26"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>LSTALVDT) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># created in the previous call</span></span>
-<span id="cb24-27"><a href="#cb24-27"></a><span class="st">  </span><span class="kw">derive_var_lstalvdt</span>(</span>
-<span id="cb24-28"><a href="#cb24-28"></a>    ae_src1, ae_src2, lb_src, adsl_src,</span>
-<span id="cb24-29"><a href="#cb24-29"></a>    <span class="dt">source_datasets =</span> <span class="kw">list</span>(<span class="dt">ae =</span> ae, <span class="dt">adsl =</span> adsl, <span class="dt">lb =</span> lb)</span>
-<span id="cb24-30"><a href="#cb24-30"></a>  )</span></code></pre></div>
+<p>Similarly to <code>dthcaus_source()</code>, the traceability variables can be added by specifying the <code>traceability_vars</code> argument in <code>date_source()</code>.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ae_src1 <span class="ot">&lt;-</span> <span class="fu">date_source</span>(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AESTDTC,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">traceability_vars =</span> <span class="fu">vars</span>(<span class="at">LALVDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="at">LALVSEQ =</span> AESEQ, <span class="at">LALVVAR =</span> <span class="st">&quot;AESTDTC&quot;</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>ae_src2 <span class="ot">&lt;-</span> <span class="fu">date_source</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> AEENDTC,</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;LAST&quot;</span>,</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">traceability_vars =</span> <span class="fu">vars</span>(<span class="at">LALVDOM =</span> <span class="st">&quot;AE&quot;</span>, <span class="at">LALVSEQ =</span> AESEQ, <span class="at">LALVVAR =</span> <span class="st">&quot;AEENDTC&quot;</span>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>lb_src <span class="ot">&lt;-</span> <span class="fu">date_source</span>(</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;lb&quot;</span>,</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> LBDTC,</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> <span class="fu">str_length</span>(LBDTC) <span class="sc">&gt;=</span> <span class="dv">10</span>,</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">traceability_vars =</span> <span class="fu">vars</span>(<span class="at">LALVDOM =</span> <span class="st">&quot;LB&quot;</span>, <span class="at">LALVSEQ =</span> LBSEQ, <span class="at">LALVVAR =</span> <span class="st">&quot;LBDTC&quot;</span>)</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>adsl_src <span class="ot">&lt;-</span> <span class="fu">date_source</span>(</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;adsl&quot;</span>,</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">date =</span> TRTEDTM,</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">traceability_vars =</span> <span class="fu">vars</span>(<span class="at">LALVDOM =</span> <span class="st">&quot;ADSL&quot;</span>, <span class="at">LALVSEQ =</span> <span class="cn">NA_integer_</span>, <span class="at">LALVVAR =</span> <span class="st">&quot;TRTEDTM&quot;</span>)</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>LSTALVDT) <span class="sc">%&gt;%</span> <span class="co"># created in the previous call</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_extreme_dt</span>(</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> LSTALVDT,</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>    ae_src1, ae_src2, lb_src, adsl_src,</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">ae =</span> ae, <span class="at">adsl =</span> adsl, <span class="at">lb =</span> lb),</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1618,40 +1501,38 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h3>Grouping (e.g. <code>AGEGR1</code> or <code>REGION1</code>)</h3>
 <p>Numeric and categorical variables (<code>AGE</code>, <code>RACE</code>, <code>COUNTRY</code>, etc.) may need to be grouped to perform the required analysis. <code>{admiral}</code> does not <strong>currently</strong> have functionality to assist with all required groupings. Some functions exist for age grouping according to FDA or EMA conventions. For others, the user can create his/her own function to meet his/her study requirement.</p>
 <p>To derive <code>AGEGR1</code> as categorized <code>AGE</code> in <code>&lt; 18</code>, <code>18-65</code>, <code>&gt;= 65</code> (FDA convention):</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb25-2"><a href="#cb25-2"></a><span class="st">  </span><span class="kw">derive_agegr_fda</span>(</span>
-<span id="cb25-3"><a href="#cb25-3"></a>    <span class="dt">age_var =</span> AGE,</span>
-<span id="cb25-4"><a href="#cb25-4"></a>    <span class="dt">new_var =</span> AGEGR1</span>
-<span id="cb25-5"><a href="#cb25-5"></a>  )</span>
-<span id="cb25-6"><a href="#cb25-6"></a><span class="co">#&gt; Warning: `derive_agegr_fda()` was deprecated in admiral 0.6.0.</span></span>
-<span id="cb25-7"><a href="#cb25-7"></a><span class="co">#&gt; Please use `derive_var_agegr_fda()` instead.</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_agegr_fda</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_var =</span> AGE,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> AGEGR1</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p>However for example if</p>
 <ul>
 <li><code>AGEGR2</code> would categorize <code>AGE</code> in <code>&lt; 65</code>, <code>&gt;= 65</code>,</li>
 <li><code>REGION1</code> would categorize <code>COUNTRY</code> in <code>North America</code>, <code>Rest of the World</code>,</li>
 </ul>
 <p>the user defined function(s) would be like:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>format_agegr2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
-<span id="cb26-2"><a href="#cb26-2"></a>  <span class="kw">case_when</span>(</span>
-<span id="cb26-3"><a href="#cb26-3"></a>    <span class="op">!</span><span class="kw">is.na</span>(x) <span class="op">&amp;</span><span class="st"> </span>x <span class="op">&lt;</span><span class="st"> </span><span class="dv">65</span> <span class="op">~</span><span class="st"> &quot;&lt; 65&quot;</span>,</span>
-<span id="cb26-4"><a href="#cb26-4"></a>    x <span class="op">&gt;=</span><span class="st"> </span><span class="dv">65</span> <span class="op">~</span><span class="st"> &quot;&gt;= 65&quot;</span>,</span>
-<span id="cb26-5"><a href="#cb26-5"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="ot">NA_character_</span></span>
-<span id="cb26-6"><a href="#cb26-6"></a>  )</span>
-<span id="cb26-7"><a href="#cb26-7"></a>}</span>
-<span id="cb26-8"><a href="#cb26-8"></a></span>
-<span id="cb26-9"><a href="#cb26-9"></a>format_region1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
-<span id="cb26-10"><a href="#cb26-10"></a>  <span class="kw">case_when</span>(</span>
-<span id="cb26-11"><a href="#cb26-11"></a>    x <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;CAN&quot;</span>, <span class="st">&quot;USA&quot;</span>) <span class="op">~</span><span class="st"> &quot;North America&quot;</span>,</span>
-<span id="cb26-12"><a href="#cb26-12"></a>    <span class="op">!</span><span class="kw">is.na</span>(x) <span class="op">~</span><span class="st"> &quot;Rest of the World&quot;</span>,</span>
-<span id="cb26-13"><a href="#cb26-13"></a>    <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> &quot;Missing&quot;</span></span>
-<span id="cb26-14"><a href="#cb26-14"></a>  )</span>
-<span id="cb26-15"><a href="#cb26-15"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>format_agegr2 <span class="ot">&lt;-</span> <span class="cf">function</span>(var_input) {</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(var_input) <span class="sc">&amp;</span> var_input <span class="sc">&lt;</span> <span class="dv">65</span> <span class="sc">~</span> <span class="st">&quot;&lt; 65&quot;</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    var_input <span class="sc">&gt;=</span> <span class="dv">65</span> <span class="sc">~</span> <span class="st">&quot;&gt;= 65&quot;</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>format_region1 <span class="ot">&lt;-</span> <span class="cf">function</span>(var_input) {</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    var_input <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CAN&quot;</span>, <span class="st">&quot;USA&quot;</span>) <span class="sc">~</span> <span class="st">&quot;North America&quot;</span>,</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(var_input) <span class="sc">~</span> <span class="st">&quot;Rest of the World&quot;</span>,</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Missing&quot;</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>These functions are then used in a <code>mutate()</code> statement to derive the required grouping variables:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb27-2"><a href="#cb27-2"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb27-3"><a href="#cb27-3"></a>    <span class="dt">AGEGR2 =</span> <span class="kw">format_agegr2</span>(AGE),</span>
-<span id="cb27-4"><a href="#cb27-4"></a>    <span class="dt">REGION1 =</span> <span class="kw">format_region1</span>(COUNTRY)</span>
-<span id="cb27-5"><a href="#cb27-5"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">AGEGR2 =</span> <span class="fu">format_agegr2</span>(AGE),</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">REGION1 =</span> <span class="fu">format_region1</span>(COUNTRY)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1760,12 +1641,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="popflag" class="section level3">
 <h3>Population Flags (e.g. <code>SAFFL</code>)</h3>
-<p>Since the populations flags are mainly company/study specific and that it can easily be derived using an <code>if_else()</code> statement, <code>{admiral}</code> did not implement a functionality to assist with populations flags.</p>
-<p>An example of a simple implementation could be:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>adsl &lt;-<span class="st"> </span>adsl <span class="op">%&gt;%</span></span>
-<span id="cb28-2"><a href="#cb28-2"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb28-3"><a href="#cb28-3"></a>    <span class="dt">SAFFL =</span> <span class="kw">if_else</span>(<span class="op">!</span><span class="kw">is.na</span>(TRTSDT), <span class="st">&quot;Y&quot;</span>, <span class="ot">NA_character_</span>)</span>
-<span id="cb28-4"><a href="#cb28-4"></a>  )</span></code></pre></div>
+<p>Since the populations flags are mainly company/study specific no dedicated functions are provided, but in most cases they can easily be derived using <code>derive_var_merged_exist_flag</code>.</p>
+<p>An example of an implementation could be:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_merged_exist_flag</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> SAFFL,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">condition =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">str_detect</span>(EXTRT, <span class="st">&quot;PLACEBO&quot;</span>)))</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1854,6 +1738,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="other" class="section level2">
 <h2>Derive Other Variables</h2>
 <p>The users can add specific code to cover their need for the analysis.</p>
+<p>The following functions are helpful for many ADSL derivations:</p>
+<ul>
+<li><code>derive_vars_merged()</code> - Merge Variables from a Dataset to the Input Dataset</li>
+<li><code>derive_vars_merged_dt()</code> - Merge a (Imputed) Date Variable</li>
+<li><code>derive_vars_merged_dtm()</code> - Merge a (Imputed) Datetime Variable</li>
+<li><code>derive_var_merged_cat()</code> - Merge a Categorization Variable</li>
+<li><code>derive_var_merged_exist_flag()</code> - Merge an Existence Flag</li>
+<li><code>derive_var_merged_character()</code> - Merge a Character Variable</li>
+</ul>
 </div>
 <div id="attributes" class="section level2">
 <h2>Add Labels and Attributes</h2>

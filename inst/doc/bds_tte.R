@@ -13,8 +13,13 @@ library(admiral.test)
 library(lubridate)
 
 ## -----------------------------------------------------------------------------
-data("adsl")
-data("adae")
+data("admiral_adsl")
+data("admiral_ae")
+data("admiral_adae")
+
+adsl <- admiral_adsl
+adae <- admiral_adae
+ae <- admiral_ae
 
 ## ----echo=FALSE---------------------------------------------------------------
 knitr::kable(admiral:::list_tte_source_objects())
@@ -70,7 +75,7 @@ death <- event_source(
   dataset_name = "adsl",
   filter = DTHFL == "Y",
   date = DTHDT,
-  set_values_to =vars(
+  set_values_to = vars(
     EVNTDESC = "DEATH",
     SRCDOM = "ADSL",
     SRCVAR = "DTHDT"
@@ -108,14 +113,14 @@ adsl_bak <- adsl
 
 ## ---- echo=FALSE--------------------------------------------------------------
 adsl <- tibble::tribble(
-    ~USUBJID, ~DTHFL, ~DTHDT,            ~TRTSDT,           ~TRTSDTF,
-    "01",     "Y",    ymd("2021-06-12"), ymd("2021-01-01"), "M",
-    "02",     "N",    NA,                ymd("2021-02-03"), NA,
-    "03",     "Y",    ymd("2021-08-21"), ymd("2021-08-10"), NA,
-    "04",     "N",    NA,                ymd("2021-02-03"), NA,
-    "05",     "N",    NA,                ymd("2021-04-01"), "D"
-  ) %>%
-    mutate(STUDYID = "AB42")
+  ~USUBJID, ~DTHFL, ~DTHDT,            ~TRTSDT,           ~TRTSDTF,
+  "01",     "Y",    ymd("2021-06-12"), ymd("2021-01-01"), "M",
+  "02",     "N",    NA,                ymd("2021-02-03"), NA,
+  "03",     "Y",    ymd("2021-08-21"), ymd("2021-08-10"), NA,
+  "04",     "N",    NA,                ymd("2021-02-03"), NA,
+  "05",     "N",    NA,                ymd("2021-04-01"), "D"
+) %>%
+  mutate(STUDYID = "AB42")
 
 dataset_vignette(
   adsl,
@@ -123,22 +128,22 @@ dataset_vignette(
 )
 
 ## ---- echo=FALSE--------------------------------------------------------------
-  adrs <- tibble::tribble(
-    ~USUBJID, ~AVALC, ~ADT,              ~ASEQ,
-    "01",     "SD",   ymd("2021-01-03"), 1,
-    "01",     "PR",   ymd("2021-03-04"), 2,
-    "01",     "PD",   ymd("2021-05-05"), 3,
-    "02",     "PD",   ymd("2021-02-03"), 1,
-    "04",     "SD",   ymd("2021-02-13"), 1,
-    "04",     "PR",   ymd("2021-04-14"), 2,
-    "04",     "CR",   ymd("2021-05-15"), 3
+adrs <- tibble::tribble(
+  ~USUBJID, ~AVALC, ~ADT,              ~ASEQ,
+  "01",     "SD",   ymd("2021-01-03"), 1,
+  "01",     "PR",   ymd("2021-03-04"), 2,
+  "01",     "PD",   ymd("2021-05-05"), 3,
+  "02",     "PD",   ymd("2021-02-03"), 1,
+  "04",     "SD",   ymd("2021-02-13"), 1,
+  "04",     "PR",   ymd("2021-04-14"), 2,
+  "04",     "CR",   ymd("2021-05-15"), 3
+) %>%
+  mutate(
+    STUDYID = "AB42",
+    PARAMCD = "OVR",
+    PARAM = "Overall Response"
   ) %>%
-    mutate(
-      STUDYID = "AB42",
-      PARAMCD = "OVR",
-      PARAM = "Overall Response"
-    ) %>% 
-    select(STUDYID, USUBJID, PARAMCD, PARAM, ADT, ASEQ, AVALC)
+  select(STUDYID, USUBJID, PARAMCD, PARAM, ADT, ASEQ, AVALC)
 
 dataset_vignette(
   adrs,
@@ -202,7 +207,6 @@ adtte <- derive_param_tte(
   dataset_adsl = adsl,
   source_datasets = list(adsl = adsl, adrs = adrs),
   start_date = TRTSDT,
-  start_date_imputation_flag = TRTSDTF,
   event_conditions = list(pd, death),
   censor_conditions = list(lastvisit, start),
   set_values_to = vars(PARAMCD = "PFS", PARAM = "Progression Free Survival")
@@ -211,10 +215,10 @@ adtte <- derive_param_tte(
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(
   adtte %>%
-  select(
-    STUDYID, USUBJID, PARAMCD, PARAM, STARTDT, STARTDTF, ADT, ADTF, CNSR,
-    EVNTDESC, SRCDOM, SRCVAR
-  ),
+    select(
+      STUDYID, USUBJID, PARAMCD, PARAM, STARTDT, STARTDTF, ADT, ADTF, CNSR,
+      EVNTDESC, SRCDOM, SRCVAR
+    ),
   display_vars = vars(USUBJID, PARAMCD, STARTDT, STARTDTF, ADT, ADTF, CNSR)
 )
 
@@ -295,7 +299,7 @@ adaette <- call_derivation(
 ## ---- echo=FALSE--------------------------------------------------------------
 adaette %>%
   select(STUDYID, USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR) %>%
-  arrange(USUBJID, PARAMCD) %>% 
+  arrange(USUBJID, PARAMCD) %>%
   dataset_vignette(display_vars = vars(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR))
 
 ## ---- echo=FALSE--------------------------------------------------------------
@@ -383,7 +387,8 @@ adtte <- derive_vars_duration(
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(
-  adtte)
+  adtte
+)
 
 ## ----eval=TRUE----------------------------------------------------------------
 adtte <- derive_var_obs_number(
@@ -397,12 +402,16 @@ adtte <- derive_var_obs_number(
 dataset_vignette(adtte)
 
 ## ----eval=TRUE----------------------------------------------------------------
-adtte <- left_join(
+adtte <- derive_vars_merged(
   adtte,
-  select(adsl, STUDYID, USUBJID, ARMCD, ARM, ACTARMCD, ACTARM, AGE, SEX),
-  by = c("STUDYID", "USUBJID")
+  dataset_add = adsl,
+  new_vars = vars(ARMCD, ARM, ACTARMCD, ACTARM, AGE, SEX),
+  by_vars = vars(STUDYID, USUBJID)
 )
 
 ## ---- echo=FALSE--------------------------------------------------------------
-dataset_vignette(adtte)
+dataset_vignette(
+  adtte,
+  display_vars = vars(USUBJID, PARAMCD, CNSR, AVAL, ARMCD, AGE, SEX)
+)
 
