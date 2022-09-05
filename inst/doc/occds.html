@@ -187,7 +187,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> adsl_vars,</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">vars</span>(STUDYID, USUBJID)</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<table style="width:100%;">
+<table>
 <colgroup>
 <col width="8%" />
 <col width="4%" />
@@ -195,8 +195,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <col width="7%" />
 <col width="7%" />
 <col width="7%" />
-<col width="14%" />
-<col width="14%" />
+<col width="13%" />
+<col width="13%" />
 <col width="4%" />
 <col width="7%" />
 </colgroup>
@@ -300,40 +300,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2012-09-02</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1028</td>
+<td align="left">01-703-1086</td>
 <td align="right">1</td>
-<td align="left">APPLICATION SITE ERYTHEMA</td>
-<td align="left">2013-07-21</td>
-<td align="left">2013-07-19</td>
-<td align="left">2014-01-14</td>
-<td align="left">Xanomeline High Dose</td>
-<td align="left">Xanomeline High Dose</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-04</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
 <td align="left">NA</td>
-<td align="left">2014-01-14</td>
+<td align="left">2012-12-24</td>
 </tr>
 <tr class="odd">
-<td align="left">01-701-1028</td>
+<td align="left">01-703-1086</td>
 <td align="right">2</td>
-<td align="left">APPLICATION SITE PRURITUS</td>
-<td align="left">2013-08-08</td>
-<td align="left">2013-07-19</td>
-<td align="left">2014-01-14</td>
-<td align="left">Xanomeline High Dose</td>
-<td align="left">Xanomeline High Dose</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-04</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
 <td align="left">NA</td>
-<td align="left">2014-01-14</td>
+<td align="left">2012-12-24</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1034</td>
-<td align="right">1</td>
-<td align="left">APPLICATION SITE PRURITUS</td>
-<td align="left">2014-08-27</td>
-<td align="left">2014-07-01</td>
-<td align="left">2014-12-30</td>
-<td align="left">Xanomeline High Dose</td>
-<td align="left">Xanomeline High Dose</td>
+<td align="left">01-703-1086</td>
+<td align="right">3</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-04</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">Xanomeline Low Dose</td>
 <td align="left">NA</td>
-<td align="left">2014-12-30</td>
+<td align="left">2012-12-24</td>
 </tr>
 </tbody>
 </table>
@@ -345,13 +345,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_dates =</span> <span class="fu">vars</span>(TRTSDT)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AEENDTC,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_dates =</span> <span class="fu">vars</span>(TRTSDT)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AEENDTC,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_dates =</span> <span class="fu">vars</span>(DTHDT, EOSDT)</span>
@@ -465,37 +465,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">26</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1028</td>
-<td align="left">2013-07-21</td>
-<td align="left"></td>
-<td align="left">2013-07-21</td>
-<td align="left">2013-07-21</td>
-<td align="right">3</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-13</td>
+<td align="right">12</td>
+<td align="left">2013-01-02 23:59:59</td>
+<td align="left">2013-01-02</td>
+<td align="right">123</td>
 </tr>
 <tr class="odd">
-<td align="left">01-701-1028</td>
-<td align="left">2013-08-08</td>
-<td align="left"></td>
-<td align="left">2013-08-08</td>
-<td align="left">2013-08-08</td>
-<td align="right">21</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-13</td>
+<td align="right">12</td>
+<td align="left">2013-01-02 23:59:59</td>
+<td align="left">2013-01-02</td>
+<td align="right">123</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1034</td>
-<td align="left">2014-08-27</td>
-<td align="left"></td>
-<td align="left">2014-08-27</td>
-<td align="left">2014-08-27</td>
-<td align="right">58</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-13</td>
+<td align="right">12</td>
+<td align="left">2013-01-02 23:59:59</td>
+<td align="left">2013-01-02</td>
+<td align="right">123</td>
 </tr>
 </tbody>
 </table>
@@ -588,31 +588,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">DAYS</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1028</td>
-<td align="left">2013-07-21</td>
-<td align="left"></td>
-<td align="left">2013-07-21</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
-<td align="left">NA</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="right">112</td>
+<td align="left">DAYS</td>
 </tr>
 <tr class="odd">
-<td align="left">01-701-1028</td>
-<td align="left">2013-08-08</td>
-<td align="left"></td>
-<td align="left">2013-08-08</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
-<td align="left">NA</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="right">112</td>
+<td align="left">DAYS</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1034</td>
-<td align="left">2014-08-27</td>
-<td align="left"></td>
-<td align="left">2014-08-27</td>
-<td align="left">NA</td>
-<td align="right">NA</td>
-<td align="left">NA</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="right">112</td>
+<td align="left">DAYS</td>
 </tr>
 </tbody>
 </table>
@@ -669,30 +669,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">mutate</span>(adae, <span class="at">TRTP =</span> TRT01P, <span class="at">TRTA =</span> TRT01A)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(adae, TRTP, TRTA, TRT01P, TRT01A)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 x 5</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 x 5</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   TRTP               TRTA              TRT01P            TRT01A                n</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt;             &lt;int&gt;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Placebo            Placebo           Placebo           Placebo             301</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Xanomeline High D… Xanomeline High … Xanomeline High … Xanomeline High …   436</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Xanomeline High D… Xanomeline Low D… Xanomeline High … Xanomeline Low D…    19</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Xanomeline Low Do… Xanomeline Low D… Xanomeline Low D… Xanomeline Low D…   435</span></span></code></pre></div>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Placebo            Placebo           Placebo           Placebo              10</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Xanomeline Low Do… Xanomeline Low D… Xanomeline Low D… Xanomeline Low D…     6</span></span></code></pre></div>
 </div>
 <div id="last_dose" class="section level2">
 <h2>Derive Date/Date-time of Last Dose</h2>
 <p>The function <code>derive_var_last_dose_date()</code> can be used to derive the last dose date before the start of the event.</p>
 <p>Additionally, this function can also provide traceability variables (e.g. <code>LDOSEDOM</code>, <code>LDOSESEQ</code>) using the <code>traceability_vars</code> argument.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(ex_single)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_last_dose_date</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    ex_single,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_ex =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="sc">&amp;</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">nchar</span>(EXENDTC) <span class="sc">&gt;=</span> <span class="dv">10</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">dose_date =</span> EXSTDTC,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">analysis_date =</span> ASTDT,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">single_dose_condition =</span> (EXSTDTC <span class="sc">==</span> EXENDTC),</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> LDOSEDTM,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">output_datetime =</span> <span class="cn">TRUE</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ex_single <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  ex_single,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> EXSTDTC,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;EXST&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">flag_imputation =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_last_dose_date</span>(</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    ex_single,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_ex =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="sc">&amp;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(EXSTDTM),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">dose_date =</span> EXSTDTM,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">analysis_date =</span> ASTDT,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">single_dose_condition =</span> (EXSTDTC <span class="sc">==</span> EXENDTC),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> LDOSEDTM,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">output_datetime =</span> <span class="cn">TRUE</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="10%" />
@@ -788,34 +792,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2012-08-07</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1028</td>
-<td align="left">APPLICATION SITE ERYTHEMA</td>
+<td align="left">01-703-1086</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
 <td align="right">1</td>
-<td align="left">2013-07-21</td>
-<td align="left"></td>
-<td align="left">2013-07-21</td>
-<td align="left">NA</td>
-<td align="left">2013-07-21</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
 </tr>
 <tr class="odd">
-<td align="left">01-701-1028</td>
-<td align="left">APPLICATION SITE PRURITUS</td>
+<td align="left">01-703-1086</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
 <td align="right">2</td>
-<td align="left">2013-08-08</td>
-<td align="left"></td>
-<td align="left">2013-08-08</td>
-<td align="left">NA</td>
-<td align="left">2013-08-01</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1034</td>
-<td align="left">APPLICATION SITE PRURITUS</td>
-<td align="right">1</td>
-<td align="left">2014-08-27</td>
-<td align="left"></td>
-<td align="left">2014-08-27</td>
-<td align="left">NA</td>
-<td align="left">2014-07-15</td>
+<td align="left">01-703-1086</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
+<td align="right">3</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
+<td align="left">2013-01-02</td>
+<td align="left">2012-09-13</td>
 </tr>
 </tbody>
 </table>
@@ -905,27 +909,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">Y</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1028</td>
-<td align="left">2013-07-19</td>
-<td align="left">2014-01-14</td>
-<td align="left">2013-07-21</td>
-<td align="left">2013-07-21</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-04</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-13</td>
 <td align="left">Y</td>
 </tr>
 <tr class="odd">
-<td align="left">01-701-1028</td>
-<td align="left">2013-07-19</td>
-<td align="left">2014-01-14</td>
-<td align="left">2013-08-08</td>
-<td align="left">2013-08-08</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-04</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-13</td>
 <td align="left">Y</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1034</td>
-<td align="left">2014-07-01</td>
-<td align="left">2014-12-30</td>
-<td align="left">2014-08-27</td>
-<td align="left">2014-08-27</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-04</td>
+<td align="left">2012-09-13</td>
+<td align="left">2012-09-13</td>
 <td align="left">Y</td>
 </tr>
 </tbody>
@@ -1002,27 +1006,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The function <code>derive_var_extreme_flag()</code> can help derive variables such as <code>AOCCIFL</code>, <code>AOCCPIFL</code>, <code>AOCCSIFL</code>, <code>AOCXIFL</code>, <code>AOCXPIFL</code>, and <code>AOCXSIFL</code>.</p>
 <p>If grades were collected, the following can be used to flag first occurrence of maximum toxicity grade.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_extreme_flag</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(USUBJID),</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">vars</span>(<span class="fu">desc</span>(ATOXGR), ASTDTM, AESEQ),</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> AOCCIFL,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_extreme_flag,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">by_vars =</span> <span class="fu">vars</span>(USUBJID),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">order =</span> <span class="fu">vars</span>(<span class="fu">desc</span>(ATOXGR), ASTDTM, AESEQ),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">new_var =</span> AOCCIFL,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p>Similarly, <code>ASEV</code> can also be used to derive the occurrence flags, if severity is collected. In this case, the variable will need to be recoded to a numeric variable. Flag first occurrence of most severe adverse event:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">ASEVN =</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(ASEV, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;MILD&quot;</span>, <span class="st">&quot;MODERATE&quot;</span>, <span class="st">&quot;SEVERE&quot;</span>, <span class="st">&quot;DEATH THREATENING&quot;</span>)))</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_extreme_flag</span>(</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(USUBJID),</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">vars</span>(<span class="fu">desc</span>(ASEVN), ASTDTM, AESEQ),</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> AOCCIFL,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: `filter` is deprecated as of admiral 0.7.0.</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Please use `restrict_derivation()` instead (see examples).</span></span></code></pre></div>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_extreme_flag,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">by_vars =</span> <span class="fu">vars</span>(USUBJID),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">order =</span> <span class="fu">vars</span>(<span class="fu">desc</span>(ASEVN), ASTDTM, AESEQ),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">new_var =</span> AOCCIFL,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1100,31 +1108,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1028</td>
-<td align="left">2013-07-21</td>
-<td align="left">MILD</td>
-<td align="right">1</td>
-<td align="right">1</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
+<td align="left">SEVERE</td>
+<td align="right">3</td>
+<td align="right">3</td>
 <td align="left">Y</td>
 <td align="left">Y</td>
 </tr>
 <tr class="odd">
-<td align="left">01-701-1028</td>
-<td align="left">2013-08-08</td>
-<td align="left">MILD</td>
-<td align="right">1</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
+<td align="left">MODERATE</td>
+<td align="right">2</td>
 <td align="right">2</td>
 <td align="left">Y</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1034</td>
-<td align="left">2014-08-27</td>
+<td align="left">01-703-1086</td>
+<td align="left">2012-09-13</td>
 <td align="left">MILD</td>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="left">Y</td>
-<td align="left">Y</td>
+<td align="left">NA</td>
 </tr>
 </tbody>
 </table>
@@ -1626,37 +1634,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">M</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1028</td>
-<td align="left">APPLICATION SITE ERYTHEMA</td>
-<td align="left">2013-07-21</td>
+<td align="left">01-703-1086</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
+<td align="left">2012-09-13</td>
 <td align="left">NA</td>
-<td align="left">2013-07-19</td>
-<td align="left">2014-01-14</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-24</td>
 <td align="right">71</td>
 <td align="left">YEARS</td>
 <td align="left">M</td>
 </tr>
 <tr class="odd">
-<td align="left">01-701-1028</td>
-<td align="left">APPLICATION SITE PRURITUS</td>
-<td align="left">2013-08-08</td>
+<td align="left">01-703-1086</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
+<td align="left">2012-09-13</td>
 <td align="left">NA</td>
-<td align="left">2013-07-19</td>
-<td align="left">2014-01-14</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-24</td>
 <td align="right">71</td>
 <td align="left">YEARS</td>
 <td align="left">M</td>
 </tr>
 <tr class="even">
-<td align="left">01-701-1034</td>
-<td align="left">APPLICATION SITE PRURITUS</td>
-<td align="left">2014-08-27</td>
+<td align="left">01-703-1086</td>
+<td align="left">APPLICATION SITE IRRITATION</td>
+<td align="left">2012-09-13</td>
 <td align="left">NA</td>
-<td align="left">2014-07-01</td>
-<td align="left">2014-12-30</td>
-<td align="right">77</td>
+<td align="left">2012-09-02</td>
+<td align="left">2012-12-24</td>
+<td align="right">71</td>
 <td align="left">YEARS</td>
-<td align="left">F</td>
+<td align="left">M</td>
 </tr>
 </tbody>
 </table>

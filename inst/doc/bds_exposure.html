@@ -357,8 +357,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Derive/Impute Numeric Date/Time and Analysis Day (<code>ADT</code>, <code>ADTM</code>, <code>ADY</code>, <code>ADTF</code>, <code>ATMF</code>)</h2>
 <p>The function <code>derive_vars_dt()</code> can be used to derive <code>ADT</code>. This function allows the user to impute the date as well.</p>
 <p>Example calls:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(adex, <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>, <span class="at">dtc =</span> EXSTDTC, <span class="at">flag_imputation =</span> <span class="st">&quot;none&quot;</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(adex, <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>, <span class="at">dtc =</span> EXENDTC, <span class="at">flag_imputation =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(adex, <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>, <span class="at">dtc =</span> EXSTDTC)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(adex, <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>, <span class="at">dtc =</span> EXENDTC)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -457,16 +457,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  adex,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> EXSTDTC,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  adex,</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> EXENDTC,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -996,7 +997,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The function <code>create_single_dose_dataset()</code> can be used to expand a record containing a start date, an end date, and a dosing frequency to a corresponding set of records each representing one dose (i.e. <code>EXDOSFRQ == &quot;ONCE&quot;</code>).</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>single_dose <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1015&quot;</span> <span class="sc">&amp;</span> EXSTDY <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">create_single_dose_dataset</span>()</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">create_single_dose_dataset</span>(<span class="at">keep_source_vars =</span> <span class="fu">vars</span>(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT))</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dataset_vignette</span>(</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  single_dose,</span>

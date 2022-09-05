@@ -4,6 +4,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+library(admiraldev)
+
 ## ---- warning=FALSE, message=FALSE--------------------------------------------
 library(admiral)
 library(dplyr)
@@ -13,13 +15,31 @@ library(admiral.test)
 library(lubridate)
 
 ## -----------------------------------------------------------------------------
-data("admiral_adsl")
 data("admiral_ae")
-data("admiral_adae")
+data("admiral_adsl")
 
-adsl <- admiral_adsl
-adae <- admiral_adae
 ae <- admiral_ae
+adsl <- admiral_adsl
+
+## ----echo=FALSE---------------------------------------------------------------
+ae <- filter(ae, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01-703-1096", "01-707-1037", "01-716-1024"))
+
+## -----------------------------------------------------------------------------
+adae <- ae %>%
+  left_join(adsl, by = c("STUDYID", "USUBJID")) %>%
+  derive_vars_dt(
+    new_vars_prefix = "AST",
+    dtc = AESTDTC,
+    highest_imputation = "M"
+  ) %>%
+  derive_vars_dt(
+    new_vars_prefix = "AEN",
+    dtc = AEENDTC,
+    highest_imputation = "M",
+    date_imputation = "last"
+  ) %>%
+  mutate(TRTEMFL = if_else(ASTDT >= TRTSDT &
+    AENDT <= TRTEDT + days(30), "Y", NA_character_))
 
 ## ----echo=FALSE---------------------------------------------------------------
 knitr::kable(admiral:::list_tte_source_objects())
@@ -216,10 +236,10 @@ adtte <- derive_param_tte(
 dataset_vignette(
   adtte %>%
     select(
-      STUDYID, USUBJID, PARAMCD, PARAM, STARTDT, STARTDTF, ADT, ADTF, CNSR,
+      STUDYID, USUBJID, PARAMCD, PARAM, STARTDT, ADT, ADTF, CNSR,
       EVNTDESC, SRCDOM, SRCVAR
     ),
-  display_vars = vars(USUBJID, PARAMCD, STARTDT, STARTDTF, ADT, ADTF, CNSR)
+  display_vars = vars(USUBJID, PARAMCD, STARTDT, ADT, ADTF, CNSR)
 )
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -242,7 +262,7 @@ observation_end <- censor_source(
 # define time to first AE #
 tt_ae <- event_source(
   dataset_name = "ae",
-  date = AESTDTC,
+  date = ASTDT,
   set_values_to = vars(
     EVNTDESC = "ADVERSE EVENT",
     SRCDOM = "AE",
@@ -254,7 +274,7 @@ tt_ae <- event_source(
 tt_ser_ae <- event_source(
   dataset_name = "ae",
   filter = AESER == "Y",
-  date = AESTDTC,
+  date = ASTDT,
   set_values_to = vars(
     EVNTDESC = "SERIOUS ADVERSE EVENT",
     SRCDOM = "AE",
@@ -266,7 +286,7 @@ tt_ser_ae <- event_source(
 tt_rel_ae <- event_source(
   dataset_name = "ae",
   filter = AEREL %in% c("PROBABLE", "POSSIBLE", "REMOTE"),
-  date = AESTDTC,
+  date = ASTDT,
   set_values_to = vars(
     EVNTDESC = "RELATED ADVERSE EVENT",
     SRCDOM = "AE",
@@ -292,7 +312,7 @@ adaette <- call_derivation(
     )
   ),
   dataset_adsl = adsl,
-  source_datasets = list(adsl = adsl, ae = ae),
+  source_datasets = list(adsl = adsl, ae = adae),
   censor_conditions = list(observation_end)
 )
 
@@ -319,7 +339,10 @@ ae <- tibble::tribble(
   "01",     "2021-03-04",       2,      "Cough",
   "01",     "2021",             3,      "Flu"
 ) %>%
-  mutate(STUDYID = "AB42")
+  mutate(
+    STUDYID = "AB42",
+    AESTDT = convert_dtc_to_dt(dtc = AESTDTC, highest_imputation = "M")
+  )
 
 dataset_vignette(ae)
 
@@ -327,7 +350,7 @@ dataset_vignette(ae)
 # define time to first adverse event event #
 ttae <- event_source(
   dataset_name = "ae",
-  date = AESTDTC,
+  date = AESTDT,
   set_values_to = vars(
     EVNTDESC = "AE",
     SRCDOM = "AE",

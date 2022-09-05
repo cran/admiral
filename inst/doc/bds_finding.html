@@ -328,7 +328,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Derive/Impute Numeric Date/Time and Analysis Day (<code>ADT</code>, <code>ADTM</code>, <code>ADY</code>, <code>ADTF</code>, <code>ATMF</code>)</h2>
 <p>The function <code>derive_vars_dt()</code> can be used to derive <code>ADT</code>. This function allows the user to impute the date as well.</p>
 <p>Example calls:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(advs, <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span>, <span class="at">dtc =</span> VSDTC, <span class="at">flag_imputation =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(advs, <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span>, <span class="at">dtc =</span> VSDTC)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -406,7 +406,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span>,</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> VSDTC,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
@@ -498,7 +498,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span>,</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> VSDTC,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;FIRST&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>By default, the variable <code>ADTF</code> for <code>derive_vars_dt()</code> or <code>ADTF</code> and <code>ATMF</code> for <code>derive_vars_dtm()</code> will be created and populated with the controlled terminology outlined in the ADaM IG for date imputations.</p>
 <p>See also <a href="imputation.html">Date and Time Imputation</a>.</p>
@@ -3034,9 +3034,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="example-3-deriving-a-new-paramcd" class="section level3">
 <h3>Example 3 (Deriving a New <code>PARAMCD</code>)</h3>
-<p>Use function <code>derive_derived_param()</code> to create a new <code>PARAMCD</code>. Note that only variables specified in the <code>by_vars</code> argument will be populated in the newly created records.</p>
+<p>Use function <code>derive_param_computed()</code> to create a new <code>PARAMCD</code>. Note that only variables specified in the <code>by_vars</code> argument will be populated in the newly created records.</p>
 <p>Below is an example of creating <code>Mean Arterial Pressure</code> (<code>PARAMCD = MAP2</code>) with an alternative formula.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>advs_ex3 <span class="ot">&lt;-</span> <span class="fu">derive_derived_param</span>(</span>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>advs_ex3 <span class="ot">&lt;-</span> <span class="fu">derive_param_computed</span>(</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">vars</span>(USUBJID, VISIT, ATPT),</span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">parameters =</span> <span class="fu">c</span>(<span class="st">&quot;SYSBP&quot;</span>, <span class="st">&quot;DIABP&quot;</span>),</span>

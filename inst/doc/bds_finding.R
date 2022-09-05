@@ -4,6 +4,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+library(admiraldev)
+
 ## ----message=FALSE------------------------------------------------------------
 library(admiral)
 library(dplyr)
@@ -42,7 +44,7 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-advs <- derive_vars_dt(advs, new_vars_prefix = "A", dtc = VSDTC, flag_imputation = "none")
+advs <- derive_vars_dt(advs, new_vars_prefix = "A", dtc = VSDTC)
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
@@ -69,7 +71,7 @@ advs <- derive_vars_dt(
   advs,
   new_vars_prefix = "A",
   dtc = VSDTC,
-  date_imputation = "FIRST"
+  highest_imputation = "M"
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
@@ -89,7 +91,7 @@ advs <- advs_old
 #    advs,
 #    new_vars_prefix = "A",
 #    dtc = VSDTC,
-#    date_imputation = "FIRST"
+#    highest_imputation = "M"
 #  )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -623,7 +625,7 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-advs_ex3 <- derive_derived_param(
+advs_ex3 <- derive_param_computed(
   advs,
   by_vars = vars(USUBJID, VISIT, ATPT),
   parameters = c("SYSBP", "DIABP"),

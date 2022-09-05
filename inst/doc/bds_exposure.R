@@ -4,6 +4,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+library(admiraldev)
+
 ## ----message=FALSE------------------------------------------------------------
 library(admiral)
 library(dplyr)
@@ -62,8 +64,8 @@ distinct(adex, EXTRT, EXPLDOS)
 count(adex, EXADJ)
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
-adex <- derive_vars_dt(adex, new_vars_prefix = "AST", dtc = EXSTDTC, flag_imputation = "none")
-adex <- derive_vars_dt(adex, new_vars_prefix = "AEN", dtc = EXENDTC, flag_imputation = "none")
+adex <- derive_vars_dt(adex, new_vars_prefix = "AST", dtc = EXSTDTC)
+adex <- derive_vars_dt(adex, new_vars_prefix = "AEN", dtc = EXENDTC)
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
@@ -75,13 +77,14 @@ dataset_vignette(
 adex <- derive_vars_dtm(
   adex,
   dtc = EXSTDTC,
-  date_imputation = "first",
+  highest_imputation = "M",
   new_vars_prefix = "AST"
 )
 
 adex <- derive_vars_dtm(
   adex,
   dtc = EXENDTC,
+  highest_imputation = "M",
   date_imputation = "last",
   new_vars_prefix = "AEN"
 )
@@ -159,7 +162,7 @@ dataset_vignette(
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 single_dose <- adex %>%
   filter(USUBJID == "01-701-1015" & EXSTDY == 1) %>%
-  create_single_dose_dataset()
+  create_single_dose_dataset(keep_source_vars = vars(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT))
 
 dataset_vignette(
   single_dose,

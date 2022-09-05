@@ -4,6 +4,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+library(admiraldev)
+
 ## ---- warning=FALSE, message=FALSE--------------------------------------------
 library(admiral)
 library(lubridate)
@@ -11,22 +13,25 @@ library(tibble)
 library(dplyr)
 
 ## -----------------------------------------------------------------------------
-impute_dtc(
+impute_dtc_dtm(
   "2019-10",
+  highest_imputation = "M",
   date_imputation = "01-01",
   time_imputation = "00:00:00"
 )
 
 ## -----------------------------------------------------------------------------
-impute_dtc(
+impute_dtc_dtm(
   "2019-02",
+  highest_imputation = "M",
   date_imputation = "02-31",
   time_imputation = "00:00:00"
 )
 
 ## -----------------------------------------------------------------------------
-impute_dtc(
+impute_dtc_dtm(
   "2019-02",
+  highest_imputation = "M",
   date_imputation = "last",
   time_imputation = "00:00:00"
 )
@@ -37,14 +42,16 @@ dates <- c(
   "2019",
   "2019---01"
 )
-impute_dtc(
+impute_dtc_dtm(
   dates,
+  highest_imputation = "M",
   date_imputation = "mid",
   time_imputation = "00:00:00",
   preserve = FALSE
 )
-impute_dtc(
+impute_dtc_dtm(
   dates,
+  highest_imputation = "M",
   date_imputation = "mid",
   time_imputation = "00:00:00",
   preserve = TRUE
@@ -56,15 +63,73 @@ dates <- c(
   "2019",
   "2019---01"
 )
-impute_dtc(
+impute_dtc_dtm(
   dates,
+  highest_imputation = "M",
   date_imputation = "06-15",
   time_imputation = "00:00:00"
 )
 
 ## -----------------------------------------------------------------------------
-impute_dtc(
+dates <- c(
+  "2019-02-03T12:30:15",
+  "2019-02-03T12:30",
+  "2019-02-03",
   "2019-02",
+  "2019"
+)
+
+# Do not impute
+impute_dtc_dtm(
+  dates,
+  highest_imputation = "n"
+)
+
+# Impute seconds only
+impute_dtc_dtm(
+  dates,
+  highest_imputation = "s"
+)
+
+# Impute time (hours, minutes, seconds) only
+impute_dtc_dtm(
+  dates,
+  highest_imputation = "h"
+)
+
+# Impute days and time
+impute_dtc_dtm(
+  dates,
+  highest_imputation = "D"
+)
+
+# Impute date (months and days) and time
+impute_dtc_dtm(
+  dates,
+  highest_imputation = "M"
+)
+
+## -----------------------------------------------------------------------------
+impute_dtc_dtm(
+  "2019-02",
+  highest_imputation = "M",
+  date_imputation = "last",
+  time_imputation = "last",
+  max_dates = list(ymd("2019-01-14"), ymd("2019-02-25"))
+)
+
+## -----------------------------------------------------------------------------
+# Impute year to first
+impute_dtc_dtm(
+  c("2019-02", NA),
+  highest_imputation = "Y",
+  min_dates = list(ymd("2019-01-14"), ymd("2019-02-25"))
+)
+
+# Impute year to last
+impute_dtc_dtm(
+  c("2019-02", NA),
+  highest_imputation = "Y",
   date_imputation = "last",
   time_imputation = "last",
   max_dates = list(ymd("2019-01-14"), ymd("2019-02-25"))
@@ -81,6 +146,7 @@ ae <- tribble(
   derive_vars_dtm(
     dtc = AESTDTC,
     new_vars_prefix = "AST",
+    highest_imputation = "M",
     date_imputation = "first",
     time_imputation = "first"
   ) %>%
@@ -100,6 +166,7 @@ ae <- tribble(
   derive_vars_dt(
     dtc = AESTDTC,
     new_vars_prefix = "AST",
+    highest_imputation = "M",
     date_imputation = "first"
   )
 
@@ -117,7 +184,7 @@ ae <- tribble(
   derive_vars_dtm(
     dtc = AESTDTC,
     new_vars_prefix = "AST",
-    date_imputation = NULL,
+    highest_imputation = "h",
     time_imputation = "first"
   )
 
@@ -135,6 +202,7 @@ ae <- tribble(
   derive_vars_dtm(
     dtc = AESTDTC,
     new_vars_prefix = "AST",
+    highest_imputation = "M",
     date_imputation = "first",
     time_imputation = "first",
     min_dates = vars(TRTSDTM)
@@ -154,6 +222,7 @@ ae <- tribble(
   derive_vars_dtm(
     dtc = AEENDTC,
     new_vars_prefix = "AEN",
+    highest_imputation = "M",
     date_imputation = "last",
     time_imputation = "last",
     max_dates = vars(DTHDT, DCUTDT)
@@ -171,7 +240,11 @@ mh <- tribble(
   "2019-06-21", ymd("2019-04-15")
 ) %>%
   filter(
-    convert_dtc_to_dt(MHSTDTC, date_imputation = "first") < TRTSDT
+    convert_dtc_to_dt(
+      MHSTDTC,
+      highest_imputation = "M",
+      date_imputation = "first"
+    ) < TRTSDT
   )
 
 ## ---- echo=FALSE--------------------------------------------------------------
@@ -189,8 +262,7 @@ vs <- tribble(
     derivation = derive_vars_dtm,
     args = params(
       dtc = VSDTC,
-      new_vars_prefix = "A",
-      date_imputation = NULL
+      new_vars_prefix = "A"
     ),
     derivation_slice(
       filter = VSTPT == "PRE-DOSE",
