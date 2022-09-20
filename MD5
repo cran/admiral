@@ -1,6 +1,6 @@
-4808569450d958396cf33149f49ee91c *DESCRIPTION
+1c5e84f78b785c350e2ce2d27a11651c *DESCRIPTION
 c6129ebc648fb3f4cdb8a9f2b361d4de *NAMESPACE
-3e7885d0cf701995987563b4126ea4b7 *NEWS.md
+387baa46e9be90c12784cb0414e8cc23 *NEWS.md
 bd4e31720c3ae6ddc63bfe46e3c8236a *R/admiral-package.R
 152d97ef031331b059130cc448733909 *R/assertions.R
 4a67a9a7d15db8eb65f9365dbb91ca4d *R/call_derivation.R
@@ -38,7 +38,7 @@ a10928b33e71b09dea0b2f8441f38146 *R/derive_var_basetype.R
 2ee91ab168a1cd33fb0c73132205ac9b *R/derive_var_confirmation_flag.R
 7f2357b73ff809cb2089e9c4c280fe44 *R/derive_var_disposition_status.R
 17d3a07712d7d93cfc57531d8b59cf7c *R/derive_var_dthcaus.R
-8ac68fa6552064fc7f79211486a64cb3 *R/derive_var_extreme_date.R
+bd9a9ce38762e270d4d7c8f24bbce1af *R/derive_var_extreme_date.R
 bad8cba47991b8bdcf8151806a0fd479 *R/derive_var_extreme_flag.R
 ac454197a5f5ebb16157f078883b9fb1 *R/derive_var_last_dose_amt.R
 912461365f87f3869314f19f7eb5d2d6 *R/derive_var_last_dose_date.R
@@ -70,7 +70,7 @@ aa62ff9919a44479fb646b51f6ea0019 *R/restrict_derivation.R
 6da8e154407fa94e43372528cbcef7d5 *R/tte_sources.R
 8ec2d0eaf61cb41affcd5b6cf2a0cc17 *R/user_helpers.R
 03a2d58d712a8e69cdbc3d10695c1d53 *R/user_utils.R
-0bc8086eda792879446f0313e913048c *README.md
+e6cdff17924fde309210c3abd85d0cd9 *README.md
 65df8f405a14ca60ca94bf7d297b0a31 *build/vignette.rds
 2c2fc1b37990073e35814b669864a4f7 *data/admiral_adsl.rda
 61e1ea9461e3ec0b5d483409ce58f39a *data/atoxgr_criteria_ctcv4.rda
@@ -119,7 +119,7 @@ fce7d67e4674f3d6558c00264c3d68d7 *inst/example_scripts/example_query_source.R
 74c0e5fcb30dbc61c6995dfd69b43ce3 *inst/templates/ad_adpp.R
 1070e2d8b889e3a5393af4af1256932f *inst/templates/ad_adsl.R
 89f83fd7a09603fd04391b4482f80751 *inst/templates/ad_advs.R
-f15f4710f5ebd62ffa8c06ab0d1bb938 *man/admiral-package.Rd
+1e41d9d05b9d4c2d747e4adbbd04628b *man/admiral-package.Rd
 9f02c5d29b13dd5aec2ac930f8ce5a2b *man/admiral_adsl.Rd
 27120bb30628c9a70932ffc6cc3ec8d3 *man/assert_db_requirements.Rd
 82f8f1487c3a313753119d1c6fb473ea *man/assert_terms.Rd
@@ -181,8 +181,8 @@ ebcd6619be090117b5909a159ddaba5c *man/derive_var_chg.Rd
 74fef39f04c93572990902c0069295a0 *man/derive_var_confirmation_flag.Rd
 6c5b39c85045605fbb63814471a3fdde *man/derive_var_disposition_status.Rd
 be11e7275e58818fdaf893a6cd85c7b2 *man/derive_var_dthcaus.Rd
-c99215995ba09b805dbaf0fee9ecba60 *man/derive_var_extreme_dt.Rd
-f621ee6f4d7a135cf4f4e67b9a9dc6d7 *man/derive_var_extreme_dtm.Rd
+faf42e569ca86458bdc890774feb6cb2 *man/derive_var_extreme_dt.Rd
+c109f8af0324a7c70f4e088eaf8932c6 *man/derive_var_extreme_dtm.Rd
 c38163b5d9ac18897c2604462d180fe1 *man/derive_var_extreme_flag.Rd
 9273d5d3a6a17a1f7a8388e31ce7a79e *man/derive_var_last_dose_amt.Rd
 a0890468ec5c8ed10ad0f986894845f0 *man/derive_var_last_dose_date.Rd
@@ -309,7 +309,7 @@ c4b91b4394028abe5a255ce48695c6f7 *tests/testthat/test-derive_var_basetype.R
 638c2ac4e855c18c72392c7f9187a8da *tests/testthat/test-derive_var_confirmation_flag.R
 b0791ff4873050db6753629894114c02 *tests/testthat/test-derive_var_disposition_status.R
 b5eb240322c7016aa898c09bcb039f3a *tests/testthat/test-derive_var_dthcaus.R
-9c60fe11999398aa05e92d4302340840 *tests/testthat/test-derive_var_extreme_date.R
+0bb5a880a78954c4dbe86d3a6bcae7e7 *tests/testthat/test-derive_var_extreme_date.R
 41823741d50fcaca056fa2595e32086e *tests/testthat/test-derive_var_extreme_flag.R
 a72e43572563d65bf6babab74c7333e1 *tests/testthat/test-derive_var_last_dose_amt.R
 cf505017dd0d29e8e3383f1037bf394a *tests/testthat/test-derive_var_last_dose_date.R
