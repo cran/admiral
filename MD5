@@ -1,6 +1,6 @@
-1c5e84f78b785c350e2ce2d27a11651c *DESCRIPTION
+87707b935f3953a1d8e959663bd2a930 *DESCRIPTION
 c6129ebc648fb3f4cdb8a9f2b361d4de *NAMESPACE
-387baa46e9be90c12784cb0414e8cc23 *NEWS.md
+50655e1df10ecb9c6f04a4eead09ec84 *NEWS.md
 bd4e31720c3ae6ddc63bfe46e3c8236a *R/admiral-package.R
 152d97ef031331b059130cc448733909 *R/assertions.R
 4a67a9a7d15db8eb65f9365dbb91ca4d *R/call_derivation.R
@@ -70,7 +70,7 @@ aa62ff9919a44479fb646b51f6ea0019 *R/restrict_derivation.R
 6da8e154407fa94e43372528cbcef7d5 *R/tte_sources.R
 8ec2d0eaf61cb41affcd5b6cf2a0cc17 *R/user_helpers.R
 03a2d58d712a8e69cdbc3d10695c1d53 *R/user_utils.R
-e6cdff17924fde309210c3abd85d0cd9 *README.md
+bdacfd5494db464f6efa5fbca94b074a *README.md
 65df8f405a14ca60ca94bf7d297b0a31 *build/vignette.rds
 2c2fc1b37990073e35814b669864a4f7 *data/admiral_adsl.rda
 61e1ea9461e3ec0b5d483409ce58f39a *data/atoxgr_criteria_ctcv4.rda
@@ -333,7 +333,7 @@ b53bdf36e4592dd5d9a8f90616ff0bdb *tests/testthat/test-filter_confirmation.R
 b76e0daebdf99df2cc9f5b00a5f74baa *tests/testthat/test-filter_relative.R
 971b5d686d62d3fae066b515291ae8c2 *tests/testthat/test-restrict_derivation.R
 3907d69d2789a5a0a25d2cd6792c0d6e *tests/testthat/test-slice_derivation.R
-c9ebac313bb250573d4a9dcdc24c43f8 *tests/testthat/test-user_helpers.R
+14a990c1e9cbaf18f191876f69da7c0a *tests/testthat/test-user_helpers.R
 68175d7efe644470bc25757d94fdadd2 *tests/testthat/test-utils.R
 bc74e2902ad9e127f9c577a0b42659e3 *vignettes/adsl.Rmd
 85dcdcf2ba00e43ebff6eb092b03f8db *vignettes/bds_exposure.Rmd
