@@ -1,11 +1,11 @@
-87707b935f3953a1d8e959663bd2a930 *DESCRIPTION
+37b6c77ca799eab9be0abc6d3ec0344a *DESCRIPTION
 c6129ebc648fb3f4cdb8a9f2b361d4de *NAMESPACE
-50655e1df10ecb9c6f04a4eead09ec84 *NEWS.md
+2b0f6954ae10cc2674051c07d5bb5798 *NEWS.md
 bd4e31720c3ae6ddc63bfe46e3c8236a *R/admiral-package.R
 152d97ef031331b059130cc448733909 *R/assertions.R
 4a67a9a7d15db8eb65f9365dbb91ca4d *R/call_derivation.R
 cb2a698641c68dfff36e4aa6e89bb22e *R/call_user_fun.R
-d3069eefd2a810082ba52663dd1ccf33 *R/compute_duration.R
+ec72ddf02f5ef42f373ba9d17bd69c87 *R/compute_duration.R
 5fe606cb11cb24c0d64f635cda216578 *R/compute_framingham.R
 914072178fa33b1086b4036000d411b7 *R/compute_qual_imputation.R
 9512a60c299aba735215c828b9090fa4 *R/create_query_data.R
@@ -68,9 +68,9 @@ a2a20fde0a8189387a324f08f771ddf6 *R/filter_relative.R
 aa62ff9919a44479fb646b51f6ea0019 *R/restrict_derivation.R
 9db2f112bd2e0b425b9217dfad302d9b *R/slice_derivation.R
 6da8e154407fa94e43372528cbcef7d5 *R/tte_sources.R
-8ec2d0eaf61cb41affcd5b6cf2a0cc17 *R/user_helpers.R
+83cea315d50da1017e4ad4933c1edd3c *R/user_helpers.R
 03a2d58d712a8e69cdbc3d10695c1d53 *R/user_utils.R
-bdacfd5494db464f6efa5fbca94b074a *README.md
+a38ff77dbf0de49763ce2ce0ce18cef0 *README.md
 65df8f405a14ca60ca94bf7d297b0a31 *build/vignette.rds
 2c2fc1b37990073e35814b669864a4f7 *data/admiral_adsl.rda
 61e1ea9461e3ec0b5d483409ce58f39a *data/atoxgr_criteria_ctcv4.rda
@@ -333,7 +333,7 @@ b53bdf36e4592dd5d9a8f90616ff0bdb *tests/testthat/test-filter_confirmation.R
 b76e0daebdf99df2cc9f5b00a5f74baa *tests/testthat/test-filter_relative.R
 971b5d686d62d3fae066b515291ae8c2 *tests/testthat/test-restrict_derivation.R
 3907d69d2789a5a0a25d2cd6792c0d6e *tests/testthat/test-slice_derivation.R
-14a990c1e9cbaf18f191876f69da7c0a *tests/testthat/test-user_helpers.R
+c8d0a291ad1f41566c7f85d8984157ca *tests/testthat/test-user_helpers.R
 68175d7efe644470bc25757d94fdadd2 *tests/testthat/test-utils.R
 bc74e2902ad9e127f9c577a0b42659e3 *vignettes/adsl.Rmd
 85dcdcf2ba00e43ebff6eb092b03f8db *vignettes/bds_exposure.Rmd
