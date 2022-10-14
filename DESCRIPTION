@@ -1,7 +1,7 @@
 Package: admiral
 Type: Package
 Title: ADaM in R Asset Library
-Version: 0.8.3
+Version: 0.8.4
 Authors@R: c(
     person("Thomas", "Neitmann", email = "thomas.neitmann@roche.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut"),
@@ -72,7 +72,7 @@ Suggests: admiral.test, covr, devtools, DT, diffdf, knitr, lintr,
         styler, testthat, tibble, usethis
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-10-07 05:26:13 UTC; neitmant
+Packaged: 2022-10-13 16:42:49 UTC; neitmant
 Author: Thomas Neitmann [aut, cre],
   Stefan Bundfuss [aut],
   Ben Straub [aut],
@@ -120,4 +120,4 @@ Author: Thomas Neitmann [aut, cre],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Thomas Neitmann <thomas.neitmann@roche.com>
 Repository: CRAN
-Date/Publication: 2022-10-07 07:20:02 UTC
+Date/Publication: 2022-10-14 12:32:33 UTC

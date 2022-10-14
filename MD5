@@ -1,6 +1,6 @@
-37b6c77ca799eab9be0abc6d3ec0344a *DESCRIPTION
+aeeaa4fb3b0a4d7b9a0ad6066a1e1890 *DESCRIPTION
 c6129ebc648fb3f4cdb8a9f2b361d4de *NAMESPACE
-2b0f6954ae10cc2674051c07d5bb5798 *NEWS.md
+9551789bdef5e36585bb299f38ea1ee0 *NEWS.md
 bd4e31720c3ae6ddc63bfe46e3c8236a *R/admiral-package.R
 152d97ef031331b059130cc448733909 *R/assertions.R
 4a67a9a7d15db8eb65f9365dbb91ca4d *R/call_derivation.R
@@ -83,7 +83,7 @@ a38ff77dbf0de49763ce2ce0ce18cef0 *README.md
 40da577b6ac38f043173c1efb64459fb *inst/deploy_pkgdown_website.R
 5d8d96bf218ae114621e58b1815264b4 *inst/doc/adsl.R
 bc74e2902ad9e127f9c577a0b42659e3 *inst/doc/adsl.Rmd
-8ca82d5b663bbdcd3d3f14af146d778e *inst/doc/adsl.html
+c7e2ea49b5b8e0d6243c4f59dbda23d1 *inst/doc/adsl.html
 f1c6dc6079b28ac4ccaf2978cf30fd0f *inst/doc/bds_exposure.R
 85dcdcf2ba00e43ebff6eb092b03f8db *inst/doc/bds_exposure.Rmd
 a924b0c3778d45509bab450b7083d876 *inst/doc/bds_exposure.html
@@ -284,7 +284,7 @@ d7c518f4e93600e0f58249c3adc854be *tests/testthat/test-call_user_fun.R
 2410471b6b45fdc048a0f4e15cf0823b *tests/testthat/test-compute_qual_imputation.R
 02206edb8222c4378d2699c4a7c1f1ab *tests/testthat/test-create_query_data.R
 c7d0fa2349fcbc35165c424eacdb70f9 *tests/testthat/test-create_single_dose_dataset.R
-fbae17c4136fa4fb201f2f403206a533 *tests/testthat/test-deprecation.R
+a3790fa21c5c18ffce814bd03299d26e *tests/testthat/test-deprecation.R
 ec862446452d2aecd2ff4ffd1be9288c *tests/testthat/test-derive_advs_params.R
 37d0131047a9bf0e2772a602206e1cba *tests/testthat/test-derive_date_vars.R
 6a5fffa54dd4d4fe384ec40ef1f97666 *tests/testthat/test-derive_extreme_records.R
