@@ -1,7 +1,7 @@
 Package: admiral
 Type: Package
 Title: ADaM in R Asset Library
-Version: 0.8.4
+Version: 0.9.0
 Authors@R: c(
     person("Thomas", "Neitmann", email = "thomas.neitmann@roche.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut"),
@@ -25,9 +25,17 @@ Authors@R: c(
     person("Pooja", "Kumari", role = "aut"),
     person("Claudia", "Carlucci", role = "aut"),
     person("Daniil", "Stefonishin", role = "aut"), 
+    person("Sadchla", "Mascary", role = "aut"),
+    person("Zelos", "Zhu", role = "aut"),
+    person("Jeffrey", "Dickinson", role = "aut"),
+    person("Ania", "Golab", role = "aut"),
     person("Michael", "Thorpe", role = "ctb"),
+    person("Declan", "Hodges", role = "ctb"),
+    person("Jaxon", "Abercrombie", role = "ctb"),
+    person("Nick", "Ramirez", role = "ctb"),
     person("Pavan", "Kumar", role = "ctb"),
     person("Hamza", "Rahal", role = "ctb"),
+    person("Yohann", "Omnes", role = "ctb"),
     person("Alice", "Ehmann", role = "ctb"),
     person("Tom", "Ratford", role = "ctb"),
     person("Vignesh", "Thanikachalam", role = "ctb"),
@@ -39,6 +47,7 @@ Authors@R: c(
     person("Syed", "Mubasheer", role = "ctb"),
     person("Wenyi", "Liu", role = "ctb"),
     person("Dinakar", "Kulkarni", role = "ctb"),
+    person("Franciszek", "Walkowiak", role = "ctb"),
     person("Tamara", "Senior", role = "ctb"),
     person("Jordanna", "Morrish", role = "ctb"),
     person("Anthony", "Howard", role = "ctb"),
@@ -61,18 +70,18 @@ URL: https://pharmaverse.github.io/admiral/,
         https://github.com/pharmaverse/admiral
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Depends: R (>= 3.5)
-Imports: admiraldev, assertthat (>= 0.2.1), dplyr (>= 0.8.4), hms (>=
-        0.5.3), lifecycle (>= 0.1.0), lubridate (>= 1.7.4), magrittr
-        (>= 1.5), purrr (>= 0.3.3), rlang (>= 0.4.4), stringr (>=
-        1.4.0), tidyr (>= 1.0.2), tidyselect (>= 1.0.0)
-Suggests: admiral.test, covr, devtools, DT, diffdf, knitr, lintr,
-        methods, pkgdown, readxl, rmarkdown, roxygen2, spelling,
+Imports: admiraldev (>= 0.2.0), dplyr (>= 0.8.4), hms (>= 0.5.3),
+        lifecycle (>= 0.1.0), lubridate (>= 1.7.4), magrittr (>= 1.5),
+        purrr (>= 0.3.3), rlang (>= 0.4.4), stringr (>= 1.4.0), tidyr
+        (>= 1.0.2), tidyselect (>= 1.1.0)
+Suggests: admiral.test (>= 0.4.0), covr, devtools, DT, diffdf, knitr,
+        lintr, methods, pkgdown, readxl, rmarkdown, roxygen2, spelling,
         styler, testthat, tibble, usethis
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-10-13 16:42:49 UTC; neitmant
+Packaged: 2022-12-05 07:11:43 UTC; neitmant
 Author: Thomas Neitmann [aut, cre],
   Stefan Bundfuss [aut],
   Ben Straub [aut],
@@ -95,9 +104,17 @@ Author: Thomas Neitmann [aut, cre],
   Pooja Kumari [aut],
   Claudia Carlucci [aut],
   Daniil Stefonishin [aut],
+  Sadchla Mascary [aut],
+  Zelos Zhu [aut],
+  Jeffrey Dickinson [aut],
+  Ania Golab [aut],
   Michael Thorpe [ctb],
+  Declan Hodges [ctb],
+  Jaxon Abercrombie [ctb],
+  Nick Ramirez [ctb],
   Pavan Kumar [ctb],
   Hamza Rahal [ctb],
+  Yohann Omnes [ctb],
   Alice Ehmann [ctb],
   Tom Ratford [ctb],
   Vignesh Thanikachalam [ctb],
@@ -109,6 +126,7 @@ Author: Thomas Neitmann [aut, cre],
   Syed Mubasheer [ctb],
   Wenyi Liu [ctb],
   Dinakar Kulkarni [ctb],
+  Franciszek Walkowiak [ctb],
   Tamara Senior [ctb],
   Jordanna Morrish [ctb],
   Anthony Howard [ctb],
@@ -120,4 +138,4 @@ Author: Thomas Neitmann [aut, cre],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Thomas Neitmann <thomas.neitmann@roche.com>
 Repository: CRAN
-Date/Publication: 2022-10-14 12:32:33 UTC
+Date/Publication: 2022-12-06 08:22:31 UTC

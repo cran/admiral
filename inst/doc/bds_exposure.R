@@ -8,7 +8,7 @@ library(admiraldev)
 
 ## ----message=FALSE------------------------------------------------------------
 library(admiral)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 library(admiral.test)
 library(lubridate)
 library(stringr)
@@ -164,6 +164,7 @@ single_dose <- adex %>%
   filter(USUBJID == "01-701-1015" & EXSTDY == 1) %>%
   create_single_dose_dataset(keep_source_vars = vars(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT))
 
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   single_dose,
   display_vars = vars(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT)

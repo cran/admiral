@@ -108,13 +108,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -151,6 +158,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1>Programming Flow</h1>
 <ul>
 <li><a href="#readdata">Read in Data</a></li>
+<li><a href="#periodvars">Derive Period, Subperiod, and Phase Variables (e.g. <code>APxxSDT</code>, <code>APxxEDT</code>, …)</a></li>
 <li><a href="#treatmentvar">Derive Treatment Variables (<code>TRT0xP</code>, <code>TRT0xA</code>)</a></li>
 <li><a href="#trtdatetime">Derive/Impute Numeric Treatment Date/Time and Duration (<code>TRTSDT</code>, <code>TRTEDT</code>, <code>TRTDURD</code>)</a></li>
 <li><a href="#disposition">Derive Disposition Variables</a>
@@ -169,7 +177,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#lstalvdt">Derive Last Known Date Alive (<code>LSTALVDT</code>)</a></li>
 <li><a href="#groupings">Derive Groupings and Populations</a>
 <ul>
-<li><a href="#groupings_ex">Grouping (e.g. <code>AGEGR1</code>)</a></li>
+<li><a href="#groupings_ex">Grouping (e.g. <code>AGEGR1</code> or <code>REGION1</code>)</a></li>
 <li><a href="#popflag">Population Flags (e.g. <code>SAFFL</code>)</a></li>
 </ul></li>
 <li><a href="#other">Derive Other Variables</a></li>
@@ -180,7 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>To start, all data frames needed for the creation of <code>ADSL</code> should be read into the environment. This will be a company specific process. Some of the data frames needed may be <code>DM</code>, <code>EX</code>, <code>DS</code>, <code>AE</code>, and <code>LB</code>.</p>
 <p>For example purpose, the CDISC Pilot SDTM datasets—which are included in <code>{admiral.test}</code>—are used.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
@@ -338,11 +346,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 </div>
+<div id="periodvars" class="section level2">
+<h2>Derive Period, Subperiod, and Phase Variables (e.g. <code>APxxSDT</code>, <code>APxxEDT</code>, …)</h2>
+<p>See the <a href="visits_periods.html#periods_adsl">“Visit and Period Variables” vignette</a> for more information.</p>
+<p>If the variables are not derived based on a period reference dataset, they may be derived at a later point of the flow. For example, phases like “Treatment Phase” and “Follow up” could be derived based on treatment start and end date.</p>
+</div>
 <div id="treatmentvar" class="section level2">
 <h2>Derive Treatment Variables (<code>TRT0xP</code>, <code>TRT0xA</code>)</h2>
-<p>The mapping of the treatment variables is left to the ADaM programmer. An example mapping may be:</p>
+<p>The mapping of the treatment variables is left to the ADaM programmer. An example mapping for a study without periods may be:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> dm <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">TRT01P =</span> ARM, <span class="at">TRT01A =</span> ACTARM)</span></code></pre></div>
+<p>For studies with periods see the <a href="visits_periods.html#treatment_adsl">“Visit and Period Variables” vignette</a>.</p>
 </div>
 <div id="trtdatetime" class="section level2">
 <h2>Derive/Impute Numeric Treatment Date/Time and Duration (<code>TRTSDTM</code>, <code>TRTEDTM</code>, <code>TRTDURD</code>)</h2>
@@ -1603,41 +1617,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Derive Groupings and Populations</h2>
 <div id="groupings_ex" class="section level3">
 <h3>Grouping (e.g. <code>AGEGR1</code> or <code>REGION1</code>)</h3>
-<p>Numeric and categorical variables (<code>AGE</code>, <code>RACE</code>, <code>COUNTRY</code>, etc.) may need to be grouped to perform the required analysis. <code>{admiral}</code> does not <strong>currently</strong> have functionality to assist with all required groupings. Some functions exist for age grouping according to FDA or EMA conventions. For others, the user can create his/her own function to meet his/her study requirement.</p>
-<p>To derive <code>AGEGR1</code> as categorized <code>AGE</code> in <code>&lt; 18</code>, <code>18-65</code>, <code>&gt;= 65</code> (FDA convention):</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_agegr_fda</span>(</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">age_var =</span> AGE,</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> AGEGR1</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: `derive_var_agegr_ema()` was deprecated in admiral 0.8.0.</span></span></code></pre></div>
-<p>However for example if</p>
+<p>Numeric and categorical variables (<code>AGE</code>, <code>RACE</code>, <code>COUNTRY</code>, etc.) may need to be grouped to perform the required analysis. <code>{admiral}</code> does not <strong>currently</strong> have functionality to assist with all required groupings. So, the user will often need to create his/her own function to meet his/her study requirement.</p>
+<p>For example, if</p>
 <ul>
-<li><code>AGEGR2</code> would categorize <code>AGE</code> in <code>&lt; 65</code>, <code>&gt;= 65</code>,</li>
-<li><code>REGION1</code> would categorize <code>COUNTRY</code> in <code>North America</code>, <code>Rest of the World</code>,</li>
+<li><code>AGEGR1</code> is required to categorize <code>AGE</code> into <code>&lt;18</code>, <code>18-64</code> and <code>&gt;64</code>, or</li>
+<li><code>REGION1</code> is required to categorize <code>COUNTRY</code> in <code>North America</code>, <code>Rest of the World</code>,</li>
 </ul>
-<p>the user defined function(s) would be like:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>format_agegr2 <span class="ot">&lt;-</span> <span class="cf">function</span>(var_input) {</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    var_input <span class="sc">&lt;</span> <span class="dv">65</span> <span class="sc">~</span> <span class="st">&quot;&lt; 65&quot;</span>,</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    var_input <span class="sc">&gt;=</span> <span class="dv">65</span> <span class="sc">~</span> <span class="st">&quot;&gt;= 65&quot;</span>,</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>format_region1 <span class="ot">&lt;-</span> <span class="cf">function</span>(var_input) {</span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    var_input <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CAN&quot;</span>, <span class="st">&quot;USA&quot;</span>) <span class="sc">~</span> <span class="st">&quot;North America&quot;</span>,</span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(var_input) <span class="sc">~</span> <span class="st">&quot;Rest of the World&quot;</span>,</span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Missing&quot;</span></span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>the user defined functions would look like the following:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>format_agegr1 <span class="ot">&lt;-</span> <span class="cf">function</span>(var_input) {</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    var_input <span class="sc">&lt;</span> <span class="dv">18</span> <span class="sc">~</span> <span class="st">&quot;&lt;18&quot;</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">between</span>(var_input, <span class="dv">18</span>, <span class="dv">64</span>) <span class="sc">~</span> <span class="st">&quot;18-64&quot;</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    var_input <span class="sc">&gt;</span> <span class="dv">64</span> <span class="sc">~</span> <span class="st">&quot;&gt;64&quot;</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Missing&quot;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>format_region1 <span class="ot">&lt;-</span> <span class="cf">function</span>(var_input) {</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    var_input <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CAN&quot;</span>, <span class="st">&quot;USA&quot;</span>) <span class="sc">~</span> <span class="st">&quot;North America&quot;</span>,</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(var_input) <span class="sc">~</span> <span class="st">&quot;Rest of the World&quot;</span>,</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Missing&quot;</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>These functions are then used in a <code>mutate()</code> statement to derive the required grouping variables:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">AGEGR2 =</span> <span class="fu">format_agegr2</span>(AGE),</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">REGION1 =</span> <span class="fu">format_region1</span>(COUNTRY)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">AGEGR1 =</span> <span class="fu">format_agegr1</span>(AGE),</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">REGION1 =</span> <span class="fu">format_region1</span>(COUNTRY)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1646,7 +1654,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <th align="left">SEX</th>
 <th align="left">COUNTRY</th>
 <th align="left">AGEGR1</th>
-<th align="left">AGEGR2</th>
 <th align="left">REGION1</th>
 </tr>
 </thead>
@@ -1657,7 +1664,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">F</td>
 <td align="left">USA</td>
 <td align="left">18-64</td>
-<td align="left">&lt; 65</td>
 <td align="left">North America</td>
 </tr>
 <tr class="even">
@@ -1666,7 +1672,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">M</td>
 <td align="left">USA</td>
 <td align="left">18-64</td>
-<td align="left">&lt; 65</td>
 <td align="left">North America</td>
 </tr>
 <tr class="odd">
@@ -1674,8 +1679,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">71</td>
 <td align="left">M</td>
 <td align="left">USA</td>
-<td align="left">&gt;=65</td>
-<td align="left">&gt;= 65</td>
+<td align="left">&gt;64</td>
 <td align="left">North America</td>
 </tr>
 <tr class="even">
@@ -1683,8 +1687,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">74</td>
 <td align="left">M</td>
 <td align="left">USA</td>
-<td align="left">&gt;=65</td>
-<td align="left">&gt;= 65</td>
+<td align="left">&gt;64</td>
 <td align="left">North America</td>
 </tr>
 <tr class="odd">
@@ -1692,8 +1695,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">77</td>
 <td align="left">F</td>
 <td align="left">USA</td>
-<td align="left">&gt;=65</td>
-<td align="left">&gt;= 65</td>
+<td align="left">&gt;64</td>
 <td align="left">North America</td>
 </tr>
 <tr class="even">
@@ -1701,8 +1703,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">85</td>
 <td align="left">F</td>
 <td align="left">USA</td>
-<td align="left">&gt;=65</td>
-<td align="left">&gt;= 65</td>
+<td align="left">&gt;64</td>
 <td align="left">North America</td>
 </tr>
 <tr class="odd">
@@ -1711,7 +1712,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">F</td>
 <td align="left">USA</td>
 <td align="left">18-64</td>
-<td align="left">&lt; 65</td>
 <td align="left">North America</td>
 </tr>
 <tr class="even">
@@ -1719,8 +1719,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">68</td>
 <td align="left">M</td>
 <td align="left">USA</td>
-<td align="left">&gt;=65</td>
-<td align="left">&gt;= 65</td>
+<td align="left">&gt;64</td>
 <td align="left">North America</td>
 </tr>
 <tr class="odd">
@@ -1728,8 +1727,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">81</td>
 <td align="left">F</td>
 <td align="left">USA</td>
-<td align="left">&gt;=65</td>
-<td align="left">&gt;= 65</td>
+<td align="left">&gt;64</td>
 <td align="left">North America</td>
 </tr>
 <tr class="even">
@@ -1737,8 +1735,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">84</td>
 <td align="left">M</td>
 <td align="left">USA</td>
-<td align="left">&gt;=65</td>
-<td align="left">&gt;= 65</td>
+<td align="left">&gt;64</td>
 <td align="left">North America</td>
 </tr>
 </tbody>
@@ -1748,13 +1745,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3>Population Flags (e.g. <code>SAFFL</code>)</h3>
 <p>Since the populations flags are mainly company/study specific no dedicated functions are provided, but in most cases they can easily be derived using <code>derive_var_merged_exist_flag</code>.</p>
 <p>An example of an implementation could be:</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_merged_exist_flag</span>(</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID),</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> SAFFL,</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">condition =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">str_detect</span>(EXTRT, <span class="st">&quot;PLACEBO&quot;</span>)))</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_merged_exist_flag</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> SAFFL,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">condition =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">str_detect</span>(EXTRT, <span class="st">&quot;PLACEBO&quot;</span>)))</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1846,10 +1843,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The following functions are helpful for many ADSL derivations:</p>
 <ul>
 <li><code>derive_vars_merged()</code> - Merge Variables from a Dataset to the Input Dataset</li>
-<li><code>derive_var_merged_cat()</code> - Merge a Categorization Variable</li>
 <li><code>derive_var_merged_exist_flag()</code> - Merge an Existence Flag</li>
+<li><code>derive_var_merged_cat()</code> - Merge a Categorization Variable</li>
 <li><code>derive_var_merged_character()</code> - Merge a Character Variable</li>
+<li><code>derive_var_merged_summary()</code> - Merge a Summary Variable</li>
 </ul>
+<p>See also <a href="generic.html">Generic Functions</a>.</p>
 </div>
 <div id="attributes" class="section level2">
 <h2>Add Labels and Attributes</h2>
@@ -1859,7 +1858,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>: enable the use of metacore objects. Metatools can be used to build datasets or enhance columns in existing datasets as well as checking datasets against the metadata.</p></li>
 <li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>: functionality to associate all metadata information to a local R data frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport v5 file(xpt)</a>.</p></li>
 </ul>
-<p>NOTE: All these packages are in the experimental phase, but the vision is to have them associated with an End to End pipeline under the umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>.</p>
+<p>NOTE: All these packages are in the experimental phase, but the vision is to have them associated with an End to End pipeline under the umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E example</a>.</p>
 </div>
 </div>
 <div id="example-script" class="section level1">

@@ -9,7 +9,7 @@ library(admiraldev)
 ## ---- warning=FALSE, message=FALSE--------------------------------------------
 library(admiral)
 library(admiral.test)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 
 data("admiral_adsl")
 data("admiral_ae")

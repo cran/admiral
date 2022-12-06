@@ -108,13 +108,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -151,7 +158,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Required Packages</h2>
 <p>The examples of this vignette require the following packages.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span></code></pre></div>
 </div>
 </div>
@@ -163,6 +170,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#aval">Derive Analysis Value (<code>AVAL</code>)</a></li>
 <li><a href="#aseq">Derive Analysis Sequence Number (<code>ASEQ</code>)</a></li>
 <li><a href="#adslvars">Add ADSL Variables</a></li>
+<li><a href="#attributes">Add Labels and Attributes</a></li>
 </ul>
 <div id="readdata" class="section level2">
 <h2>Read in Data</h2>
@@ -200,7 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>the value of the <code>CNSR</code> variable (<code>censor</code> parameter), and</li>
 <li>which variable provides the date (<code>date</code> parameter).</li>
 </ul>
-<p>The date can be provided as date (<code>--DT</code> variable), datetime (<code>--DTM</code> variable), or character ISO-8601 date (<code>--DTC</code> variable).</p>
+<p>The date can be provided as date (<code>--DT</code> variable) or datetime (<code>--DTM</code> variable).</p>
 <p>CDISC strongly recommends <code>CNSR = 0</code> for events and positive integers for censorings. <code>{admiral}</code> enforces this recommendation. Therefore the <code>censor</code> parameter is available for <code>censor_source()</code> only. It is defaulted to <code>1</code>.</p>
 <p>The <code>dataset_name</code> parameter expects a character value which is used as an identifier. The actual data which is used for the derivation of the parameter is provided via the <code>source_datasets</code> parameter of <code>derive_param_tte()</code>. It expects a named list of datasets. The names correspond to the identifiers specified for the <code>dataset_name</code> parameter. This allows to define events and censoring independent of the data.</p>
 <div id="pre-defined-time-to-event-source-objects" class="section level3">
@@ -227,44 +235,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">ae_ser_event</td>
+<td align="left">ae_gr35_event</td>
 <td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; AESER == “Y”</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR %in% c(“3”, “4”, “5”)</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
-<td align="left">EVNTDESC: “SERIOUS ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+<td align="left">EVNTDESC: “GRADE 3-5 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">
-<td align="left">ae_gr2_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “2”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 2 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="odd">
-<td align="left">ae_sev_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; AESEV == “SEVERE”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “SEVERE ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="even">
-<td align="left">ae_gr4_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “4”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 4 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="odd">
 <td align="left">ae_gr3_event</td>
 <td align="left">adae</td>
 <td align="left">TRTEMFL == “Y” &amp; ATOXGR == “3”</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
 <td align="left">EVNTDESC: “GRADE 3 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="odd">
+<td align="left">ae_gr5_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “5”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 5 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">
 <td align="left">lastalive_censor</td>
@@ -283,22 +275,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">EVNTDESC: “ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">
-<td align="left">death_event</td>
-<td align="left">adsl</td>
-<td align="left">DTHFL == “Y”</td>
-<td align="left">DTHDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “DEATH”<br>SRCDOM: “ADSL”<br>SRCVAR: “DTHDT”</td>
-</tr>
-<tr class="odd">
-<td align="left">ae_gr35_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR %in% c(“3”, “4”, “5”)</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 3-5 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="even">
 <td align="left">ae_wd_event</td>
 <td align="left">adae</td>
 <td align="left">TRTEMFL == “Y” &amp; AEACN == “DRUG WITHDRAWN”</td>
@@ -307,6 +283,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">EVNTDESC: “ADVERSE EVENT LEADING TO DRUG WITHDRAWAL”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="odd">
+<td align="left">ae_gr4_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “4”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 4 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="even">
 <td align="left">ae_gr1_event</td>
 <td align="left">adae</td>
 <td align="left">TRTEMFL == “Y” &amp; ATOXGR == “1”</td>
@@ -314,13 +298,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="right">0</td>
 <td align="left">EVNTDESC: “GRADE 1 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
-<tr class="even">
-<td align="left">ae_gr5_event</td>
+<tr class="odd">
+<td align="left">ae_sev_event</td>
 <td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “5”</td>
+<td align="left">TRTEMFL == “Y” &amp; AESEV == “SEVERE”</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 5 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+<td align="left">EVNTDESC: “SEVERE ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="even">
+<td align="left">ae_ser_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; AESER == “Y”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “SERIOUS ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="odd">
+<td align="left">ae_gr2_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “2”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 2 ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="even">
+<td align="left">death_event</td>
+<td align="left">adsl</td>
+<td align="left">DTHFL == “Y”</td>
+<td align="left">DTHDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “DEATH”<br>SRCDOM: “ADSL”<br>SRCVAR: “DTHDT”</td>
 </tr>
 </tbody>
 </table>
@@ -1744,6 +1752,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
+</div>
+<div id="attributes" class="section level2">
+<h2>Add Labels and Attributes</h2>
+<p>Adding labels and attributes for SAS transport files is supported by the following packages:</p>
+<ul>
+<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>: establish a common foundation for the use of metadata within an R session.</p></li>
+<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>: enable the use of metacore objects. Metatools can be used to build datasets or enhance columns in existing datasets as well as checking datasets against the metadata.</p></li>
+<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>: functionality to associate all metadata information to a local R data frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport v5 file(xpt)</a>.</p></li>
+</ul>
+<p>NOTE: All these packages are in the experimental phase, but the vision is to have them associated with an End to End pipeline under the umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E example</a>.</p>
 </div>
 </div>
 

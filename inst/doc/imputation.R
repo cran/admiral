@@ -10,7 +10,7 @@ library(admiraldev)
 library(admiral)
 library(lubridate)
 library(tibble)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 
 ## -----------------------------------------------------------------------------
 impute_dtc_dtm(

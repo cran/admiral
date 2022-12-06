@@ -8,7 +8,7 @@ library(admiraldev)
 
 ## ---- message=FALSE, warning=FALSE--------------------------------------------
 library(admiral)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 library(admiral.test)
 library(lubridate)
 
@@ -20,7 +20,6 @@ adsl <- admiral_adsl
 
 ## ----echo = FALSE-------------------------------------------------------------
 ae <- filter(ae, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01-703-1096", "01-707-1037", "01-716-1024"))
-
 
 ## ----eval=TRUE----------------------------------------------------------------
 
@@ -167,8 +166,10 @@ adae <- adae %>%
 
 ## ----eval=TRUE----------------------------------------------------------------
 adae <- adae %>%
-  mutate(
-    TRTEMFL = ifelse(ASTDT >= TRTSDT & ASTDT <= TRTEDT + days(30), "Y", NA_character_)
+  derive_var_trtemfl(
+    trt_start_date = TRTSDT,
+    trt_end_date = TRTEDT,
+    end_window = 30
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------

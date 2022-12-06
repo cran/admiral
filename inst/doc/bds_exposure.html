@@ -108,13 +108,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -160,13 +167,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#cat">Derive Categorization Variables (<code>AVALCATx</code>)</a></li>
 <li><a href="#aseq">Assign <code>ASEQ</code></a></li>
 <li><a href="#adsl_vars">Add ADSL variables <code>ASEQ</code></a></li>
+<li><a href="#attributes">Add Labels and Attributes</a></li>
 </ul>
 <div id="readdata" class="section level2">
 <h2>Read in Data</h2>
 <p>To start, all data frames needed for the creation of <code>ADEX</code> should be read into the environment. This will be a company specific process. Some of the data frames needed may be <code>EX</code> and <code>ADSL</code>.</p>
 <p>For example purpose, the CDISC Pilot SDTM and ADaM datasets—which are included in <code>{admiral.test}</code>—are used.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
@@ -816,7 +824,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2014-01-02</td>
 <td align="left">2014-01-16</td>
 <td align="right">15</td>
-<td align="right">0.0410959</td>
+<td align="right">0.0410940</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -824,7 +832,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2014-01-17</td>
 <td align="left">2014-06-18</td>
 <td align="right">153</td>
-<td align="right">0.4191781</td>
+<td align="right">0.4191762</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1015</td>
@@ -832,7 +840,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2014-06-19</td>
 <td align="left">2014-07-02</td>
 <td align="right">14</td>
-<td align="right">0.0383562</td>
+<td align="right">0.0383543</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1023</td>
@@ -840,7 +848,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2012-08-05</td>
 <td align="left">2012-08-27</td>
 <td align="right">23</td>
-<td align="right">0.0630137</td>
+<td align="right">0.0630118</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1023</td>
@@ -848,7 +856,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2012-08-28</td>
 <td align="left">2012-09-01</td>
 <td align="right">5</td>
-<td align="right">0.0136986</td>
+<td align="right">0.0136968</td>
 </tr>
 <tr class="even">
 <td align="left">01-703-1086</td>
@@ -856,7 +864,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2012-09-02</td>
 <td align="left">2012-09-16</td>
 <td align="right">15</td>
-<td align="right">0.0410959</td>
+<td align="right">0.0410940</td>
 </tr>
 <tr class="odd">
 <td align="left">01-703-1086</td>
@@ -864,7 +872,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2012-09-17</td>
 <td align="left">2012-12-04</td>
 <td align="right">79</td>
-<td align="right">0.2164384</td>
+<td align="right">0.2164365</td>
 </tr>
 <tr class="even">
 <td align="left">01-703-1096</td>
@@ -872,7 +880,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2013-01-25</td>
 <td align="left">2013-02-09</td>
 <td align="right">16</td>
-<td align="right">0.0438356</td>
+<td align="right">0.0438337</td>
 </tr>
 <tr class="odd">
 <td align="left">01-703-1096</td>
@@ -880,7 +888,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2013-02-10</td>
 <td align="left">2013-03-16</td>
 <td align="right">35</td>
-<td align="right">0.0958904</td>
+<td align="right">0.0958885</td>
 </tr>
 <tr class="even">
 <td align="left">01-707-1037</td>
@@ -888,7 +896,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <td align="left">2013-12-20</td>
 <td align="left">2013-12-24</td>
 <td align="right">5</td>
-<td align="right">0.0136986</td>
+<td align="right">0.0136968</td>
 </tr>
 </tbody>
 </table>
@@ -997,12 +1005,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The function <code>create_single_dose_dataset()</code> can be used to expand a record containing a start date, an end date, and a dosing frequency to a corresponding set of records each representing one dose (i.e. <code>EXDOSFRQ == &quot;ONCE&quot;</code>).</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>single_dose <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1015&quot;</span> <span class="sc">&amp;</span> EXSTDY <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">create_single_dose_dataset</span>(<span class="at">keep_source_vars =</span> <span class="fu">vars</span>(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT))</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dataset_vignette</span>(</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  single_dose,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">display_vars =</span> <span class="fu">vars</span>(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">create_single_dose_dataset</span>(<span class="at">keep_source_vars =</span> <span class="fu">vars</span>(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT))</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -2019,6 +2022,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(STUDYID, USUBJID)</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+</div>
+<div id="attributes" class="section level2">
+<h2>Add Labels and Attributes</h2>
+<p>Adding labels and attributes for SAS transport files is supported by the following packages:</p>
+<ul>
+<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>: establish a common foundation for the use of metadata within an R session.</p></li>
+<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>: enable the use of metacore objects. Metatools can be used to build datasets or enhance columns in existing datasets as well as checking datasets against the metadata.</p></li>
+<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>: functionality to associate all metadata information to a local R data frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport v5 file(xpt)</a>.</p></li>
+</ul>
+<p>NOTE: All these packages are in the experimental phase, but the vision is to have them associated with an End to End pipeline under the umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E example</a>.</p>
 </div>
 </div>
 <div id="example" class="section level1">

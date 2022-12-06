@@ -9,7 +9,7 @@ library(admiraldev)
 ## ----message=FALSE------------------------------------------------------------
 library(admiral)
 library(admiral.test)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 library(tibble)
 
@@ -25,6 +25,13 @@ lb <- filter(lb, USUBJID %in% c("01-701-1115", "01-705-1186", "01-705-1349", "01
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 atoxgr_criteria_ctcv4 %>%
+  filter(!is.na(TERM)) %>%
+  dataset_vignette(
+    display_vars = vars(TERM)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_ctcv5 %>%
   filter(!is.na(TERM)) %>%
   dataset_vignette(
     display_vars = vars(TERM)
@@ -139,12 +146,14 @@ adlb <- adlb %>%
   derive_var_atoxgr_dir(
     new_var = ATOXGRL,
     tox_description_var = ATOXDSCL,
+    meta_criteria = atoxgr_criteria_ctcv4,
     criteria_direction = "L",
     get_unit_expr = extract_unit(PARAM)
   ) %>%
   derive_var_atoxgr_dir(
     new_var = ATOXGRH,
     tox_description_var = ATOXDSCH,
+    meta_criteria = atoxgr_criteria_ctcv4,
     criteria_direction = "H",
     get_unit_expr = extract_unit(PARAM)
   )
@@ -199,7 +208,7 @@ atoxgr_criteria_ctcv4 %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 atoxgr_criteria_ctcv4 %>%
-  filter(str_detect(TERM, "Hypouricemia")) %>%
+  filter(str_detect(TERM, "Hyperuricemia")) %>%
   dataset_vignette(
     display_vars = vars(TERM, Grade_1, Grade_3, COMMENT)
   )
@@ -209,5 +218,56 @@ atoxgr_criteria_ctcv4 %>%
   filter(str_detect(TERM, "Hypokalemia")) %>%
   dataset_vignette(
     display_vars = vars(TERM, Grade_1, Grade_2, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_ctcv5 %>%
+  filter(str_detect(TERM, "calcemia")) %>%
+  dataset_vignette(
+    display_vars = vars(TERM, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+
+atoxgr_criteria_ctcv5 %>%
+  filter(str_detect(TERM, "INR")) %>%
+  dataset_vignette(
+    display_vars = vars(TERM, Grade_1)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_ctcv5 %>%
+  filter(str_detect(TERM, "INR")) %>%
+  dataset_vignette(
+    display_vars = vars(TERM, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+
+atoxgr_criteria_ctcv5 %>%
+  filter(str_detect(TERM, "INR") | str_detect(TERM, "amylase")) %>%
+  dataset_vignette(
+    display_vars = vars(TERM, Grade_2, Grade_3, Grade_4)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_ctcv5 %>%
+  filter(str_detect(TERM, "INR") | str_detect(TERM, "amylase")) %>%
+  dataset_vignette(
+    display_vars = vars(TERM, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_ctcv5 %>%
+  filter(str_detect(TERM, "Hyperuricemia")) %>%
+  dataset_vignette(
+    display_vars = vars(TERM, Grade_1, Grade_3, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_ctcv5 %>%
+  filter(str_detect(TERM, "Hypokalemia") | str_detect(TERM, "Hyponatremia")) %>%
+  dataset_vignette(
+    display_vars = vars(TERM, Grade_1, Grade_2, Grade_3, COMMENT)
   )
 

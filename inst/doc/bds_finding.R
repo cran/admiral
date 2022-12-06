@@ -8,7 +8,7 @@ library(admiraldev)
 
 ## ----message=FALSE------------------------------------------------------------
 library(admiral)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 library(admiral.test)
 library(lubridate)
 library(stringr)
@@ -261,7 +261,6 @@ advs <- advs %>%
     ATPT = VSTPT,
     ATPTN = VSTPTNUM
   )
-
 
 count(advs, VISITNUM, VISIT, AVISITN, AVISIT)
 

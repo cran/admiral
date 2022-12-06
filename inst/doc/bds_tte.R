@@ -8,7 +8,7 @@ library(admiraldev)
 
 ## ---- warning=FALSE, message=FALSE--------------------------------------------
 library(admiral)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 library(admiral.test)
 
 ## ---- warning=FALSE, message=FALSE, include=FALSE-----------------------------

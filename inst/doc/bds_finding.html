@@ -108,13 +108,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -168,13 +175,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#cat">Derive Categorization Variables (<code>AVALCATx</code>)</a></li>
 <li><a href="#adsl_vars">Add ADSL variables</a></li>
 <li><a href="#additional">Derive New Rows</a></li>
+<li><a href="#attributes">Add Labels and Attributes</a></li>
 </ul>
 <div id="readdata" class="section level2">
 <h2>Read in Data</h2>
 <p>To start, all data frames needed for the creation of <code>ADVS</code> should be read into the environment. This will be a company specific process. Some of the data frames needed may be <code>VS</code> and <code>ADSL</code>.</p>
 <p>For example purpose, the CDISC Pilot SDTM and ADaM datasets—which are included in <code>{admiral.test}</code>—are used.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
@@ -1226,35 +1234,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">ATPTN =</span> VSTPTNUM</span>
 <span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(advs, VISITNUM, VISIT, AVISITN, AVISIT)</span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 15 x 5</span></span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    VISITNUM VISIT               AVISITN AVISIT       n</span></span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1      1   SCREENING 1              NA &lt;NA&gt;       102</span></span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2      2   SCREENING 2              NA &lt;NA&gt;        78</span></span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3      3   BASELINE                  0 Baseline    84</span></span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4      3.5 AMBUL ECG PLACEMENT      NA &lt;NA&gt;        65</span></span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5      4   WEEK 2                    2 Week 2      84</span></span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6      5   WEEK 4                    4 Week 4      70</span></span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7      6   AMBUL ECG REMOVAL        NA &lt;NA&gt;        52</span></span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8      7   WEEK 6                    6 Week 6      42</span></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9      8   WEEK 8                    8 Week 8      42</span></span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10      9   WEEK 12                  12 Week 12     42</span></span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11     10   WEEK 16                  16 Week 16     42</span></span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12     11   WEEK 20                  20 Week 20     28</span></span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13     12   WEEK 24                  24 Week 24     28</span></span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14     13   WEEK 26                  26 Week 26     28</span></span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15    201   RETRIEVAL                NA &lt;NA&gt;        26</span></span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(advs, VSTPTNUM, VSTPT, ATPTN, ATPT)</span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 x 5</span></span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   VSTPTNUM VSTPT                        ATPTN ATPT                             n</span></span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      &lt;dbl&gt; &lt;chr&gt;                        &lt;dbl&gt; &lt;chr&gt;                        &lt;int&gt;</span></span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      815 AFTER LYING DOWN FOR 5 MINU…   815 AFTER LYING DOWN FOR 5 MINU…   232</span></span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      816 AFTER STANDING FOR 1 MINUTE    816 AFTER STANDING FOR 1 MINUTE    232</span></span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      817 AFTER STANDING FOR 3 MINUTES   817 AFTER STANDING FOR 3 MINUTES   232</span></span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       NA &lt;NA&gt;                            NA &lt;NA&gt;                           117</span></span></code></pre></div>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(advs, VISITNUM, VISIT, AVISITN, AVISIT)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 15 x 5</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    VISITNUM VISIT               AVISITN AVISIT       n</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;    &lt;int&gt;</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1      1   SCREENING 1              NA &lt;NA&gt;       102</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2      2   SCREENING 2              NA &lt;NA&gt;        78</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3      3   BASELINE                  0 Baseline    84</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4      3.5 AMBUL ECG PLACEMENT      NA &lt;NA&gt;        65</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5      4   WEEK 2                    2 Week 2      84</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6      5   WEEK 4                    4 Week 4      70</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7      6   AMBUL ECG REMOVAL        NA &lt;NA&gt;        52</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8      7   WEEK 6                    6 Week 6      42</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9      8   WEEK 8                    8 Week 8      42</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10      9   WEEK 12                  12 Week 12     42</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11     10   WEEK 16                  16 Week 16     42</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12     11   WEEK 20                  20 Week 20     28</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13     12   WEEK 24                  24 Week 24     28</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14     13   WEEK 26                  26 Week 26     28</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15    201   RETRIEVAL                NA &lt;NA&gt;        26</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(advs, VSTPTNUM, VSTPT, ATPTN, ATPT)</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 x 5</span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   VSTPTNUM VSTPT                        ATPTN ATPT                             n</span></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      &lt;dbl&gt; &lt;chr&gt;                        &lt;dbl&gt; &lt;chr&gt;                        &lt;int&gt;</span></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      815 AFTER LYING DOWN FOR 5 MINU…   815 AFTER LYING DOWN FOR 5 MINU…   232</span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      816 AFTER STANDING FOR 1 MINUTE    816 AFTER STANDING FOR 1 MINUTE    232</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      817 AFTER STANDING FOR 3 MINUTES   817 AFTER STANDING FOR 3 MINUTES   232</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       NA &lt;NA&gt;                            NA &lt;NA&gt;                           117</span></span></code></pre></div>
+<p>For assigning visits based on time windows and deriving periods, subperiods, and phase variables see the <a href="visits_periods.html">“Visit and Period Variables” vignette</a>.</p>
 </div>
 <div id="timingflag" class="section level2">
 <h2>Timing Flag Variables (e.g. <code>ONTRTFL</code>)</h2>
@@ -2313,9 +2321,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="treatment" class="section level2">
 <h2>Assign Treatment (<code>TRTA</code>, <code>TRTP</code>)</h2>
-<p><code>TRTA</code> and <code>TRTP</code> must correlate to treatment <code>TRTxxP</code> and/or <code>TRTxxA</code> in ADSL. The derivation of <code>TRTA</code> and <code>TRTP</code> for a record are protocol and analysis specific.<br />
-<code>{admiral}</code> does not currently have functionality to assist with <code>TRTA</code> and <code>TRTP</code> assignment.</p>
-<p>However, an example of a simple implementation could be:</p>
+<p><code>TRTA</code> and <code>TRTP</code> must match at least one value of the character treatment variables in ADSL (e.g., <code>TRTxxA</code>/<code>TRTxxP</code>, <code>TRTSEQA</code>/<code>TRTSEQP</code>, <code>TRxxAGy</code>/<code>TRxxPGy</code>).</p>
+<p>An example of a simple implementation for a study without periods could be:</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">mutate</span>(advs, <span class="at">TRTP =</span> TRT01P, <span class="at">TRTA =</span> TRT01A)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(advs, TRTP, TRTA, TRT01P, TRT01A)</span>
@@ -2324,6 +2331,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt;             &lt;int&gt;</span></span>
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Placebo            Placebo           Placebo           Placebo             588</span></span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Xanomeline Low Do… Xanomeline Low D… Xanomeline Low D… Xanomeline Low D…   225</span></span></code></pre></div>
+<p>For studies with periods see the <a href="visits_periods.html#treatment_bds">“Visit and Period Variables” vignette</a>.</p>
 </div>
 <div id="aseq" class="section level2">
 <h2>Assign <code>ASEQ</code></h2>
@@ -3137,6 +3145,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 </div>
+</div>
+<div id="attributes" class="section level2">
+<h2>Add Labels and Attributes</h2>
+<p>Adding labels and attributes for SAS transport files is supported by the following packages:</p>
+<ul>
+<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>: establish a common foundation for the use of metadata within an R session.</p></li>
+<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>: enable the use of metacore objects. Metatools can be used to build datasets or enhance columns in existing datasets as well as checking datasets against the metadata.</p></li>
+<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>: functionality to associate all metadata information to a local R data frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport v5 file(xpt)</a>.</p></li>
+</ul>
+<p>NOTE: All these packages are in the experimental phase, but the vision is to have them associated with an End to End pipeline under the umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E example</a>.</p>
 </div>
 </div>
 <div id="example" class="section level1">

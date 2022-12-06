@@ -78,53 +78,60 @@
 <td><strong>VAR_PREFIX</strong></td>
 <td>The prefix used to define the grouping variables</td>
 <td>Character</td>
-<td>“SMQ01”</td>
+<td><code>&quot;SMQ01&quot;</code></td>
 </tr>
 <tr class="even">
 <td><strong>QUERY_NAME</strong></td>
 <td>The value provided to the grouping variables name</td>
 <td>Character</td>
-<td>“Immune-Mediated Guillain-Barre Syndrome”</td>
+<td><code>&quot;Immune-Mediated Guillain-Barre Syndrome&quot;</code></td>
 </tr>
 <tr class="odd">
 <td><strong>TERM_LEVEL</strong></td>
 <td>The variable used to define the grouping. Used in conjunction with TERM_NAME</td>
 <td>Character</td>
-<td>“AEDECOD”</td>
+<td><code>&quot;AEDECOD&quot;</code></td>
 </tr>
 <tr class="even">
 <td><strong>TERM_NAME</strong></td>
 <td>A term used to define the grouping. Used in conjunction with TERM_LEVEL</td>
 <td>Character</td>
-<td>“GUILLAIN-BARRE SYNDROME”</td>
+<td><code>&quot;GUILLAIN-BARRE SYNDROME&quot;</code></td>
 </tr>
 <tr class="odd">
 <td><strong>TERM_ID</strong></td>
 <td>A code used to define the grouping. Used in conjunction with TERM_LEVEL</td>
 <td>Integer</td>
-<td>10018767</td>
+<td><code>10018767</code></td>
 </tr>
 <tr class="even">
 <td>QUERY_ID</td>
 <td>Id number of the query. This could be a SMQ identifier</td>
 <td>Integer</td>
-<td>20000131</td>
+<td><code>20000131</code></td>
 </tr>
 <tr class="odd">
 <td>QUERY_SCOPE</td>
-<td>For SMQs, scope (Broad/Narrow) of the query</td>
+<td>Scope (Broad/Narrow) of the query</td>
 <td>Character</td>
-<td>BROAD, NARROW, NA</td>
+<td><code>BROAD</code>, <code>NARROW</code>, <code>NA</code></td>
 </tr>
 <tr class="even">
 <td>QUERY_SCOPE_NUM</td>
-<td>For SMQs, scope (Broad/Narrow) of the query</td>
+<td>Scope (Broad/Narrow) of the query</td>
 <td>Integer</td>
-<td>1, 2, NA</td>
+<td><code>1</code>, <code>2</code>, <code>NA</code></td>
+</tr>
+<tr class="odd">
+<td>VERSION</td>
+<td>The version of the dictionary</td>
+<td>Character</td>
+<td><code>&quot;20.1&quot;</code></td>
 </tr>
 </tbody>
 </table>
 <p><strong>Bold variables</strong> are required in <code>dataset_queries</code>: an error is issued if any of these variables is missing. Other variables are optional.</p>
+<p>The <code>VERSION</code> variable is not used by <code>derive_vars_query()</code> but can be used to check if the dictionary version of the queries dataset and the analysis dataset are in line.</p>
 </div>
 <div id="required-content" class="section level2">
 <h2>Required Content</h2>

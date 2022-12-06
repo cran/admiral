@@ -108,13 +108,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -144,9 +151,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Within the ADLB ADaM data set there is a concept of lab grading, where there is a set of criteria for particular lab tests that grade the severity or abnormality of a lab value. The grades are from 0 to 4, where grade 0 can be viewed generally as a “NORMAL” value. The higher the grade the more severe or more abnormal the lab value is. There are several sets of lab grading criteria, for the initial implementation of lab grading we will look at NCI-CTCAEv4. (In future releases <code>{admiral}</code> look to implement further grading criteria, for example NCI-CTCAEv5)</p>
+<p>Within the ADLB ADaM data set there is a concept of lab grading, where there is a set of criteria for particular lab tests that grade the severity or abnormality of a lab value. The grades are from 0 to 4, where grade 0 can be viewed generally as a “NORMAL” value. The higher the grade the more severe or more abnormal the lab value is. There are several sets of lab grading criteria, currently <code>{admiral}</code> has implemented NCI-CTCAEv4 and NCI-CTCAEv5 grading criteria. In future releases <code>{admiral}</code> may look to implement further grading criteria.</p>
 <p>The NCI-CTCAE version 4 and 5 grading criteria can be found here: <a href="https://ctep.cancer.gov/protocoldevelopment/electronic_applications/ctc.htm" class="uri">https://ctep.cancer.gov/protocoldevelopment/electronic_applications/ctc.htm</a> .</p>
 <p>The NCI-CTCAEv4 criteria can be found under the heading <a href="https://ctep.cancer.gov/protocoldevelopment/electronic_applications/ctc.htm#ctc_40"><strong>Common Terminology Criteria for Adverse Events (CTCAE)v4.0</strong></a></p>
+<p>The NCI-CTCAEv5 criteria can be found under the heading <a href="https://ctep.cancer.gov/protocoldevelopment/electronic_applications/ctc.htm#ctc_50"><strong>Common Terminology Criteria for Adverse Events (CTCAE)v5.0</strong></a></p>
 </div>
 <div id="grading-metadata" class="section level1">
 <h1>Grading metadata</h1>
@@ -271,7 +279,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Mapping ADLB VAD to the TERM variable in the <code>{admiral}</code> metadata data set</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
@@ -282,6 +290,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>lb <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(lb)</span></code></pre></div>
 <p><br> Each company needs to map their lab test to a term that describes the criteria being applied. The list of terms defined in the <code>{admiral}</code> metadata to implement NCI-CTCAEv4 is below: <br></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Anemia</td>
+</tr>
+<tr class="even">
+<td align="left">Leukocytosis</td>
+</tr>
+<tr class="odd">
+<td align="left">Activated partial thromboplastin time prolonged</td>
+</tr>
+<tr class="even">
+<td align="left">Alanine aminotransferase increased</td>
+</tr>
+<tr class="odd">
+<td align="left">Alkaline phosphatase increased</td>
+</tr>
+<tr class="even">
+<td align="left">Aspartate aminotransferase increased</td>
+</tr>
+<tr class="odd">
+<td align="left">Blood bilirubin increased</td>
+</tr>
+<tr class="even">
+<td align="left">CD4 lymphocytes decreased</td>
+</tr>
+<tr class="odd">
+<td align="left">Cholesterol high</td>
+</tr>
+<tr class="even">
+<td align="left">CPK increased</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><br> Likewise, the list of terms defined in the <code>{admiral}</code> metadata to implement NCI-CTCAEv5 is below: (Terms identical to NCI-CTCAEv4, except <code>Hyperglycemia</code>, <code>Hyperglycemia (Fasting)</code> and <code>Hypophosphatemia</code>) which are not present in NCI-CTCAEv5. <br></p>
 <table>
 <thead>
 <tr class="header">
@@ -424,21 +473,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> grade_lookup,</span>
 <span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">vars</span>(PARAMCD),</span>
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p>It is now straightforward to create the grade, for low lab values the grade will be held in <code>ATOXGRL</code> and for high lab values the grade will be held in <code>ATOXGRH</code></p>
+<p>It is now straightforward to create the grade, for low lab values the grade will be held in <code>ATOXGRL</code> and for high lab values the grade will be held in <code>ATOXGRH</code>.</p>
+<p>Note: for NCICTCAEv5 grading, you would update <code>meta_criteria</code> parameter to <code>atoxgr_criteria_ctcv5</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>adlb <span class="ot">&lt;-</span> adlb <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_atoxgr_dir</span>(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> ATOXGRL,</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">tox_description_var =</span> ATOXDSCL,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">criteria_direction =</span> <span class="st">&quot;L&quot;</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">get_unit_expr =</span> <span class="fu">extract_unit</span>(PARAM)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_atoxgr_dir</span>(</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> ATOXGRH,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">tox_description_var =</span> ATOXDSCH,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">criteria_direction =</span> <span class="st">&quot;H&quot;</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">get_unit_expr =</span> <span class="fu">extract_unit</span>(PARAM)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p>Note: <code>{admiral}</code> does not grade ‘Anemia’ or ‘Hemoglobin Increased’ because the metadata is based on the SI unit of ‘g/L’, however the CDISC data has SI unit of ‘mmol/L’. Please see <code>SI_UNIT_CHECK</code> variable in <code>{admiral}</code> metadata <code>atoxgr_criteria_ctcv4</code>, the metadata is in the data folder of <code>{admiral}</code>. <br></p>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">meta_criteria =</span> atoxgr_criteria_ctcv4,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">criteria_direction =</span> <span class="st">&quot;L&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">get_unit_expr =</span> <span class="fu">extract_unit</span>(PARAM)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_atoxgr_dir</span>(</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> ATOXGRH,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">tox_description_var =</span> ATOXDSCH,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">meta_criteria =</span> atoxgr_criteria_ctcv4,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">criteria_direction =</span> <span class="st">&quot;H&quot;</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">get_unit_expr =</span> <span class="fu">extract_unit</span>(PARAM)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<p>Note: <code>{admiral}</code> does not grade ‘Anemia’ or ‘Hemoglobin Increased’ because the metadata is based on the SI unit of ‘g/L’, however the CDISC data has SI unit of ‘mmol/L’. Please see <code>SI_UNIT_CHECK</code> variable in <code>{admiral}</code> metadata <code>atoxgr_criteria_ctcv4</code> or <code>atoxgr_criteria_ctcv5</code>, the metadata is in the data folder of <code>{admiral}</code>. <br></p>
 <table>
 <thead>
 <tr class="header">
@@ -579,7 +631,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 </div>
 </div>
-<div id="nci-ctcaev4-implementation" class="section level1">
+<div id="implement_ctcv4" class="section level1">
 <h1>NCI-CTCAEV4 implementation</h1>
 <div id="terms-graded" class="section level2">
 <h2>Terms graded</h2>
@@ -739,6 +791,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>For TERM “Hyperuricemia”, the criteria for Grade 1 and Grade 3 is the same with respect to the lab value, so worse case is assumed as grade 3. The decision made was put in the <code>COMMENT</code> field.</p>
 <p><br></p>
 <table>
+<colgroup>
+<col width="7%" />
+<col width="32%" />
+<col width="30%" />
+<col width="30%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
@@ -748,6 +806,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </thead>
 <tbody>
+<tr class="odd">
+<td align="left">Hyperuricemia</td>
+<td align="left">&gt;ULN - 10 mg/dL (0.59 mmol/L) without physiologic consequences</td>
+<td align="left">&gt;ULN - 10 mg/dL (0.59 mmol/L) with physiologic consequences</td>
+<td align="left">Take worst case and assume “with physiologic consequences”</td>
+</tr>
 </tbody>
 </table>
 <p><br></p>
@@ -780,9 +844,257 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><br></p>
 </div>
 </div>
+<div id="implement_ctcv5" class="section level1">
+<h1>NCI-CTCAEV5 implementation</h1>
+<div id="terms-graded-1" class="section level2">
+<h2>Terms graded</h2>
+<p>Grading is implemented for those lab tests where a lab value is included in the grading definition, <code>{admiral}</code> does NOT try to read any other data to determine the grade, and only the ADLB VAD is used. The following CTCAE v5.0 SOC values were identified for grading, these are “Investigations”, “Metabolism and nutrition disorders” and “Blood and lymphatic system disorders”.</p>
+<p>From these SOC values the following terms criteria is implemented in <code>{admiral}</code></p>
+<p>From SOC = “Investigations” there are 21 CTCAE v5.0 Terms:</p>
+<ul>
+<li>Activated partial thromboplastin time prolonged</li>
+<li>Alanine aminotransferase increased</li>
+<li>Alkaline phosphatase increased</li>
+<li>Aspartate aminotransferase increased</li>
+<li>Blood bilirubin increased</li>
+<li>CD4 lymphocytes decreased</li>
+<li>Cholesterol high</li>
+<li>CPK increased</li>
+<li>Creatinine increased</li>
+<li>Fibrinogen decreased</li>
+<li>GGT increased</li>
+<li>Haptoglobin decreased</li>
+<li>Hemoglobin increased</li>
+<li>INR increased</li>
+<li>Lipase increased</li>
+<li>Lymphocyte count decreased</li>
+<li>Lymphocyte count increased</li>
+<li>Neutrophil count decreased</li>
+<li>Platelet count decreased</li>
+<li>Serum amylase increased</li>
+<li>White blood cell decreased</li>
+</ul>
+<p>Note: These are the same terms identified for NCI-CTCAEv4.</p>
+<p>From the SOC = “Metabolism and nutrition disorders” there are 12 CTCAE v4.0 Terms:</p>
+<ul>
+<li>Hypercalcemia</li>
+<li>Hyperkalemia</li>
+<li>Hypermagnesemia</li>
+<li>Hypernatremia</li>
+<li>Hypertriglyceridemia</li>
+<li>Hyperuricemia</li>
+<li>Hypoalbuminemia</li>
+<li>Hypocalcemia</li>
+<li>Hypoglycemia</li>
+<li>Hypokalemia</li>
+<li>Hypomagnesemia</li>
+<li>Hyponatremia</li>
+</ul>
+<p>Note: These are the same terms identified for NCI-CTCAEv4, except “Hypophosphatemia” and “Hyperglycemia” which are not in NCICTCAEv5 grading criteria.</p>
+<p>From the SOC = “Blood and lymphatic system disorders” there are 2 CTCAE v4.0 Terms:</p>
+<ul>
+<li>Anemia</li>
+<li>Leukocytosis</li>
+</ul>
+<p>Note: These are the same terms identified for NCI-CTCAEv4.</p>
+</div>
+<div id="updates-made-to-term-1" class="section level2">
+<h2>Updates made to TERM</h2>
+<p>For terms “Hypocalcemia” and “Hypercalcemia” the criteria is provided for Calcium and Ionized Calcium, therefore <code>{admiral}</code> created a row for each in the metadata, this is noted in the COMMENT variable of the metadata: <br></p>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Hypercalcemia</td>
+<td align="left">Split Corrected Calcium and Ionized Calcium into 2 separate terms.</td>
+</tr>
+<tr class="even">
+<td align="left">Hypercalcemia (Ionized)</td>
+<td align="left">Split Corrected Calcium and Ionized Calcium into 2 separate terms.</td>
+</tr>
+<tr class="odd">
+<td align="left">Hypocalcemia</td>
+<td align="left">Split Corrected Calcium and Ionized Calcium into 2 separate terms.</td>
+</tr>
+<tr class="even">
+<td align="left">Hypocalcemia (Ionized)</td>
+<td align="left">Split Corrected Calcium and Ionized Calcium into 2 separate terms.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+<div id="assumptions-made-when-grading-1" class="section level2">
+<h2>Assumptions made when grading</h2>
+<p>For term “INR Increased” there is the following criteria:</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="86%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">Grade_1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">&gt;1.2 - 1.5 x ULN; &gt;1 - 1.5 x baseline if on anticoagulation; monitoring only indicated</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><code>{admiral}</code> assumed worst case and used both parts of the criteria for grading, so comparing lab value against ULN and also BASE. The decision made was put in the <code>COMMENT</code> field.</p>
+<p><br></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">Take worst case and assume “on anticoagulation”</td>
+</tr>
+</tbody>
+</table>
+<p><br> Similarly, for terms “Lipase Increased” and “Serum amylase increased” there is the following criteria:</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="40%" />
+<col width="31%" />
+<col width="17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">Grade_2</th>
+<th align="left">Grade_3</th>
+<th align="left">Grade_4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">&gt;1.5 - 2.5 x ULN; &gt;1.5 - 2.5 x baseline if on anticoagulation; dose adjustment indicated</td>
+<td align="left">&gt;2.5 x ULN; &gt;2.5 times above baseline if on anticoagulation</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">Serum amylase increased</td>
+<td align="left">&gt;1.5 - 2.0 x ULN; &gt;2.0 - 5.0 x ULN and asymptomatic</td>
+<td align="left">&gt;2.0 - 5.0 x ULN with signs or symptoms; &gt;5.0 x ULN and asymptomatic</td>
+<td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><code>{admiral}</code> assumed worst case and implemented highest grade possible. The decision made was put in the <code>COMMENT</code> field.</p>
+<p><br></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">Take worst case and assume “on anticoagulation”</td>
+</tr>
+<tr class="even">
+<td align="left">Serum amylase increased</td>
+<td align="left">Take worst case and assume “signs and symptoms”</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>For TERM “Hyperuricemia”, the criteria for Grade 1 and Grade 3 is the same with respect to the lab value, so worse case is assumed as grade 3. The decision made was put in the <code>COMMENT</code> field.</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="26%" />
+<col width="23%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">Grade_1</th>
+<th align="left">Grade_3</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Hyperuricemia</td>
+<td align="left">&gt;ULN without physiologic consequences</td>
+<td align="left">&gt;ULN with physiologic consequences</td>
+<td align="left">Take worst case and assume “with physiologic consequences”</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>A similar approach was taken for TERM “Hypokalemia” and “Hyponatremia”. For “Hypokalemia”, where Grade 1 and Grade 2 criteria is the same with respect to the lab value, then worse case is assumed as grade 2. For “Hyponatremia”, where Grade 2 and Grade 2 criteria is the same with respect to the lab value, then worse case is assumed as grade 3. The decision made was put in the <code>COMMENT</code> field.</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="9%" />
+<col width="29%" />
+<col width="33%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">Grade_1</th>
+<th align="left">Grade_2</th>
+<th align="left">Grade_3</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Hypokalemia</td>
+<td align="left">&lt;LLN - 3.0 mmol/L</td>
+<td align="left">Symptomatic with &lt;LLN - 3.0 mmol/L; intervention indicated</td>
+<td align="left">&lt;3.0 - 2.5 mmol/L; hospitalization indicated</td>
+<td align="left">Take worst case and assume “symptomatic”</td>
+</tr>
+<tr class="even">
+<td align="left">Hyponatremia</td>
+<td align="left">&lt;LLN - 130 mmol/L</td>
+<td align="left">125-129 mmol/L and asymptomatic</td>
+<td align="left">125-129 mmol/L symptomatic; 120-124 mmol/L regardless of symptoms</td>
+<td align="left">Take worst case and assume “symptomatic”</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+</div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>In future releases <code>{admiral}</code> will implement further grading criteria, with NCI-CTCAE v5 being the priority. Providing tools for users to easily interact with the metadata to update criteria, based on their companies needs will also be looked at. Ideally, users should be able to create their own metadata for company specific grading schemes.</p>
+<p>With NCI-CTCAEv4 and NCI-CTCAEv5 now implemented, {admiral} may look to implement other industry standard grading criteria. Providing tools for users to easily interact with the metadata to update criteria, based on their companies needs will also be looked at. Ideally, users should be able to create their own metadata for company specific grading schemes.</p>
 </div>
 
 

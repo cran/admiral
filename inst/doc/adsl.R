@@ -8,7 +8,7 @@ library(admiraldev)
 
 ## ---- message=FALSE, warning=FALSE--------------------------------------------
 library(admiral)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 library(admiral.test)
 library(lubridate)
 library(stringr)
@@ -225,7 +225,7 @@ src_ae <- dthcaus_source(
 dataset_vignette(
   ae,
   display_vars = vars(USUBJID, AESTDTC, AEENDTC, AEDECOD, AEOUT),
-  filter =  AEOUT == "FATAL"
+  filter = AEOUT == "FATAL"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -408,22 +408,16 @@ adsl <- adsl %>%
 dataset_vignette(
   adsl,
   display_vars = vars(USUBJID, TRTEDT, DTHDTC, LSTALVDT, LALVDOM, LALVSEQ, LALVVAR),
-  filter =  !is.na(TRTSDT)
+  filter = !is.na(TRTSDT)
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-adsl <- adsl %>%
-  derive_var_agegr_fda(
-    age_var = AGE,
-    new_var = AGEGR1
-  )
-
-## ----eval=TRUE----------------------------------------------------------------
-format_agegr2 <- function(var_input) {
+format_agegr1 <- function(var_input) {
   case_when(
-    var_input < 65 ~ "< 65",
-    var_input >= 65 ~ ">= 65",
-    TRUE ~ NA_character_
+    var_input < 18 ~ "<18",
+    between(var_input, 18, 64) ~ "18-64",
+    var_input > 64 ~ ">64",
+    TRUE ~ "Missing"
   )
 }
 
@@ -438,14 +432,14 @@ format_region1 <- function(var_input) {
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
   mutate(
-    AGEGR2 = format_agegr2(AGE),
+    AGEGR1 = format_agegr1(AGE),
     REGION1 = format_region1(COUNTRY)
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, AGE, SEX, COUNTRY, AGEGR1, AGEGR2, REGION1)
+  display_vars = vars(USUBJID, AGE, SEX, COUNTRY, AGEGR1, REGION1)
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
