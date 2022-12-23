@@ -14,7 +14,19 @@
 
 <title>Creating an OCCDS ADaM</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -133,7 +145,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -151,19 +343,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This article describes creating an OCCDS ADaM. Examples are currently presented and tested in the context of <code>ADAE</code>. However, the examples could be applied to other OCCDS ADaMs such as <code>ADCM</code>, <code>ADMH</code>, <code>ADDV</code>, etc.</p>
-<p><strong>Note</strong>: <em>All examples assume CDISC SDTM and/or ADaM format as input unless otherwise specified.</em></p>
+<p>This article describes creating an OCCDS ADaM. Examples are currently
+presented and tested in the context of <code>ADAE</code>. However, the
+examples could be applied to other OCCDS ADaMs such as
+<code>ADCM</code>, <code>ADMH</code>, <code>ADDV</code>, etc.</p>
+<p><strong>Note</strong>: <em>All examples assume CDISC SDTM and/or ADaM
+format as input unless otherwise specified.</em></p>
 </div>
 <div id="programming-workflow" class="section level1">
 <h1>Programming Workflow</h1>
 <ul>
 <li><a href="#readdata">Read in Data</a></li>
-<li><a href="#datetime">Derive/Impute End and Start Analysis Date/time and Relative Day</a></li>
+<li><a href="#datetime">Derive/Impute End and Start Analysis Date/time
+and Relative Day</a></li>
 <li><a href="#duration">Derive Durations</a></li>
 <li><a href="#atc">Derive ATC variables</a></li>
 <li><a href="#trtpa">Derive Planned and Actual Treatment</a></li>
 <li><a href="#last_dose">Derive Date/Date-time of Last Dose</a></li>
-<li><a href="#severity">Derive Severity, Causality, and Toxicity Grade</a></li>
+<li><a href="#severity">Derive Severity, Causality, and Toxicity
+Grade</a></li>
 <li><a href="#trtflag">Derive Treatment Emergent Flag</a></li>
 <li><a href="#occflag">Derive Occurrence Flags</a></li>
 <li><a href="#query">Derive Query Variables</a></li>
@@ -173,8 +371,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div id="readdata" class="section level2">
 <h2>Read in Data</h2>
-<p>To start, all data frames needed for the creation of <code>ADAE</code> should be read into the environment. This will be a company specific process. Some of the data frames needed may be <code>AE</code> and <code>ADSL</code></p>
-<p>For example purpose, the CDISC Pilot SDTM and ADaM datasets —which are included in <code>{admiral.test}</code>— are used.</p>
+<p>To start, all data frames needed for the creation of
+<code>ADAE</code> should be read into the environment. This will be a
+company specific process. Some of the data frames needed may be
+<code>AE</code> and <code>ADSL</code></p>
+<p>For example purpose, the CDISC Pilot SDTM and ADaM datasets —which
+are included in <code>{admiral.test}</code>— are used.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
@@ -185,7 +387,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> admiral_ae</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span></code></pre></div>
-<p>At this step, it may be useful to join <code>ADSL</code> to your <code>AE</code> domain as well. Only the <code>ADSL</code> variables used for derivations are selected at this step. The rest of the relevant <code>ADSL</code> variables would be added later.</p>
+<p>At this step, it may be useful to join <code>ADSL</code> to your
+<code>AE</code> domain as well. Only the <code>ADSL</code> variables
+used for derivations are selected at this step. The rest of the relevant
+<code>ADSL</code> variables would be added later.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>adsl_vars <span class="ot">&lt;-</span> <span class="fu">vars</span>(TRTSDT, TRTEDT, TRT01A, TRT01P, DTHDT, EOSDT)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -348,7 +553,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="datetime" class="section level2">
 <h2>Derive/Impute End and Start Analysis Date/time and Relative Day</h2>
-<p>This part derives <code>ASTDTM</code>, <code>ASTDT</code>, <code>ASTDY</code>, <code>AENDTM</code>, <code>AENDT</code>, and <code>AENDY</code>. The function <code>derive_vars_dtm()</code> can be used to derive <code>ASTDTM</code> and <code>AENDTM</code> where <code>ASTDTM</code> could be company-specific. <code>ASTDT</code> and <code>AENDT</code> can be derived from <code>ASTDTM</code> and <code>AENDTM</code>, respectively, using function <code>derive_vars_dtm_to_dt()</code>. <code>derive_vars_dy()</code> can be used to create <code>ASTDY</code> and <code>AENDY</code>.</p>
+<p>This part derives <code>ASTDTM</code>, <code>ASTDT</code>,
+<code>ASTDY</code>, <code>AENDTM</code>, <code>AENDT</code>, and
+<code>AENDY</code>. The function <code>derive_vars_dtm()</code> can be
+used to derive <code>ASTDTM</code> and <code>AENDTM</code> where
+<code>ASTDTM</code> could be company-specific. <code>ASTDT</code> and
+<code>AENDT</code> can be derived from <code>ASTDTM</code> and
+<code>AENDTM</code>, respectively, using function
+<code>derive_vars_dtm_to_dt()</code>. <code>derive_vars_dy()</code> can
+be used to create <code>ASTDY</code> and <code>AENDY</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
@@ -511,7 +724,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="duration" class="section level2">
 <h2>Derive Durations</h2>
-<p>The function <code>derive_vars_duration()</code> can be used to create the variables <code>ADURN</code> and <code>ADURU</code>.</p>
+<p>The function <code>derive_vars_duration()</code> can be used to
+create the variables <code>ADURN</code> and <code>ADURU</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> ADURN,</span>
@@ -520,6 +734,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> AENDT</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
+<colgroup>
+<col width="17%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="8%" />
+<col width="8%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -627,9 +850,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="atc" class="section level2">
 <h2>Derive ATC variables</h2>
-<p>The function <code>derive_vars_atc()</code> can be used to derive ATC Class Variables.</p>
-<p>It helps to add Anatomical Therapeutic Chemical class variables from <code>FACM</code> to <code>ADCM</code>.</p>
-<p>The expected result is the input dataset with ATC variables added.</p>
+<p>The function <code>derive_vars_atc()</code> can be used to derive ATC
+Class Variables.</p>
+<p>It helps to add Anatomical Therapeutic Chemical class variables from
+<code>FACM</code> to <code>ADCM</code>.</p>
+<p>The expected result is the input dataset with ATC variables
+added.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>CMGRPID, <span class="sc">~</span>CMREFID,  <span class="sc">~</span>CMDECOD,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;14&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;PARACETAMOL&quot;</span>,</span>
@@ -672,8 +898,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="trtpa" class="section level2">
 <h2>Derive Planned and Actual Treatment</h2>
-<p><code>TRTA</code> and <code>TRTP</code> must match at least one value of the character treatment variables in ADSL (e.g., <code>TRTxxA</code>/<code>TRTxxP</code>, <code>TRTSEQA</code>/<code>TRTSEQP</code>, <code>TRxxAGy</code>/<code>TRxxPGy</code>).</p>
-<p>An example of a simple implementation for a study without periods could be:</p>
+<p><code>TRTA</code> and <code>TRTP</code> must match at least one value
+of the character treatment variables in ADSL (e.g.,
+<code>TRTxxA</code>/<code>TRTxxP</code>,
+<code>TRTSEQA</code>/<code>TRTSEQP</code>,
+<code>TRxxAGy</code>/<code>TRxxPGy</code>).</p>
+<p>An example of a simple implementation for a study without periods
+could be:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">mutate</span>(adae, <span class="at">TRTP =</span> TRT01P, <span class="at">TRTA =</span> TRT01A)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(adae, TRTP, TRTA, TRT01P, TRT01A)</span>
@@ -682,12 +913,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt;             &lt;int&gt;</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Placebo            Placebo           Placebo           Placebo              10</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Xanomeline Low Do… Xanomeline Low D… Xanomeline Low D… Xanomeline Low D…     6</span></span></code></pre></div>
-<p>For studies with periods see the <a href="visits_periods.html#treatment_bds">“Visit and Period Variables” vignette</a>.</p>
+<p>For studies with periods see the <a href="visits_periods.html#treatment_bds">“Visit and Period Variables”
+vignette</a>.</p>
 </div>
 <div id="last_dose" class="section level2">
 <h2>Derive Date/Date-time of Last Dose</h2>
-<p>The function <code>derive_var_last_dose_date()</code> can be used to derive the last dose date before the start of the event.</p>
-<p>Additionally, this function can also provide traceability variables (e.g. <code>LDOSEDOM</code>, <code>LDOSESEQ</code>) using the <code>traceability_vars</code> argument.</p>
+<p>The function <code>derive_var_last_dose_date()</code> can be used to
+derive the last dose date before the start of the event.</p>
+<p>Additionally, this function can also provide traceability variables
+(e.g. <code>LDOSEDOM</code>, <code>LDOSESEQ</code>) using the
+<code>traceability_vars</code> argument.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(ex_single)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ex_single <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  ex_single,</span>
@@ -835,7 +1070,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="severity" class="section level2">
 <h2>Derive Severity, Causality, and Toxicity Grade</h2>
-<p>The variables <code>ASEV</code>, <code>AREL</code>, and <code>ATOXGR</code> can be added using simple <code>dplyr::mutate()</code> assignments, if no imputation is required.</p>
+<p>The variables <code>ASEV</code>, <code>AREL</code>, and
+<code>ATOXGR</code> can be added using simple
+<code>dplyr::mutate()</code> assignments, if no imputation is
+required.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">ASEV =</span> AESEV,</span>
@@ -844,7 +1082,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="trtflag" class="section level2">
 <h2>Derive Treatment Emergent Flag</h2>
-<p>To derive the treatment emergent flag <code>TRTEMFL</code>, one can call <code>derive_var_trtemfl()</code>. In the example below, we use 30 days in the flag derivation.</p>
+<p>To derive the treatment emergent flag <code>TRTEMFL</code>, one can
+call <code>derive_var_trtemfl()</code>. In the example below, we use 30
+days in the flag derivation.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_trtemfl</span>(</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">trt_start_date =</span> TRTSDT,</span>
@@ -945,9 +1185,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<p>To derive on-treatment flag (<code>ONTRTFL</code>) in an ADaM dataset with a single occurrence date, we use <code>derive_var_ontrtfl()</code>.</p>
-<p>The expected result is the input dataset with an additional column named <code>ONTRTFL</code> with a value of <code>&quot;Y&quot;</code> or <code>NA</code>.</p>
-<p>If you want to also check an end date, you could add the <code>end_date</code> argument. Note that in this scenario you could set <code>span_period = &quot;Y&quot;</code> if you want occurrences that started prior to drug intake, and was ongoing or ended after this time to be considered as on-treatment.</p>
+<p>To derive on-treatment flag (<code>ONTRTFL</code>) in an ADaM dataset
+with a single occurrence date, we use
+<code>derive_var_ontrtfl()</code>.</p>
+<p>The expected result is the input dataset with an additional column
+named <code>ONTRTFL</code> with a value of <code>&quot;Y&quot;</code> or
+<code>NA</code>.</p>
+<p>If you want to also check an end date, you could add the
+<code>end_date</code> argument. Note that in this scenario you could set
+<code>span_period = &quot;Y&quot;</code> if you want occurrences that started
+prior to drug intake, and was ongoing or ended after this time to be
+considered as on-treatment.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bds1 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ADT,              <span class="sc">~</span>TRTSDT,           <span class="sc">~</span>TRTEDT,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-02-24&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
@@ -1014,8 +1262,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="occflag" class="section level2">
 <h2>Derive Occurrence Flags</h2>
-<p>The function <code>derive_var_extreme_flag()</code> can help derive variables such as <code>AOCCIFL</code>, <code>AOCCPIFL</code>, <code>AOCCSIFL</code>, <code>AOCXIFL</code>, <code>AOCXPIFL</code>, and <code>AOCXSIFL</code>.</p>
-<p>If grades were collected, the following can be used to flag first occurrence of maximum toxicity grade.</p>
+<p>The function <code>derive_var_extreme_flag()</code> can help derive
+variables such as <code>AOCCIFL</code>, <code>AOCCPIFL</code>,
+<code>AOCCSIFL</code>, <code>AOCXIFL</code>, <code>AOCXPIFL</code>, and
+<code>AOCXSIFL</code>.</p>
+<p>If grades were collected, the following can be used to flag first
+occurrence of maximum toxicity grade.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_extreme_flag,</span>
@@ -1027,7 +1279,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p>Similarly, <code>ASEV</code> can also be used to derive the occurrence flags, if severity is collected. In this case, the variable will need to be recoded to a numeric variable. Flag first occurrence of most severe adverse event:</p>
+<p>Similarly, <code>ASEV</code> can also be used to derive the
+occurrence flags, if severity is collected. In this case, the variable
+will need to be recoded to a numeric variable. Flag first occurrence of
+most severe adverse event:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">ASEVN =</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(ASEV, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;MILD&quot;</span>, <span class="st">&quot;MODERATE&quot;</span>, <span class="st">&quot;SEVERE&quot;</span>, <span class="st">&quot;DEATH THREATENING&quot;</span>)))</span>
@@ -1150,8 +1405,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="query" class="section level2">
 <h2>Derive Query Variables</h2>
-<p>For deriving query variables <code>SMQzzNAM</code>, <code>SMQzzCD</code>, <code>SMQzzSC</code>, <code>SMQzzSCN</code>, or <code>CQzzNAM</code> the <code>derive_vars_query()</code> function can be used. As input it expects a queries dataset, which provides the definition of the queries. See <a href="queries_dataset.html">Queries dataset documentation</a> for a detailed description of the queries dataset. The <code>create_query_data()</code> function can be used to create queries datasets.</p>
-<p>The following example shows how to derive query variables for Standardized MedDRA Queries (SMQs) in ADAE.</p>
+<p>For deriving query variables <code>SMQzzNAM</code>,
+<code>SMQzzCD</code>, <code>SMQzzSC</code>, <code>SMQzzSCN</code>, or
+<code>CQzzNAM</code> the <code>derive_vars_query()</code> function can
+be used. As input it expects a queries dataset, which provides the
+definition of the queries. See <a href="queries_dataset.html">Queries
+dataset documentation</a> for a detailed description of the queries
+dataset. The <code>create_query_data()</code> function can be used to
+create queries datasets.</p>
+<p>The following example shows how to derive query variables for
+Standardized MedDRA Queries (SMQs) in ADAE.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;queries&quot;</span>)</span></code></pre></div>
 <table>
 <colgroup>
@@ -1454,7 +1717,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<p>Similarly to SMQ, the <code>derive_vars_query()</code> function can be used to derive Standardized Drug Groupings (SDG).</p>
+<p>Similarly to SMQ, the <code>derive_vars_query()</code> function can
+be used to derive Standardized Drug Groupings (SDG).</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sdg <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>VAR_PREFIX, <span class="sc">~</span>QUERY_NAME,       <span class="sc">~</span>SDG_ID, <span class="sc">~</span>QUERY_SCOPE, <span class="sc">~</span>QUERY_SCOPE_NUM, <span class="sc">~</span>TERM_LEVEL, <span class="sc">~</span>TERM_NAME,         <span class="sc">~</span>TERM_ID,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,       <span class="dv">11</span>,      <span class="st">&quot;BROAD&quot;</span>,      <span class="dv">1</span>,                <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 1&quot;</span>,       <span class="cn">NA</span>,</span>
@@ -1472,6 +1736,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>adcm_query <span class="ot">&lt;-</span> <span class="fu">derive_vars_query</span>(adcm, sdg)</span></code></pre></div>
 <table>
+<colgroup>
+<col width="7%" />
+<col width="19%" />
+<col width="16%" />
+<col width="9%" />
+<col width="7%" />
+<col width="8%" />
+<col width="15%" />
+<col width="7%" />
+<col width="8%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -1535,7 +1810,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="adsl_vars" class="section level2">
 <h2>Add the <code>ADSL</code> variables</h2>
-<p>If needed, the other <code>ADSL</code> variables can now be added:</p>
+<p>If needed, the other <code>ADSL</code> variables can now be
+added:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
@@ -1682,8 +1958,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="aseq" class="section level2">
 <h2>Derive Analysis Sequence Number</h2>
-<p>The function <code>derive_var_obs_number()</code> can be used for deriving <code>ASEQ</code> variable to ensure the uniqueness of subject records within the dataset.</p>
-<p>For example, there can be multiple records present in <code>ADCM</code> for a single subject with the same <code>ASTDTM</code> and <code>CMSEQ</code> variables. But these records still differ at ATC level:</p>
+<p>The function <code>derive_var_obs_number()</code> can be used for
+deriving <code>ASEQ</code> variable to ensure the uniqueness of subject
+records within the dataset.</p>
+<p>For example, there can be multiple records present in
+<code>ADCM</code> for a single subject with the same <code>ASTDTM</code>
+and <code>CMSEQ</code> variables. But these records still differ at ATC
+level:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>adcm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>ASTDTM,          <span class="sc">~</span>CMSEQ, <span class="sc">~</span>CMDECOD,         <span class="sc">~</span>ATC1CD, <span class="sc">~</span>ATC2CD, <span class="sc">~</span>ATC3CD, <span class="sc">~</span>ATC4CD,</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-07-05 UTC&quot;</span>, <span class="st">&quot;14&quot;</span>,   <span class="st">&quot;PARACETAMOL&quot;</span>,    <span class="st">&quot;N&quot;</span>,     <span class="st">&quot;N02&quot;</span>,   <span class="st">&quot;N02B&quot;</span>,  <span class="st">&quot;N02BE&quot;</span>,</span>
@@ -1700,7 +1981,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var    =</span> ASEQ,</span>
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
 <span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="15%" />
+<col width="18%" />
+<col width="7%" />
+<col width="18%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="6%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -1775,18 +2067,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="attributes" class="section level2">
 <h2>Add Labels and Attributes</h2>
-<p>Adding labels and attributes for SAS transport files is supported by the following packages:</p>
+<p>Adding labels and attributes for SAS transport files is supported by
+the following packages:</p>
 <ul>
-<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>: establish a common foundation for the use of metadata within an R session.</p></li>
-<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>: enable the use of metacore objects. Metatools can be used to build datasets or enhance columns in existing datasets as well as checking datasets against the metadata.</p></li>
-<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>: functionality to associate all metadata information to a local R data frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport v5 file(xpt)</a>.</p></li>
+<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>:
+establish a common foundation for the use of metadata within an R
+session.</p></li>
+<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>:
+enable the use of metacore objects. Metatools can be used to build
+datasets or enhance columns in existing datasets as well as checking
+datasets against the metadata.</p></li>
+<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>:
+functionality to associate all metadata information to a local R data
+frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport
+v5 file(xpt)</a>.</p></li>
 </ul>
-<p>NOTE: All these packages are in the experimental phase, but the vision is to have them associated with an End to End pipeline under the umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E example</a>.</p>
+<p>NOTE: All these packages are in the experimental phase, but the
+vision is to have them associated with an End to End pipeline under the
+umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of
+applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E
+example</a>.</p>
 </div>
 </div>
 <div id="example-scripts" class="section level1">
 <h1>Example Scripts</h1>
 <table>
+<colgroup>
+<col width="22%" />
+<col width="77%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>ADaM</th>
