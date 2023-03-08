@@ -15,7 +15,7 @@ library(lubridate)
 data("admiral_ae")
 data("admiral_adsl")
 
-ae <- admiral_ae
+ae <- convert_blanks_to_na(admiral_ae)
 adsl <- admiral_adsl
 
 ## ----echo = FALSE-------------------------------------------------------------
@@ -23,19 +23,19 @@ ae <- filter(ae, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01
 
 ## ----eval=TRUE----------------------------------------------------------------
 
-adsl_vars <- vars(TRTSDT, TRTEDT, TRT01A, TRT01P, DTHDT, EOSDT)
+adsl_vars <- exprs(TRTSDT, TRTEDT, TRT01A, TRT01P, DTHDT, EOSDT)
 
 adae <- derive_vars_merged(
   ae,
   dataset_add = adsl,
   new_vars = adsl_vars,
-  by = vars(STUDYID, USUBJID)
+  by = exprs(STUDYID, USUBJID)
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adae,
-  display_vars = vars(
+  display_vars = exprs(
     USUBJID, AESEQ, AETERM, AESTDTC, TRTSDT,
     TRTEDT, TRT01A, TRT01P, DTHDT, EOSDT
   )
@@ -47,7 +47,7 @@ adae <- adae %>%
     dtc = AESTDTC,
     new_vars_prefix = "AST",
     highest_imputation = "M",
-    min_dates = vars(TRTSDT)
+    min_dates = exprs(TRTSDT)
   ) %>%
   derive_vars_dtm(
     dtc = AEENDTC,
@@ -55,18 +55,18 @@ adae <- adae %>%
     highest_imputation = "M",
     date_imputation = "last",
     time_imputation = "last",
-    max_dates = vars(DTHDT, EOSDT)
+    max_dates = exprs(DTHDT, EOSDT)
   ) %>%
-  derive_vars_dtm_to_dt(vars(ASTDTM, AENDTM)) %>%
+  derive_vars_dtm_to_dt(exprs(ASTDTM, AENDTM)) %>%
   derive_vars_dy(
     reference_date = TRTSDT,
-    source_vars = vars(ASTDT, AENDT)
+    source_vars = exprs(ASTDT, AENDT)
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adae,
-  display_vars = vars(
+  display_vars = exprs(
     USUBJID, AESTDTC, AEENDTC, ASTDTM, ASTDT,
     ASTDY, AENDTM, AENDT, AENDY
   )
@@ -84,7 +84,7 @@ adae <- adae %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adae,
-  display_vars = vars(
+  display_vars = exprs(
     USUBJID, AESTDTC, AEENDTC, ASTDT, AENDT,
     ADURN, ADURU
   )
@@ -151,7 +151,7 @@ adae <- adae %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adae,
-  display_vars = vars(
+  display_vars = exprs(
     USUBJID, AEDECOD, AESEQ, AESTDTC, AEENDTC,
     ASTDT, AENDT, LDOSEDTM
   )
@@ -175,7 +175,7 @@ adae <- adae %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adae,
-  display_vars = vars(
+  display_vars = exprs(
     USUBJID, TRTSDT, TRTEDT, AESTDTC, ASTDT,
     TRTEMFL
   )
@@ -233,8 +233,8 @@ derive_var_ontrtfl(
 #    restrict_derivation(
 #      derivation = derive_var_extreme_flag,
 #      args = params(
-#        by_vars = vars(USUBJID),
-#        order = vars(desc(ATOXGR), ASTDTM, AESEQ),
+#        by_vars = exprs(USUBJID),
+#        order = exprs(desc(ATOXGR), ASTDTM, AESEQ),
 #        new_var = AOCCIFL,
 #        mode = "first"
 #      ),
@@ -249,8 +249,8 @@ adae <- adae %>%
   restrict_derivation(
     derivation = derive_var_extreme_flag,
     args = params(
-      by_vars = vars(USUBJID),
-      order = vars(desc(ASEVN), ASTDTM, AESEQ),
+      by_vars = exprs(USUBJID),
+      order = exprs(desc(ASEVN), ASTDTM, AESEQ),
       new_var = AOCCIFL,
       mode = "first"
     ),
@@ -260,7 +260,7 @@ adae <- adae %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adae,
-  display_vars = vars(
+  display_vars = exprs(
     USUBJID, ASTDTM, ASEV, ASEVN, AESEQ, TRTEMFL,
     AOCCIFL
   )
@@ -294,10 +294,10 @@ dataset_vignette(adae_query)
 sdg <- tibble::tribble(
   ~VAR_PREFIX, ~QUERY_NAME,       ~SDG_ID, ~QUERY_SCOPE, ~QUERY_SCOPE_NUM, ~TERM_LEVEL, ~TERM_NAME,         ~TERM_ID,
   "SDG01",     "Diuretics",       11,      "BROAD",      1,                "CMDECOD",   "Diuretic 1",       NA,
-  "SDG01",     "Diuretics",       11,      "BROAD",      2,                "CMDECOD",   "Diuretic 2",       NA,
+  "SDG01",     "Diuretics",       11,      "BROAD",      1,                "CMDECOD",   "Diuretic 2",       NA,
   "SDG02",     "Costicosteroids", 12,      "BROAD",      1,                "CMDECOD",   "Costicosteroid 1", NA,
-  "SDG02",     "Costicosteroids", 12,      "BROAD",      2,                "CMDECOD",   "Costicosteroid 2", NA,
-  "SDG02",     "Costicosteroids", 12,      "BROAD",      2,                "CMDECOD",   "Costicosteroid 3", NA,
+  "SDG02",     "Costicosteroids", 12,      "BROAD",      1,                "CMDECOD",   "Costicosteroid 2", NA,
+  "SDG02",     "Costicosteroids", 12,      "BROAD",      1,                "CMDECOD",   "Costicosteroid 3", NA,
 )
 adcm <- tibble::tribble(
   ~USUBJID, ~ASTDTM,               ~CMDECOD,
@@ -315,13 +315,13 @@ dataset_vignette(adcm_query)
 adae <- adae %>%
   derive_vars_merged(
     dataset_add = select(adsl, !!!negate_vars(adsl_vars)),
-    by_vars = vars(STUDYID, USUBJID)
+    by_vars = exprs(STUDYID, USUBJID)
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adae,
-  display_vars = vars(
+  display_vars = exprs(
     USUBJID, AEDECOD, ASTDTM, DTHDT, RFSTDTC,
     RFENDTC, AGE, AGEU, SEX
   )
@@ -339,8 +339,8 @@ adcm <- tibble::tribble(
 
 adcm_aseq <- adcm %>%
   derive_var_obs_number(
-    by_vars    = vars(USUBJID),
-    order      = vars(ASTDTM, CMSEQ, ATC1CD, ATC2CD, ATC3CD, ATC4CD),
+    by_vars    = exprs(USUBJID),
+    order      = exprs(ASTDTM, CMSEQ, ATC1CD, ATC2CD, ATC3CD, ATC4CD),
     new_var    = ASEQ,
     check_type = "error"
   )

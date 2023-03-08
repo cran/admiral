@@ -61,7 +61,7 @@ adsl <- tibble(STUDYID = "xyz", USUBJID = c("1", "2"))
 adsl <- derive_vars_period(
   adsl,
   dataset_ref = phase_ref,
-  new_vars = vars(PHwSDT = PHSDT, PHwEDT = PHEDT, APHASEw = APHASE)
+  new_vars = exprs(PHwSDT = PHSDT, PHwEDT = PHEDT, APHASEw = APHASE)
 ) %>%
   select(STUDYID, USUBJID, PH1SDT, PH1EDT, PH2SDT, PH2EDT, APHASE1, APHASE2)
 
@@ -82,14 +82,14 @@ adae <- tribble(
 derive_vars_joined(
   adae,
   dataset_add = phase_ref,
-  by_vars = vars(USUBJID),
+  by_vars = exprs(USUBJID),
   filter_join = PHSDT <= ASTDT & ASTDT <= PHEDT
 )
 
 ## -----------------------------------------------------------------------------
 create_period_dataset(
   adsl,
-  new_vars = vars(PHSDT = PHwSDT, PHEDT = PHwEDT, APHASE = APHASEw)
+  new_vars = exprs(PHSDT = PHwSDT, PHEDT = PHwEDT, APHASE = APHASEw)
 )
 
 ## -----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ period_ref <- tribble(
 adsl <- derive_vars_period(
   adsl,
   dataset_ref = period_ref,
-  new_vars = vars(
+  new_vars = exprs(
     APxxSDT = APERSDT,
     APxxEDT = APEREDT,
     TRTxxA = TRTA
@@ -142,15 +142,15 @@ adae <- tribble(
 derive_vars_joined(
   adae,
   dataset_add = period_ref,
-  by_vars = vars(STUDYID, USUBJID),
-  new_vars = vars(APERIOD, TRTA),
-  join_vars = vars(APERSDT, APEREDT),
+  by_vars = exprs(STUDYID, USUBJID),
+  new_vars = exprs(APERIOD, TRTA),
+  join_vars = exprs(APERSDT, APEREDT),
   filter_join = APERSDT <= ASTDT & ASTDT <= APEREDT
 )
 
 ## -----------------------------------------------------------------------------
 create_period_dataset(
   adsl,
-  new_vars = vars(APERSDT = APxxSDT, APEREDT = APxxEDT, TRTA = TRTxxA)
+  new_vars = exprs(APERSDT = APxxSDT, APEREDT = APxxEDT, TRTA = TRTxxA)
 )
 

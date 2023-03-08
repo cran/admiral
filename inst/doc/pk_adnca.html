@@ -1,0 +1,2802 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Creating a PK NCA ADaM (ADPC/ADNCA)</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating a PK NCA ADaM (ADPC/ADNCA)</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This article describes creating a Pharmacokinetics (PK)
+Non-compartmental analysis (NCA) ADaM (ADNCA/ADPC) using the CDISC
+Implementation Guide (<a href="https://www.cdisc.org/standards/foundational/adam/adamig-non-compartmental-analysis-input-data-v1-0" class="uri">https://www.cdisc.org/standards/foundational/adam/adamig-non-compartmental-analysis-input-data-v1-0</a>).
+This example presented uses underlying <code>EX</code> and
+<code>PC</code> domains where the <code>EX</code> and <code>PC</code>
+domains represent data as collected and the <code>ADPC</code> ADaM is
+output. However, the example can be applied to situations where an
+<code>EC</code> domain is used as input instead of <code>EX</code>
+and/or <code>ADNCA</code> or another ADaM is created.</p>
+<p>One of the important aspects of the dataset is the derivation of
+relative timing variables. These variables consist of nominal and actual
+times, and refer to the time from first dose or time from most recent
+reference dose. The reference dose for pre-dose records may be the
+upcoming dose. The CDISC Implementation Guide makes use of duplicated
+records for analysis, which allows the same record to be used both with
+respect to the previous dose and the next upcoming dose. This is
+illustrated later in this vignette.</p>
+<p>Here are the relative time variables we will use. These correspond to
+the names in the CDISC Implementation Guide.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Variable Label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NFRLT</td>
+<td>Nom. Rel. Time from Analyte First Dose</td>
+</tr>
+<tr class="even">
+<td>AFRLT</td>
+<td>Act. Rel. Time from Analyte First Dose</td>
+</tr>
+<tr class="odd">
+<td>NRRLT</td>
+<td>Nominal Rel. Time from Ref. Dose</td>
+</tr>
+<tr class="even">
+<td>ARRLT</td>
+<td>Actual Rel. Time from Ref. Dose</td>
+</tr>
+<tr class="odd">
+<td>MRRLT</td>
+<td>Modified Rel. Time from Ref. Dose</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note</strong>: <em>All examples assume CDISC SDTM and/or ADaM
+format as input unless otherwise specified.</em></p>
+</div>
+<div id="programming-workflow" class="section level1">
+<h1>Programming Workflow</h1>
+<ul>
+<li><p><a href="#readdata">Read in Data</a></p></li>
+<li><p><a href="#expand">Expand Dosing Records</a></p></li>
+<li><p><a href="#firstdose">Find First Dose and Calculate
+<code>AFRLT</code></a></p></li>
+<li><p><a href="#dosedates">Find Reference Dose Dates Corresponding to
+PK Records</a></p></li>
+<li><p><a href="#relative">Combine <code>PC</code> and <code>EX</code>
+Records and Derive Relative Time Variables</a></p></li>
+<li><p><a href="#analysis">Derive Analysis Variables</a></p></li>
+<li><p><a href="#copy">Create Duplicated Records for
+Analysis</a></p></li>
+<li><p><a href="#combine">Combine <code>ADPC</code> data with Duplicated
+Records</a></p></li>
+<li><p><a href="#aseq">Calculate Change from Baseline and Assign
+<code>ASEQ</code></a></p></li>
+<li><p><a href="#baselines">Add Additional Baseline
+Variables</a></p></li>
+<li><p><a href="#adsl_vars">Add ADSL variables</a></p></li>
+<li><p><a href="#attributes">Add Labels and Attributes</a></p></li>
+</ul>
+<div id="readdata" class="section level2">
+<h2>Read in Data</h2>
+<p>To start, all data frames needed for the creation of
+<code>ADPC</code> should be read into the environment. This will be a
+company specific process. Some of the data frames needed may be
+<code>PC</code>, <code>EX</code>, and <code>ADSL</code>.</p>
+<p>Additional domains such as <code>VS</code> and <code>LB</code> may be
+used for additional baseline variables if needed. These may come from
+either the SDTM or ADaM source.</p>
+<p>For the purpose of example, the CDISC Pilot SDTM and ADaM
+datasets—which are included in <code>{admiral.test}</code>—are used.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_ex&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_pc&quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_vs&quot;</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(admiral_ex)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Load PC</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(admiral_pc)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Load VS for baseline height and weight</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(admiral_vs)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Lookup tables ----</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>param_lookup <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>PCTESTCD, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>PARAM, <span class="sc">~</span>PARAMN,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;XAN&quot;</span>, <span class="st">&quot;XAN&quot;</span>, <span class="st">&quot;Pharmacokinetic concentration of Xanomeline&quot;</span>, <span class="dv">1</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;DOSE&quot;</span>, <span class="st">&quot;DOSE&quot;</span>, <span class="st">&quot;Xanomeline Patch Dose&quot;</span>, <span class="dv">2</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>At this step, it may be useful to join <code>ADSL</code> to your
+<code>PC</code> and <code>EX</code> domains as well. Only the
+<code>ADSL</code> variables used for derivations are selected at this
+step. The rest of the relevant <code>ADSL</code> variables will be added
+later.</p>
+<p>In this case we will keep <code>TRTSDT</code>/<code>TRTSDTM</code>
+for day derivation and <code>TRT01P</code>/<code>TRT01A</code> for
+planned and actual treatments.</p>
+<p>In this segment we will use <code>derive_vars_merged()</code> to join
+the <code>ADSL</code> variables and the following <code>{admiral}</code>
+functions to derive analysis dates, times and days:
+<code>derive_vars_dtm()</code>, <code>derive_vars_dtm_to_dt()</code>,
+<code>derive_vars_dtm_to_tm()</code>, <code>derive_vars_dy()</code>. We
+will also create <code>NFRLT</code> for <code>PC</code> data based on
+<code>PCTPTNUM</code>. We will create an event ID (<code>EVID</code>) of
+0 for concentration records and 1 for dosing records. This is a
+traditional variable that will provide a handy tool to identify records
+but will be dropped from the final dataset in this example.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>adsl_vars <span class="ot">&lt;-</span> <span class="fu">exprs</span>(TRTSDT, TRTSDTM, TRT01P, TRT01A)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> pc <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Join ADSL with PC (need TRTSDT for ADY derivation)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> adsl,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> adsl_vars,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive analysis date/time</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Impute missing time to 00:00:00</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> PCDTC,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive dates and times from date/times</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(ADTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(ADTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dy</span>(<span class="at">reference_date =</span> TRTSDT, <span class="at">source_vars =</span> <span class="fu">exprs</span>(ADT)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive event ID and nominal relative time from first dose (NFRLT)</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVID =</span> <span class="dv">0</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">DRUG =</span> PCTEST,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">NFRLT =</span> <span class="fu">if_else</span>(PCTPTNUM <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">0</span>, PCTPTNUM), <span class="at">.after =</span> USUBJID</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="16%" />
+<col width="14%" />
+<col width="26%" />
+<col width="12%" />
+<col width="22%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">PCTEST</th>
+<th align="left">ADTM</th>
+<th align="left">VISIT</th>
+<th align="left">PCTPT</th>
+<th align="right">NFRLT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-18 23:30:00</td>
+<td align="left">BASELINE</td>
+<td align="left">Pre-dose</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 00:05:00</td>
+<td align="left">BASELINE</td>
+<td align="left">5 Min Post-dose</td>
+<td align="right">0.08</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 00:30:00</td>
+<td align="left">BASELINE</td>
+<td align="left">30 Min Post-dose</td>
+<td align="right">0.50</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 01:00:00</td>
+<td align="left">BASELINE</td>
+<td align="left">1h Post-dose</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 01:30:00</td>
+<td align="left">BASELINE</td>
+<td align="left">1.5h Post-dose</td>
+<td align="right">1.50</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 02:00:00</td>
+<td align="left">BASELINE</td>
+<td align="left">2h Post-dose</td>
+<td align="right">2.00</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 04:00:00</td>
+<td align="left">BASELINE</td>
+<td align="left">4h Post-dose</td>
+<td align="right">4.00</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 06:00:00</td>
+<td align="left">BASELINE</td>
+<td align="left">6h Post-dose</td>
+<td align="right">6.00</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 08:00:00</td>
+<td align="left">BASELINE</td>
+<td align="left">8h Post-dose</td>
+<td align="right">8.00</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">2013-07-19 12:00:00</td>
+<td align="left">BASELINE</td>
+<td align="left">12h Post-dose</td>
+<td align="right">12.00</td>
+</tr>
+</tbody>
+</table>
+<p>Next we will also join <code>ADSL</code> data with <code>EX</code>
+and derive dates/times. This section uses the <code>{admiral}</code>
+functions <code>derive_vars_merged()</code>,
+<code>derive_vars_dtm()</code>, and
+<code>derive_vars_dtm_to_dt()</code>. Time is imputed to 00:00:00 here
+for reasons specific to the sample data. Other imputation times may be
+used based on study details. Here we create <code>NFRLT</code> for
+<code>EX</code> data based on <code>VISITDY</code> using the formula
+<code>(VISITDY - 1) * 24</code> using <code>dplyr::mutate</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Get dosing information ----</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> ex <span class="sc">%&gt;%</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> adsl,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> adsl_vars,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Keep records with nonzero dose</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add time and set missing end date to start date</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Impute missing time to 00:00:00</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Note all times are missing for dosing records in this example data</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive Analysis Start and End Dates</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> EXSTDTC,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> EXENDTC,</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive event ID and nominal relative time from first dose (NFRLT)</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">EVID =</span> <span class="dv">1</span>,</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">NFRLT =</span> <span class="dv">24</span> <span class="sc">*</span> (VISITDY <span class="sc">-</span> <span class="dv">1</span>), <span class="at">.after =</span> USUBJID</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set missing end dates to start date</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">AENDTM =</span> <span class="fu">case_when</span>(</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.na</span>(AENDTM) <span class="sc">~</span> ASTDTM,</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> AENDTM</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive dates from date/times</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(ASTDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(AENDTM))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="14%" />
+<col width="11%" />
+<col width="14%" />
+<col width="14%" />
+<col width="11%" />
+<col width="10%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">EXTRT</th>
+<th align="left">EXDOSFRQ</th>
+<th align="left">ASTDTM</th>
+<th align="left">AENDTM</th>
+<th align="left">VISIT</th>
+<th align="right">VISITDY</th>
+<th align="right">NFRLT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2013-07-19</td>
+<td align="left">2013-08-01</td>
+<td align="left">BASELINE</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2013-08-02</td>
+<td align="left">2014-01-06</td>
+<td align="left">WEEK 2</td>
+<td align="right">14</td>
+<td align="right">312</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2014-01-07</td>
+<td align="left">2014-01-14</td>
+<td align="left">WEEK 24</td>
+<td align="right">168</td>
+<td align="right">4008</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2014-03-18</td>
+<td align="left">2014-03-31</td>
+<td align="left">BASELINE</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1442</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2013-10-26</td>
+<td align="left">2013-11-09</td>
+<td align="left">BASELINE</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1442</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2013-11-10</td>
+<td align="left">2014-04-17</td>
+<td align="left">WEEK 2</td>
+<td align="right">14</td>
+<td align="right">312</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1442</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2014-04-18</td>
+<td align="left">2014-04-26</td>
+<td align="left">WEEK 24</td>
+<td align="right">168</td>
+<td align="right">4008</td>
+</tr>
+<tr class="even">
+<td align="left">01-714-1288</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2013-12-04</td>
+<td align="left">2013-12-17</td>
+<td align="left">BASELINE</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-714-1288</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2013-12-18</td>
+<td align="left">2014-05-27</td>
+<td align="left">WEEK 2</td>
+<td align="right">14</td>
+<td align="right">312</td>
+</tr>
+<tr class="even">
+<td align="left">01-714-1288</td>
+<td align="left">XANOMELINE</td>
+<td align="left">QD</td>
+<td align="left">2014-05-28</td>
+<td align="left">2014-06-17</td>
+<td align="left">WEEK 24</td>
+<td align="right">168</td>
+<td align="right">4008</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="expand" class="section level2">
+<h2>Expand Dosing Records</h2>
+<p>The function <code>create_single_dose_dataset()</code> can be used to
+expand dosing records between the start date and end date. The nominal
+time will also be expanded based on the values of <code>EXDOSFRQ</code>,
+for example “QD” will result in nominal time being incremented by 24
+hours and “BID” will result in nominal time being incremented by 12
+hours. This is a new feature of
+<code>create_single_dose_dataset()</code>.</p>
+<p>Dates and times will be derived after expansion using
+<code>derive_vars_dtm_to_dt()</code> and
+<code>derive_vars_dtm_to_tm()</code>.</p>
+<p>For this example study we will define analysis visit
+(<code>AVISIT)</code> based on the nominal day value from
+<code>NFRLT</code> and give it the format, “Day 1”, “Day 2”, “Day 3”,
+etc. This is important for creating the <code>BASETYPE</code> variable
+later. <code>DRUG</code> is created from <code>EXTRT</code> here. This
+will be useful for linking treatment data with concentration data if
+there are multiple drugs and/or analytes, but this variable will also be
+dropped from the final dataset in this example.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Expand dosing records between start and end dates ----</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>ex_exp <span class="ot">&lt;-</span> ex <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">create_single_dose_dataset</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">dose_freq =</span> EXDOSFRQ,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> ASTDT,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_datetime =</span> ASTDTM,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> AENDT,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_datetime =</span> AENDTM,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">nominal_time =</span> NFRLT,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">lookup_table =</span> dose_freq_lookup,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">lookup_column =</span> CDISC_VALUE,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">keep_source_vars =</span> <span class="fu">exprs</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      STUDYID, USUBJID, EVID, EXDOSFRQ, EXDOSFRM,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      NFRLT, EXDOSE, EXDOSU, EXTRT, ASTDT, ASTDTM, AENDT, AENDTM,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      VISIT, VISITNUM, VISITDY,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      TRT01A, TRT01P, DOMAIN, EXSEQ, <span class="sc">!!!</span>adsl_vars</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive AVISIT based on nominal relative time</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive AVISITN to nominal time in whole days using integer division</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define AVISIT based on nominal day</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVISITN =</span> NFRLT <span class="sc">%/%</span> <span class="dv">24</span> <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVISIT =</span> <span class="fu">paste</span>(<span class="st">&quot;Day&quot;</span>, AVISITN),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">ADTM =</span> ASTDTM,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">DRUG =</span> EXTRT,</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive dates and times from datetimes</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(ADTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(ADTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(ASTDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(AENDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dy</span>(<span class="at">reference_date =</span> TRTSDT, <span class="at">source_vars =</span> <span class="fu">exprs</span>(ADT))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="16%" />
+<col width="13%" />
+<col width="16%" />
+<col width="16%" />
+<col width="10%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">DRUG</th>
+<th align="left">EXDOSFRQ</th>
+<th align="left">ASTDTM</th>
+<th align="left">AENDTM</th>
+<th align="left">AVISIT</th>
+<th align="right">NFRLT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-19</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-20</td>
+<td align="left">2013-07-20</td>
+<td align="left">Day 2</td>
+<td align="right">24</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-21</td>
+<td align="left">2013-07-21</td>
+<td align="left">Day 3</td>
+<td align="right">48</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-22</td>
+<td align="left">2013-07-22</td>
+<td align="left">Day 4</td>
+<td align="right">72</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-23</td>
+<td align="left">2013-07-23</td>
+<td align="left">Day 5</td>
+<td align="right">96</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-24</td>
+<td align="left">2013-07-24</td>
+<td align="left">Day 6</td>
+<td align="right">120</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-25</td>
+<td align="left">2013-07-25</td>
+<td align="left">Day 7</td>
+<td align="right">144</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-26</td>
+<td align="left">2013-07-26</td>
+<td align="left">Day 8</td>
+<td align="right">168</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-27</td>
+<td align="left">2013-07-27</td>
+<td align="left">Day 9</td>
+<td align="right">192</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">XANOMELINE</td>
+<td align="left">ONCE</td>
+<td align="left">2013-07-28</td>
+<td align="left">2013-07-28</td>
+<td align="left">Day 10</td>
+<td align="right">216</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="firstdose" class="section level2">
+<h2>Find First Dose and Calculate <code>AFRLT</code></h2>
+<p>In this section we will find the first dose for each subject and
+drug, using <code>derive_vars_merged()</code>. We also create an
+analysis visit (<code>AVISIT</code>) based on <code>NFRLT</code>. The
+first dose datetime for an analyte <code>FANLDTM</code> is calculated as
+the minimum <code>ADTM</code> from the dosing records by subject and
+drug.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Find first dose per treatment per subject ----</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Join with ADPC data and keep only subjects with dosing ----</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(ADTM)),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">FANLDTM =</span> ADTM),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, EXSEQ),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, DRUG)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FANLDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive AVISIT based on nominal relative time</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive AVISITN to nominal time in whole days using integer division</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define AVISIT based on nominal day</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVISITN =</span> NFRLT <span class="sc">%/%</span> <span class="dv">24</span> <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVISIT =</span> <span class="fu">paste</span>(<span class="st">&quot;Day&quot;</span>, AVISITN),</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="16%" />
+<col width="10%" />
+<col width="29%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">FANLDTM</th>
+<th align="left">AVISIT</th>
+<th align="left">ADTM</th>
+<th align="left">PCTPT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-18 23:30:00</td>
+<td align="left">Pre-dose</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 00:05:00</td>
+<td align="left">5 Min Post-dose</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 00:30:00</td>
+<td align="left">30 Min Post-dose</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 01:00:00</td>
+<td align="left">1h Post-dose</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 01:30:00</td>
+<td align="left">1.5h Post-dose</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 02:00:00</td>
+<td align="left">2h Post-dose</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 04:00:00</td>
+<td align="left">4h Post-dose</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 06:00:00</td>
+<td align="left">6h Post-dose</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 08:00:00</td>
+<td align="left">8h Post-dose</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2013-07-19 12:00:00</td>
+<td align="left">12h Post-dose</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="dosedates" class="section level2">
+<h2>Find Reference Dose Dates Corresponding to PK Records</h2>
+<p>Use <code>derive_vars_joined()</code> to find the previous dose data.
+This will join the expanded <code>EX</code> data with the
+<code>ADPC</code> based on the analysis date <code>ADTM</code>. Note the
+<code>filter_join</code> parameter. In addition to the date of the
+previous dose (<code>ADTM_prev)</code>, we also keep the actual dose
+amount <code>EXDOSE_prev</code> and the analysis visit of the dose
+<code>AVISIT_prev</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Find previous dose  ----</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Use derive_vars_joined() for consistency with other variables</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This is equivalent to derive_vars_last_dose() in this case</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">ADTM_prev =</span> ADTM, <span class="at">EXDOSE_prev =</span> EXDOSE, <span class="at">AVISIT_prev =</span> AVISIT,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">AENDTM_prev =</span> AENDTM</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">join_vars =</span> <span class="fu">exprs</span>(ADTM),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> <span class="cn">NULL</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_join =</span> ADTM <span class="sc">&gt;</span> ADTM.join,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="9%" />
+<col width="21%" />
+<col width="18%" />
+<col width="11%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">VISIT</th>
+<th align="left">ADTM</th>
+<th align="left">PCTPT</th>
+<th align="left">ADTM_prev</th>
+<th align="right">EXDOSE_prev</th>
+<th align="left">AVISIT_prev</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-18 23:30:00</td>
+<td align="left">Pre-dose</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 00:05:00</td>
+<td align="left">5 Min Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 00:30:00</td>
+<td align="left">30 Min Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 01:00:00</td>
+<td align="left">1h Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 01:30:00</td>
+<td align="left">1.5h Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 02:00:00</td>
+<td align="left">2h Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 04:00:00</td>
+<td align="left">4h Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 06:00:00</td>
+<td align="left">6h Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 08:00:00</td>
+<td align="left">8h Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 12:00:00</td>
+<td align="left">12h Post-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+</tbody>
+</table>
+<p>Similarly, find next dose information using
+<code>derive_vars_joined()</code> with the <code>filter_join</code>
+parameter as <code>ADTM &lt;= ADTM.join</code>. Here we keep the next
+dose analysis date <code>ADTM_next</code>, the next actual dose
+<code>EXDOSE_next</code>, and the next analysis visit
+<code>AVISIT_next</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Find next dose  ----</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">ADTM_next =</span> ADTM, <span class="at">EXDOSE_next =</span> EXDOSE, <span class="at">AVISIT_next =</span> AVISIT,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">AENDTM_next =</span> AENDTM</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">join_vars =</span> <span class="fu">exprs</span>(ADTM),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_join =</span> ADTM <span class="sc">&lt;=</span> ADTM.join,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="9%" />
+<col width="21%" />
+<col width="18%" />
+<col width="11%" />
+<col width="12%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">VISIT</th>
+<th align="left">ADTM</th>
+<th align="left">PCTPT</th>
+<th align="left">ADTM_next</th>
+<th align="right">EXDOSE_next</th>
+<th align="left">AVISIT_next</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-18 23:30:00</td>
+<td align="left">Pre-dose</td>
+<td align="left">2013-07-19</td>
+<td align="right">54</td>
+<td align="left">Day 1</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 00:05:00</td>
+<td align="left">5 Min Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 00:30:00</td>
+<td align="left">30 Min Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 01:00:00</td>
+<td align="left">1h Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 01:30:00</td>
+<td align="left">1.5h Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 02:00:00</td>
+<td align="left">2h Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 04:00:00</td>
+<td align="left">4h Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 06:00:00</td>
+<td align="left">6h Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 08:00:00</td>
+<td align="left">8h Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">BASELINE</td>
+<td align="left">2013-07-19 12:00:00</td>
+<td align="left">12h Post-dose</td>
+<td align="left">2013-07-20</td>
+<td align="right">54</td>
+<td align="left">Day 2</td>
+</tr>
+</tbody>
+</table>
+<p>Use the same method to find the previous and next nominal times. Note
+that here the data are sorted by nominal time rather than the actual
+time. This will tell us when the previous dose and the next dose were
+supposed to occur. Sometimes this will differ from the actual times in a
+study. Here we keep the previous nominal dose time
+<code>NFRLT_prev</code> and the next nominal dose time
+<code>NFRLT_next</code>. Note that the <code>filter_join</code>
+parameter uses the nominal relative times,
+e.g. <code>NFRLT &gt; NFRLT.join</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Find previous nominal time ----</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(NFRLT),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">NFRLT_prev =</span> NFRLT),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">join_vars =</span> <span class="fu">exprs</span>(NFRLT),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> <span class="cn">NULL</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_join =</span> NFRLT <span class="sc">&gt;</span> NFRLT.join,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Find next nominal time ----</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(NFRLT),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">NFRLT_next =</span> NFRLT),</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">join_vars =</span> <span class="fu">exprs</span>(NFRLT),</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> <span class="cn">NULL</span>,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_join =</span> NFRLT <span class="sc">&lt;=</span> NFRLT.join,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="right">NFRLT</th>
+<th align="left">PCTPT</th>
+<th align="right">NFRLT_prev</th>
+<th align="right">NFRLT_next</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">0.00</td>
+<td align="left">Pre-dose</td>
+<td align="right">NA</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">0.08</td>
+<td align="left">5 Min Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">0.50</td>
+<td align="left">30 Min Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">1.00</td>
+<td align="left">1h Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">1.50</td>
+<td align="left">1.5h Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">2.00</td>
+<td align="left">2h Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">4.00</td>
+<td align="left">4h Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">6.00</td>
+<td align="left">6h Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">8.00</td>
+<td align="left">8h Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">12.00</td>
+<td align="left">12h Post-dose</td>
+<td align="right">0</td>
+<td align="right">24</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="relative" class="section level2">
+<h2>Combine PC and EX Records and Derive Relative Time Variables</h2>
+<p>Combine <code>PC</code> and <code>EX</code> records and derive the
+additional relative time variables. Often NCA data will keep both dosing
+and concentration records. We will keep both here. Sometimes you will
+see <code>ADPC</code> with only the concentration records. If this is
+desired, the dosing records can be dropped before saving the final
+dataset. We will use the <code>{admiral}</code> function
+<code>derive_vars_duration()</code> to calculate the actual relative
+time from first dose (<code>AFRLT</code>) and the actual relative time
+from most recent dose (<code>ARRLT</code>). Note that we use the
+parameter <code>add_one = FALSE</code> here. We will also create a
+variable representing actual time to next dose (<code>AXRLT</code>)
+which is not kept, but will be used when we create duplicated records
+for analysis for the pre-dose records. For now, we will update missing
+values of <code>ARRLT</code> corresponding to the pre-dose records with
+<code>AXRLT</code>, and dosing records will be set to zero.</p>
+<p>We also calculate the reference dates <code>FANLDTM</code> (First
+Datetime of Dose for Analyte) and <code>PCRFTDTM</code> (Reference
+Datetime of Dose for Analyte) and their corresponding date and time
+variables.</p>
+<p>We calculate the maximum date for concentration records and only keep
+the dosing records up to that date.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Combine ADPC and EX data ----</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive Relative Time Variables</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(adpc, ex_exp) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(USUBJID, DRUG) <span class="sc">%&gt;%</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">FANLDTM =</span> <span class="fu">min</span>(FANLDTM, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_NFRLT =</span> <span class="fu">min</span>(NFRLT_prev, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">maxdate =</span> <span class="fu">max</span>(ADT[EVID <span class="sc">==</span> <span class="dv">0</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.after =</span> USUBJID</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(USUBJID, ADTM) <span class="sc">%&gt;%</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ADT <span class="sc">&lt;=</span> maxdate) <span class="sc">%&gt;%</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive Actual Relative Time from First Dose (AFRLT)</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> AFRLT,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> FANLDTM,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> ADTM,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;hours&quot;</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">floor_in =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">add_one =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive Actual Relative Time from Reference Dose (ARRLT)</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> ARRLT,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> ADTM_prev,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> ADTM,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;hours&quot;</span>,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">floor_in =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">add_one =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive Actual Relative Time from Next Dose (AXRLT not kept)</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> AXRLT,</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> ADTM_next,</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> ADTM,</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;hours&quot;</span>,</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">floor_in =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">add_one =</span> <span class="cn">FALSE</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">ARRLT =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(ARRLT) <span class="sc">~</span> AXRLT,</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> ARRLT</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derive Reference Dose Date</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">PCRFTDTM =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> ADTM,</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(ADTM_prev) <span class="sc">~</span> ADTM_next,</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> ADTM_prev</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive dates and times from datetimes</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(FANLDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(FANLDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(PCRFTDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(PCRFTDTM))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="13%" />
+<col width="8%" />
+<col width="21%" />
+<col width="13%" />
+<col width="13%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">FANLDTM</th>
+<th align="left">AVISIT</th>
+<th align="left">PCTPT</th>
+<th align="right">AFRLT</th>
+<th align="right">ARRLT</th>
+<th align="right">AXRLT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">Pre-dose</td>
+<td align="right">-0.5000000</td>
+<td align="right">-0.5000000</td>
+<td align="right">-0.50000</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">NA</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0000000</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">5 Min Post-dose</td>
+<td align="right">0.0833333</td>
+<td align="right">0.0833333</td>
+<td align="right">-23.91667</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">30 Min Post-dose</td>
+<td align="right">0.5000000</td>
+<td align="right">0.5000000</td>
+<td align="right">-23.50000</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">1h Post-dose</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">-23.00000</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">1.5h Post-dose</td>
+<td align="right">1.5000000</td>
+<td align="right">1.5000000</td>
+<td align="right">-22.50000</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">2h Post-dose</td>
+<td align="right">2.0000000</td>
+<td align="right">2.0000000</td>
+<td align="right">-22.00000</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">4h Post-dose</td>
+<td align="right">4.0000000</td>
+<td align="right">4.0000000</td>
+<td align="right">-20.00000</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">6h Post-dose</td>
+<td align="right">6.0000000</td>
+<td align="right">6.0000000</td>
+<td align="right">-18.00000</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">2013-07-19</td>
+<td align="left">Day 1</td>
+<td align="left">8h Post-dose</td>
+<td align="right">8.0000000</td>
+<td align="right">8.0000000</td>
+<td align="right">-16.00000</td>
+</tr>
+</tbody>
+</table>
+<p>For nominal relative times we calculate <code>NRRLT</code> generally
+as <code>NFRLT - NFRLT_prev</code> and <code>NXRLT</code> as
+<code>NFRLT - NFRLT_next</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive Nominal Relative Time from Reference Dose (NRRLT)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">NRRLT =</span> <span class="fu">case_when</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(NFRLT_prev) <span class="sc">~</span> NFRLT <span class="sc">-</span> min_NFRLT,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> NFRLT <span class="sc">-</span> NFRLT_prev</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">NXRLT =</span> <span class="fu">case_when</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> NFRLT <span class="sc">-</span> NFRLT_next</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">AVISIT</th>
+<th align="left">PCTPT</th>
+<th align="right">NFRLT</th>
+<th align="right">NRRLT</th>
+<th align="right">NXRLT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">Pre-dose</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">NA</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">5 Min Post-dose</td>
+<td align="right">0.08</td>
+<td align="right">0.08</td>
+<td align="right">-23.92</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">30 Min Post-dose</td>
+<td align="right">0.50</td>
+<td align="right">0.50</td>
+<td align="right">-23.50</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">1h Post-dose</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">-23.00</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">1.5h Post-dose</td>
+<td align="right">1.50</td>
+<td align="right">1.50</td>
+<td align="right">-22.50</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">2h Post-dose</td>
+<td align="right">2.00</td>
+<td align="right">2.00</td>
+<td align="right">-22.00</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">4h Post-dose</td>
+<td align="right">4.00</td>
+<td align="right">4.00</td>
+<td align="right">-20.00</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">6h Post-dose</td>
+<td align="right">6.00</td>
+<td align="right">6.00</td>
+<td align="right">-18.00</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1</td>
+<td align="left">8h Post-dose</td>
+<td align="right">8.00</td>
+<td align="right">8.00</td>
+<td align="right">-16.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="analysis" class="section level2">
+<h2>Derive Analysis Variables</h2>
+<p>Using <code>dplyr::mutate</code> we derive a number of analysis
+variables including analysis value (<code>AVAL</code>), analysis time
+point (<code>ATPT</code>) analysis timepoint reference
+(<code>ATPTREF</code>) and baseline type (<code>BASETYPE</code>).</p>
+<p>We set <code>ATPT</code> to <code>PCTPT</code> for concentration
+records and to “Dose” for dosing records. The analysis timepoint
+reference <code>ATPTREF</code> will correspond to the dosing visit. We
+will use <code>AVISIT_prev</code> and <code>AVISIT_next</code> to
+derive. The baseline type will be a concatenation of
+<code>ATPTREF</code> and “Baseline” with values such as “Day 1
+Baseline”, “Day 2 Baseline”, etc. The baseline flag <code>ABLFL</code>
+will be set to “Y” for pre-dose records.</p>
+<p>Analysis value <code>AVAL</code> in this example comes from
+<code>PCSTRESN</code> for concentration records. In addition we are
+including the dose value <code>EXDOSE</code> for dosing records and
+setting BLQ (Below Limit of Quantitation) records to 0 before the first
+dose and to 1/2 of LLOQ (Lower Limit of Quantitation) for records after
+first dose. (Additional tests such as whether more than 1/3 of records
+are BLQ may be required and are not done in this example.) We also
+create a listing-ready variable <code>AVALCAT1</code> which includes the
+“BLQ” record indicator and formats the numeric values to three
+significant digits.</p>
+<p>We derive actual dose <code>DOSEA</code> based on
+<code>EXDOSE_prev</code> and <code>EXDOSE_next</code> and planned dose
+<code>DOSEP</code> based on the planned treatment <code>TRT01P</code>.
+In addition we add the units for the dose variables and the relative
+time variables.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Derive Analysis Variables ----</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive ATPTN, ATPT, ATPTREF, ABLFL and BASETYPE</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive planned dose DOSEP, actual dose DOSEA and units</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive PARAMCD and relative time units</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive AVAL, AVALU and AVALCAT1</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ATPTN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCTPTNUM</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">ATPT =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">&quot;Dose&quot;</span>,</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCTPT</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">ATPTREF =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> AVISIT,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(AVISIT_prev) <span class="sc">~</span> AVISIT_next,</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> AVISIT_prev</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derive baseline flag for pre-dose records</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">ABLFL =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>      ATPT <span class="sc">==</span> <span class="st">&quot;Pre-dose&quot;</span> <span class="sc">~</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derive BASETYPE</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">BASETYPE =</span> <span class="fu">paste</span>(ATPTREF, <span class="st">&quot;Baseline&quot;</span>),</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derive Actual Dose</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">DOSEA =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(EXDOSE_prev) <span class="sc">~</span> EXDOSE_next,</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> EXDOSE_next</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derive Planned Dose</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">DOSEP =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">81</span>,</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">54</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">DOSEU =</span> <span class="st">&quot;mg&quot;</span>,</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive relative time units</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">FRLTU =</span> <span class="st">&quot;h&quot;</span>,</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">RRLTU =</span> <span class="st">&quot;h&quot;</span>,</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derive PARAMCD</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="fu">coalesce</span>(PCTESTCD, <span class="st">&quot;DOSE&quot;</span>),</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">ALLOQ =</span> PCLLOQ,</span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derive AVAL</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>      PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">&amp;</span> NFRLT <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>      PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">&amp;</span> NFRLT <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="fl">0.5</span> <span class="sc">*</span> ALLOQ,</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCSTRESN</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVALU =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSU,</span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCSTRESU</span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVALCAT1 =</span> <span class="fu">if_else</span>(PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span>, PCSTRESC, <span class="fu">prettyNum</span>(<span class="fu">signif</span>(AVAL, <span class="at">digits =</span> <span class="dv">3</span>))),</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add SRCSEQ</span></span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCDOM =</span> DOMAIN,</span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;SEQ&quot;</span>,</span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> <span class="fu">coalesce</span>(PCSEQ, EXSEQ)</span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="7%" />
+<col width="9%" />
+<col width="22%" />
+<col width="7%" />
+<col width="10%" />
+<col width="14%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="right">NFRLT</th>
+<th align="left">AVISIT</th>
+<th align="left">ATPT</th>
+<th align="left">ABLFL</th>
+<th align="left">ATPTREF</th>
+<th align="right">AVAL</th>
+<th align="left">AVALCAT1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">0.00</td>
+<td align="left">Day 1</td>
+<td align="left">Pre-dose</td>
+<td align="left">Y</td>
+<td align="left">Day 1</td>
+<td align="right">0.0000000</td>
+<td align="left">&lt;BLQ</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">0.00</td>
+<td align="left">Day 1</td>
+<td align="left">Dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">54.0000000</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">0.08</td>
+<td align="left">Day 1</td>
+<td align="left">5 Min Post-dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">0.0957202</td>
+<td align="left">0.0957</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">0.50</td>
+<td align="left">Day 1</td>
+<td align="left">30 Min Post-dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">0.5219788</td>
+<td align="left">0.522</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">1.00</td>
+<td align="left">Day 1</td>
+<td align="left">1h Post-dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">0.8951464</td>
+<td align="left">0.895</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">1.50</td>
+<td align="left">Day 1</td>
+<td align="left">1.5h Post-dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">1.1619274</td>
+<td align="left">1.16</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">2.00</td>
+<td align="left">Day 1</td>
+<td align="left">2h Post-dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">1.3526516</td>
+<td align="left">1.35</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">4.00</td>
+<td align="left">Day 1</td>
+<td align="left">4h Post-dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">1.7059894</td>
+<td align="left">1.71</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">6.00</td>
+<td align="left">Day 1</td>
+<td align="left">6h Post-dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">1.7982878</td>
+<td align="left">1.8</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">8.00</td>
+<td align="left">Day 1</td>
+<td align="left">8h Post-dose</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="right">1.8223978</td>
+<td align="left">1.82</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="copy" class="section level2">
+<h2>Create Duplicated Records for Analysis</h2>
+<p>As mentioned above, the CDISC ADaM Implementation Guide for
+Non-compartmental Analysis uses duplicated records for analysis when a
+record needs to be used in more than one way. In this example the 24
+hour post-dose record will also be used a the pre-dose record for the
+“Day 2” dose. In addition to 24 hour post-dose records, other situations
+may include pre-dose records for “Cycle 2 Day 1”, etc.</p>
+<p>In general, we will select the records of interest and then update
+the relative time variables for the duplicated records. In this case we
+will select where the nominal relative time to next dose is zero. (Note
+that we do not need to duplicate the first dose record since there is no
+prior dose.)</p>
+<p><code>DTYPE</code> is set to “COPY” for the duplicated records and
+the original <code>PCSEQ</code> value is retained. In this case we
+change “24h Post-dose” to “Pre-dose”. <code>ABLFL</code> is set to “Y”
+since these records will serve as baseline for the “Day 2” dose.
+<code>DOSEA</code> is set to <code>EXDOSE_next</code> and
+<code>PCRFTDTM</code> is set to <code>ADTM_next</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Create DTYPE copy records ----</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dtype <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(NFRLT <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> NXRLT <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> EVID <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(AVISIT_next)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>PCRFTDT, <span class="sc">-</span>PCRFTTM) <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Re-derive variables in for DTYPE copy records</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">ABLFL =</span> <span class="cn">NA_character_</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ATPTREF =</span> AVISIT_next,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">ARRLT =</span> AXRLT,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">NRRLT =</span> NXRLT,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">PCRFTDTM =</span> ADTM_next,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">DOSEA =</span> EXDOSE_next,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">BASETYPE =</span> <span class="fu">paste</span>(AVISIT_next, <span class="st">&quot;Baseline&quot;</span>),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">ATPT =</span> <span class="st">&quot;Pre-dose&quot;</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">ATPTN =</span> NFRLT,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">ABLFL =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">DTYPE =</span> <span class="st">&quot;COPY&quot;</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(PCRFTDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(PCRFTDTM))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="9%" />
+<col width="13%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="22%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">DTYPE</th>
+<th align="left">ATPT</th>
+<th align="right">NFRLT</th>
+<th align="right">NRRLT</th>
+<th align="right">AFRLT</th>
+<th align="right">ARRLT</th>
+<th align="left">BASETYPE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="left">Day 2 Baseline</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="left">Day 3 Baseline</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1033</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="left">Day 2 Baseline</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1033</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="left">Day 3 Baseline</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1442</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="left">Day 2 Baseline</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1442</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="left">Day 3 Baseline</td>
+</tr>
+<tr class="odd">
+<td align="left">01-714-1288</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="left">Day 2 Baseline</td>
+</tr>
+<tr class="even">
+<td align="left">01-714-1288</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="left">Day 3 Baseline</td>
+</tr>
+<tr class="odd">
+<td align="left">01-718-1101</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="left">Day 2 Baseline</td>
+</tr>
+<tr class="even">
+<td align="left">01-718-1101</td>
+<td align="left">COPY</td>
+<td align="left">Pre-dose</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="right">48</td>
+<td align="right">0</td>
+<td align="left">Day 3 Baseline</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="combine" class="section level2">
+<h2>Combine <code>ADPC</code> data with Duplicated Records</h2>
+<p>Now the duplicated records are combined with the original records. We
+also derive the modified relative time from reference dose
+<code>MRRLT</code>. In this case, negative values of <code>ARRLT</code>
+are set to zero.</p>
+<p>This is also an opportunity to derive analysis flags
+e.g. <code>ANL01FL</code> , <code>ANL02FL</code> etc. In this example
+<code>ANL01FL</code> is set to “Y” for all records and
+<code>ANL02FL</code> is set to “Y” for all records except the duplicated
+records with <code>DTYPE</code> = “COPY”. Additional flags may be used
+to select full profile records and/or to select records included in the
+tables and figures, etc.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Combine original records and DTYPE copy records ----</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(adpc, dtype) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(STUDYID, USUBJID, BASETYPE, ADTM, NFRLT) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Derive MRRLT, ANL01FL and ANL02FL</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">MRRLT =</span> <span class="fu">if_else</span>(ARRLT <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">0</span>, ARRLT),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">ANL01FL =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ANL02FL =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(DTYPE), <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>),</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="10%" />
+<col width="13%" />
+<col width="18%" />
+<col width="15%" />
+<col width="5%" />
+<col width="5%" />
+<col width="10%" />
+<col width="9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">STUDYID</th>
+<th align="left">USUBJID</th>
+<th align="left">BASETYPE</th>
+<th align="left">ADTM</th>
+<th align="left">ATPT</th>
+<th align="right">NFRLT</th>
+<th align="right">NRRLT</th>
+<th align="right">ARRLT</th>
+<th align="right">MRRLT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-18 23:30:00</td>
+<td align="left">Pre-dose</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">-0.5000000</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 00:00:00</td>
+<td align="left">Dose</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 00:05:00</td>
+<td align="left">5 Min Post-dose</td>
+<td align="right">0.08</td>
+<td align="right">0.08</td>
+<td align="right">0.0833333</td>
+<td align="right">0.0833333</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 00:30:00</td>
+<td align="left">30 Min Post-dose</td>
+<td align="right">0.50</td>
+<td align="right">0.50</td>
+<td align="right">0.5000000</td>
+<td align="right">0.5000000</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 01:00:00</td>
+<td align="left">1h Post-dose</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 01:30:00</td>
+<td align="left">1.5h Post-dose</td>
+<td align="right">1.50</td>
+<td align="right">1.50</td>
+<td align="right">1.5000000</td>
+<td align="right">1.5000000</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 02:00:00</td>
+<td align="left">2h Post-dose</td>
+<td align="right">2.00</td>
+<td align="right">2.00</td>
+<td align="right">2.0000000</td>
+<td align="right">2.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 04:00:00</td>
+<td align="left">4h Post-dose</td>
+<td align="right">4.00</td>
+<td align="right">4.00</td>
+<td align="right">4.0000000</td>
+<td align="right">4.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 06:00:00</td>
+<td align="left">6h Post-dose</td>
+<td align="right">6.00</td>
+<td align="right">6.00</td>
+<td align="right">6.0000000</td>
+<td align="right">6.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2013-07-19 08:00:00</td>
+<td align="left">8h Post-dose</td>
+<td align="right">8.00</td>
+<td align="right">8.00</td>
+<td align="right">8.0000000</td>
+<td align="right">8.0000000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="aseq" class="section level2">
+<h2>Calculate Change from Baseline and Assign <code>ASEQ</code></h2>
+<p>The <code>{admiral}</code> function <code>derive_var_base()</code> is
+used to derive <code>BASE</code> and the function
+<code>derive_var_chg()</code> is used to derive change from baseline
+<code>CHG</code>.</p>
+<p>We also now derive <code>ASEQ</code> using
+<code>derive_var_obs_number()</code> and we drop intermediate variables
+such as those ending with “_prev” and “_next”.</p>
+<p>Finally we derive <code>PARAM</code> and <code>PARAMN</code> from a
+lookup table.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Derive BASE and Calculate Change from Baseline ----</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive BASE</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_base</span>(</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, BASETYPE),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_var =</span> AVAL,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> BASE,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> ABLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> <span class="fu">derive_var_chg</span>(adpc)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Add ASEQ ----</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate ASEQ</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> ASEQ,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, BASETYPE, EVID, AVISITN, ATPTN, DTYPE),</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove temporary variables</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span>DOMAIN, <span class="sc">-</span>PCSEQ, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;orig&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;min&quot;</span>),</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;max&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;EX&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;next&quot;</span>),</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;prev&quot;</span>), <span class="sc">-</span>DRUG, <span class="sc">-</span>EVID, <span class="sc">-</span>AXRLT, <span class="sc">-</span>NXRLT, <span class="sc">-</span>VISITDY</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Derive PARAM and PARAMN</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(<span class="at">dataset_add =</span> <span class="fu">select</span>(param_lookup, <span class="sc">-</span>PCTESTCD), <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="12%" />
+<col width="5%" />
+<col width="5%" />
+<col width="14%" />
+<col width="9%" />
+<col width="5%" />
+<col width="5%" />
+<col width="9%" />
+<col width="9%" />
+<col width="4%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">BASETYPE</th>
+<th align="left">DTYPE</th>
+<th align="left">AVISIT</th>
+<th align="left">ATPT</th>
+<th align="right">AVAL</th>
+<th align="right">NFRLT</th>
+<th align="right">NRRLT</th>
+<th align="right">AFRLT</th>
+<th align="right">ARRLT</th>
+<th align="right">BASE</th>
+<th align="right">CHG</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">Pre-dose</td>
+<td align="right">0.0000000</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">-0.5000000</td>
+<td align="right">-0.5000000</td>
+<td align="right">0</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">Dose</td>
+<td align="right">54.0000000</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0000000</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">5 Min Post-dose</td>
+<td align="right">0.0957202</td>
+<td align="right">0.08</td>
+<td align="right">0.08</td>
+<td align="right">0.0833333</td>
+<td align="right">0.0833333</td>
+<td align="right">0</td>
+<td align="right">0.0957202</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">30 Min Post-dose</td>
+<td align="right">0.5219788</td>
+<td align="right">0.50</td>
+<td align="right">0.50</td>
+<td align="right">0.5000000</td>
+<td align="right">0.5000000</td>
+<td align="right">0</td>
+<td align="right">0.5219788</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">1h Post-dose</td>
+<td align="right">0.8951464</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">1.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">0</td>
+<td align="right">0.8951464</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">1.5h Post-dose</td>
+<td align="right">1.1619274</td>
+<td align="right">1.50</td>
+<td align="right">1.50</td>
+<td align="right">1.5000000</td>
+<td align="right">1.5000000</td>
+<td align="right">0</td>
+<td align="right">1.1619274</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">2h Post-dose</td>
+<td align="right">1.3526516</td>
+<td align="right">2.00</td>
+<td align="right">2.00</td>
+<td align="right">2.0000000</td>
+<td align="right">2.0000000</td>
+<td align="right">0</td>
+<td align="right">1.3526516</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">4h Post-dose</td>
+<td align="right">1.7059894</td>
+<td align="right">4.00</td>
+<td align="right">4.00</td>
+<td align="right">4.0000000</td>
+<td align="right">4.0000000</td>
+<td align="right">0</td>
+<td align="right">1.7059894</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">6h Post-dose</td>
+<td align="right">1.7982878</td>
+<td align="right">6.00</td>
+<td align="right">6.00</td>
+<td align="right">6.0000000</td>
+<td align="right">6.0000000</td>
+<td align="right">0</td>
+<td align="right">1.7982878</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
+<td align="left">Day 1</td>
+<td align="left">8h Post-dose</td>
+<td align="right">1.8223978</td>
+<td align="right">8.00</td>
+<td align="right">8.00</td>
+<td align="right">8.0000000</td>
+<td align="right">8.0000000</td>
+<td align="right">0</td>
+<td align="right">1.8223978</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="baselines" class="section level2">
+<h2>Add Additional Baseline Variables</h2>
+<p>Here we derive additional baseline values from <code>VS</code> for
+baseline height <code>HTBL</code> and weight <code>WTBL</code> and
+compute the body mass index (BMI) with <code>compute_bmi()</code>. These
+values could also be obtained from <code>ADVS</code> if available.
+Baseline lab values could also be derived from <code>LB</code> or
+<code>ADLB</code> in a similar manner.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive additional baselines from VS</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;HEIGHT&quot;</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">HTBL =</span> VSSTRESN, <span class="at">HTBLU =</span> VSSTRESU)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;WEIGHT&quot;</span> <span class="sc">&amp;</span> VSBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">WTBL =</span> VSSTRESN, <span class="at">WTBLU =</span> VSSTRESU)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">BMIBL =</span> <span class="fu">compute_bmi</span>(<span class="at">height =</span> HTBL, <span class="at">weight =</span> WTBL),</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">BMIBLU =</span> <span class="st">&quot;kg/m^2&quot;</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="9%" />
+<col width="7%" />
+<col width="15%" />
+<col width="17%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="right">HTBL</th>
+<th align="left">HTBLU</th>
+<th align="right">WTBL</th>
+<th align="left">WTBLU</th>
+<th align="right">BMIBL</th>
+<th align="left">BMIBLU</th>
+<th align="left">BASETYPE</th>
+<th align="left">ATPT</th>
+<th align="right">AVAL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">Pre-dose</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">Dose</td>
+<td align="right">54.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">5 Min Post-dose</td>
+<td align="right">0.0957202</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">30 Min Post-dose</td>
+<td align="right">0.5219788</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">1h Post-dose</td>
+<td align="right">0.8951464</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">1.5h Post-dose</td>
+<td align="right">1.1619274</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">2h Post-dose</td>
+<td align="right">1.3526516</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">4h Post-dose</td>
+<td align="right">1.7059894</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">6h Post-dose</td>
+<td align="right">1.7982878</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1028</td>
+<td align="right">177.8</td>
+<td align="left">cm</td>
+<td align="right">99.34</td>
+<td align="left">kg</td>
+<td align="right">31.42394</td>
+<td align="left">kg/m^2</td>
+<td align="left">Day 1 Baseline</td>
+<td align="left">8h Post-dose</td>
+<td align="right">1.8223978</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="adsl_vars" class="section level2">
+<h2>Add the <code>ADSL</code> variables</h2>
+<p>If needed, the other <code>ADSL</code> variables can now be
+added:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add all ADSL variables</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+</div>
+<div id="attributes" class="section level2">
+<h2>Add Labels and Attributes</h2>
+<p>Adding labels and attributes for SAS transport files is supported by
+the following packages:</p>
+<ul>
+<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>:
+establish a common foundation for the use of metadata within an R
+session.</p></li>
+<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>:
+enable the use of metacore objects. Metatools can be used to build
+datasets or enhance columns in existing datasets as well as checking
+datasets against the metadata.</p></li>
+<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>:
+functionality to associate all metadata information to a local R data
+frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport
+v5 file(xpt)</a>.</p></li>
+</ul>
+<p>NOTE: All these packages are in the experimental phase, but the
+vision is to have them associated with an End to End pipeline under the
+umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of
+applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E
+example</a>.</p>
+</div>
+</div>
+<div id="example" class="section level1">
+<h1>Example Scripts</h1>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ADaM</th>
+<th>Sample Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ADPC</td>
+<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adpc.R" target="_blank">ad_adpc.R</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Hy’s Law Implementation</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Hy’s Law Implementation</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>During the drug development process, clinical trials are often
+required to assess for the potential that the experimental drug can
+cause severe liver injury, known as a drug induced liver injury <a href="https://www.fda.gov/media/116737/download">(DILI)</a>. There are
+multiple criteria that need to be evaluated to determine and classify a
+DILI “Event”. Hy’s Law, a common rule of thumb for a DILI Event , is
+usually comprised of three parts:</p>
+<ul>
+<li>Elevated alanine aminotransferase (ALT) or aspartate
+aminotransferase (AST) by 3-times or greater of the upper limit of
+normal.</li>
+<li>Elevated serum total bilirubin (BILI) by 2-times or greater within a
+window of time, ~14 days after the elevated ALT/AST event.</li>
+<li>No other reason to explain these increased lab values like
+preexisting liver disease.</li>
+</ul>
+<div id="required-packages" class="section level2">
+<h2>Required Packages</h2>
+<p>The examples of this vignette require the following packages.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="programming-workflow" class="section level1">
+<h1>Programming Workflow</h1>
+<ul>
+<li><a href="#readdata">Read in Data</a></li>
+<li><a href="#columns">Flagging Elevated Values (<code>CRITy</code>,
+<code>CRITyFL</code>)</a></li>
+<li><a href="#joins">Subsetting by <code>LBTESTCD</code> and Joining by
+Potential Events</a></li>
+<li><a href="#newparams">How to Create New Parameters and Rows</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+<div id="readdata" class="section level2">
+<h2>Read in Data</h2>
+<p>We assume that an <code>ADLB</code> dataset is available <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<p>First we read in the ADLB parameters required for the Hy’s Law
+parameters:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(admiral_adlb)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>adlb <span class="ot">&lt;-</span> admiral_adlb <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;BILI&quot;</span>) <span class="sc">&amp;</span> <span class="fu">is.na</span>(DTYPE))</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="1%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="2%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="1%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="3%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="3%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="1%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="1%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+<col width="0%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">STUDYID</th>
+<th align="left">DOMAIN</th>
+<th align="left">USUBJID</th>
+<th align="right">LBSEQ</th>
+<th align="left">LBTESTCD</th>
+<th align="left">LBTEST</th>
+<th align="left">LBCAT</th>
+<th align="left">LBORRES</th>
+<th align="left">LBORRESU</th>
+<th align="left">LBORNRLO</th>
+<th align="left">LBORNRHI</th>
+<th align="left">LBSTRESC</th>
+<th align="right">LBSTRESN</th>
+<th align="left">LBSTRESU</th>
+<th align="right">LBSTNRLO</th>
+<th align="right">LBSTNRHI</th>
+<th align="left">LBNRIND</th>
+<th align="left">LBBLFL</th>
+<th align="right">VISITNUM</th>
+<th align="left">VISIT</th>
+<th align="right">VISITDY</th>
+<th align="left">LBDTC</th>
+<th align="right">LBDY</th>
+<th align="left">TRTSDT</th>
+<th align="left">TRTEDT</th>
+<th align="left">TRT01A</th>
+<th align="left">TRT01P</th>
+<th align="left">ADT</th>
+<th align="right">ADY</th>
+<th align="left">PARAMCD</th>
+<th align="left">PARAM</th>
+<th align="right">PARAMN</th>
+<th align="left">PARCAT1</th>
+<th align="right">AVAL</th>
+<th align="left">AVALC</th>
+<th align="right">ANRLO</th>
+<th align="right">ANRHI</th>
+<th align="left">DTYPE</th>
+<th align="left">AVISIT</th>
+<th align="right">AVISITN</th>
+<th align="left">ONTRTFL</th>
+<th align="left">ANRIND</th>
+<th align="left">BASETYPE</th>
+<th align="left">ABLFL</th>
+<th align="right">BASE</th>
+<th align="left">BASEC</th>
+<th align="left">BNRIND</th>
+<th align="right">CHG</th>
+<th align="right">PCHG</th>
+<th align="left">ATOXDSCL</th>
+<th align="left">ATOXDSCH</th>
+<th align="left">ATOXGRL</th>
+<th align="left">ATOXGRH</th>
+<th align="left">ATOXGR</th>
+<th align="left">BTOXGRL</th>
+<th align="left">BTOXGRH</th>
+<th align="left">BTOXGR</th>
+<th align="right">R2BASE</th>
+<th align="right">R2ANRLO</th>
+<th align="right">R2ANRHI</th>
+<th align="left">SHIFT1</th>
+<th align="left">SHIFT2</th>
+<th align="left">ANL01FL</th>
+<th align="left">LVOTFL</th>
+<th align="left">TRTP</th>
+<th align="left">TRTA</th>
+<th align="right">ASEQ</th>
+<th align="left">SUBJID</th>
+<th align="left">RFSTDTC</th>
+<th align="left">RFENDTC</th>
+<th align="left">RFXSTDTC</th>
+<th align="left">RFXENDTC</th>
+<th align="left">RFICDTC</th>
+<th align="left">RFPENDTC</th>
+<th align="left">DTHDTC</th>
+<th align="left">DTHFL</th>
+<th align="left">SITEID</th>
+<th align="right">AGE</th>
+<th align="left">AGEU</th>
+<th align="left">SEX</th>
+<th align="left">RACE</th>
+<th align="left">ETHNIC</th>
+<th align="left">ARMCD</th>
+<th align="left">ARM</th>
+<th align="left">ACTARMCD</th>
+<th align="left">ACTARM</th>
+<th align="left">COUNTRY</th>
+<th align="left">DMDTC</th>
+<th align="right">DMDY</th>
+<th align="left">TRTSDTM</th>
+<th align="left">TRTSTMF</th>
+<th align="left">TRTEDTM</th>
+<th align="left">TRTETMF</th>
+<th align="right">TRTDURD</th>
+<th align="left">SCRFDT</th>
+<th align="left">EOSDT</th>
+<th align="left">EOSSTT</th>
+<th align="left">FRVDT</th>
+<th align="left">RANDDT</th>
+<th align="left">DTHDT</th>
+<th align="right">DTHADY</th>
+<th align="right">LDDTHELD</th>
+<th align="left">LSTALVDT</th>
+<th align="left">AGEGR1</th>
+<th align="left">SAFFL</th>
+<th align="left">RACEGR1</th>
+<th align="left">REGION1</th>
+<th align="left">LDDTHGR1</th>
+<th align="left">DTH30FL</th>
+<th align="left">DTHA30FL</th>
+<th align="left">DTHB30FL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">LB</td>
+<td align="left">01-701-1015</td>
+<td align="right">3</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase</td>
+<td align="left">CHEMISTRY</td>
+<td align="left">27</td>
+<td align="left">U/L</td>
+<td align="left">6</td>
+<td align="left">34</td>
+<td align="left">27</td>
+<td align="right">27</td>
+<td align="left">U/L</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NORMAL</td>
+<td align="left">Y</td>
+<td align="right">1</td>
+<td align="left">SCREENING 1</td>
+<td align="right">-7</td>
+<td align="left">2013-12-26T14:45</td>
+<td align="right">-7</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">2013-12-26</td>
+<td align="right">-7</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase (U/L)</td>
+<td align="right">3</td>
+<td align="left">CHEMISTRY</td>
+<td align="right">27</td>
+<td align="left">27</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NA</td>
+<td align="left">Baseline</td>
+<td align="right">0</td>
+<td align="left">NA</td>
+<td align="left">NORMAL</td>
+<td align="left">LAST</td>
+<td align="left">Y</td>
+<td align="right">27</td>
+<td align="left">27</td>
+<td align="left">NORMAL</td>
+<td align="right">0</td>
+<td align="right">0.000000</td>
+<td align="left">NA</td>
+<td align="left">Alanine aminotransferase increased</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="right">1.0000000</td>
+<td align="right">4.500000</td>
+<td align="right">0.7941176</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">0 to 0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="right">27</td>
+<td align="left">1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02T11:45</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">701</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">USA</td>
+<td align="left">2013-12-26</td>
+<td align="right">-7</td>
+<td align="left">2014-01-02</td>
+<td align="left">H</td>
+<td align="left">2014-07-02 23:59:59</td>
+<td align="left">H</td>
+<td align="right">182</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">18-64</td>
+<td align="left">Y</td>
+<td align="left">White</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">LB</td>
+<td align="left">01-701-1015</td>
+<td align="right">41</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase</td>
+<td align="left">CHEMISTRY</td>
+<td align="left">41</td>
+<td align="left">U/L</td>
+<td align="left">6</td>
+<td align="left">34</td>
+<td align="left">41</td>
+<td align="right">41</td>
+<td align="left">U/L</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">HIGH</td>
+<td align="left">NA</td>
+<td align="right">4</td>
+<td align="left">WEEK 2</td>
+<td align="right">14</td>
+<td align="left">2014-01-16T13:17</td>
+<td align="right">15</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">2014-01-16</td>
+<td align="right">15</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase (U/L)</td>
+<td align="right">3</td>
+<td align="left">CHEMISTRY</td>
+<td align="right">41</td>
+<td align="left">41</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NA</td>
+<td align="left">Week 2</td>
+<td align="right">4</td>
+<td align="left">Y</td>
+<td align="left">HIGH</td>
+<td align="left">LAST</td>
+<td align="left">NA</td>
+<td align="right">27</td>
+<td align="left">27</td>
+<td align="left">NORMAL</td>
+<td align="right">14</td>
+<td align="right">51.851852</td>
+<td align="left">NA</td>
+<td align="left">Alanine aminotransferase increased</td>
+<td align="left">NA</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="right">1.5185185</td>
+<td align="right">6.833333</td>
+<td align="right">1.2058824</td>
+<td align="left">NORMAL to HIGH</td>
+<td align="left">0 to 1</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="right">28</td>
+<td align="left">1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02T11:45</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">701</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">USA</td>
+<td align="left">2013-12-26</td>
+<td align="right">-7</td>
+<td align="left">2014-01-02</td>
+<td align="left">H</td>
+<td align="left">2014-07-02 23:59:59</td>
+<td align="left">H</td>
+<td align="right">182</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">18-64</td>
+<td align="left">Y</td>
+<td align="left">White</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">LB</td>
+<td align="left">01-701-1015</td>
+<td align="right">76</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase</td>
+<td align="left">CHEMISTRY</td>
+<td align="left">18</td>
+<td align="left">U/L</td>
+<td align="left">6</td>
+<td align="left">34</td>
+<td align="left">18</td>
+<td align="right">18</td>
+<td align="left">U/L</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NORMAL</td>
+<td align="left">NA</td>
+<td align="right">5</td>
+<td align="left">WEEK 4</td>
+<td align="right">28</td>
+<td align="left">2014-01-30T08:50</td>
+<td align="right">29</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">2014-01-30</td>
+<td align="right">29</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase (U/L)</td>
+<td align="right">3</td>
+<td align="left">CHEMISTRY</td>
+<td align="right">18</td>
+<td align="left">18</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NA</td>
+<td align="left">Week 4</td>
+<td align="right">5</td>
+<td align="left">Y</td>
+<td align="left">NORMAL</td>
+<td align="left">LAST</td>
+<td align="left">NA</td>
+<td align="right">27</td>
+<td align="left">27</td>
+<td align="left">NORMAL</td>
+<td align="right">-9</td>
+<td align="right">-33.333333</td>
+<td align="left">NA</td>
+<td align="left">Alanine aminotransferase increased</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="right">0.6666667</td>
+<td align="right">3.000000</td>
+<td align="right">0.5294118</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">0 to 0</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="right">30</td>
+<td align="left">1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02T11:45</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">701</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">USA</td>
+<td align="left">2013-12-26</td>
+<td align="right">-7</td>
+<td align="left">2014-01-02</td>
+<td align="left">H</td>
+<td align="left">2014-07-02 23:59:59</td>
+<td align="left">H</td>
+<td align="right">182</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">18-64</td>
+<td align="left">Y</td>
+<td align="left">White</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">LB</td>
+<td align="left">01-701-1015</td>
+<td align="right">106</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase</td>
+<td align="left">CHEMISTRY</td>
+<td align="left">26</td>
+<td align="left">U/L</td>
+<td align="left">6</td>
+<td align="left">34</td>
+<td align="left">26</td>
+<td align="right">26</td>
+<td align="left">U/L</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NORMAL</td>
+<td align="left">NA</td>
+<td align="right">7</td>
+<td align="left">WEEK 6</td>
+<td align="right">42</td>
+<td align="left">2014-02-12T12:56</td>
+<td align="right">42</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">2014-02-12</td>
+<td align="right">42</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase (U/L)</td>
+<td align="right">3</td>
+<td align="left">CHEMISTRY</td>
+<td align="right">26</td>
+<td align="left">26</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NA</td>
+<td align="left">Week 6</td>
+<td align="right">7</td>
+<td align="left">Y</td>
+<td align="left">NORMAL</td>
+<td align="left">LAST</td>
+<td align="left">NA</td>
+<td align="right">27</td>
+<td align="left">27</td>
+<td align="left">NORMAL</td>
+<td align="right">-1</td>
+<td align="right">-3.703704</td>
+<td align="left">NA</td>
+<td align="left">Alanine aminotransferase increased</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="right">0.9629630</td>
+<td align="right">4.333333</td>
+<td align="right">0.7647059</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">0 to 0</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="right">31</td>
+<td align="left">1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02T11:45</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">701</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">USA</td>
+<td align="left">2013-12-26</td>
+<td align="right">-7</td>
+<td align="left">2014-01-02</td>
+<td align="left">H</td>
+<td align="left">2014-07-02 23:59:59</td>
+<td align="left">H</td>
+<td align="right">182</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">18-64</td>
+<td align="left">Y</td>
+<td align="left">White</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">LB</td>
+<td align="left">01-701-1015</td>
+<td align="right">136</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase</td>
+<td align="left">CHEMISTRY</td>
+<td align="left">22</td>
+<td align="left">U/L</td>
+<td align="left">6</td>
+<td align="left">34</td>
+<td align="left">22</td>
+<td align="right">22</td>
+<td align="left">U/L</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NORMAL</td>
+<td align="left">NA</td>
+<td align="right">8</td>
+<td align="left">WEEK 8</td>
+<td align="right">56</td>
+<td align="left">2014-03-05T12:25</td>
+<td align="right">63</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">2014-03-05</td>
+<td align="right">63</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase (U/L)</td>
+<td align="right">3</td>
+<td align="left">CHEMISTRY</td>
+<td align="right">22</td>
+<td align="left">22</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NA</td>
+<td align="left">Week 8</td>
+<td align="right">8</td>
+<td align="left">Y</td>
+<td align="left">NORMAL</td>
+<td align="left">LAST</td>
+<td align="left">NA</td>
+<td align="right">27</td>
+<td align="left">27</td>
+<td align="left">NORMAL</td>
+<td align="right">-5</td>
+<td align="right">-18.518518</td>
+<td align="left">NA</td>
+<td align="left">Alanine aminotransferase increased</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="right">0.8148148</td>
+<td align="right">3.666667</td>
+<td align="right">0.6470588</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">0 to 0</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="right">32</td>
+<td align="left">1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02T11:45</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">701</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">USA</td>
+<td align="left">2013-12-26</td>
+<td align="right">-7</td>
+<td align="left">2014-01-02</td>
+<td align="left">H</td>
+<td align="left">2014-07-02 23:59:59</td>
+<td align="left">H</td>
+<td align="right">182</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">18-64</td>
+<td align="left">Y</td>
+<td align="left">White</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">LB</td>
+<td align="left">01-701-1015</td>
+<td align="right">166</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase</td>
+<td align="left">CHEMISTRY</td>
+<td align="left">27</td>
+<td align="left">U/L</td>
+<td align="left">6</td>
+<td align="left">34</td>
+<td align="left">27</td>
+<td align="right">27</td>
+<td align="left">U/L</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NORMAL</td>
+<td align="left">NA</td>
+<td align="right">9</td>
+<td align="left">WEEK 12</td>
+<td align="right">84</td>
+<td align="left">2014-03-26T15:15</td>
+<td align="right">84</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="left">2014-03-26</td>
+<td align="right">84</td>
+<td align="left">ALT</td>
+<td align="left">Alanine Aminotransferase (U/L)</td>
+<td align="right">3</td>
+<td align="left">CHEMISTRY</td>
+<td align="right">27</td>
+<td align="left">27</td>
+<td align="right">6</td>
+<td align="right">34</td>
+<td align="left">NA</td>
+<td align="left">Week 12</td>
+<td align="right">9</td>
+<td align="left">Y</td>
+<td align="left">NORMAL</td>
+<td align="left">LAST</td>
+<td align="left">NA</td>
+<td align="right">27</td>
+<td align="left">27</td>
+<td align="left">NORMAL</td>
+<td align="right">0</td>
+<td align="right">0.000000</td>
+<td align="left">NA</td>
+<td align="left">Alanine aminotransferase increased</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="right">1.0000000</td>
+<td align="right">4.500000</td>
+<td align="right">0.7941176</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">0 to 0</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">Placebo</td>
+<td align="left">Placebo</td>
+<td align="right">33</td>
+<td align="left">1015</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">2014-01-02</td>
+<td align="left">2014-07-02</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02T11:45</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">701</td>
+<td align="right">63</td>
+<td align="left">YEARS</td>
+<td align="left">F</td>
+<td align="left">WHITE</td>
+<td align="left">HISPANIC OR LATINO</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">Pbo</td>
+<td align="left">Placebo</td>
+<td align="left">USA</td>
+<td align="left">2013-12-26</td>
+<td align="right">-7</td>
+<td align="left">2014-01-02</td>
+<td align="left">H</td>
+<td align="left">2014-07-02 23:59:59</td>
+<td align="left">H</td>
+<td align="right">182</td>
+<td align="left">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">COMPLETED</td>
+<td align="left">NA</td>
+<td align="left">2014-01-02</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="left">2014-07-02</td>
+<td align="left">18-64</td>
+<td align="left">Y</td>
+<td align="left">White</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="columns" class="section level2">
+<h2>Flagging Elevated Values (<code>CRITy</code>,
+<code>CRITyFL</code>)</h2>
+<p>A standard convention of ADLBHY datasets, are various
+<code>CRITy</code> and <code>CRITyFL</code> columns to describe the
+conditions necessary to reach that particular criterion of Hy’s Law and
+the actual flag itself to indicate whether or not the condition was
+reached.</p>
+<p>Using <code>mutate()</code>, <code>call_derivation()</code> and
+<code>derive_var_merged_exist_flag()</code>, we can create these columns
+that indicate the the 3-fold or greater than upper limit of normal of
+ALT/AST and the 2-fold or greater than upper limit of normal of
+BILI.</p>
+<p>To increase visibility and for simplicity, we will retain only
+columns that are relevant to a Hy’s Law analysis for now.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adlb_annotated <span class="ot">&lt;-</span> adlb <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">CRIT1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;AST&quot;</span> <span class="sc">~</span> <span class="st">&quot;AST &gt;=3xULN&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;ALT&quot;</span> <span class="sc">~</span> <span class="st">&quot;ALT &gt;=3xULN&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span> <span class="sc">~</span> <span class="st">&quot;BILI &gt;=2xULN&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">CRIT1FL =</span> <span class="fu">if_else</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      (AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">3</span> <span class="sc">&amp;</span> PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>)) <span class="sc">|</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        (AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">2</span> <span class="sc">&amp;</span> PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NA_character_</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A, PARAMCD, LBSEQ, ADT, AVISIT, ADY, AVAL, ANRHI, CRIT1, CRIT1FL)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="11%" />
+<col width="7%" />
+<col width="7%" />
+<col width="5%" />
+<col width="10%" />
+<col width="8%" />
+<col width="3%" />
+<col width="4%" />
+<col width="5%" />
+<col width="11%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">STUDYID</th>
+<th align="left">USUBJID</th>
+<th align="left">TRT01A</th>
+<th align="left">PARAMCD</th>
+<th align="right">LBSEQ</th>
+<th align="left">ADT</th>
+<th align="left">AVISIT</th>
+<th align="right">ADY</th>
+<th align="right">AVAL</th>
+<th align="right">ANRHI</th>
+<th align="left">CRIT1</th>
+<th align="left">CRIT1FL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">3</td>
+<td align="left">2013-12-26</td>
+<td align="left">Baseline</td>
+<td align="right">-7</td>
+<td align="right">27</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">41</td>
+<td align="left">2014-01-16</td>
+<td align="left">Week 2</td>
+<td align="right">15</td>
+<td align="right">41</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">76</td>
+<td align="left">2014-01-30</td>
+<td align="left">Week 4</td>
+<td align="right">29</td>
+<td align="right">18</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">106</td>
+<td align="left">2014-02-12</td>
+<td align="left">Week 6</td>
+<td align="right">42</td>
+<td align="right">26</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">136</td>
+<td align="left">2014-03-05</td>
+<td align="left">Week 8</td>
+<td align="right">63</td>
+<td align="right">22</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">166</td>
+<td align="left">2014-03-26</td>
+<td align="left">Week 12</td>
+<td align="right">84</td>
+<td align="right">27</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">201</td>
+<td align="left">2014-05-07</td>
+<td align="left">Week 16</td>
+<td align="right">126</td>
+<td align="right">17</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">231</td>
+<td align="left">2014-05-21</td>
+<td align="left">Week 20</td>
+<td align="right">140</td>
+<td align="right">21</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">261</td>
+<td align="left">2014-06-18</td>
+<td align="left">Week 24</td>
+<td align="right">168</td>
+<td align="right">23</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">296</td>
+<td align="left">2014-07-02</td>
+<td align="left">Week 26</td>
+<td align="right">182</td>
+<td align="right">23</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="joins" class="section level2">
+<h2>Subsetting by <code>LBTESTCD</code> and Joining by Potential
+Events</h2>
+<p>If an elevated ALT/AST event reaches the threshold for Hy’s Law, we
+need to search for any elevated BILI events within a certain
+time-window, usually up to 14 days after the elevated ALT/AST event
+(this window may vary by organization). By,</p>
+<ol style="list-style-type: decimal">
+<li>Splitting our dataset into its ALT/AST and BILI subsets,
+respectively, and</li>
+<li>Joining these two datasets using <code>derive_vars_joined()</code>
+while using the <code>filter_join</code> argument to only join together
+the relevant flagged BILI records that have a corresponding flagged
+ALT/AST record (prior up to 14 days but may vary for trial/organization)
+that would indicate a potential Hy’s Law event,</li>
+</ol>
+<p>the resulting dataset is helpful for deriving additional parameters.
+The dataset may also prove useful for a listing where you have to
+display the two lab-records in one row to showcase the potential
+event.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>altast_records <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>bili_records <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;BILI&quot;</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>hylaw_records <span class="ot">&lt;-</span> <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset =</span> altast_records,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> bili_records,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(ADY),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_join =</span> <span class="dv">0</span> <span class="sc">&lt;=</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&amp;</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&lt;=</span> <span class="dv">14</span> <span class="sc">&amp;</span> CRIT1FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> CRIT1FL.join <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">BILI_DT =</span> ADT, <span class="at">BILI_CRITFL =</span> CRIT1FL),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="8%" />
+<col width="14%" />
+<col width="5%" />
+<col width="4%" />
+<col width="7%" />
+<col width="11%" />
+<col width="2%" />
+<col width="3%" />
+<col width="4%" />
+<col width="8%" />
+<col width="5%" />
+<col width="7%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">STUDYID</th>
+<th align="left">USUBJID</th>
+<th align="left">TRT01A</th>
+<th align="left">PARAMCD</th>
+<th align="right">LBSEQ</th>
+<th align="left">ADT</th>
+<th align="left">AVISIT</th>
+<th align="right">ADY</th>
+<th align="right">AVAL</th>
+<th align="right">ANRHI</th>
+<th align="left">CRIT1</th>
+<th align="left">CRIT1FL</th>
+<th align="left">BILI_DT</th>
+<th align="left">BILI_CRITFL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1186</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">40</td>
+<td align="left">2014-01-23</td>
+<td align="left">Week 2</td>
+<td align="right">16</td>
+<td align="right">104</td>
+<td align="right">32</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">2014-01-23</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1186</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">127</td>
+<td align="left">2014-01-29</td>
+<td align="left">Week 4</td>
+<td align="right">22</td>
+<td align="right">107</td>
+<td align="right">32</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">2014-01-29</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1186</td>
+<td align="left">Placebo</td>
+<td align="left">AST</td>
+<td align="right">41</td>
+<td align="left">2014-01-23</td>
+<td align="left">Week 2</td>
+<td align="right">16</td>
+<td align="right">118</td>
+<td align="right">34</td>
+<td align="left">AST &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">2014-01-23</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1186</td>
+<td align="left">Placebo</td>
+<td align="left">AST</td>
+<td align="right">77</td>
+<td align="left">2014-01-26</td>
+<td align="left">Unscheduled 4.1</td>
+<td align="right">19</td>
+<td align="right">115</td>
+<td align="right">34</td>
+<td align="left">AST &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">2014-01-26</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1186</td>
+<td align="left">Placebo</td>
+<td align="left">AST</td>
+<td align="right">128</td>
+<td align="left">2014-01-29</td>
+<td align="left">Week 4</td>
+<td align="right">22</td>
+<td align="right">135</td>
+<td align="right">34</td>
+<td align="left">AST &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">2014-01-29</td>
+<td align="left">Y</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1186</td>
+<td align="left">Placebo</td>
+<td align="left">AST</td>
+<td align="right">113</td>
+<td align="left">2014-02-01</td>
+<td align="left">Unscheduled 4.2</td>
+<td align="right">25</td>
+<td align="right">114</td>
+<td align="right">34</td>
+<td align="left">AST &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">2014-02-01</td>
+<td align="left">Y</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1292</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">AST</td>
+<td align="right">180</td>
+<td align="left">2014-02-07</td>
+<td align="left">Week 12</td>
+<td align="right">117</td>
+<td align="right">125</td>
+<td align="right">34</td>
+<td align="left">AST &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1310</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">ALT</td>
+<td align="right">135</td>
+<td align="left">2013-12-26</td>
+<td align="left">Week 8</td>
+<td align="right">55</td>
+<td align="right">129</td>
+<td align="right">32</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1310</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">AST</td>
+<td align="right">136</td>
+<td align="left">2013-12-26</td>
+<td align="left">Week 8</td>
+<td align="right">55</td>
+<td align="right">114</td>
+<td align="right">34</td>
+<td align="left">AST &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-708-1286</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">207</td>
+<td align="left">2014-02-23</td>
+<td align="left">Week 24</td>
+<td align="right">167</td>
+<td align="right">124</td>
+<td align="right">32</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">Y</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="newparams" class="section level2">
+<h2>How to Create New Parameters and Rows</h2>
+<p>Using <code>derive_param_exist_flag()</code> you can create a variety
+of parameters for your final dataset with <code>AVAL = 1/0</code> for
+your specific Hy’s Law analysis. Below is an example of how to indicate
+a potential Hy’s Law event, with <code>PARAMCD</code> set as
+<code>&quot;HYSLAW&quot;</code> and <code>PARAM</code> set to
+<code>&quot;ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN&quot;</code> for <strong>each
+patient</strong> using the flags from the prior dataset. This method
+allows for flexibility as well, if parameters for each visit was
+desired, you would add <code>AVISIT</code> and <code>ADT</code> to the
+<code>select()</code> and <code>subject_keys</code> lines as denoted
+from the following code.</p>
+<p>Additional modifications can be made such as:</p>
+<ul>
+<li>Parameter to indicate worsening of condition</li>
+<li>Any sort of baseline/post-baseline based analysis</li>
+<li>Flags for other lab values like ALP if modified in above too</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hylaw_records_pts_visits <span class="ot">&lt;-</span> hylaw_records <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A) <span class="sc">%&gt;%</span> <span class="co"># add AVISIT, ADT for by visit</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>hylaw_records_fls <span class="ot">&lt;-</span> hylaw_records <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A, CRIT1FL, BILI_CRITFL) <span class="sc">%&gt;%</span> <span class="co"># add AVISIT, ADT for by visit</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>hylaw_params <span class="ot">&lt;-</span> <span class="fu">derive_param_exist_flag</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> hylaw_records_pts_visits,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> hylaw_records_fls,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> CRIT1FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> BILI_CRITFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">false_value =</span> <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">missing_value =</span> <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_keys =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, TRT01A), <span class="co"># add AVISIT, ADT for by visit</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;HYSLAW&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAM =</span> <span class="st">&quot;ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN&quot;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="12%" />
+<col width="21%" />
+<col width="6%" />
+<col width="5%" />
+<col width="8%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">STUDYID</th>
+<th align="left">USUBJID</th>
+<th align="left">TRT01A</th>
+<th align="left">AVALC</th>
+<th align="right">AVAL</th>
+<th align="left">PARAMCD</th>
+<th align="left">PARAM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1186</td>
+<td align="left">Placebo</td>
+<td align="left">Y</td>
+<td align="right">1</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1023</td>
+<td align="left">Placebo</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1028</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1033</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1034</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1047</td>
+<td align="left">Placebo</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1097</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1292</td>
+<td align="left">Xanomeline Low Dose</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-705-1310</td>
+<td align="left">Xanomeline High Dose</td>
+<td align="left">N</td>
+<td align="right">0</td>
+<td align="left">HYSLAW</td>
+<td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+</tr>
+</tbody>
+</table>
+<p>The last step would be binding these rows back to whatever previous
+dataset is appropriate based on your data specifications, in this case,
+it would be best suited to bind back to our <code>adlb_annotated</code>
+object.</p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adlbhy <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(hylaw_params)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="10%" />
+<col width="7%" />
+<col width="7%" />
+<col width="5%" />
+<col width="9%" />
+<col width="7%" />
+<col width="3%" />
+<col width="4%" />
+<col width="5%" />
+<col width="10%" />
+<col width="7%" />
+<col width="5%" />
+<col width="5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">STUDYID</th>
+<th align="left">USUBJID</th>
+<th align="left">TRT01A</th>
+<th align="left">PARAMCD</th>
+<th align="right">LBSEQ</th>
+<th align="left">ADT</th>
+<th align="left">AVISIT</th>
+<th align="right">ADY</th>
+<th align="right">AVAL</th>
+<th align="right">ANRHI</th>
+<th align="left">CRIT1</th>
+<th align="left">CRIT1FL</th>
+<th align="left">AVALC</th>
+<th align="left">PARAM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">3</td>
+<td align="left">2013-12-26</td>
+<td align="left">Baseline</td>
+<td align="right">-7</td>
+<td align="right">27</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">41</td>
+<td align="left">2014-01-16</td>
+<td align="left">Week 2</td>
+<td align="right">15</td>
+<td align="right">41</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">76</td>
+<td align="left">2014-01-30</td>
+<td align="left">Week 4</td>
+<td align="right">29</td>
+<td align="right">18</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">106</td>
+<td align="left">2014-02-12</td>
+<td align="left">Week 6</td>
+<td align="right">42</td>
+<td align="right">26</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">136</td>
+<td align="left">2014-03-05</td>
+<td align="left">Week 8</td>
+<td align="right">63</td>
+<td align="right">22</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">166</td>
+<td align="left">2014-03-26</td>
+<td align="left">Week 12</td>
+<td align="right">84</td>
+<td align="right">27</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">201</td>
+<td align="left">2014-05-07</td>
+<td align="left">Week 16</td>
+<td align="right">126</td>
+<td align="right">17</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">231</td>
+<td align="left">2014-05-21</td>
+<td align="left">Week 20</td>
+<td align="right">140</td>
+<td align="right">21</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">261</td>
+<td align="left">2014-06-18</td>
+<td align="left">Week 24</td>
+<td align="right">168</td>
+<td align="right">23</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">CDISCPILOT01</td>
+<td align="left">01-701-1015</td>
+<td align="left">Placebo</td>
+<td align="left">ALT</td>
+<td align="right">296</td>
+<td align="left">2014-07-02</td>
+<td align="left">Week 26</td>
+<td align="right">182</td>
+<td align="right">23</td>
+<td align="right">34</td>
+<td align="left">ALT &gt;=3xULN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<p>Here we demonstrated what is the base-case that may be asked of as a
+trial programmer. The reality is that Hy’s Law and assessing potential
+DILI events can get rather complex quite quickly. Differences in
+assessment across organizations and specific trials might require
+modifications, which may include:</p>
+<ul>
+<li>additional <code>CRITy</code> and <code>CRITyFL</code> columns for
+different cutoffs like 5xULN, 10xULN, 20xULN</li>
+<li>checking for elevated values of additional labs like alkaline
+phosphatase (ALP)</li>
+<li>appearance of certain adverse events associated with some of these
+elevated lab-values</li>
+<li>different criteria cutoffs that depend on baseline values or
+characteristics</li>
+<li>other parameters such as worsening of condition</li>
+</ul>
+<p>We hope by demonstrating the flexibility of <code>admiral</code>
+functions and using a general workflow to create the necessary
+parameters for an ADLBHY, that creating this final dataset becomes
+simplified and easily scalable. Ideally, this is ready for your
+organization’s standard macros or previous code for TLFs and outputs as
+well. This is our first attempt at breaking down and summarizing this
+topic. We welcome feedback and ideas to improve this guide!</p>
+</div>
+</div>
+<div id="example-script" class="section level1">
+<h1>Example Script</h1>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="66%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>ADaM</th>
+<th>Sample Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ADLBHY</td>
+<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adlbhy.R" target="_blank">ad_adlbhy.R</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>In the walk through below we will use the ADLB dataset
+created from the call <code>use_ad_template(&quot;adlb&quot;)</code>. Due to the
+size of the dataset, we only included the following USUBJIDs:</p>
+<ul>
+<li><code>01-701-1015</code>, <code>01-701-1023</code>,
+<code>01-701-1028</code>, <code>01-701-1033</code>,
+<code>01-701-1034</code>, <code>01-701-1047</code>,
+<code>01-701-1097</code>, <code>01-705-1186</code>,
+<code>01-705-1292</code>, <code>01-705-1310</code>,
+<code>01-708-1286</code>.</li>
+</ul>
+<a href="#fnref1" class="footnote-back">↩︎</a></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

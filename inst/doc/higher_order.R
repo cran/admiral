@@ -36,14 +36,14 @@ adae <- ae %>%
 ## -----------------------------------------------------------------------------
 vs_without <- vs %>%
   derive_var_extreme_flag(
-    by_vars = vars(USUBJID, VSTESTCD),
-    order = vars(VSORRES, VSSEQ),
+    by_vars = exprs(USUBJID, VSTESTCD),
+    order = exprs(VSORRES, VSSEQ),
     new_var = AHIFL,
     mode = "last"
   ) %>%
   derive_var_extreme_flag(
-    by_vars = vars(USUBJID, VSTESTCD),
-    order = vars(VSORRES, VSSEQ),
+    by_vars = exprs(USUBJID, VSTESTCD),
+    order = exprs(VSORRES, VSSEQ),
     new_var = ALOFL,
     mode = "first"
   )
@@ -52,7 +52,7 @@ vs_without <- vs %>%
 vs_without %>%
   arrange(USUBJID, VSTESTCD, VSDY, VSSEQ) %>%
   dataset_vignette(
-    display_vars = vars(USUBJID, VSTESTCD, VSORRES, ALOFL, AHIFL),
+    display_vars = exprs(USUBJID, VSTESTCD, VSORRES, ALOFL, AHIFL),
     filter = VSTESTCD %in% c("TEMP", "WEIGHT")
   )
 
@@ -64,15 +64,15 @@ vs_with <- vs %>%
       params(new_var = AHIFL, mode = "last"),
       params(new_var = ALOFL, mode = "first")
     ),
-    by_vars = vars(USUBJID, VSTESTCD),
-    order = vars(VSORRES, VSSEQ)
+    by_vars = exprs(USUBJID, VSTESTCD),
+    order = exprs(VSORRES, VSSEQ)
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 vs_with %>%
   arrange(USUBJID, VSTESTCD, VSDY, VSSEQ) %>%
   dataset_vignette(
-    display_vars = vars(USUBJID, VSTESTCD, VSORRES, ALOFL, AHIFL),
+    display_vars = exprs(USUBJID, VSTESTCD, VSORRES, ALOFL, AHIFL),
     filter = VSTESTCD %in% c("TEMP", "WEIGHT")
   )
 
@@ -82,19 +82,19 @@ adaette <- call_derivation(
   variable_params = list(
     params(
       event_conditions = list(ae_event),
-      set_values_to = vars(PARAMCD = "TTAE")
+      set_values_to = exprs(PARAMCD = "TTAE")
     ),
     params(
       event_conditions = list(ae_ser_event),
-      set_values_to = vars(PARAMCD = "TTSERAE")
+      set_values_to = exprs(PARAMCD = "TTSERAE")
     ),
     params(
       event_conditions = list(ae_sev_event),
-      set_values_to = vars(PARAMCD = "TTSEVAE")
+      set_values_to = exprs(PARAMCD = "TTSEVAE")
     ),
     params(
       event_conditions = list(ae_wd_event),
-      set_values_to = vars(PARAMCD = "TTWDAE")
+      set_values_to = exprs(PARAMCD = "TTWDAE")
     )
   ),
   dataset_adsl = adsl,
@@ -106,7 +106,7 @@ adaette <- call_derivation(
 adaette %>%
   select(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR) %>%
   arrange(USUBJID, PARAMCD) %>%
-  dataset_vignette(display_vars = vars(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR))
+  dataset_vignette(display_vars = exprs(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR))
 
 ## -----------------------------------------------------------------------------
 ae <- ae %>%
@@ -115,8 +115,8 @@ ae <- ae %>%
     derivation = derive_var_extreme_flag,
     args = params(
       new_var = AHSEVFL,
-      by_vars = vars(USUBJID),
-      order = vars(TEMP_AESEVN, AESTDY, AESEQ),
+      by_vars = exprs(USUBJID),
+      order = exprs(TEMP_AESEVN, AESTDY, AESEQ),
       mode = "first"
     ),
     filter = AESTDY >= 1
@@ -126,7 +126,7 @@ ae <- ae %>%
 ae %>%
   arrange(USUBJID, AESTDY, AESEQ, desc(TEMP_AESEVN)) %>%
   dataset_vignette(
-    display_vars = vars(USUBJID, AEDECOD, AESTDY, AESEQ, AESEV, AHSEVFL)
+    display_vars = exprs(USUBJID, AEDECOD, AESTDY, AESEQ, AESEV, AHSEVFL)
   )
 
 ## -----------------------------------------------------------------------------
@@ -135,15 +135,15 @@ ae <- ae %>%
     derivation = derive_var_extreme_flag,
     args = params(
       new_var = AHSEV2FL,
-      by_vars = vars(USUBJID)
+      by_vars = exprs(USUBJID)
     ),
     derivation_slice(
       filter = AESTDY >= 1,
-      args = params(order = vars(TEMP_AESEVN, AESTDY, AESEQ), mode = "first")
+      args = params(order = exprs(TEMP_AESEVN, AESTDY, AESEQ), mode = "first")
     ),
     derivation_slice(
       filter = TRUE,
-      args = params(order = vars(AESTDY, AESEQ), mode = "last")
+      args = params(order = exprs(AESTDY, AESEQ), mode = "last")
     )
   )
 
@@ -151,7 +151,7 @@ ae <- ae %>%
 ae %>%
   arrange(USUBJID, AESTDY, AESEQ, desc(TEMP_AESEVN)) %>%
   dataset_vignette(
-    display_vars = vars(USUBJID, AEDECOD, AESTDY, AESEQ, AESEV, AHSEV2FL)
+    display_vars = exprs(USUBJID, AEDECOD, AESTDY, AESEQ, AESEV, AHSEV2FL)
   )
 
 ## -----------------------------------------------------------------------------
@@ -160,19 +160,19 @@ ae <- ae %>%
     derivation = derive_var_extreme_flag,
     args = params(
       new_var = AHSEV3FL,
-      by_vars = vars(USUBJID)
+      by_vars = exprs(USUBJID)
     ),
     derivation_slice(
       filter = AESEV == "SEVERE",
-      args = params(order = vars(AESTDY, AESEQ), mode = "first")
+      args = params(order = exprs(AESTDY, AESEQ), mode = "first")
     ),
     derivation_slice(
       filter = AESEV == "MODERATE",
-      args = params(order = vars(AESTDY, AESEQ), mode = "first")
+      args = params(order = exprs(AESTDY, AESEQ), mode = "first")
     ),
     derivation_slice(
       filter = TRUE,
-      args = params(order = vars(AESTDY, AESEQ), mode = "last")
+      args = params(order = exprs(AESTDY, AESEQ), mode = "last")
     )
   )
 
@@ -180,6 +180,6 @@ ae <- ae %>%
 ae %>%
   arrange(USUBJID, AESTDY, AESEQ) %>%
   dataset_vignette(
-    display_vars = vars(USUBJID, AEDECOD, AESTDY, AESEQ, AESEV, AHSEV3FL)
+    display_vars = exprs(USUBJID, AEDECOD, AESTDY, AESEQ, AESEV, AHSEV3FL)
   )
 

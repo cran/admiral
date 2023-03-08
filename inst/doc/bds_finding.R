@@ -18,28 +18,26 @@ data("admiral_adsl")
 data("admiral_vs")
 
 adsl <- admiral_adsl
-vs <- admiral_vs
-
-vs <- convert_blanks_to_na(vs)
+vs <- convert_blanks_to_na(admiral_vs)
 
 ## ----echo=FALSE---------------------------------------------------------------
 vs <- filter(vs, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01-703-1096", "01-707-1037", "01-716-1024"))
 
 ## ----eval=TRUE----------------------------------------------------------------
 
-adsl_vars <- vars(TRTSDT, TRTEDT, TRT01A, TRT01P)
+adsl_vars <- exprs(TRTSDT, TRTEDT, TRT01A, TRT01P)
 
 advs <- derive_vars_merged(
   vs,
   dataset_add = adsl,
   new_vars = adsl_vars,
-  by_vars = vars(STUDYID, USUBJID)
+  by_vars = exprs(STUDYID, USUBJID)
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, VSTESTCD, VSDTC, VISIT, TRTSDT, TRTEDT, TRT01A, TRT01P),
+  display_vars = exprs(USUBJID, VSTESTCD, VSDTC, VISIT, TRTSDT, TRTEDT, TRT01A, TRT01P),
   filter = VSTESTCD == "DIABP" & VISIT == "WEEK 2"
 )
 
@@ -49,7 +47,7 @@ advs <- derive_vars_dt(advs, new_vars_prefix = "A", dtc = VSDTC)
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, VISIT, VSDTC, ADT),
+  display_vars = exprs(USUBJID, VISIT, VSDTC, ADT),
   filter = VSTESTCD == "DIABP"
 )
 
@@ -77,7 +75,7 @@ advs <- derive_vars_dt(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, VISIT, VSDTC, ADT, ADTF),
+  display_vars = exprs(USUBJID, VISIT, VSDTC, ADT, ADTF),
   filter = USUBJID == "01-716-1024"
 )
 
@@ -96,12 +94,12 @@ advs <- advs_old
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs <-
-  derive_vars_dy(advs, reference_date = TRTSDT, source_vars = vars(ADT))
+  derive_vars_dy(advs, reference_date = TRTSDT, source_vars = exprs(ADT))
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, VISIT, ADT, ADY, TRTSDT),
+  display_vars = exprs(USUBJID, VISIT, ADT, ADY, TRTSDT),
   filter = USUBJID == "01-716-1024"
 )
 
@@ -120,17 +118,17 @@ param_lookup <- tribble(
 attr(param_lookup$VSTESTCD, "label") <- "Vital Signs Test Short Name"
 
 ## ----eval=TRUE----------------------------------------------------------------
-advs <- derive_vars_merged(
+advs <- derive_vars_merged_lookup(
   advs,
   dataset_add = param_lookup,
-  new_vars = vars(PARAMCD),
-  by_vars = vars(VSTESTCD)
+  new_vars = exprs(PARAMCD),
+  by_vars = exprs(VSTESTCD)
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 advs_param <- distinct(advs, USUBJID, PARAMCD, VSTESTCD)
 
-dataset_vignette(advs_param, display_vars = vars(USUBJID, VSTESTCD, PARAMCD))
+dataset_vignette(advs_param, display_vars = exprs(USUBJID, VSTESTCD, PARAMCD))
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs <- mutate(
@@ -142,15 +140,15 @@ advs <- mutate(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(VSTESTCD, PARAMCD, VSSTRESN, VSSTRESC, AVAL, AVALC),
+  display_vars = exprs(VSTESTCD, PARAMCD, VSSTRESN, VSSTRESC, AVAL, AVALC),
   filter = USUBJID == "01-716-1024"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs <- derive_param_map(
   advs,
-  by_vars = vars(STUDYID, USUBJID, !!!adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),
-  set_values_to = vars(PARAMCD = "MAP"),
+  by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),
+  set_values_to = exprs(PARAMCD = "MAP"),
   get_unit_expr = VSSTRESU,
   filter = VSSTAT != "NOT DONE" | is.na(VSSTAT)
 )
@@ -158,24 +156,24 @@ advs <- derive_param_map(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   arrange(advs, USUBJID, VISITNUM, VSTPTNUM, ADT, PARAMCD),
-  display_vars = vars(VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL, AVALC),
+  display_vars = exprs(VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL, AVALC),
   filter = USUBJID == "01-701-1015" & PARAMCD %in% c("MAP", "DIABP", "SYSBP")
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs <- derive_param_bsa(
   advs,
-  by_vars = vars(STUDYID, USUBJID, !!!adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),
+  by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),
   method = "Mosteller",
-  set_values_to = vars(PARAMCD = "BSA"),
+  set_values_to = exprs(PARAMCD = "BSA"),
   get_unit_expr = VSSTRESU,
   filter = VSSTAT != "NOT DONE" | is.na(VSSTAT)
 )
 
 advs <- derive_param_bmi(
   advs,
-  by_vars = vars(STUDYID, USUBJID, !!!adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),
-  set_values_to = vars(PARAMCD = "BMI"),
+  by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),
+  set_values_to = exprs(PARAMCD = "BMI"),
   get_unit_expr = VSSTRESU,
   filter = VSSTAT != "NOT DONE" | is.na(VSSTAT)
 )
@@ -183,7 +181,7 @@ advs <- derive_param_bmi(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   arrange(advs, USUBJID, VISITNUM, VSTPTNUM, ADT, PARAMCD),
-  display_vars = vars(USUBJID, VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL, AVALC),
+  display_vars = exprs(USUBJID, VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL, AVALC),
   filter = PARAMCD %in% c("BSA", "BMI")
 )
 
@@ -199,9 +197,9 @@ dataset_vignette(
 #  
 #  adeg <- derive_param_qtc(
 #    adeg,
-#    by_vars = vars(USUBJID, VISIT),
+#    by_vars = exprs(USUBJID, VISIT),
 #    method = "Fridericia",
-#    set_values_to = vars(PARAMCD = "QTCFR"),
+#    set_values_to = exprs(PARAMCD = "QTCFR"),
 #    get_unit_expr = EGSTRESU
 #  )
 
@@ -216,8 +214,8 @@ dataset_vignette(
 #  
 #  derive_param_wbc_abs(
 #    dataset = adlb,
-#    by_vars = vars(USUBJID, VISIT),
-#    set_values_to = vars(
+#    by_vars = exprs(USUBJID, VISIT),
+#    set_values_to = exprs(
 #      PARAMCD = "LYMPH",
 #      PARAM = "Lymphocytes Abs (10^9/L)",
 #      DTYPE = "CALCULATION"
@@ -234,13 +232,13 @@ dataset_vignette(
 advs <- derive_vars_merged(
   advs,
   dataset_add = select(param_lookup, -VSTESTCD),
-  by_vars = vars(PARAMCD)
+  by_vars = exprs(PARAMCD)
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(VSTESTCD, PARAMCD, PARAM, PARAMN, PARCAT1, PARCAT1N),
+  display_vars = exprs(VSTESTCD, PARAMCD, PARAM, PARAMN, PARCAT1, PARCAT1N),
   filter = USUBJID == "01-716-1024"
 )
 
@@ -277,7 +275,7 @@ advs <- derive_var_ontrtfl(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, PARAMCD, ADT, TRTSDT, TRTEDT, ONTRTFL),
+  display_vars = exprs(USUBJID, PARAMCD, ADT, TRTSDT, TRTEDT, ONTRTFL),
   filter = PARAMCD == "DIABP" & VISIT == "WEEK 2"
 )
 
@@ -329,7 +327,7 @@ advs <- derive_var_ontrtfl(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, ASTDT, AENDT, AP01SDT, AP01EDT, ONTR01FL)
+  display_vars = exprs(USUBJID, ASTDT, AENDT, AP01SDT, AP01EDT, ONTR01FL)
 )
 
 ## ----include=FALSE------------------------------------------------------------
@@ -344,7 +342,7 @@ range_lookup <- tibble::tribble(
 advs <- derive_vars_merged(
   advs_pre,
   dataset_add = range_lookup,
-  by_vars = vars(PARAMCD)
+  by_vars = exprs(PARAMCD)
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -353,7 +351,7 @@ advs <- derive_var_anrind(advs)
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, PARAMCD, AVAL, ANRLO, ANRHI, A1LO, A1HI, ANRIND),
+  display_vars = exprs(USUBJID, PARAMCD, AVAL, ANRLO, ANRHI, A1LO, A1HI, ANRIND),
   filter = PARAMCD == "DIABP" & VISIT == "WEEK 2"
 )
 
@@ -375,8 +373,8 @@ advs <- restrict_derivation(
   advs,
   derivation = derive_var_extreme_flag,
   args = params(
-    by_vars = vars(STUDYID, USUBJID, BASETYPE, PARAMCD),
-    order = vars(ADT, ATPTN, VISITNUM),
+    by_vars = exprs(STUDYID, USUBJID, BASETYPE, PARAMCD),
+    order = exprs(ADT, ATPTN, VISITNUM),
     new_var = ABLFL,
     mode = "last"
   ),
@@ -386,28 +384,28 @@ advs <- restrict_derivation(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, BASETYPE, PARAMCD, ADT, TRTSDT, ATPTN, TRTSDT, ABLFL),
+  display_vars = exprs(USUBJID, BASETYPE, PARAMCD, ADT, TRTSDT, ATPTN, TRTSDT, ABLFL),
   filter = PARAMCD == "DIABP" & VISIT %in% c("WEEK 2", "BASELINE")
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs <- derive_var_base(
   advs,
-  by_vars = vars(STUDYID, USUBJID, PARAMCD, BASETYPE),
+  by_vars = exprs(STUDYID, USUBJID, PARAMCD, BASETYPE),
   source_var = AVAL,
   new_var = BASE
 )
 
 advs <- derive_var_base(
   advs,
-  by_vars = vars(STUDYID, USUBJID, PARAMCD, BASETYPE),
+  by_vars = exprs(STUDYID, USUBJID, PARAMCD, BASETYPE),
   source_var = AVALC,
   new_var = BASEC
 )
 
 advs <- derive_var_base(
   advs,
-  by_vars = vars(STUDYID, USUBJID, PARAMCD, BASETYPE),
+  by_vars = exprs(STUDYID, USUBJID, PARAMCD, BASETYPE),
   source_var = ANRIND,
   new_var = BNRIND
 )
@@ -415,7 +413,7 @@ advs <- derive_var_base(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, BASETYPE, PARAMCD, ABLFL, BASE, BASEC, ANRIND, BNRIND),
+  display_vars = exprs(USUBJID, BASETYPE, PARAMCD, ABLFL, BASE, BASEC, ANRIND, BNRIND),
   filter = PARAMCD == "DIABP" & VISIT %in% c("WEEK 2", "BASELINE")
 )
 
@@ -427,7 +425,7 @@ advs <- derive_var_pchg(advs)
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, VISIT, BASE, AVAL, CHG, PCHG),
+  display_vars = exprs(USUBJID, VISIT, BASE, AVAL, CHG, PCHG),
   filter = PARAMCD == "DIABP" & VISIT %in% c("WEEK 2", "WEEK 8")
 )
 
@@ -453,7 +451,7 @@ advs <- derive_var_analysis_ratio(advs,
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, VISIT, BASE, AVAL, ANRLO, R2BASE, R01ANRLO),
+  display_vars = exprs(USUBJID, VISIT, BASE, AVAL, ANRLO, R2BASE, R01ANRLO),
   filter = PARAMCD == "DIABP" & VISIT %in% c("WEEK 2", "WEEK 8")
 )
 
@@ -463,8 +461,8 @@ advs <- restrict_derivation(
   advs,
   derivation = derive_var_extreme_flag,
   args = params(
-    by_vars = vars(STUDYID, USUBJID, BASETYPE, PARAMCD, AVISIT),
-    order = vars(ADT, ATPTN, AVAL),
+    by_vars = exprs(STUDYID, USUBJID, BASETYPE, PARAMCD, AVISIT),
+    order = exprs(ADT, ATPTN, AVAL),
     new_var = ANL01FL,
     mode = "last"
   ),
@@ -474,32 +472,35 @@ advs <- restrict_derivation(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, PARAMCD, AVISIT, ATPTN, ADT, AVAL, ANL01FL),
+  display_vars = exprs(USUBJID, PARAMCD, AVISIT, ATPTN, ADT, AVAL, ANL01FL),
   filter = PARAMCD == "DIABP" & VISIT %in% c("WEEK 2", "WEEK 8")
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-
-advs <- restrict_derivation(
+advs <- slice_derivation(
   advs,
-  derivation = derive_var_worst_flag,
+  derivation = derive_var_extreme_flag,
   args = params(
-    by_vars = vars(STUDYID, USUBJID, BASETYPE, PARAMCD, AVISIT),
-    order = vars(ADT, ATPTN),
+    by_vars = exprs(STUDYID, USUBJID, BASETYPE, PARAMCD, AVISIT),
+    order = exprs(ADT, ATPTN),
     new_var = WORSTFL,
-    param_var = PARAMCD,
-    analysis_var = AVAL,
-    worst_high = c("SYSBP", "DIABP"),
-    worst_low = "PULSE"
+    mode = "first"
   ),
-  filter = !is.na(AVISIT) & !is.na(AVAL)
-)
+  derivation_slice(
+    filter = PARAMCD %in% c("SYSBP", "DIABP") & (!is.na(AVISIT) & !is.na(AVAL))
+  ),
+  derivation_slice(
+    filter = PARAMCD %in% "PULSE" & (!is.na(AVISIT) & !is.na(AVAL)),
+    args = params(mode = "last")
+  )
+) %>%
+  arrange(STUDYID, USUBJID, BASETYPE, PARAMCD, AVISIT)
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, PARAMCD, AVISIT, AVAL, ADT, ATPTN, WORSTFL),
-  filter = USUBJID == "01-701-1015"
+  display_vars = exprs(USUBJID, PARAMCD, AVISIT, AVAL, ADT, ATPTN, WORSTFL),
+  filter = USUBJID == "01-701-1015" & WORSTFL == "Y"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -511,15 +512,15 @@ count(advs, TRTP, TRTA, TRT01P, TRT01A)
 advs <- derive_var_obs_number(
   advs,
   new_var = ASEQ,
-  by_vars = vars(STUDYID, USUBJID),
-  order = vars(PARAMCD, ADT, AVISITN, VISITNUM, ATPTN),
+  by_vars = exprs(STUDYID, USUBJID),
+  order = exprs(PARAMCD, ADT, AVISITN, VISITNUM, ATPTN),
   check_type = "error"
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, PARAMCD, ADT, AVISITN, ATPTN, VISIT, ADT, ASEQ),
+  display_vars = exprs(USUBJID, PARAMCD, ADT, AVISITN, ATPTN, VISIT, ADT, ASEQ),
   filter = USUBJID == "01-701-1015"
 )
 
@@ -541,13 +542,13 @@ advs <- advs %>%
   mutate(AVALCA1N = format_avalcat1n(param = PARAMCD, aval = AVAL)) %>%
   derive_vars_merged(
     avalcat_lookup,
-    by = vars(PARAMCD, AVALCA1N)
+    by = exprs(PARAMCD, AVALCA1N)
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, PARAMCD, AVAL, AVALCA1N, AVALCAT1),
+  display_vars = exprs(USUBJID, PARAMCD, AVAL, AVALCA1N, AVALCAT1),
   filter = PARAMCD == "HEIGHT"
 )
 
@@ -555,24 +556,24 @@ dataset_vignette(
 advs <- advs %>%
   derive_vars_merged(
     dataset_add = select(adsl, !!!negate_vars(adsl_vars)),
-    by_vars = vars(STUDYID, USUBJID)
+    by_vars = exprs(STUDYID, USUBJID)
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = vars(USUBJID, RFSTDTC, RFENDTC, DTHDTC, DTHFL, AGE, AGEU),
+  display_vars = exprs(USUBJID, RFSTDTC, RFENDTC, DTHDTC, DTHFL, AGE, AGEU),
   filter = USUBJID == "01-701-1015"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs_ex1 <- advs %>%
   derive_extreme_records(
-    by_vars = vars(STUDYID, USUBJID, PARAMCD),
-    order = vars(ADT, AVISITN, ATPTN, AVAL),
+    by_vars = exprs(STUDYID, USUBJID, PARAMCD),
+    order = exprs(ADT, AVISITN, ATPTN, AVAL),
     mode = "last",
     filter = (4 < AVISITN & AVISITN <= 12 & ANL01FL == "Y"),
-    set_values_to = vars(
+    set_values_to = exprs(
       AVISIT = "End of Treatment",
       AVISITN = 99,
       DTYPE = "LOV"
@@ -582,18 +583,18 @@ advs_ex1 <- advs %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   arrange(advs_ex1, USUBJID, PARAMCD, desc(AVISITN), ATPTN),
-  display_vars = vars(USUBJID, PARAMCD, ADT, AVISITN, AVISIT, ATPTN, AVAL, DTYPE, ANL01FL),
+  display_vars = exprs(USUBJID, PARAMCD, ADT, AVISITN, AVISIT, ATPTN, AVAL, DTYPE, ANL01FL),
   filter = USUBJID == "01-701-1015" & ANL01FL == "Y"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs_ex1 <- advs %>%
   derive_extreme_records(
-    by_vars = vars(STUDYID, USUBJID, PARAMCD),
-    order = vars(AVAL, ADT, AVISITN, ATPTN),
+    by_vars = exprs(STUDYID, USUBJID, PARAMCD),
+    order = exprs(AVAL, ADT, AVISITN, ATPTN),
     mode = "first",
     filter = (4 < AVISITN & AVISITN <= 12 & ANL01FL == "Y" & !is.na(AVAL)),
-    set_values_to = vars(
+    set_values_to = exprs(
       AVISIT = "Minimum on Treatment",
       AVISITN = 98,
       DTYPE = "MINIMUM"
@@ -603,33 +604,33 @@ advs_ex1 <- advs %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   arrange(advs_ex1, USUBJID, PARAMCD, desc(AVISITN), ATPTN),
-  display_vars = vars(USUBJID, PARAMCD, ADT, AVISITN, AVISIT, ATPTN, AVAL, DTYPE, ANL01FL),
+  display_vars = exprs(USUBJID, PARAMCD, ADT, AVISITN, AVISIT, ATPTN, AVAL, DTYPE, ANL01FL),
   filter = USUBJID == "01-701-1015" & ANL01FL == "Y"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs_ex2 <- derive_summary_records(
   advs,
-  by_vars = vars(STUDYID, USUBJID, PARAMCD, VISITNUM, ADT),
+  by_vars = exprs(STUDYID, USUBJID, PARAMCD, VISITNUM, ADT),
   analysis_var = AVAL,
   summary_fun = mean,
-  set_values_to = vars(DTYPE = "AVERAGE")
+  set_values_to = exprs(DTYPE = "AVERAGE")
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   arrange(advs_ex2, USUBJID, PARAMCD, VISITNUM, ADT, DTYPE),
-  display_vars = vars(USUBJID, PARAMCD, VISITNUM, ADT, AVAL, DTYPE),
+  display_vars = exprs(USUBJID, PARAMCD, VISITNUM, ADT, AVAL, DTYPE),
   filter = USUBJID == "01-701-1015"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs_ex3 <- derive_param_computed(
   advs,
-  by_vars = vars(USUBJID, VISIT, ATPT),
+  by_vars = exprs(USUBJID, VISIT, ATPT),
   parameters = c("SYSBP", "DIABP"),
   analysis_value = (AVAL.SYSBP - AVAL.DIABP) / 3 + AVAL.DIABP,
-  set_values_to = vars(
+  set_values_to = exprs(
     PARAMCD = "MAP2",
     PARAM = "Mean Arterial Pressure 2 (mmHg)"
   )
@@ -638,7 +639,7 @@ advs_ex3 <- derive_param_computed(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   arrange(advs_ex3, USUBJID, VISIT, ATPT, PARAMCD),
-  display_vars = vars(USUBJID, PARAMCD, VISIT, ATPT, AVAL),
+  display_vars = exprs(USUBJID, PARAMCD, VISIT, ATPT, AVAL),
   filter = USUBJID == "01-701-1015" & PARAMCD %in% c("MAP2", "SYSBP", "DIABP")
 )
 

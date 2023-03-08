@@ -57,8 +57,8 @@ adsl_02 <- adsl_01 %>%
   derive_vars_merged(
     dataset_add = ds_ext,
     filter_add = DSDECOD == "RANDOMIZED",
-    by_vars = vars(STUDYID, USUBJID),
-    new_vars = vars(RANDDT = DSSTDT)
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(RANDDT = DSSTDT)
   )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -74,10 +74,10 @@ adsl_03 <- adsl_02 %>%
   derive_vars_merged(
     dataset_add = ex_ext,
     filter_add = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))) & !is.na(EXSTDT),
-    new_vars = vars(TRTSDT = EXSTDT),
-    order = vars(EXSTDT, EXSEQ),
+    new_vars = exprs(TRTSDT = EXSTDT),
+    order = exprs(EXSTDT, EXSEQ),
     mode = "first",
-    by_vars = vars(STUDYID, USUBJID)
+    by_vars = exprs(STUDYID, USUBJID)
   )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -85,7 +85,7 @@ adsl_03 <- adsl_02 %>%
 adsl_04 <- adsl_03 %>%
   derive_var_merged_exist_flag(
     dataset_add = ex,
-    by_vars = vars(STUDYID, USUBJID),
+    by_vars = exprs(STUDYID, USUBJID),
     new_var = SAFFL,
     condition = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))),
     false_value = "N",
@@ -95,7 +95,7 @@ adsl_04 <- adsl_03 %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   dataset = adsl_04,
-  display_vars = vars(USUBJID, RANDDT, TRTSDT, SAFFL)
+  display_vars = exprs(USUBJID, RANDDT, TRTSDT, SAFFL)
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -104,15 +104,15 @@ adsl_05 <- adsl_04 %>%
   derive_vars_joined(
     dataset_add = ds_ext,
     filter_add = DSDECOD == "RANDOMIZED",
-    by_vars = vars(STUDYID, USUBJID),
-    new_vars = vars(RAND30DT = DSSTDT),
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(RAND30DT = DSSTDT),
     filter_join = DSSTDT >= TRTSDT - 30
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   dataset = adsl_05,
-  display_vars = vars(USUBJID, RANDDT, TRTSDT, RAND30DT)
+  display_vars = exprs(USUBJID, RANDDT, TRTSDT, RAND30DT)
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -127,9 +127,9 @@ datacut <- tribble(
 ae_01 <- ae %>%
   derive_vars_joined(
     dataset_add = datacut,
-    by_vars = vars(USUBJID),
-    new_vars = vars(DCUTFL),
-    join_vars = vars(DCUTDY),
+    by_vars = exprs(USUBJID),
+    new_vars = exprs(DCUTFL),
+    join_vars = exprs(DCUTDY),
     filter_join = AESTDY <= DCUTDY
   )
 
@@ -137,7 +137,7 @@ ae_01 <- ae %>%
 ae_01 %>%
   select(USUBJID, AEDECOD, AESTDY, DCUTFL) %>%
   arrange(USUBJID, AESTDY) %>%
-  dataset_vignette(display_vars = vars(USUBJID, AEDECOD, AESTDY, DCUTFL))
+  dataset_vignette(display_vars = exprs(USUBJID, AEDECOD, AESTDY, DCUTFL))
 
 ## ----eval=TRUE----------------------------------------------------------------
 # Add a numeric version of severity for sorting with severe=1, moderate=2, mild=3
@@ -149,10 +149,10 @@ ae_02 <- ae_ext %>%
   derive_vars_joined(
     dataset_add = ae_ext,
     filter_add = AESTDY > 0,
-    by_vars = vars(USUBJID),
-    order = vars(TEMP_SEVN),
-    new_vars = vars(AENADSEV = AESEV),
-    join_vars = vars(AESTDY),
+    by_vars = exprs(USUBJID),
+    order = exprs(TEMP_SEVN),
+    new_vars = exprs(AENADSEV = AESEV),
+    join_vars = exprs(AESTDY),
     filter_join = AESTDY.join < AESTDY,
     mode = "first",
     check_type = "none"
@@ -162,15 +162,15 @@ ae_02 <- ae_ext %>%
 ae_02 %>%
   select(USUBJID, AEDECOD, AESTDY, AESEV, AENADSEV) %>%
   arrange(USUBJID, AESTDY) %>%
-  dataset_vignette(display_vars = vars(USUBJID, AEDECOD, AESTDY, AESEV, AENADSEV))
+  dataset_vignette(display_vars = exprs(USUBJID, AEDECOD, AESTDY, AESEV, AENADSEV))
 
 ## ----eval=TRUE----------------------------------------------------------------
 # Highest severity flag (AEHSEVFL)
 ae_03 <- ae_02 %>%
   derive_var_extreme_flag(
     new_var = AEHSEVFL,
-    by_vars = vars(USUBJID),
-    order = vars(TEMP_SEVN, AESTDY, AESEQ),
+    by_vars = exprs(USUBJID),
+    order = exprs(TEMP_SEVN, AESTDY, AESEQ),
     mode = "first"
   )
 
@@ -178,5 +178,5 @@ ae_03 <- ae_02 %>%
 ae_03 %>%
   select(USUBJID, AESTDY, AESEQ, AESEV, AEHSEVFL) %>%
   arrange(USUBJID, AESTDY, AESEQ) %>%
-  dataset_vignette(display_vars = vars(USUBJID, AESTDY, AESEQ, AESEV, AEHSEVFL))
+  dataset_vignette(display_vars = exprs(USUBJID, AESTDY, AESEQ, AESEV, AEHSEVFL))
 

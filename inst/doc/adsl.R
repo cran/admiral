@@ -19,11 +19,11 @@ data("admiral_ex")
 data("admiral_ae")
 data("admiral_lb")
 
-dm <- admiral_dm
-ds <- admiral_ds
-ex <- admiral_ex
-ae <- admiral_ae
-lb <- admiral_lb
+dm <- convert_blanks_to_na(admiral_dm)
+ds <- convert_blanks_to_na(admiral_ds)
+ex <- convert_blanks_to_na(admiral_ex)
+ae <- convert_blanks_to_na(admiral_ae)
+lb <- convert_blanks_to_na(admiral_lb)
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- dm %>%
@@ -32,7 +32,7 @@ adsl <- dm %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, RFSTDTC, COUNTRY, AGE, SEX, RACE, ETHNIC, ARM, ACTARM)
+  display_vars = exprs(USUBJID, RFSTDTC, COUNTRY, AGE, SEX, RACE, ETHNIC, ARM, ACTARM)
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -58,25 +58,25 @@ adsl <- adsl %>%
     filter_add = (EXDOSE > 0 |
       (EXDOSE == 0 &
         str_detect(EXTRT, "PLACEBO"))) & !is.na(EXSTDTM),
-    new_vars = vars(TRTSDTM = EXSTDTM, TRTSTMF = EXSTTMF),
-    order = vars(EXSTDTM, EXSEQ),
+    new_vars = exprs(TRTSDTM = EXSTDTM, TRTSTMF = EXSTTMF),
+    order = exprs(EXSTDTM, EXSEQ),
     mode = "first",
-    by_vars = vars(STUDYID, USUBJID)
+    by_vars = exprs(STUDYID, USUBJID)
   ) %>%
   derive_vars_merged(
     dataset_add = ex_ext,
     filter_add = (EXDOSE > 0 |
       (EXDOSE == 0 &
         str_detect(EXTRT, "PLACEBO"))) & !is.na(EXENDTM),
-    new_vars = vars(TRTEDTM = EXENDTM, TRTETMF = EXENTMF),
-    order = vars(EXENDTM, EXSEQ),
+    new_vars = exprs(TRTEDTM = EXENDTM, TRTETMF = EXENTMF),
+    order = exprs(EXENDTM, EXSEQ),
     mode = "last",
-    by_vars = vars(STUDYID, USUBJID)
+    by_vars = exprs(STUDYID, USUBJID)
   )
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
-  derive_vars_dtm_to_dt(source_vars = vars(TRTSDTM, TRTEDTM))
+  derive_vars_dtm_to_dt(source_vars = exprs(TRTSDTM, TRTEDTM))
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
@@ -85,7 +85,7 @@ adsl <- adsl %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, RFSTDTC, TRTSDTM, TRTSDT, TRTEDTM, TRTEDT, TRTDURD)
+  display_vars = exprs(USUBJID, RFSTDTC, TRTSDTM, TRTSDT, TRTEDTM, TRTEDT, TRTDURD)
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -99,100 +99,91 @@ ds_ext <- derive_vars_dt(
 adsl <- adsl %>%
   derive_vars_merged(
     dataset_add = ds_ext,
-    by_vars = vars(STUDYID, USUBJID),
-    new_vars = vars(EOSDT = DSSTDT),
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(EOSDT = DSSTDT),
     filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD != "SCREEN FAILURE"
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   ds,
-  display_vars = vars(USUBJID, DSCAT, DSDECOD, DSTERM, DSSTDTC),
+  display_vars = exprs(USUBJID, DSCAT, DSDECOD, DSTERM, DSSTDTC),
   filter = DSDECOD != "SCREEN FAILURE"
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(adsl, display_vars = vars(USUBJID, EOSDT))
+dataset_vignette(adsl, display_vars = exprs(USUBJID, EOSDT))
 
 ## ----eval=TRUE----------------------------------------------------------------
-adsl <- adsl %>%
-  derive_var_disposition_status(
-    dataset_ds = ds,
-    new_var = EOSSTT,
-    status_var = DSDECOD,
-    filter_ds = DSCAT == "DISPOSITION EVENT"
-  )
-
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(adsl, display_vars = vars(USUBJID, EOSDT, EOSSTT))
-
-## ----eval=TRUE----------------------------------------------------------------
-format_eosstt <- function(DSDECOD) {
+format_eosstt <- function(x) {
   case_when(
-    DSDECOD %in% c("COMPLETED") ~ "COMPLETED",
-    DSDECOD %in% c("SCREEN FAILURE") ~ NA_character_,
-    !is.na(DSDECOD) ~ "DISCONTINUED",
+    x %in% c("COMPLETED") ~ "COMPLETED",
+    x %in% c("SCREEN FAILURE") ~ NA_character_,
+    !is.na(x) ~ "DISCONTINUED",
     TRUE ~ "ONGOING"
   )
 }
 
-## ----eval=FALSE---------------------------------------------------------------
-#  
-#  adsl <- adsl %>%
-#    derive_var_disposition_status(
-#      dataset_ds = ds,
-#      new_var = EOSSTT,
-#      status_var = DSDECOD,
-#      format_new_var = format_eosstt,
-#      filter_ds = DSCAT == "DISPOSITION EVENT"
-#    )
-
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
-  derive_vars_disposition_reason(
-    dataset_ds = ds,
-    new_var = DCSREAS,
-    reason_var = DSDECOD,
-    new_var_spe = DCSREASP,
-    reason_var_spe = DSTERM,
-    filter_ds = DSCAT == "DISPOSITION EVENT" & DSDECOD != "SCREEN FAILURE"
+  derive_var_merged_cat(
+    dataset_add = ds,
+    by_vars = exprs(STUDYID, USUBJID),
+    filter_add = DSCAT == "DISPOSITION EVENT",
+    new_var = EOSSTT,
+    source_var = DSDECOD,
+    cat_fun = format_eosstt,
+    missing_value = "ONGOING"
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(adsl, display_vars = vars(USUBJID, EOSDT, EOSSTT, DCSREAS, DCSREASP))
+dataset_vignette(adsl, display_vars = exprs(USUBJID, EOSDT, EOSSTT))
 
-## ----eval=TRUE----------------------------------------------------------------
-format_dcsreas <- function(dsdecod, dsterm = NULL) {
-  if (is.null(dsterm)) {
-    if_else(dsdecod %notin% c("COMPLETED", "SCREEN FAILURE") & !is.na(dsdecod), dsdecod, NA_character_)
-  } else {
-    if_else(dsdecod == "OTHER", dsterm, NA_character_)
-  }
-}
+## -----------------------------------------------------------------------------
+adsl <- adsl %>%
+  derive_vars_merged(
+    dataset_add = ds,
+    by_vars = exprs(USUBJID),
+    new_vars = exprs(DCSREAS = DSDECOD, DCSREASP = DSTERM),
+    filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD %notin% c("SCREEN FAILURE", "COMPLETED", NA)
+  )
 
-## ----eval=FALSE---------------------------------------------------------------
-#  adsl <- adsl %>%
-#    derive_vars_disposition_reason(
-#      dataset_ds = ds,
-#      new_var = DCSREAS,
-#      reason_var = DSDECOD,
-#      new_var_spe = DCSREASP,
-#      reason_var_spe = DSTERM,
-#      format_new_vars = format_dcsreas,
-#      filter_ds = DSCAT == "DISPOSITION EVENT"
-#    )
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(adsl, display_vars = exprs(USUBJID, EOSDT, EOSSTT, DCSREAS, DCSREASP))
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+adsl <- adsl %>%
+  select(-DCSREAS, -DCSREASP)
+
+## -----------------------------------------------------------------------------
+adsl <- adsl %>%
+  derive_vars_merged(
+    dataset_add = ds,
+    by_vars = exprs(USUBJID),
+    new_vars = exprs(DCSREAS = DSDECOD),
+    filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD %notin% c("SCREEN FAILURE", "COMPLETED", NA)
+  ) %>%
+  derive_vars_merged(
+    dataset_add = ds,
+    by_vars = exprs(USUBJID),
+    new_vars = exprs(DCSREASP = DSTERM),
+    filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD %in% "OTHER"
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(adsl, display_vars = exprs(USUBJID, EOSDT, EOSSTT, DCSREAS, DCSREASP))
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
   derive_vars_merged(
     dataset_add = ds_ext,
     filter_add = DSDECOD == "RANDOMIZED",
-    by_vars = vars(STUDYID, USUBJID),
-    new_vars = vars(RANDDT = DSSTDT)
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(RANDDT = DSSTDT)
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(adsl, display_vars = vars(USUBJID, RANDDT))
+dataset_vignette(adsl, display_vars = exprs(USUBJID, RANDDT))
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
@@ -202,7 +193,7 @@ adsl <- adsl %>%
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(adsl, display_vars = vars(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHFL))
+dataset_vignette(adsl, display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHFL))
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  adsl <- adsl %>%
@@ -224,7 +215,7 @@ src_ae <- dthcaus_source(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   ae,
-  display_vars = vars(USUBJID, AESTDTC, AEENDTC, AEDECOD, AEOUT),
+  display_vars = exprs(USUBJID, AESTDTC, AEENDTC, AEDECOD, AEOUT),
   filter = AEOUT == "FATAL"
 )
 
@@ -240,7 +231,7 @@ src_ds <- dthcaus_source(
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   ds,
-  display_vars = vars(USUBJID, DSDECOD, DSTERM, DSSTDTC),
+  display_vars = exprs(USUBJID, DSDECOD, DSTERM, DSSTDTC),
   filter = DSDECOD == "DEATH"
 )
 
@@ -259,7 +250,7 @@ adsl <- adsl %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, EOSDT, DTHDTC, DTHDT, DTHCAUS),
+  display_vars = exprs(USUBJID, EOSDT, DTHDTC, DTHDT, DTHCAUS),
   filter = DTHFL == "Y"
 )
 
@@ -270,7 +261,7 @@ src_ae <- dthcaus_source(
   date = AESTDTM,
   mode = "first",
   dthcaus = AEDECOD,
-  traceability_vars = vars(DTHDOM = "AE", DTHSEQ = AESEQ)
+  traceability_vars = exprs(DTHDOM = "AE", DTHSEQ = AESEQ)
 )
 
 src_ds <- dthcaus_source(
@@ -279,7 +270,7 @@ src_ds <- dthcaus_source(
   date = DSSTDT,
   mode = "first",
   dthcaus = DSTERM,
-  traceability_vars = vars(DTHDOM = "DS", DTHSEQ = DSSEQ)
+  traceability_vars = exprs(DTHDOM = "DS", DTHSEQ = DSSEQ)
 )
 adsl <- adsl %>%
   select(-DTHCAUS) %>% # remove it before deriving it again
@@ -288,7 +279,7 @@ adsl <- adsl %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHCAUS, DTHDOM, DTHSEQ),
+  display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHCAUS, DTHDOM, DTHSEQ),
   filter = DTHFL == "Y"
 )
 
@@ -312,7 +303,7 @@ adsl <- adsl %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHCAUS, DTHADY, LDDTHELD),
+  display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHCAUS, DTHADY, LDDTHELD),
   filter = DTHFL == "Y"
 )
 
@@ -368,7 +359,7 @@ adsl <- adsl %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, TRTEDT, DTHDTC, LSTALVDT),
+  display_vars = exprs(USUBJID, TRTEDT, DTHDTC, LSTALVDT),
   filter = !is.na(TRTSDT)
 )
 
@@ -376,23 +367,23 @@ dataset_vignette(
 ae_start_date <- date_source(
   dataset_name = "ae",
   date = AESTDT,
-  traceability_vars = vars(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AESTDTC")
+  traceability_vars = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AESTDTC")
 )
 ae_end_date <- date_source(
   dataset_name = "ae",
   date = AEENDT,
-  traceability_vars = vars(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AEENDTC")
+  traceability_vars = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AEENDTC")
 )
 lb_date <- date_source(
   dataset_name = "lb",
   date = LBDT,
   filter = !is.na(LBDT),
-  traceability_vars = vars(LALVDOM = "LB", LALVSEQ = LBSEQ, LALVVAR = "LBDTC")
+  traceability_vars = exprs(LALVDOM = "LB", LALVSEQ = LBSEQ, LALVVAR = "LBDTC")
 )
 trt_end_date <- date_source(
   dataset_name = "adsl",
   date = TRTEDTM,
-  traceability_vars = vars(LALVDOM = "ADSL", LALVSEQ = NA_integer_, LALVVAR = "TRTEDTM")
+  traceability_vars = exprs(LALVDOM = "ADSL", LALVSEQ = NA_integer_, LALVVAR = "TRTEDTM")
 )
 
 adsl <- adsl %>%
@@ -407,7 +398,7 @@ adsl <- adsl %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, TRTEDT, DTHDTC, LSTALVDT, LALVDOM, LALVSEQ, LALVVAR),
+  display_vars = exprs(USUBJID, TRTEDT, DTHDTC, LSTALVDT, LALVDOM, LALVSEQ, LALVVAR),
   filter = !is.na(TRTSDT)
 )
 
@@ -439,14 +430,14 @@ adsl <- adsl %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, AGE, SEX, COUNTRY, AGEGR1, REGION1)
+  display_vars = exprs(USUBJID, AGE, SEX, COUNTRY, AGEGR1, REGION1)
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
   derive_var_merged_exist_flag(
     dataset_add = ex,
-    by_vars = vars(STUDYID, USUBJID),
+    by_vars = exprs(STUDYID, USUBJID),
     new_var = SAFFL,
     condition = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO")))
   )
@@ -454,6 +445,6 @@ adsl <- adsl %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, TRTSDT, ARM, ACTARM, SAFFL)
+  display_vars = exprs(USUBJID, TRTSDT, ARM, ACTARM, SAFFL)
 )
 

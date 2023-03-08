@@ -123,7 +123,10 @@ impute_dtc_dtm(
 impute_dtc_dtm(
   c("2019-02", NA),
   highest_imputation = "Y",
-  min_dates = list(ymd("2019-01-14"), ymd("2019-02-25"))
+  min_dates = list(
+    ymd("2019-01-14", NA),
+    ymd("2019-02-25", "2020-01-01")
+  )
 )
 
 # Impute year to last
@@ -132,7 +135,10 @@ impute_dtc_dtm(
   highest_imputation = "Y",
   date_imputation = "last",
   time_imputation = "last",
-  max_dates = list(ymd("2019-01-14"), ymd("2019-02-25"))
+  max_dates = list(
+    ymd("2019-01-14", NA),
+    ymd("2019-02-25", "2020-01-01")
+  )
 )
 
 ## -----------------------------------------------------------------------------
@@ -150,7 +156,7 @@ ae <- tribble(
     date_imputation = "first",
     time_imputation = "first"
   ) %>%
-  derive_vars_dtm_to_dt(vars(ASTDTM))
+  derive_vars_dtm_to_dt(exprs(ASTDTM))
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(ae)
@@ -205,7 +211,7 @@ ae <- tribble(
     highest_imputation = "M",
     date_imputation = "first",
     time_imputation = "first",
-    min_dates = vars(TRTSDTM)
+    min_dates = exprs(TRTSDTM)
   )
 
 ## ---- echo=FALSE--------------------------------------------------------------
@@ -225,7 +231,7 @@ ae <- tribble(
     highest_imputation = "M",
     date_imputation = "last",
     time_imputation = "last",
-    max_dates = vars(DTHDT, DCUTDT)
+    max_dates = exprs(DTHDT, DCUTDT)
   )
 
 ## ---- echo=FALSE--------------------------------------------------------------

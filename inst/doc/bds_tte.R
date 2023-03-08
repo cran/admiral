@@ -18,7 +18,7 @@ library(lubridate)
 data("admiral_ae")
 data("admiral_adsl")
 
-ae <- admiral_ae
+ae <- convert_blanks_to_na(admiral_ae)
 adsl <- admiral_adsl
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -51,13 +51,13 @@ adtte <- derive_param_tte(
   event_conditions = list(ae_ser_event),
   censor_conditions = list(lastalive_censor),
   source_datasets = list(adsl = adsl, adae = adae),
-  set_values_to = vars(PARAMCD = "TTAESER", PARAM = "Time to First Serious AE")
+  set_values_to = exprs(PARAMCD = "TTAESER", PARAM = "Time to First Serious AE")
 )
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(
   adtte,
-  display_vars = vars(USUBJID, PARAMCD, PARAM, STARTDT, ADT, CNSR)
+  display_vars = exprs(USUBJID, PARAMCD, PARAM, STARTDT, ADT, CNSR)
 )
 
 ## -----------------------------------------------------------------------------
@@ -80,13 +80,13 @@ adtte <- derive_param_tte(
   start_date = TRTSDT,
   event_conditions = list(death),
   censor_conditions = list(lstalv),
-  set_values_to = vars(PARAMCD = "OS", PARAM = "Overall Survival")
+  set_values_to = exprs(PARAMCD = "OS", PARAM = "Overall Survival")
 )
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(
   adtte,
-  display_vars = vars(USUBJID, PARAMCD, PARAM, STARTDT, ADT, CNSR)
+  display_vars = exprs(USUBJID, PARAMCD, PARAM, STARTDT, ADT, CNSR)
 )
 
 ## -----------------------------------------------------------------------------
@@ -95,7 +95,7 @@ death <- event_source(
   dataset_name = "adsl",
   filter = DTHFL == "Y",
   date = DTHDT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "DEATH",
     SRCDOM = "ADSL",
     SRCVAR = "DTHDT"
@@ -106,7 +106,7 @@ death <- event_source(
 lstalv <- censor_source(
   dataset_name = "adsl",
   date = LSTALVDT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "LAST KNOWN ALIVE DATE",
     SRCDOM = "ADSL",
     SRCVAR = "LSTALVDT"
@@ -119,13 +119,13 @@ adtte <- derive_param_tte(
   source_datasets = list(adsl = adsl),
   event_conditions = list(death),
   censor_conditions = list(lstalv),
-  set_values_to = vars(PARAMCD = "OS", PARAM = "Overall Survival")
+  set_values_to = exprs(PARAMCD = "OS", PARAM = "Overall Survival")
 )
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(
   adtte,
-  display_vars = vars(USUBJID, EVNTDESC, SRCDOM, SRCVAR, CNSR, ADT)
+  display_vars = exprs(USUBJID, EVNTDESC, SRCDOM, SRCVAR, CNSR, ADT)
 )
 # save adtte and adsl for next section
 adtte_bak <- adtte
@@ -144,7 +144,7 @@ adsl <- tibble::tribble(
 
 dataset_vignette(
   adsl,
-  display_vars = vars(USUBJID, DTHFL, DTHDT, TRTSDT, TRTSDTF)
+  display_vars = exprs(USUBJID, DTHFL, DTHDT, TRTSDT, TRTSDTF)
 )
 
 ## ---- echo=FALSE--------------------------------------------------------------
@@ -167,7 +167,7 @@ adrs <- tibble::tribble(
 
 dataset_vignette(
   adrs,
-  display_vars = vars(USUBJID, AVALC, ADT, ASEQ, PARAMCD, PARAM)
+  display_vars = exprs(USUBJID, AVALC, ADT, ASEQ, PARAMCD, PARAM)
 )
 
 ## -----------------------------------------------------------------------------
@@ -176,7 +176,7 @@ pd <- event_source(
   dataset_name = "adrs",
   filter = AVALC == "PD",
   date = ADT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "PD",
     SRCDOM = "ADRS",
     SRCVAR = "ADT",
@@ -189,7 +189,7 @@ death <- event_source(
   dataset_name = "adsl",
   filter = DTHFL == "Y",
   date = DTHDT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "DEATH",
     SRCDOM = "ADSL",
     SRCVAR = "DTHDT"
@@ -201,7 +201,7 @@ death <- event_source(
 lastvisit <- censor_source(
   dataset_name = "adrs",
   date = ADT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "LAST TUMOR ASSESSMENT",
     SRCDOM = "ADRS",
     SRCVAR = "ADT"
@@ -214,7 +214,7 @@ start <- censor_source(
   dataset_name = "adsl",
   date = TRTSDT,
   censor = 2,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "TREATMENT START",
     SRCDOM = "ADSL",
     SRCVAR = "TRTSDT",
@@ -229,7 +229,7 @@ adtte <- derive_param_tte(
   start_date = TRTSDT,
   event_conditions = list(pd, death),
   censor_conditions = list(lastvisit, start),
-  set_values_to = vars(PARAMCD = "PFS", PARAM = "Progression Free Survival")
+  set_values_to = exprs(PARAMCD = "PFS", PARAM = "Progression Free Survival")
 )
 
 ## ---- echo=FALSE--------------------------------------------------------------
@@ -239,7 +239,7 @@ dataset_vignette(
       STUDYID, USUBJID, PARAMCD, PARAM, STARTDT, ADT, ADTF, CNSR,
       EVNTDESC, SRCDOM, SRCVAR
     ),
-  display_vars = vars(USUBJID, PARAMCD, STARTDT, ADT, ADTF, CNSR)
+  display_vars = exprs(USUBJID, PARAMCD, STARTDT, ADT, ADTF, CNSR)
 )
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -252,7 +252,7 @@ observation_end <- censor_source(
   dataset_name = "adsl",
   date = EOSDT,
   censor = 1,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "END OF STUDY",
     SRCDOM = "ADSL",
     SRCVAR = "EOSDT"
@@ -263,7 +263,7 @@ observation_end <- censor_source(
 tt_ae <- event_source(
   dataset_name = "ae",
   date = ASTDT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "ADVERSE EVENT",
     SRCDOM = "AE",
     SRCVAR = "AESTDTC"
@@ -275,7 +275,7 @@ tt_ser_ae <- event_source(
   dataset_name = "ae",
   filter = AESER == "Y",
   date = ASTDT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "SERIOUS ADVERSE EVENT",
     SRCDOM = "AE",
     SRCVAR = "AESTDTC"
@@ -287,7 +287,7 @@ tt_rel_ae <- event_source(
   dataset_name = "ae",
   filter = AEREL %in% c("PROBABLE", "POSSIBLE", "REMOTE"),
   date = ASTDT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "RELATED ADVERSE EVENT",
     SRCDOM = "AE",
     SRCVAR = "AESTDTC"
@@ -300,15 +300,15 @@ adaette <- call_derivation(
   variable_params = list(
     params(
       event_conditions = list(tt_ae),
-      set_values_to = vars(PARAMCD = "TTAE")
+      set_values_to = exprs(PARAMCD = "TTAE")
     ),
     params(
       event_conditions = list(tt_ser_ae),
-      set_values_to = vars(PARAMCD = "TTSERAE")
+      set_values_to = exprs(PARAMCD = "TTSERAE")
     ),
     params(
       event_conditions = list(tt_rel_ae),
-      set_values_to = vars(PARAMCD = "TTRELAE")
+      set_values_to = exprs(PARAMCD = "TTRELAE")
     )
   ),
   dataset_adsl = adsl,
@@ -320,7 +320,7 @@ adaette <- call_derivation(
 adaette %>%
   select(STUDYID, USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR) %>%
   arrange(USUBJID, PARAMCD) %>%
-  dataset_vignette(display_vars = vars(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR))
+  dataset_vignette(display_vars = exprs(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR))
 
 ## ---- echo=FALSE--------------------------------------------------------------
 adsl <- tibble::tribble(
@@ -351,7 +351,7 @@ dataset_vignette(ae)
 ttae <- event_source(
   dataset_name = "ae",
   date = AESTDT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "AE",
     SRCDOM = "AE",
     SRCVAR = "AESTDTC",
@@ -363,7 +363,7 @@ ttae <- event_source(
 eos <- censor_source(
   dataset_name = "adsl",
   date = EOSDT,
-  set_values_to = vars(
+  set_values_to = exprs(
     EVNTDESC = "END OF STUDY",
     SRCDOM = "ADSL",
     SRCVAR = "EOSDT"
@@ -373,12 +373,12 @@ eos <- censor_source(
 # derive time-to-event parameter #
 adtte <- derive_param_tte(
   dataset_adsl = adsl,
-  by_vars = vars(AEDECOD),
+  by_vars = exprs(AEDECOD),
   start_date = TRTSDT,
   event_conditions = list(ttae),
   censor_conditions = list(eos),
   source_datasets = list(adsl = adsl, ae = ae),
-  set_values_to = vars(
+  set_values_to = exprs(
     PARAMCD = paste0("TTAE", as.numeric(as.factor(AEDECOD))),
     PARAM = paste("Time to First", AEDECOD, "Adverse Event"),
     PARCAT1 = "TTAE",
@@ -393,7 +393,7 @@ dataset_vignette(
       USUBJID, STARTDT, PARAMCD, PARAM, PARCAT1, PARCAT2, ADT, CNSR,
       EVNTDESC, SRCDOM, SRCVAR, SRCSEQ
     ),
-  display_vars = vars(USUBJID, STARTDT, PARAMCD, PARAM, ADT, CNSR, SRCSEQ)
+  display_vars = exprs(USUBJID, STARTDT, PARAMCD, PARAM, ADT, CNSR, SRCSEQ)
 )
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -416,8 +416,8 @@ dataset_vignette(
 ## ----eval=TRUE----------------------------------------------------------------
 adtte <- derive_var_obs_number(
   adtte,
-  by_vars = vars(STUDYID, USUBJID),
-  order = vars(PARAMCD),
+  by_vars = exprs(STUDYID, USUBJID),
+  order = exprs(PARAMCD),
   check_type = "error"
 )
 
@@ -428,13 +428,13 @@ dataset_vignette(adtte)
 adtte <- derive_vars_merged(
   adtte,
   dataset_add = adsl,
-  new_vars = vars(ARMCD, ARM, ACTARMCD, ACTARM, AGE, SEX),
-  by_vars = vars(STUDYID, USUBJID)
+  new_vars = exprs(ARMCD, ARM, ACTARMCD, ACTARM, AGE, SEX),
+  by_vars = exprs(STUDYID, USUBJID)
 )
 
 ## ---- echo=FALSE--------------------------------------------------------------
 dataset_vignette(
   adtte,
-  display_vars = vars(USUBJID, PARAMCD, CNSR, AVAL, ARMCD, AGE, SEX)
+  display_vars = exprs(USUBJID, PARAMCD, CNSR, AVAL, ARMCD, AGE, SEX)
 )
 
