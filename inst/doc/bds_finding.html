@@ -14,38 +14,26 @@
 
 <title>Creating a BDS Finding ADaM</title>
 
-<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
-// be compatible with the behavior of Pandoc < 2.8).
-document.addEventListener('DOMContentLoaded', function(e) {
-  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
-  var i, h, a;
-  for (i = 0; i < hs.length; i++) {
-    h = hs[i];
-    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
-    a = h.attributes;
-    while (a.length > 0) h.removeAttribute(a[0].name);
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
   }
-});
-</script>
-
-<style type="text/css">
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-</style>
-
-
-
-<style type="text/css">
-code {
-white-space: pre;
-}
-.sourceCode {
-overflow: visible;
-}
+  .sourceCode {
+    overflow: visible;
+  }
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
@@ -63,54 +51,55 @@ pre > code.sourceCode { white-space: pre-wrap; }
 pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-{ counter-reset: source-line 0; }
+  { counter-reset: source-line 0; }
 pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
+  { position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-{ }
+  {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } 
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.at { color: #7d9029; } 
-code span.bn { color: #40a070; } 
-code span.bu { color: #008000; } 
-code span.cf { color: #007020; font-weight: bold; } 
-code span.ch { color: #4070a0; } 
-code span.cn { color: #880000; } 
-code span.co { color: #60a0b0; font-style: italic; } 
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.do { color: #ba2121; font-style: italic; } 
-code span.dt { color: #902000; } 
-code span.dv { color: #40a070; } 
-code span.er { color: #ff0000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #40a070; } 
-code span.fu { color: #06287e; } 
-code span.im { color: #008000; font-weight: bold; } 
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.kw { color: #007020; font-weight: bold; } 
-code span.op { color: #666666; } 
-code span.ot { color: #007020; } 
-code span.pp { color: #bc7a00; } 
-code span.sc { color: #4070a0; } 
-code span.ss { color: #bb6688; } 
-code span.st { color: #4070a0; } 
-code span.va { color: #19177c; } 
-code span.vs { color: #4070a0; } 
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -144,187 +133,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 
 
 
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
-}
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
-}
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
-}
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
-}
-#TOC ul ul {
-margin-left: -2em;
-}
-#TOC li {
-line-height: 16px;
-}
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
-}
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
-}
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
-}
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
-}
-pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
-}
-pre:not([class]) {
-background-color: #f7f7f7;
-}
-code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
-}
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
-}
-h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
-}
-a {
-color: #0033dd;
-text-decoration: none;
-}
-a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
-
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; } 
-code > span.er { color: #a61717; background-color: #e3d2d2; } 
-</style>
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
 
 
 
@@ -342,61 +151,36 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This article describes creating a BDS finding ADaM. Examples are
-currently presented and tested in the context of ADVS. However, the
-examples could be applied to other BDS Finding ADaMs such as ADEG, ADLB,
-etc. where a single result is captured in an SDTM Finding domain on a
-single date and/or time.</p>
-<p><strong>Note</strong>: <em>All examples assume CDISC SDTM and/or ADaM
-format as input unless otherwise specified.</em></p>
+<p>This article describes creating a BDS finding ADaM. Examples are currently presented and tested in the context of ADVS. However, the examples could be applied to other BDS Finding ADaMs such as ADEG, ADLB, etc. where a single result is captured in an SDTM Finding domain on a single date and/or time.</p>
+<p><strong>Note</strong>: <em>All examples assume CDISC SDTM and/or ADaM format as input unless otherwise specified.</em></p>
 </div>
 <div id="programming-workflow" class="section level1">
 <h1>Programming Workflow</h1>
 <ul>
 <li><a href="#readdata">Read in Data</a></li>
-<li><a href="#datetime">Derive/Impute Numeric Date/Time and Analysis Day
-(<code>ADT</code>, <code>ADTM</code>, <code>ADY</code>,
-<code>ADTF</code>, <code>ATMF</code>)</a></li>
-<li><a href="#paramcd">Assign <code>PARAMCD</code>, <code>PARAM</code>,
-<code>PARAMN</code>, <code>PARCAT1</code></a></li>
-<li><a href="#aval">Derive Results (<code>AVAL</code>,
-<code>AVALC</code>)</a></li>
-<li><a href="#derive_param">Derive Additional Parameters
-(e.g. <code>BSA</code>, <code>BMI</code>, or <code>MAP</code> for
-<code>ADVS</code>)</a></li>
-<li><a href="#timing">Derive Timing Variables (e.g. <code>APHASE</code>,
-<code>AVISIT</code>, <code>APERIOD</code>)</a></li>
-<li><a href="#timingflag">Timing Flag Variables
-(e.g. <code>ONTRTFL</code>)</a></li>
-<li><a href="#referencerange">Assign Reference Range Indicator
-(<code>ANRIND</code>)</a></li>
-<li><a href="#baseline">Derive Baseline (<code>BASETYPE</code>,
-<code>ABLFL</code>, <code>BASE</code>, <code>BASEC</code>,
-<code>BNRIND</code>)</a></li>
-<li><a href="#bchange">Derive Change from Baseline (<code>CHG</code>,
-<code>PCHG</code>)</a></li>
+<li><a href="#datetime">Derive/Impute Numeric Date/Time and Analysis Day (<code>ADT</code>, <code>ADTM</code>, <code>ADY</code>, <code>ADTF</code>, <code>ATMF</code>)</a></li>
+<li><a href="#paramcd">Assign <code>PARAMCD</code>, <code>PARAM</code>, <code>PARAMN</code>, <code>PARCAT1</code></a></li>
+<li><a href="#aval">Derive Results (<code>AVAL</code>, <code>AVALC</code>)</a></li>
+<li><a href="#derive_param">Derive Additional Parameters (e.g. <code>BSA</code>, <code>BMI</code>, or <code>MAP</code> for <code>ADVS</code>)</a></li>
+<li><a href="#timing">Derive Timing Variables (e.g. <code>APHASE</code>, <code>AVISIT</code>, <code>APERIOD</code>)</a></li>
+<li><a href="#timingflag">Timing Flag Variables (e.g. <code>ONTRTFL</code>)</a></li>
+<li><a href="#referencerange">Assign Reference Range Indicator (<code>ANRIND</code>)</a></li>
+<li><a href="#baseline">Derive Baseline (<code>BASETYPE</code>, <code>ABLFL</code>, <code>BASE</code>, <code>BASEC</code>, <code>BNRIND</code>)</a></li>
+<li><a href="#bchange">Derive Change from Baseline (<code>CHG</code>, <code>PCHG</code>)</a></li>
 <li><a href="#shift">Derive Shift (e.g.<code>SHIFT1</code>)</a></li>
-<li><a href="#analysisratio">Derive Analysis Ratio
-(e.g. <code>R2BASE</code>)</a></li>
-<li><a href="#analysisrec">Derive Analysis Flags
-(e.g. <code>ANL01FL</code>)</a></li>
-<li><a href="#treatment">Assign Treatment (<code>TRTA</code>,
-<code>TRTP</code>)</a></li>
+<li><a href="#analysisratio">Derive Analysis Ratio (e.g. <code>R2BASE</code>)</a></li>
+<li><a href="#analysisrec">Derive Analysis Flags (e.g. <code>ANL01FL</code>)</a></li>
+<li><a href="#treatment">Assign Treatment (<code>TRTA</code>, <code>TRTP</code>)</a></li>
 <li><a href="#aseq">Assign <code>ASEQ</code></a></li>
-<li><a href="#cat">Derive Categorization Variables
-(<code>AVALCATx</code>)</a></li>
+<li><a href="#cat">Derive Categorization Variables (<code>AVALCATx</code>)</a></li>
 <li><a href="#adsl_vars">Add ADSL variables</a></li>
 <li><a href="#additional">Derive New Rows</a></li>
 <li><a href="#attributes">Add Labels and Attributes</a></li>
 </ul>
 <div id="readdata" class="section level2">
 <h2>Read in Data</h2>
-<p>To start, all data frames needed for the creation of
-<code>ADVS</code> should be read into the environment. This will be a
-company specific process. Some of the data frames needed may be
-<code>VS</code> and <code>ADSL</code>.</p>
-<p>For example purpose, the CDISC Pilot SDTM and ADaM datasets—which are
-included in <code>{admiral.test}</code>—are used.</p>
+<p>To start, all data frames needed for the creation of <code>ADVS</code> should be read into the environment. This will be a company specific process. Some of the data frames needed may be <code>VS</code> and <code>ADSL</code>.</p>
+<p>For example purpose, the CDISC Pilot SDTM and ADaM datasets—which are included in <code>{admiral.test}</code>—are used.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
@@ -409,10 +193,7 @@ included in <code>{admiral.test}</code>—are used.</p>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(admiral_vs)</span></code></pre></div>
-<p>At this step, it may be useful to join <code>ADSL</code> to your
-<code>VS</code> domain. Only the <code>ADSL</code> variables used for
-derivations are selected at this step. The rest of the relevant
-<code>ADSL</code> variables would be added later.</p>
+<p>At this step, it may be useful to join <code>ADSL</code> to your <code>VS</code> domain. Only the <code>ADSL</code> variables used for derivations are selected at this step. The rest of the relevant <code>ADSL</code> variables would be added later.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>adsl_vars <span class="ot">&lt;-</span> <span class="fu">exprs</span>(TRTSDT, TRTEDT, TRT01A, TRT01P)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -550,12 +331,8 @@ derivations are selected at this step. The rest of the relevant
 </table>
 </div>
 <div id="datetime" class="section level2">
-<h2>Derive/Impute Numeric Date/Time and Analysis Day (<code>ADT</code>,
-<code>ADTM</code>, <code>ADY</code>, <code>ADTF</code>,
-<code>ATMF</code>)</h2>
-<p>The function <code>derive_vars_dt()</code> can be used to derive
-<code>ADT</code>. This function allows the user to impute the date as
-well.</p>
+<h2>Derive/Impute Numeric Date/Time and Analysis Day (<code>ADT</code>, <code>ADTM</code>, <code>ADY</code>, <code>ADTF</code>, <code>ATMF</code>)</h2>
+<p>The function <code>derive_vars_dt()</code> can be used to derive <code>ADT</code>. This function allows the user to impute the date as well.</p>
 <p>Example calls:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(advs, <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span>, <span class="at">dtc =</span> VSDTC)</span></code></pre></div>
 <table>
@@ -630,8 +407,7 @@ well.</p>
 </tr>
 </tbody>
 </table>
-<p>If imputation is needed and the date is to be imputed to the first of
-the month, the call would be:</p>
+<p>If imputation is needed and the date is to be imputed to the first of the month, the call would be:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span>,</span>
@@ -721,9 +497,7 @@ the month, the call would be:</p>
 </tr>
 </tbody>
 </table>
-<p>Similarly, <code>ADTM</code> may be created using the function
-<code>derive_vars_dtm()</code>. Imputation may be done on both the date
-and time components of <code>ADTM</code>.</p>
+<p>Similarly, <code>ADTM</code> may be created using the function <code>derive_vars_dtm()</code>. Imputation may be done on both the date and time components of <code>ADTM</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CDISC Pilot data does not contain times and the output of the derivation</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ADTM is not presented.</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
@@ -732,16 +506,9 @@ and time components of <code>ADTM</code>.</p>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> VSDTC,</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>By default, the variable <code>ADTF</code> for
-<code>derive_vars_dt()</code> or <code>ADTF</code> and <code>ATMF</code>
-for <code>derive_vars_dtm()</code> will be created and populated with
-the controlled terminology outlined in the ADaM IG for date
-imputations.</p>
+<p>By default, the variable <code>ADTF</code> for <code>derive_vars_dt()</code> or <code>ADTF</code> and <code>ATMF</code> for <code>derive_vars_dtm()</code> will be created and populated with the controlled terminology outlined in the ADaM IG for date imputations.</p>
 <p>See also <a href="imputation.html">Date and Time Imputation</a>.</p>
-<p>Once <code>ADT</code> is derived, the function
-<code>derive_vars_dy()</code> can be used to derive <code>ADY</code>.
-This example assumes both <code>ADT</code> and <code>TRTSDT</code> exist
-on the data frame.</p>
+<p>Once <code>ADT</code> is derived, the function <code>derive_vars_dy()</code> can be used to derive <code>ADY</code>. This example assumes both <code>ADT</code> and <code>TRTSDT</code> exist on the data frame.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dy</span>(advs, <span class="at">reference_date =</span> TRTSDT, <span class="at">source_vars =</span> <span class="fu">exprs</span>(ADT))</span></code></pre></div>
 <table>
@@ -829,13 +596,9 @@ on the data frame.</p>
 </table>
 </div>
 <div id="paramcd" class="section level2">
-<h2>Assign <code>PARAMCD</code>, <code>PARAM</code>,
-<code>PARAMN</code>, <code>PARCAT1</code></h2>
-<p>To assign parameter level values such as <code>PARAMCD</code>,
-<code>PARAM</code>, <code>PARAMN</code>, <code>PARCAT1</code>, etc., a
-lookup can be created to join to the source data.</p>
-<p>For example, when creating <code>ADVS</code>, a lookup based on the
-SDTM <code>--TESTCD</code> value may be created:</p>
+<h2>Assign <code>PARAMCD</code>, <code>PARAM</code>, <code>PARAMN</code>, <code>PARCAT1</code></h2>
+<p>To assign parameter level values such as <code>PARAMCD</code>, <code>PARAM</code>, <code>PARAMN</code>, <code>PARCAT1</code>, etc., a lookup can be created to join to the source data.</p>
+<p>For example, when creating <code>ADVS</code>, a lookup based on the SDTM <code>--TESTCD</code> value may be created:</p>
 <table>
 <thead>
 <tr class="header">
@@ -907,12 +670,7 @@ SDTM <code>--TESTCD</code> value may be created:</p>
 </tbody>
 </table>
 <p>This lookup may now be joined to the source data:</p>
-<p>At this stage, only <code>PARAMCD</code> is required to perform the
-derivations. Additional derived parameters may be added, so only
-<code>PARAMCD</code> is joined to the datasets at this point. All other
-variables related to <code>PARAMCD</code> (e.g. <code>PARAM</code>,
-<code>PARAMCAT1</code>, …) will be added when all <code>PARAMCD</code>
-are derived.</p>
+<p>At this stage, only <code>PARAMCD</code> is required to perform the derivations. Additional derived parameters may be added, so only <code>PARAMCD</code> is joined to the datasets at this point. All other variables related to <code>PARAMCD</code> (e.g. <code>PARAM</code>, <code>PARAMCAT1</code>, …) will be added when all <code>PARAMCD</code> are derived.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged_lookup</span>(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> param_lookup,</span>
@@ -981,20 +739,12 @@ are derived.</p>
 </tr>
 </tbody>
 </table>
-<p>Please note, it may be necessary to include other variables in the
-join. For example, perhaps the <code>PARAMCD</code> is based on
-<code>VSTESTCD</code> and <code>VSPOS</code>, it may be necessary to
-expand this lookup or create a separate look up for
-<code>PARAMCD</code>.</p>
-<p>If more than one lookup table, e.g., company parameter mappings and
-project parameter mappings, are available,
-<code>consolidate_metadata()</code> can be used to consolidate these
-into a single lookup table.</p>
+<p>Please note, it may be necessary to include other variables in the join. For example, perhaps the <code>PARAMCD</code> is based on <code>VSTESTCD</code> and <code>VSPOS</code>, it may be necessary to expand this lookup or create a separate look up for <code>PARAMCD</code>.</p>
+<p>If more than one lookup table, e.g., company parameter mappings and project parameter mappings, are available, <code>consolidate_metadata()</code> can be used to consolidate these into a single lookup table.</p>
 </div>
 <div id="aval" class="section level2">
 <h2>Derive Results (<code>AVAL</code>, <code>AVALC</code>)</h2>
-<p>The mapping of <code>AVAL</code> and <code>AVALC</code> is left to
-the ADaM programmer. An example mapping may be:</p>
+<p>The mapping of <code>AVAL</code> and <code>AVALC</code> is left to the ADaM programmer. An example mapping may be:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">mutate</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">AVAL =</span> VSSTRESN,</span>
@@ -1096,17 +846,9 @@ the ADaM programmer. An example mapping may be:</p>
 </table>
 </div>
 <div id="derive_param" class="section level2">
-<h2>Derive Additional Parameters (e.g. <code>BSA</code>,
-<code>BMI</code> or <code>MAP</code> for <code>ADVS</code>)</h2>
-<p>Optionally derive new parameters creating <code>PARAMCD</code> and
-<code>AVAL</code>. Note that only variables specified in the
-<code>by_vars</code> argument will be populated in the newly created
-records. This is relevant to the functions
-<code>derive_param_map</code>, <code>derive_param_bsa</code>,
-<code>derive_param_bmi</code>, and <code>derive_param_qtc</code>.</p>
-<p>Below is an example of creating <code>Mean Arterial Pressure</code>
-for <code>ADVS</code>, see also Example 3 in section below <a href="#additional">Derive New Rows</a> for alternative way of creating
-new parameters.</p>
+<h2>Derive Additional Parameters (e.g. <code>BSA</code>, <code>BMI</code> or <code>MAP</code> for <code>ADVS</code>)</h2>
+<p>Optionally derive new parameters creating <code>PARAMCD</code> and <code>AVAL</code>. Note that only variables specified in the <code>by_vars</code> argument will be populated in the newly created records. This is relevant to the functions <code>derive_param_map</code>, <code>derive_param_bsa</code>, <code>derive_param_bmi</code>, and <code>derive_param_qtc</code>.</p>
+<p>Below is an example of creating <code>Mean Arterial Pressure</code> for <code>ADVS</code>, see also Example 3 in section below <a href="#additional">Derive New Rows</a> for alternative way of creating new parameters.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_param_map</span>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),</span>
@@ -1115,14 +857,6 @@ new parameters.</p>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter =</span> VSSTAT <span class="sc">!=</span> <span class="st">&quot;NOT DONE&quot;</span> <span class="sc">|</span> <span class="fu">is.na</span>(VSSTAT)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <table>
-<colgroup>
-<col width="11%" />
-<col width="10%" />
-<col width="15%" />
-<col width="40%" />
-<col width="13%" />
-<col width="7%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th align="left">VSTESTCD</th>
@@ -1216,9 +950,7 @@ new parameters.</p>
 </tr>
 </tbody>
 </table>
-<p>Likewise, function call below, to create parameter
-<code>Body Surface Area</code> and <code>Body Mass Index</code> for
-<code>ADVS</code> domain.</p>
+<p>Likewise, function call below, to create parameter <code>Body Surface Area</code> and <code>Body Mass Index</code> for <code>ADVS</code> domain.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_param_bsa</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),</span>
@@ -1340,10 +1072,7 @@ new parameters.</p>
 </tr>
 </tbody>
 </table>
-<p>Similarly, for <code>ADEG</code>, the parameters <code>QTCBF</code>
-<code>QTCBS</code> and <code>QTCL</code> can be created with a function
-call. See example below for <code>PARAMCD</code> =
-<code>QTCF</code>.</p>
+<p>Similarly, for <code>ADEG</code>, the parameters <code>QTCBF</code> <code>QTCBS</code> and <code>QTCL</code> can be created with a function call. See example below for <code>PARAMCD</code> = <code>QTCF</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>adeg <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>EGSTRESU, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>AVAL, <span class="sc">~</span>VISIT,</span>
@@ -1360,10 +1089,7 @@ call. See example below for <code>PARAMCD</code> =
 <span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;QTCFR&quot;</span>),</span>
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">get_unit_expr =</span> EGSTRESU</span>
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Similarly, for <code>ADLB</code>, the function
-<code>derive_param_wbc_abs()</code> can be used to create new parameter
-for lab differentials converted to absolute values. See example
-below:</p>
+<p>Similarly, for <code>ADLB</code>, the function <code>derive_param_wbc_abs()</code> can be used to create new parameter for lab differentials converted to absolute values. See example below:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>adlb <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>AVAL, <span class="sc">~</span>PARAM, <span class="sc">~</span>VISIT,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;WBC&quot;</span>, <span class="dv">33</span>, <span class="st">&quot;Leukocyte Count (10^9/L)&quot;</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
@@ -1385,9 +1111,7 @@ below:</p>
 <span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">diff_code =</span> <span class="st">&quot;LYMLE&quot;</span>,</span>
 <span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">diff_type =</span> <span class="st">&quot;fraction&quot;</span></span>
 <span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>When all <code>PARAMCD</code> have been derived and added to the
-dataset, the other information from the look-up table
-(<code>PARAM</code>, <code>PARAMCAT1</code>,…) should be added.</p>
+<p>When all <code>PARAMCD</code> have been derived and added to the dataset, the other information from the look-up table (<code>PARAM</code>, <code>PARAMCAT1</code>,…) should be added.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive PARAM and PARAMN</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged</span>(</span>
@@ -1395,15 +1119,7 @@ dataset, the other information from the look-up table
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> <span class="fu">select</span>(param_lookup, <span class="sc">-</span>VSTESTCD),</span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<table style="width:100%;">
-<colgroup>
-<col width="11%" />
-<col width="10%" />
-<col width="42%" />
-<col width="9%" />
-<col width="14%" />
-<col width="11%" />
-</colgroup>
+<table>
 <thead>
 <tr class="header">
 <th align="left">VSTESTCD</th>
@@ -1499,10 +1215,8 @@ dataset, the other information from the look-up table
 </table>
 </div>
 <div id="timing" class="section level2">
-<h2>Derive Timing Variables (e.g. <code>APHASE</code>,
-<code>AVISIT</code>, <code>APERIOD</code>)</h2>
-<p>Categorical timing variables are protocol and analysis dependent.
-Below is a simple example.</p>
+<h2>Derive Timing Variables (e.g. <code>APHASE</code>, <code>AVISIT</code>, <code>APERIOD</code>)</h2>
+<p>Categorical timing variables are protocol and analysis dependent. Below is a simple example.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVISIT =</span> <span class="fu">case_when</span>(</span>
@@ -1548,17 +1262,12 @@ Below is a simple example.</p>
 <span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      816 AFTER STANDING FOR 1 MINUTE    816 AFTER STANDING FOR 1 MINUTE    232</span></span>
 <span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      817 AFTER STANDING FOR 3 MINUTES   817 AFTER STANDING FOR 3 MINUTES   232</span></span>
 <span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       NA &lt;NA&gt;                            NA &lt;NA&gt;                           117</span></span></code></pre></div>
-<p>For assigning visits based on time windows and deriving periods,
-subperiods, and phase variables see the <a href="visits_periods.html">“Visit and Period Variables”
-vignette</a>.</p>
+<p>For assigning visits based on time windows and deriving periods, subperiods, and phase variables see the <a href="visits_periods.html">“Visit and Period Variables” vignette</a>.</p>
 </div>
 <div id="timingflag" class="section level2">
 <h2>Timing Flag Variables (e.g. <code>ONTRTFL</code>)</h2>
-<p>In some analyses, it may be necessary to flag an observation as
-on-treatment. The admiral function <code>derive_var_ontrtfl()</code> can
-be used.</p>
-<p>For example, if on-treatment is defined as any observation between
-treatment start and treatment end, the flag may be derived as:</p>
+<p>In some analyses, it may be necessary to flag an observation as on-treatment. The admiral function <code>derive_var_ontrtfl()</code> can be used.</p>
+<p>For example, if on-treatment is defined as any observation between treatment start and treatment end, the flag may be derived as:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_ontrtfl</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> ADT,</span>
@@ -1659,11 +1368,7 @@ treatment start and treatment end, the flag may be derived as:</p>
 </tr>
 </tbody>
 </table>
-<p>This function returns the original data frame with the column
-<code>ONTRTFL</code> added. Additionally, this function does have
-functionality to handle a window on the <code>ref_end_date</code>. For
-example, if on-treatment is defined as between treatment start and
-treatment end plus 60 days, the call would be:</p>
+<p>This function returns the original data frame with the column <code>ONTRTFL</code> added. Additionally, this function does have functionality to handle a window on the <code>ref_end_date</code>. For example, if on-treatment is defined as between treatment start and treatment end plus 60 days, the call would be:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_ontrtfl</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> ADT,</span>
@@ -1671,12 +1376,7 @@ treatment end plus 60 days, the call would be:</p>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_end_date =</span> TRTEDT,</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_end_window =</span> <span class="dv">60</span></span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>In addition, the function does allow you to filter out pre-treatment
-observations that occurred on the start date. For example, if
-observations with <code>VSTPT == PRE</code> should not be considered
-on-treatment when the observation date falls between the treatment start
-and end date, the user may specify this using the
-<code>filter_pre_timepoint</code> parameter:</p>
+<p>In addition, the function does allow you to filter out pre-treatment observations that occurred on the start date. For example, if observations with <code>VSTPT == PRE</code> should not be considered on-treatment when the observation date falls between the treatment start and end date, the user may specify this using the <code>filter_pre_timepoint</code> parameter:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_ontrtfl</span>(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> ADT,</span>
@@ -1684,13 +1384,7 @@ and end date, the user may specify this using the
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_end_date =</span> TRTEDT,</span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_pre_timepoint =</span> ATPT <span class="sc">==</span> <span class="st">&quot;AFTER LYING DOWN FOR 5 MINUTES&quot;</span></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Lastly, the function does allow you to create any on-treatment flag
-based on the analysis needs. For example, if variable
-<code>ONTR01FL</code> is needed, showing the on-treatment flag during
-Period 01, you need to set <code>new var = ONTR01FL</code>. In addition,
-for Period 01 Start Date and Period 01 End Date, you need
-<code>ref_start_date = AP01SDT</code> and
-<code>ref_end_date = AP01EDT</code>.</p>
+<p>Lastly, the function does allow you to create any on-treatment flag based on the analysis needs. For example, if variable <code>ONTR01FL</code> is needed, showing the on-treatment flag during Period 01, you need to set <code>new var = ONTR01FL</code>. In addition, for Period 01 Start Date and Period 01 End Date, you need <code>ref_start_date = AP01SDT</code> and <code>ref_end_date = AP01EDT</code>.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_ontrtfl</span>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_var =</span> ONTR01FL,</span>
@@ -1741,12 +1435,8 @@ for Period 01 Start Date and Period 01 End Date, you need
 </div>
 <div id="referencerange" class="section level2">
 <h2>Assign Reference Range Indicator (<code>ANRIND</code>)</h2>
-<p>The admiral function <code>derive_var_anrind()</code> may be used to
-derive the reference range indicator <code>ANRIND</code>.</p>
-<p>This function requires the reference range boundaries to exist on the
-data frame (<code>ANRLO</code>, <code>ANRHI</code>) and also
-accommodates the additional boundaries <code>A1LO</code> and
-<code>A1HI</code>.</p>
+<p>The admiral function <code>derive_var_anrind()</code> may be used to derive the reference range indicator <code>ANRIND</code>.</p>
+<p>This function requires the reference range boundaries to exist on the data frame (<code>ANRLO</code>, <code>ANRHI</code>) and also accommodates the additional boundaries <code>A1LO</code> and <code>A1HI</code>.</p>
 <p>The function is called as:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_anrind</span>(advs)</span></code></pre></div>
 <table>
@@ -1867,14 +1557,8 @@ accommodates the additional boundaries <code>A1LO</code> and
 </table>
 </div>
 <div id="baseline" class="section level2">
-<h2>Derive Baseline (<code>BASETYPE</code>, <code>ABLFL</code>,
-<code>BASE</code>, <code>BASEC</code>, <code>BNRIND</code>)</h2>
-<p>The <code>BASETYPE</code> should be derived using the function
-<code>derive_var_basetype()</code>. The parameter <code>basetypes</code>
-of this function requires a named list of expression detailing how the
-<code>BASETYPE</code> should be assigned. Note, if a record falls into
-multiple expressions within the basetypes expression, a row will be
-produced for each <code>BASETYPE</code>.</p>
+<h2>Derive Baseline (<code>BASETYPE</code>, <code>ABLFL</code>, <code>BASE</code>, <code>BASEC</code>, <code>BNRIND</code>)</h2>
+<p>The <code>BASETYPE</code> should be derived using the function <code>derive_var_basetype()</code>. The parameter <code>basetypes</code> of this function requires a named list of expression detailing how the <code>BASETYPE</code> should be assigned. Note, if a record falls into multiple expressions within the basetypes expression, a row will be produced for each <code>BASETYPE</code>.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_basetype</span>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset =</span> advs,</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">basetypes =</span> rlang<span class="sc">::</span><span class="fu">exprs</span>(</span>
@@ -1893,15 +1577,8 @@ produced for each <code>BASETYPE</code>.</p>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 AFTER STANDING FOR 1 MINUTE      816 LAST: AFTER STANDING FOR 1 MINUTE     232</span></span>
 <span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 AFTER STANDING FOR 3 MINUTES     817 LAST: AFTER STANDING FOR 3 MINUTES    232</span></span>
 <span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 &lt;NA&gt;                              NA LAST                                  117</span></span></code></pre></div>
-<p>It is important to derive <code>BASETYPE</code> first so that it can
-be utilized in subsequent derivations. This will be important if the
-data frame contains multiple values for <code>BASETYPE</code>.</p>
-<p>Next, the analysis baseline flag <code>ABLFL</code> can be derived
-using the <code>{admiral}</code> function
-<code>derive_var_extreme_flag()</code>. For example, if baseline is
-defined as the last non-missing <code>AVAL</code> prior or on
-<code>TRTSDT</code>, the function call for <code>ABLFL</code> would
-be:</p>
+<p>It is important to derive <code>BASETYPE</code> first so that it can be utilized in subsequent derivations. This will be important if the data frame contains multiple values for <code>BASETYPE</code>.</p>
+<p>Next, the analysis baseline flag <code>ABLFL</code> can be derived using the <code>{admiral}</code> function <code>derive_var_extreme_flag()</code>. For example, if baseline is defined as the last non-missing <code>AVAL</code> prior or on <code>TRTSDT</code>, the function call for <code>ABLFL</code> would be:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">restrict_derivation</span>(</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">derivation =</span> derive_var_extreme_flag,</span>
@@ -2027,12 +1704,8 @@ be:</p>
 </tr>
 </tbody>
 </table>
-<p>Note: Additional examples of the
-<code>derive_var_extreme_flag()</code> function can be found <a href="#analysisrec">above.</a></p>
-<p>Lastly, the <code>BASE</code>, <code>BASEC</code> and
-<code>BNRIND</code> columns can be derived using the
-<code>{admiral}</code> function <code>derive_var_base()</code>. Example
-calls are:</p>
+<p>Note: Additional examples of the <code>derive_var_extreme_flag()</code> function can be found <a href="#analysisrec">above.</a></p>
+<p>Lastly, the <code>BASE</code>, <code>BASEC</code> and <code>BNRIND</code> columns can be derived using the <code>{admiral}</code> function <code>derive_var_base()</code>. Example calls are:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_base</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, BASETYPE),</span>
@@ -2053,17 +1726,7 @@ calls are:</p>
 <span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">source_var =</span> ANRIND,</span>
 <span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_var =</span> BNRIND</span>
 <span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<table style="width:100%;">
-<colgroup>
-<col width="13%" />
-<col width="42%" />
-<col width="9%" />
-<col width="6%" />
-<col width="5%" />
-<col width="6%" />
-<col width="7%" />
-<col width="7%" />
-</colgroup>
+<table>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -2181,15 +1844,8 @@ calls are:</p>
 </table>
 </div>
 <div id="bchange" class="section level2">
-<h2>Derive Change from Baseline (<code>CHG</code>,
-<code>PCHG</code>)</h2>
-<p>Change and percent change from baseline can be derived using the
-<code>{admiral}</code> functions <code>derive_var_chg()</code> and
-<code>derive_var_pchg()</code>. These functions expect <code>AVAL</code>
-and <code>BASE</code> to exist in the data frame. The <code>CHG</code>
-is simply <code>AVAL - BASE</code> and the <code>PCHG</code> is
-<code>(AVAL - BASE) / absolute value (BASE) * 100</code>. Examples calls
-are:</p>
+<h2>Derive Change from Baseline (<code>CHG</code>, <code>PCHG</code>)</h2>
+<p>Change and percent change from baseline can be derived using the <code>{admiral}</code> functions <code>derive_var_chg()</code> and <code>derive_var_pchg()</code>. These functions expect <code>AVAL</code> and <code>BASE</code> to exist in the data frame. The <code>CHG</code> is simply <code>AVAL - BASE</code> and the <code>PCHG</code> is <code>(AVAL - BASE) / absolute value (BASE) * 100</code>. Examples calls are:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_chg</span>(advs)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_pchg</span>(advs)</span></code></pre></div>
@@ -2287,35 +1943,21 @@ are:</p>
 </tr>
 </tbody>
 </table>
-<p>If the variables should not be derived for all records, e.g., for
-post-baseline records only, <code>restrict_derivation()</code> can be
-used.</p>
+<p>If the variables should not be derived for all records, e.g., for post-baseline records only, <code>restrict_derivation()</code> can be used.</p>
 </div>
 <div id="shift" class="section level2">
 <h2>Derive Shift (e.g. <code>SHIFT1</code>)</h2>
-<p>Shift variables can be derived using the <code>{admiral}</code>
-function <code>derive_var_shift()</code>. This function derives a
-character shift variable concatenating shift in values based on a
-user-defined pairing, e.g., shift from baseline reference range
-<code>BNRIND</code> to analysis reference range <code>ANRIND</code>.
-Examples calls are:</p>
+<p>Shift variables can be derived using the <code>{admiral}</code> function <code>derive_var_shift()</code>. This function derives a character shift variable concatenating shift in values based on a user-defined pairing, e.g., shift from baseline reference range <code>BNRIND</code> to analysis reference range <code>ANRIND</code>. Examples calls are:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_shift</span>(advs,</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_var =</span> SHIFT1,</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">from_var =</span> BNRIND,</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_var =</span> ANRIND</span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>If the variables should not be derived for all records, e.g., for
-post-baseline records only, <code>restrict_derivation()</code> can be
-used.</p>
+<p>If the variables should not be derived for all records, e.g., for post-baseline records only, <code>restrict_derivation()</code> can be used.</p>
 </div>
 <div id="analysisratio" class="section level2">
 <h2>Derive Analysis Ratio (<code>R2BASE</code>)</h2>
-<p>Analysis ratio variables can be derived using the
-<code>{admiral}</code> function
-<code>derive_var_analysis_ratio()</code>. This function derives a ratio
-variable based on user-specified pair. For example, Ratio to Baseline is
-calculated by <code>AVAL / BASE</code> and the function appends a new
-variable <code>R2BASE</code> to the dataset. Examples calls are:</p>
+<p>Analysis ratio variables can be derived using the <code>{admiral}</code> function <code>derive_var_analysis_ratio()</code>. This function derives a ratio variable based on user-specified pair. For example, Ratio to Baseline is calculated by <code>AVAL / BASE</code> and the function appends a new variable <code>R2BASE</code> to the dataset. Examples calls are:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_analysis_ratio</span>(advs,</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">numer_var =</span> AVAL,</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">denom_var =</span> BASE</span>
@@ -2431,22 +2073,13 @@ variable <code>R2BASE</code> to the dataset. Examples calls are:</p>
 </tr>
 </tbody>
 </table>
-<p>If the variables should not be derived for all records, e.g., for
-post-baseline records only, <code>restrict_derivation()</code> can be
-used.</p>
+<p>If the variables should not be derived for all records, e.g., for post-baseline records only, <code>restrict_derivation()</code> can be used.</p>
 </div>
 <div id="analysisrec" class="section level2">
 <h2>Derive Analysis Flags (e.g. <code>ANL01FL</code>)</h2>
-<p>In most finding ADaMs, an analysis flag is derived to identify the
-appropriate observation(s) to use for a particular analysis when a
-subject has multiple observations within a particular timing period.</p>
-<p>In this situation, an analysis flag (e.g. <code>ANLxxFL</code>) may
-be used to choose the appropriate record for analysis.</p>
-<p>This flag may be derived using the <code>{admiral}</code> function
-<code>derive_var_extreme_flag()</code>. For this example, we will assume
-we would like to choose the latest and highest value by
-<code>USUBJID</code>, <code>PARAMCD</code>, <code>AVISIT</code>, and
-<code>ATPT</code>.</p>
+<p>In most finding ADaMs, an analysis flag is derived to identify the appropriate observation(s) to use for a particular analysis when a subject has multiple observations within a particular timing period.</p>
+<p>In this situation, an analysis flag (e.g. <code>ANLxxFL</code>) may be used to choose the appropriate record for analysis.</p>
+<p>This flag may be derived using the <code>{admiral}</code> function <code>derive_var_extreme_flag()</code>. For this example, we will assume we would like to choose the latest and highest value by <code>USUBJID</code>, <code>PARAMCD</code>, <code>AVISIT</code>, and <code>ATPT</code>.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">restrict_derivation</span>(</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  advs,</span>
@@ -2564,12 +2197,7 @@ we would like to choose the latest and highest value by
 </tr>
 </tbody>
 </table>
-<p>Another common example would be flagging the worst value for a
-subject, parameter, and visit. For this example, we will assume we have
-3 <code>PARAMCD</code> values (<code>SYSBP</code>, <code>DIABP</code>,
-and <code>RESP</code>). We will also assume high is worst for
-<code>SYSBP</code> and <code>DIABP</code> and low is worst for
-<code>RESP</code>.</p>
+<p>Another common example would be flagging the worst value for a subject, parameter, and visit. For this example, we will assume we have 3 <code>PARAMCD</code> values (<code>SYSBP</code>, <code>DIABP</code>, and <code>RESP</code>). We will also assume high is worst for <code>SYSBP</code> and <code>DIABP</code> and low is worst for <code>RESP</code>.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">slice_derivation</span>(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">derivation =</span> derive_var_extreme_flag,</span>
@@ -2696,13 +2324,8 @@ and <code>RESP</code>). We will also assume high is worst for
 </div>
 <div id="treatment" class="section level2">
 <h2>Assign Treatment (<code>TRTA</code>, <code>TRTP</code>)</h2>
-<p><code>TRTA</code> and <code>TRTP</code> must match at least one value
-of the character treatment variables in ADSL (e.g.,
-<code>TRTxxA</code>/<code>TRTxxP</code>,
-<code>TRTSEQA</code>/<code>TRTSEQP</code>,
-<code>TRxxAGy</code>/<code>TRxxPGy</code>).</p>
-<p>An example of a simple implementation for a study without periods
-could be:</p>
+<p><code>TRTA</code> and <code>TRTP</code> must match at least one value of the character treatment variables in ADSL (e.g., <code>TRTxxA</code>/<code>TRTxxP</code>, <code>TRTSEQA</code>/<code>TRTSEQP</code>, <code>TRxxAGy</code>/<code>TRxxPGy</code>).</p>
+<p>An example of a simple implementation for a study without periods could be:</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">mutate</span>(advs, <span class="at">TRTP =</span> TRT01P, <span class="at">TRTA =</span> TRT01A)</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(advs, TRTP, TRTA, TRT01P, TRT01A)</span>
@@ -2711,14 +2334,11 @@ could be:</p>
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;             &lt;chr&gt;             &lt;chr&gt;             &lt;int&gt;</span></span>
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Placebo            Placebo           Placebo           Placebo             588</span></span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Xanomeline Low Do… Xanomeline Low D… Xanomeline Low D… Xanomeline Low D…   225</span></span></code></pre></div>
-<p>For studies with periods see the <a href="visits_periods.html#treatment_bds">“Visit and Period Variables”
-vignette</a>.</p>
+<p>For studies with periods see the <a href="visits_periods.html#treatment_bds">“Visit and Period Variables” vignette</a>.</p>
 </div>
 <div id="aseq" class="section level2">
 <h2>Assign <code>ASEQ</code></h2>
-<p>The <code>{admiral}</code> function
-<code>derive_var_obs_number()</code> can be used to derive
-<code>ASEQ</code>. An example call is:</p>
+<p>The <code>{admiral}</code> function <code>derive_var_obs_number()</code> can be used to derive <code>ASEQ</code>. An example call is:</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_obs_number</span>(</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_var =</span> ASEQ,</span>
@@ -2834,9 +2454,7 @@ vignette</a>.</p>
 </div>
 <div id="cat" class="section level2">
 <h2>Derive Categorization Variables (<code>AVALCATx</code>)</h2>
-<p>Admiral does not currently have a generic function to aid in
-assigning <code>AVALCATx</code>/ <code>AVALCAxN</code> values. Below is
-a simple example of how these values may be assigned:</p>
+<p>Admiral does not currently have a generic function to aid in assigning <code>AVALCATx</code>/ <code>AVALCAxN</code> values. Below is a simple example of how these values may be assigned:</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>avalcat_lookup <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>PARAMCD, <span class="sc">~</span>AVALCA1N, <span class="sc">~</span>AVALCAT1,</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;HEIGHT&quot;</span>, <span class="dv">1</span>, <span class="st">&quot;&gt;140 cm&quot;</span>,</span>
@@ -2914,9 +2532,7 @@ a simple example of how these values may be assigned:</p>
 </div>
 <div id="adsl_vars" class="section level2">
 <h2>Add ADSL variables</h2>
-<p>If needed, the other <code>ADSL</code> variables can now be added.
-List of ADSL variables already merged held in vector
-<code>adsl_vars</code></p>
+<p>If needed, the other <code>ADSL</code> variables can now be added. List of ADSL variables already merged held in vector <code>adsl_vars</code></p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>advs <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
@@ -3030,22 +2646,13 @@ List of ADSL variables already merged held in vector
 </div>
 <div id="additional" class="section level2">
 <h2>Derive New Rows</h2>
-<p>When deriving new rows for a data frame, it is essential the
-programmer takes time to insert this derivation in the correct location
-of the code. The location will vary depending on what previous
-computations should be retained on the new record and what computations
-must be done with the new records.</p>
+<p>When deriving new rows for a data frame, it is essential the programmer takes time to insert this derivation in the correct location of the code. The location will vary depending on what previous computations should be retained on the new record and what computations must be done with the new records.</p>
 <div id="example-1-creating-a-new-record" class="section level3">
 <h3>Example 1 (Creating a New Record):</h3>
-<p>To add a new record based on the selection of a certain criterion
-(e.g. minimum, maximum) <code>derive_extreme_records()</code> can be
-used. The new records include all variables of the selected records.</p>
+<p>To add a new record based on the selection of a certain criterion (e.g. minimum, maximum) <code>derive_extreme_records()</code> can be used. The new records include all variables of the selected records.</p>
 <div id="adding-a-new-record-for-the-last-value" class="section level4">
 <h4>Adding a New Record for the Last Value</h4>
-<p>For each subject and Vital Signs parameter, add a record holding last
-valid observation before end of treatment. Set <code>AVISIT</code> to
-<code>&quot;End of Treatment&quot;</code> and assign a unique <code>AVISITN</code>
-value.</p>
+<p>For each subject and Vital Signs parameter, add a record holding last valid observation before end of treatment. Set <code>AVISIT</code> to <code>&quot;End of Treatment&quot;</code> and assign a unique <code>AVISITN</code> value.</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>advs_ex1 <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
@@ -3058,18 +2665,7 @@ value.</p>
 <span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;LOV&quot;</span></span>
 <span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<table style="width:100%;">
-<colgroup>
-<col width="14%" />
-<col width="9%" />
-<col width="13%" />
-<col width="9%" />
-<col width="20%" />
-<col width="7%" />
-<col width="6%" />
-<col width="7%" />
-<col width="9%" />
-</colgroup>
+<table>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -3199,11 +2795,7 @@ value.</p>
 </div>
 <div id="adding-a-new-record-for-the-minimum-value" class="section level4">
 <h4>Adding a New Record for the Minimum Value</h4>
-<p>For each subject and Vital Signs parameter, add a record holding the
-minimum value before end of treatment. If the minimum is attained by
-multiple observations the first one is selected. Set <code>AVISIT</code>
-to <code>&quot;Minimum on Treatment&quot;</code> and assign a unique
-<code>AVISITN</code> value.</p>
+<p>For each subject and Vital Signs parameter, add a record holding the minimum value before end of treatment. If the minimum is attained by multiple observations the first one is selected. Set <code>AVISIT</code> to <code>&quot;Minimum on Treatment&quot;</code> and assign a unique <code>AVISITN</code> value.</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>advs_ex1 <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
@@ -3217,17 +2809,6 @@ to <code>&quot;Minimum on Treatment&quot;</code> and assign a unique
 <span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
-<colgroup>
-<col width="13%" />
-<col width="9%" />
-<col width="12%" />
-<col width="9%" />
-<col width="24%" />
-<col width="6%" />
-<col width="5%" />
-<col width="9%" />
-<col width="9%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th align="left">USUBJID</th>
@@ -3358,14 +2939,8 @@ to <code>&quot;Minimum on Treatment&quot;</code> and assign a unique
 </div>
 <div id="example-2-deriving-a-summary-record" class="section level3">
 <h3>Example 2 (Deriving a Summary Record)</h3>
-<p>For adding new records based on aggregating records
-<code>derive_summary_records()</code> can be used. For the new records
-only the variables specified by <code>by_vars</code>,
-<code>analysis_var</code>, and <code>set_values_to</code> are
-populated.</p>
-<p>For each subject, Vital Signs parameter, visit, and date add a record
-holding the average value for observations on that date. Set
-<code>DTYPE</code> to <code>AVERAGE</code>.</p>
+<p>For adding new records based on aggregating records <code>derive_summary_records()</code> can be used. For the new records only the variables specified by <code>by_vars</code>, <code>analysis_var</code>, and <code>set_values_to</code> are populated.</p>
+<p>For each subject, Vital Signs parameter, visit, and date add a record holding the average value for observations on that date. Set <code>DTYPE</code> to <code>AVERAGE</code>.</p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>advs_ex2 <span class="ot">&lt;-</span> <span class="fu">derive_summary_records</span>(</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, VISITNUM, ADT),</span>
@@ -3470,12 +3045,8 @@ holding the average value for observations on that date. Set
 </div>
 <div id="example-3-deriving-a-new-paramcd" class="section level3">
 <h3>Example 3 (Deriving a New <code>PARAMCD</code>)</h3>
-<p>Use function <code>derive_param_computed()</code> to create a new
-<code>PARAMCD</code>. Note that only variables specified in the
-<code>by_vars</code> argument will be populated in the newly created
-records.</p>
-<p>Below is an example of creating <code>Mean Arterial Pressure</code>
-(<code>PARAMCD = MAP2</code>) with an alternative formula.</p>
+<p>Use function <code>derive_param_computed()</code> to create a new <code>PARAMCD</code>. Note that only variables specified in the <code>by_vars</code> argument will be populated in the newly created records.</p>
+<p>Below is an example of creating <code>Mean Arterial Pressure</code> (<code>PARAMCD = MAP2</code>) with an alternative formula.</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>advs_ex3 <span class="ot">&lt;-</span> <span class="fu">derive_param_computed</span>(</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  advs,</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID, VISIT, ATPT),</span>
@@ -3580,35 +3151,18 @@ records.</p>
 </div>
 <div id="attributes" class="section level2">
 <h2>Add Labels and Attributes</h2>
-<p>Adding labels and attributes for SAS transport files is supported by
-the following packages:</p>
+<p>Adding labels and attributes for SAS transport files is supported by the following packages:</p>
 <ul>
-<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>:
-establish a common foundation for the use of metadata within an R
-session.</p></li>
-<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>:
-enable the use of metacore objects. Metatools can be used to build
-datasets or enhance columns in existing datasets as well as checking
-datasets against the metadata.</p></li>
-<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>:
-functionality to associate all metadata information to a local R data
-frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport
-v5 file(xpt)</a>.</p></li>
+<li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>: establish a common foundation for the use of metadata within an R session.</p></li>
+<li><p><a href="https://pharmaverse.github.io/metatools/">metatools</a>: enable the use of metacore objects. Metatools can be used to build datasets or enhance columns in existing datasets as well as checking datasets against the metadata.</p></li>
+<li><p><a href="https://atorus-research.github.io/xportr/">xportr</a>: functionality to associate all metadata information to a local R data frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport v5 file(xpt)</a>.</p></li>
 </ul>
-<p>NOTE: All these packages are in the experimental phase, but the
-vision is to have them associated with an End to End pipeline under the
-umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of
-applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E
-example</a>.</p>
+<p>NOTE: All these packages are in the experimental phase, but the vision is to have them associated with an End to End pipeline under the umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of applying metadata and perform associated checks can be found at the <a href="https://examples.pharmaverse.org/data/adsl/">pharmaverse E2E example</a>.</p>
 </div>
 </div>
 <div id="example" class="section level1">
 <h1>Example Scripts</h1>
 <table>
-<colgroup>
-<col width="22%" />
-<col width="77%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th>ADaM</th>

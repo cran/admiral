@@ -1,7 +1,7 @@
 Package: admiral
 Type: Package
 Title: ADaM in R Asset Library
-Version: 0.10.0
+Version: 0.10.1
 Authors@R: c(
     person("Thomas", "Neitmann", email = "thomas.neitmann@roche.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut"),
@@ -29,6 +29,9 @@ Authors@R: c(
     person("Zelos", "Zhu", role = "aut"),
     person("Jeffrey", "Dickinson", role = "aut"),
     person("Ania", "Golab", role = "aut"),
+    person("Kangjie", "Zhang", role = "aut"),
+    person("Daphne", "Grasselly", role = "aut"),
+    person("Adam", "Forys", role = "aut"),
     person("Michael", "Thorpe", role = "ctb"),
     person("Declan", "Hodges", role = "ctb"),
     person("Jaxon", "Abercrombie", role = "ctb"),
@@ -82,7 +85,7 @@ Suggests: admiral.test (>= 0.5.0), covr, devtools, DT, diffdf, knitr,
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-03-07 19:08:40 UTC; r590548
+Packaged: 2023-03-13 18:28:06 UTC; neitmant
 Author: Thomas Neitmann [aut, cre],
   Stefan Bundfuss [aut],
   Ben Straub [aut],
@@ -109,6 +112,9 @@ Author: Thomas Neitmann [aut, cre],
   Zelos Zhu [aut],
   Jeffrey Dickinson [aut],
   Ania Golab [aut],
+  Kangjie Zhang [aut],
+  Daphne Grasselly [aut],
+  Adam Forys [aut],
   Michael Thorpe [ctb],
   Declan Hodges [ctb],
   Jaxon Abercrombie [ctb],
@@ -139,4 +145,4 @@ Author: Thomas Neitmann [aut, cre],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Thomas Neitmann <thomas.neitmann@roche.com>
 Repository: CRAN
-Date/Publication: 2023-03-08 08:20:05 UTC
+Date/Publication: 2023-03-14 18:00:02 UTC
