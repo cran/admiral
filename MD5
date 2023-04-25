@@ -1,6 +1,6 @@
-fe787aa06c639b69a50482c9f9f1c34f *DESCRIPTION
+f8ef29fa867a212498a77ca5d81aa70a *DESCRIPTION
 f211ae61828c407551d6c76d5720f66e *NAMESPACE
-98ebdfefc1e63c0fc32ae4810204001e *NEWS.md
+bd6ab57b4fac80dfa60bc1132bc5cf22 *NEWS.md
 1ebc9b9da176a4e27b3aa8ab6a71dbee *R/admiral-package.R
 ffbb0da4f4c26293d238711b7d239809 *R/admiral_environment.R
 7655ff657d55c36ec7335594f2b4fa87 *R/admiral_options.R
@@ -75,7 +75,7 @@ bc5f64ea37bca46ace04ccd7afcf0298 *R/slice_derivation.R
 2a375f247daf560ff9e2cd5ae301edf5 *R/tte_sources.R
 4f23e09d5deeed8dfd7bc1fc39c3858a *R/user_helpers.R
 6d71498bc3f3d89f207f3e5af43dd50f *R/user_utils.R
-7df89c95eae21e45328bc52dfbf72078 *README.md
+924452713dbe744296ec6dc23c973aa5 *README.md
 f624350b5a1143a55d1a86264e7596ee *build/vignette.rds
 70082097fb3b4ec04d6a09176c33032b *data/admiral_adlb.rda
 2c2fc1b37990073e35814b669864a4f7 *data/admiral_adsl.rda
@@ -145,7 +145,7 @@ b79c028b9babb70b6221dfabe4a5d846 *inst/templates/ad_adpc.R
 9b3c559f0837e226838a634c69a9fd8e *inst/templates/ad_adpp.R
 8ce82f221362d2a4ce0b5faf1bf4b151 *inst/templates/ad_adsl.R
 1685a409f54981638b6139488b71b0d8 *inst/templates/ad_advs.R
-f3e63eb6af0e11ed478c1f1d1fe6f5f8 *man/admiral-package.Rd
+e9b595dbde0828f7da6fd6db84ef8026 *man/admiral-package.Rd
 2455f43eff1a9eaa2244eaefe3906847 *man/admiral_adlb.Rd
 9cd4f1392dfee4ba4c1533f6edb6c78d *man/admiral_adsl.Rd
 685e59dde6129079f2dedb615a03b5fc *man/assert_db_requirements.Rd

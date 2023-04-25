@@ -1,11 +1,11 @@
 Package: admiral
 Type: Package
 Title: ADaM in R Asset Library
-Version: 0.10.1
+Version: 0.10.2
 Authors@R: c(
-    person("Thomas", "Neitmann", email = "thomas.neitmann@roche.com", role = c("aut", "cre")),
+    person("Ben", "Straub", email = "ben.x.straub@gsk.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut"),
-    person("Ben", "Straub", role = "aut"),
+    person("Thomas", "Neitmann", role = "aut"),
     person("Samia", "Kabi", role = "aut"),
     person("Gordon", "Miller", role = "aut"),
     person("Teckla", "Akinyi", role = "aut"),
@@ -85,10 +85,10 @@ Suggests: admiral.test (>= 0.5.0), covr, devtools, DT, diffdf, knitr,
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-03-13 18:28:06 UTC; neitmant
-Author: Thomas Neitmann [aut, cre],
+Packaged: 2023-04-25 17:00:36 UTC; neitmant
+Author: Ben Straub [aut, cre],
   Stefan Bundfuss [aut],
-  Ben Straub [aut],
+  Thomas Neitmann [aut],
   Samia Kabi [aut],
   Gordon Miller [aut],
   Teckla Akinyi [aut],
@@ -143,6 +143,6 @@ Author: Thomas Neitmann [aut, cre],
   Leena Khatri [ctb],
   F. Hoffmann-La Roche AG [cph, fnd],
   GlaxoSmithKline LLC [cph, fnd]
-Maintainer: Thomas Neitmann <thomas.neitmann@roche.com>
+Maintainer: Ben Straub <ben.x.straub@gsk.com>
 Repository: CRAN
-Date/Publication: 2023-03-14 18:00:02 UTC
+Date/Publication: 2023-04-25 21:40:02 UTC
