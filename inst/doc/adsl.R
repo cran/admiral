@@ -40,7 +40,8 @@ adsl <- dm %>%
   mutate(TRT01P = ARM, TRT01A = ACTARM)
 
 ## ----eval=TRUE----------------------------------------------------------------
-# impute start and end time of exposure to first and last respectively, do not impute date
+# impute start and end time of exposure to first and last respectively,
+# do not impute date
 ex_ext <- ex %>%
   derive_vars_dtm(
     dtc = EXSTDTC,
@@ -106,8 +107,8 @@ adsl <- adsl %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  ds,
-  display_vars = exprs(USUBJID, DSCAT, DSDECOD, DSTERM, DSSTDTC),
+  ds_ext,
+  display_vars = exprs(USUBJID, DSCAT, DSDECOD, DSTERM, DSSTDT, DSSTDTC),
   filter = DSDECOD != "SCREEN FAILURE"
 )
 
@@ -119,21 +120,18 @@ format_eosstt <- function(x) {
   case_when(
     x %in% c("COMPLETED") ~ "COMPLETED",
     x %in% c("SCREEN FAILURE") ~ NA_character_,
-    !is.na(x) ~ "DISCONTINUED",
-    TRUE ~ "ONGOING"
+    TRUE ~ "DISCONTINUED"
   )
 }
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
-  derive_var_merged_cat(
+  derive_vars_merged(
     dataset_add = ds,
     by_vars = exprs(STUDYID, USUBJID),
     filter_add = DSCAT == "DISPOSITION EVENT",
-    new_var = EOSSTT,
-    source_var = DSDECOD,
-    cat_fun = format_eosstt,
-    missing_value = "ONGOING"
+    new_vars = exprs(EOSSTT = format_eosstt(DSDECOD)),
+    missing_value = exprs(EOSSTT = "ONGOING")
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
@@ -145,7 +143,8 @@ adsl <- adsl %>%
     dataset_add = ds,
     by_vars = exprs(USUBJID),
     new_vars = exprs(DCSREAS = DSDECOD, DCSREASP = DSTERM),
-    filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD %notin% c("SCREEN FAILURE", "COMPLETED", NA)
+    filter_add = DSCAT == "DISPOSITION EVENT" &
+      !(DSDECOD %in% c("SCREEN FAILURE", "COMPLETED", NA))
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
@@ -161,7 +160,8 @@ adsl <- adsl %>%
     dataset_add = ds,
     by_vars = exprs(USUBJID),
     new_vars = exprs(DCSREAS = DSDECOD),
-    filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD %notin% c("SCREEN FAILURE", "COMPLETED", NA)
+    filter_add = DSCAT == "DISPOSITION EVENT" &
+      DSDECOD %notin% c("SCREEN FAILURE", "COMPLETED", NA)
   ) %>%
   derive_vars_merged(
     dataset_add = ds,
@@ -207,7 +207,7 @@ dataset_vignette(adsl, display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHF
 src_ae <- dthcaus_source(
   dataset_name = "ae",
   filter = AEOUT == "FATAL",
-  date = AESTDTM,
+  date = convert_dtc_to_dtm(AESTDTC, highest_imputation = "M"),
   mode = "first",
   dthcaus = AEDECOD
 )
@@ -236,16 +236,11 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-ae_ext <- derive_vars_dtm(
-  ae,
-  dtc = AESTDTC,
-  new_vars_prefix = "AEST",
-  highest_imputation = "M",
-  flag_imputation = "none"
-)
-
 adsl <- adsl %>%
-  derive_var_dthcaus(src_ae, src_ds, source_datasets = list(ae = ae_ext, ds = ds_ext))
+  derive_var_dthcaus(
+    src_ae, src_ds,
+    source_datasets = list(ae = ae, ds = ds_ext)
+  )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
@@ -258,7 +253,7 @@ dataset_vignette(
 src_ae <- dthcaus_source(
   dataset_name = "ae",
   filter = AEOUT == "FATAL",
-  date = AESTDTM,
+  date = convert_dtc_to_dtm(AESTDTC, highest_imputation = "M"),
   mode = "first",
   dthcaus = AEDECOD,
   traceability_vars = exprs(DTHDOM = "AE", DTHSEQ = AESEQ)
@@ -274,7 +269,10 @@ src_ds <- dthcaus_source(
 )
 adsl <- adsl %>%
   select(-DTHCAUS) %>% # remove it before deriving it again
-  derive_var_dthcaus(src_ae, src_ds, source_datasets = list(ae = ae_ext, ds = ds_ext))
+  derive_var_dthcaus(
+    src_ae, src_ds,
+    source_datasets = list(ae = ae, ds = ds_ext)
+  )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
@@ -310,16 +308,15 @@ dataset_vignette(
 ## ----eval=TRUE----------------------------------------------------------------
 ae_start_date <- date_source(
   dataset_name = "ae",
-  date = AESTDT
+  date = convert_dtc_to_dt(AESTDTC, highest_imputation = "M")
 )
 ae_end_date <- date_source(
   dataset_name = "ae",
-  date = AEENDT
+  date = convert_dtc_to_dt(AEENDTC, highest_imputation = "M")
 )
 lb_date <- date_source(
   dataset_name = "lb",
-  date = LBDT,
-  filter = !is.na(LBDT)
+  date = convert_dtc_to_dt(LBDTC, highest_imputation = "M")
 )
 trt_end_date <- date_source(
   dataset_name = "adsl",
@@ -327,32 +324,11 @@ trt_end_date <- date_source(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-# impute AE start and end date to first
-ae_ext <- ae %>%
-  derive_vars_dt(
-    dtc = AESTDTC,
-    new_vars_prefix = "AEST",
-    highest_imputation = "M"
-  ) %>%
-  derive_vars_dt(
-    dtc = AEENDTC,
-    new_vars_prefix = "AEEN",
-    highest_imputation = "M"
-  )
-
-# impute LB date to first
-lb_ext <- derive_vars_dt(
-  lb,
-  dtc = LBDTC,
-  new_vars_prefix = "LB",
-  highest_imputation = "M"
-)
-
 adsl <- adsl %>%
   derive_var_extreme_dt(
     new_var = LSTALVDT,
     ae_start_date, ae_end_date, lb_date, trt_end_date,
-    source_datasets = list(ae = ae_ext, adsl = adsl, lb = lb_ext),
+    source_datasets = list(ae = ae, adsl = adsl, lb = lb),
     mode = "last"
   )
 
@@ -366,18 +342,17 @@ dataset_vignette(
 ## ----eval=TRUE----------------------------------------------------------------
 ae_start_date <- date_source(
   dataset_name = "ae",
-  date = AESTDT,
+  date = convert_dtc_to_dt(AESTDTC, highest_imputation = "M"),
   traceability_vars = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AESTDTC")
 )
 ae_end_date <- date_source(
   dataset_name = "ae",
-  date = AEENDT,
+  date = convert_dtc_to_dt(AEENDTC, highest_imputation = "M"),
   traceability_vars = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AEENDTC")
 )
 lb_date <- date_source(
   dataset_name = "lb",
-  date = LBDT,
-  filter = !is.na(LBDT),
+  date = convert_dtc_to_dt(LBDTC, highest_imputation = "M"),
   traceability_vars = exprs(LALVDOM = "LB", LALVSEQ = LBSEQ, LALVVAR = "LBDTC")
 )
 trt_end_date <- date_source(
@@ -391,7 +366,7 @@ adsl <- adsl %>%
   derive_var_extreme_dt(
     new_var = LSTALVDT,
     ae_start_date, ae_end_date, lb_date, trt_end_date,
-    source_datasets = list(ae = ae_ext, adsl = adsl, lb = lb_ext),
+    source_datasets = list(ae = ae, adsl = adsl, lb = lb),
     mode = "last"
   )
 

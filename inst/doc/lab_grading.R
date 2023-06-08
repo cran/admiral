@@ -157,7 +157,6 @@ adlb <- adlb %>%
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-
 atoxgr_criteria_ctcv4 %>%
   filter(!is.na(SI_UNIT_CHECK)) %>%
   dataset_vignette(
@@ -190,7 +189,6 @@ atoxgr_criteria_ctcv4 %>%
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-
 atoxgr_criteria_ctcv4 %>%
   filter(str_detect(TERM, "INR")) %>%
   dataset_vignette(
@@ -226,7 +224,6 @@ atoxgr_criteria_ctcv5 %>%
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-
 atoxgr_criteria_ctcv5 %>%
   filter(str_detect(TERM, "INR")) %>%
   dataset_vignette(
@@ -241,9 +238,8 @@ atoxgr_criteria_ctcv5 %>%
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-
 atoxgr_criteria_ctcv5 %>%
-  filter(str_detect(TERM, "INR") | str_detect(TERM, "amylase")) %>%
+  filter(str_detect(TERM, "Lipase") | str_detect(TERM, "amylase")) %>%
   dataset_vignette(
     display_vars = exprs(TERM, Grade_2, Grade_3, Grade_4)
   )

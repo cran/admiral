@@ -1,7 +1,7 @@
 Package: admiral
 Type: Package
 Title: ADaM in R Asset Library
-Version: 0.10.2
+Version: 0.11.0
 Authors@R: c(
     person("Ben", "Straub", email = "ben.x.straub@gsk.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut"),
@@ -32,6 +32,8 @@ Authors@R: c(
     person("Kangjie", "Zhang", role = "aut"),
     person("Daphne", "Grasselly", role = "aut"),
     person("Adam", "Forys", role = "aut"),
+    person("Edoardo", "Mancini", role = "aut"),
+    person("Stefan", "Thoma", role = "aut"),
     person("Michael", "Thorpe", role = "ctb"),
     person("Declan", "Hodges", role = "ctb"),
     person("Jaxon", "Abercrombie", role = "ctb"),
@@ -69,23 +71,24 @@ Description: A toolbox for programming Clinical Data Interchange Standards Conso
     (CDISC Analysis Data Model Team, 2021, <https://www.cdisc.org/standards/foundational/adam/adamig-v1-3-release-package>).
 Language: en-US
 License: Apache License (>= 2)
+BugReports: https://github.com/pharmaverse/admiral/issues
 URL: https://pharmaverse.github.io/admiral/,
         https://github.com/pharmaverse/admiral
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends: R (>= 3.5)
-Imports: admiraldev (>= 0.3.0), dplyr (>= 0.8.4), hms (>= 0.5.3),
+Imports: admiraldev (>= 0.4.0), dplyr (>= 0.8.4), hms (>= 0.5.3),
         lifecycle (>= 0.1.0), lubridate (>= 1.7.4), magrittr (>= 1.5),
         purrr (>= 0.3.3), rlang (>= 0.4.4), stringr (>= 1.4.0), tidyr
         (>= 1.0.2), tidyselect (>= 1.1.0)
-Suggests: admiral.test (>= 0.5.0), covr, devtools, DT, diffdf, knitr,
+Suggests: admiral.test (>= 0.6.0), covr, devtools, DT, diffdf, knitr,
         lintr, methods, pkgdown, readxl, rmarkdown, roxygen2, spelling,
-        styler, testthat (>= 3.0.0), tibble, usethis
+        testthat (>= 3.0.0), tibble, usethis
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-04-25 17:00:36 UTC; neitmant
+Packaged: 2023-06-06 20:43:11 UTC; zelos.zhu
 Author: Ben Straub [aut, cre],
   Stefan Bundfuss [aut],
   Thomas Neitmann [aut],
@@ -115,6 +118,8 @@ Author: Ben Straub [aut, cre],
   Kangjie Zhang [aut],
   Daphne Grasselly [aut],
   Adam Forys [aut],
+  Edoardo Mancini [aut],
+  Stefan Thoma [aut],
   Michael Thorpe [ctb],
   Declan Hodges [ctb],
   Jaxon Abercrombie [ctb],
@@ -145,4 +150,4 @@ Author: Ben Straub [aut, cre],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Ben Straub <ben.x.straub@gsk.com>
 Repository: CRAN
-Date/Publication: 2023-04-25 21:40:02 UTC
+Date/Publication: 2023-06-08 22:32:58 UTC

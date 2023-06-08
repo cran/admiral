@@ -250,12 +250,12 @@ adsl <- adsl_bak
 # define censoring #
 observation_end <- censor_source(
   dataset_name = "adsl",
-  date = EOSDT,
+  date = pmin(TRTEDT + days(30), EOSDT),
   censor = 1,
   set_values_to = exprs(
-    EVNTDESC = "END OF STUDY",
+    EVNTDESC = "END OF TREATMENT",
     SRCDOM = "ADSL",
-    SRCVAR = "EOSDT"
+    SRCVAR = "TRTEDT"
   )
 )
 
@@ -312,7 +312,10 @@ adaette <- call_derivation(
     )
   ),
   dataset_adsl = adsl,
-  source_datasets = list(adsl = adsl, ae = adae),
+  source_datasets = list(
+    adsl = adsl,
+    ae = filter(adae, TRTEMFL == "Y")
+  ),
   censor_conditions = list(observation_end)
 )
 

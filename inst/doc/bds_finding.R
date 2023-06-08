@@ -24,7 +24,6 @@ vs <- convert_blanks_to_na(admiral_vs)
 vs <- filter(vs, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01-703-1096", "01-707-1037", "01-716-1024"))
 
 ## ----eval=TRUE----------------------------------------------------------------
-
 adsl_vars <- exprs(TRTSDT, TRTEDT, TRT01A, TRT01P)
 
 advs <- derive_vars_merged(
@@ -186,7 +185,6 @@ dataset_vignette(
 )
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  
 #  adeg <- tibble::tribble(
 #    ~USUBJID, ~EGSTRESU, ~PARAMCD, ~AVAL, ~VISIT,
 #    "P01", "msec", "QT", 350, "CYCLE 1 DAY 1",
@@ -227,7 +225,6 @@ dataset_vignette(
 #  )
 
 ## ----eval=TRUE----------------------------------------------------------------
-
 # Derive PARAM and PARAMN
 advs <- derive_vars_merged(
   advs,
@@ -356,9 +353,9 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-advs <- derive_var_basetype(
+advs <- derive_basetype_records(
   dataset = advs,
-  basetypes = rlang::exprs(
+  basetypes = exprs(
     "LAST: AFTER LYING DOWN FOR 5 MINUTES" = ATPTN == 815,
     "LAST: AFTER STANDING FOR 1 MINUTE" = ATPTN == 816,
     "LAST: AFTER STANDING FOR 3 MINUTES" = ATPTN == 817,
@@ -456,7 +453,6 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-
 advs <- restrict_derivation(
   advs,
   derivation = derive_var_extreme_flag,
@@ -527,8 +523,8 @@ dataset_vignette(
 ## ----eval=TRUE----------------------------------------------------------------
 avalcat_lookup <- tibble::tribble(
   ~PARAMCD, ~AVALCA1N, ~AVALCAT1,
-  "HEIGHT", 1, ">140 cm",
-  "HEIGHT", 2, "<= 140 cm"
+  "HEIGHT",         1, ">140 cm",
+  "HEIGHT",         2, "<= 140 cm"
 )
 
 format_avalcat1n <- function(param, aval) {

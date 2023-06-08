@@ -24,7 +24,6 @@ ex <- convert_blanks_to_na(admiral_ex)
 ex <- filter(ex, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01-703-1096", "01-707-1037", "01-716-1024"))
 
 ## ----eval=TRUE----------------------------------------------------------------
-
 adsl_vars <- exprs(TRTSDT, TRTSDTM, TRTEDT, TRTEDTM)
 
 adex <- derive_vars_merged(

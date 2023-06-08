@@ -22,7 +22,6 @@ adsl <- admiral_adsl
 ae <- filter(ae, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01-703-1096", "01-707-1037", "01-716-1024"))
 
 ## ----eval=TRUE----------------------------------------------------------------
-
 adsl_vars <- exprs(TRTSDT, TRTEDT, TRT01A, TRT01P, DTHDT, EOSDT)
 
 adae <- derive_vars_merged(
@@ -136,17 +135,18 @@ ex_single <- derive_vars_dtm(
   new_vars_prefix = "EXST",
   flag_imputation = "none"
 )
-adae <- adae %>%
-  derive_var_last_dose_date(
-    ex_single,
-    filter_ex = (EXDOSE > 0 | (EXDOSE == 0 & grepl("PLACEBO", EXTRT))) &
-      !is.na(EXSTDTM),
-    dose_date = EXSTDTM,
-    analysis_date = ASTDT,
-    single_dose_condition = (EXSTDTC == EXENDTC),
-    new_var = LDOSEDTM,
-    output_datetime = TRUE
-  )
+
+adae <- derive_vars_joined(
+  adae,
+  ex_single,
+  by_vars = exprs(STUDYID, USUBJID),
+  new_vars = exprs(LDOSEDTM = EXSTDTM),
+  join_vars = exprs(EXSTDTM),
+  order = exprs(EXSTDTM),
+  filter_add = (EXDOSE > 0 | (EXDOSE == 0 & grepl("PLACEBO", EXTRT))) & !is.na(EXSTDTM),
+  filter_join = EXSTDTM <= ASTDTM,
+  mode = "last"
+)
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
@@ -243,14 +243,17 @@ derive_var_ontrtfl(
 
 ## ---- eval=TRUE---------------------------------------------------------------
 adae <- adae %>%
-  mutate(
-    ASEVN = as.integer(factor(ASEV, levels = c("MILD", "MODERATE", "SEVERE", "DEATH THREATENING")))
-  ) %>%
   restrict_derivation(
     derivation = derive_var_extreme_flag,
     args = params(
       by_vars = exprs(USUBJID),
-      order = exprs(desc(ASEVN), ASTDTM, AESEQ),
+      order = exprs(
+        as.integer(factor(
+          ASEV,
+          levels = c("DEATH THREATENING", "SEVERE", "MODERATE", "MILD")
+        )),
+        ASTDTM, AESEQ
+      ),
       new_var = AOCCIFL,
       mode = "first"
     ),
@@ -261,8 +264,7 @@ adae <- adae %>%
 dataset_vignette(
   adae,
   display_vars = exprs(
-    USUBJID, ASTDTM, ASEV, ASEVN, AESEQ, TRTEMFL,
-    AOCCIFL
+    USUBJID, ASTDTM, ASEV, AESEQ, TRTEMFL, AOCCIFL
   )
 )
 
@@ -292,12 +294,12 @@ dataset_vignette(adae_query)
 
 ## ---- eval=TRUE---------------------------------------------------------------
 sdg <- tibble::tribble(
-  ~VAR_PREFIX, ~QUERY_NAME,       ~SDG_ID, ~QUERY_SCOPE, ~QUERY_SCOPE_NUM, ~TERM_LEVEL, ~TERM_NAME,         ~TERM_ID,
-  "SDG01",     "Diuretics",       11,      "BROAD",      1,                "CMDECOD",   "Diuretic 1",       NA,
-  "SDG01",     "Diuretics",       11,      "BROAD",      1,                "CMDECOD",   "Diuretic 2",       NA,
-  "SDG02",     "Costicosteroids", 12,      "BROAD",      1,                "CMDECOD",   "Costicosteroid 1", NA,
-  "SDG02",     "Costicosteroids", 12,      "BROAD",      1,                "CMDECOD",   "Costicosteroid 2", NA,
-  "SDG02",     "Costicosteroids", 12,      "BROAD",      1,                "CMDECOD",   "Costicosteroid 3", NA,
+  ~PREFIX,     ~GRPNAME,       ~GRPID,   ~SCOPE, ~SCOPEN,  ~SRCVAR,     ~TERMNAME,         ~TERMID,
+  "SDG01",     "Diuretics",        11,  "BROAD",       1,  "CMDECOD",   "Diuretic 1",           NA,
+  "SDG01",     "Diuretics",        11,  "BROAD",       1,  "CMDECOD",   "Diuretic 2",           NA,
+  "SDG02",     "Costicosteroids",  12,  "BROAD",       1,  "CMDECOD",   "Costicosteroid 1",     NA,
+  "SDG02",     "Costicosteroids",  12,  "BROAD",       1,  "CMDECOD",   "Costicosteroid 2",     NA,
+  "SDG02",     "Costicosteroids",  12,  "BROAD",       1,  "CMDECOD",   "Costicosteroid 3",     NA,
 )
 adcm <- tibble::tribble(
   ~USUBJID, ~ASTDTM,               ~CMDECOD,

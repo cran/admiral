@@ -18,6 +18,7 @@ data("admiral_adsl")
 data("admiral_ex")
 data("admiral_pc")
 data("admiral_vs")
+data("admiral_lb")
 
 adsl <- admiral_adsl
 ex <- convert_blanks_to_na(admiral_ex)
@@ -30,6 +31,11 @@ pc <- convert_blanks_to_na(admiral_pc)
 
 vs <- convert_blanks_to_na(admiral_vs)
 
+# Load LB for baseline lab values
+
+lb <- convert_blanks_to_na(admiral_lb) %>%
+  filter(LBBLFL == "Y")
+
 # ---- Lookup tables ----
 param_lookup <- tibble::tribble(
   ~PCTESTCD, ~PARAMCD, ~PARAM, ~PARAMN,
@@ -38,14 +44,17 @@ param_lookup <- tibble::tribble(
 )
 
 ## ----echo=FALSE---------------------------------------------------------------
-ex <- filter(ex, USUBJID %in% c("01-701-1028", "01-701-1033", "01-701-1442", "01-714-1288", "01-718-1101"))
-pc <- filter(pc, USUBJID %in% c("01-701-1028", "01-701-1033", "01-701-1442", "01-714-1288", "01-718-1101"))
+ex <- filter(ex, USUBJID %in% c(
+  "01-701-1028", "01-701-1033", "01-701-1442", "01-714-1288", "01-718-1101"
+))
+pc <- filter(pc, USUBJID %in% c(
+  "01-701-1028", "01-701-1033", "01-701-1442", "01-714-1288", "01-718-1101"
+))
 
 ## ----eval=TRUE----------------------------------------------------------------
-
 adsl_vars <- exprs(TRTSDT, TRTSDTM, TRT01P, TRT01A)
 
-adpc <- pc %>%
+pc_dates <- pc %>%
   # Join ADSL with PC (need TRTSDT for ADY derivation)
   derive_vars_merged(
     dataset_add = adsl,
@@ -72,17 +81,16 @@ adpc <- pc %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  adpc,
+  pc_dates,
   display_vars = exprs(
     USUBJID, PCTEST, ADTM, VISIT, PCTPT, NFRLT
   )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
-
 # ---- Get dosing information ----
 
-ex <- ex %>%
+ex_dates <- ex %>%
   derive_vars_merged(
     dataset_add = adsl,
     new_vars = adsl_vars,
@@ -120,7 +128,7 @@ ex <- ex %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  ex,
+  ex_dates,
   display_vars = exprs(
     USUBJID, EXTRT, EXDOSFRQ, ASTDTM, AENDTM, VISIT, VISITDY, NFRLT
   )
@@ -129,7 +137,7 @@ dataset_vignette(
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Expand dosing records between start and end dates ----
 
-ex_exp <- ex %>%
+ex_exp <- ex_dates %>%
   create_single_dose_dataset(
     dose_freq = EXDOSFRQ,
     start_date = ASTDT,
@@ -142,8 +150,7 @@ ex_exp <- ex %>%
     keep_source_vars = exprs(
       STUDYID, USUBJID, EVID, EXDOSFRQ, EXDOSFRM,
       NFRLT, EXDOSE, EXDOSU, EXTRT, ASTDT, ASTDTM, AENDT, AENDTM,
-      VISIT, VISITNUM, VISITDY,
-      TRT01A, TRT01P, DOMAIN, EXSEQ, !!!adsl_vars
+      VISIT, VISITNUM, VISITDY, TRT01A, TRT01P, DOMAIN, EXSEQ, !!!adsl_vars
     )
   ) %>%
   # Derive AVISIT based on nominal relative time
@@ -165,14 +172,16 @@ ex_exp <- ex %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   ex_exp,
-  display_vars = exprs(USUBJID, DRUG, EXDOSFRQ, ASTDTM, AENDTM, AVISIT, NFRLT)
+  display_vars = exprs(
+    USUBJID, DRUG, EXDOSFRQ, ASTDTM, AENDTM, AVISIT, NFRLT
+  )
 )
 
 ## ----eval=TRUE, echo=TRUE, message=FALSE--------------------------------------
 # ---- Find first dose per treatment per subject ----
 # ---- Join with ADPC data and keep only subjects with dosing ----
 
-adpc <- adpc %>%
+adpc_first_dose <- pc_dates %>%
   derive_vars_merged(
     dataset_add = ex_exp,
     filter_add = (EXDOSE > 0 & !is.na(ADTM)),
@@ -187,21 +196,21 @@ adpc <- adpc %>%
   # Define AVISIT based on nominal day
   mutate(
     AVISITN = NFRLT %/% 24 + 1,
-    AVISIT = paste("Day", AVISITN),
+    AVISIT = paste("Day", AVISITN)
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  adpc,
-  display_vars = exprs(USUBJID, FANLDTM, AVISIT, ADTM, PCTPT)
+  adpc_first_dose,
+  display_vars = exprs(
+    USUBJID, FANLDTM, AVISIT, ADTM, PCTPT
+  )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Find previous dose  ----
-# Use derive_vars_joined() for consistency with other variables
-# This is equivalent to derive_vars_last_dose() in this case
 
-adpc <- adpc %>%
+adpc_prev <- adpc_first_dose %>%
   derive_vars_joined(
     dataset_add = ex_exp,
     by_vars = exprs(USUBJID),
@@ -219,17 +228,16 @@ adpc <- adpc %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  adpc,
+  adpc_prev,
   display_vars = exprs(
-    USUBJID,
-    VISIT, ADTM, VISIT, PCTPT, ADTM_prev, EXDOSE_prev, AVISIT_prev
+    USUBJID, VISIT, ADTM, VISIT, PCTPT, ADTM_prev, EXDOSE_prev, AVISIT_prev
   )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Find next dose  ----
 
-adpc <- adpc %>%
+adpc_next <- adpc_prev %>%
   derive_vars_joined(
     dataset_add = ex_exp,
     by_vars = exprs(USUBJID),
@@ -247,7 +255,7 @@ adpc <- adpc %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  adpc,
+  adpc_next,
   display_vars = exprs(
     USUBJID,
     VISIT, ADTM, VISIT, PCTPT, ADTM_next, EXDOSE_next, AVISIT_next
@@ -257,7 +265,7 @@ dataset_vignette(
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Find previous nominal time ----
 
-adpc <- adpc %>%
+adpc_nom_prev <- adpc_next %>%
   derive_vars_joined(
     dataset_add = ex_exp,
     by_vars = exprs(USUBJID),
@@ -272,7 +280,7 @@ adpc <- adpc %>%
 
 # ---- Find next nominal time ----
 
-adpc <- adpc %>%
+adpc_nom_next <- adpc_nom_prev %>%
   derive_vars_joined(
     dataset_add = ex_exp,
     by_vars = exprs(USUBJID),
@@ -287,19 +295,17 @@ adpc <- adpc %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  adpc,
+  adpc_nom_next,
   display_vars = exprs(
     USUBJID, NFRLT, PCTPT, NFRLT_prev, NFRLT_next
   )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
-
 # ---- Combine ADPC and EX data ----
 # Derive Relative Time Variables
 
-
-adpc <- bind_rows(adpc, ex_exp) %>%
+adpc_arrlt <- bind_rows(adpc_nom_next, ex_exp) %>%
   group_by(USUBJID, DRUG) %>%
   mutate(
     FANLDTM = min(FANLDTM, na.rm = TRUE),
@@ -358,13 +364,14 @@ adpc <- bind_rows(adpc, ex_exp) %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  adpc,
-  display_vars = exprs(USUBJID, FANLDTM, AVISIT, PCTPT, AFRLT, ARRLT, AXRLT)
+  adpc_arrlt,
+  display_vars = exprs(
+    USUBJID, FANLDTM, AVISIT, PCTPT, AFRLT, ARRLT, AXRLT
+  )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
-
-adpc <- adpc %>%
+adpc_nrrlt <- adpc_arrlt %>%
   # Derive Nominal Relative Time from Reference Dose (NRRLT)
   mutate(
     NRRLT = case_when(
@@ -380,8 +387,10 @@ adpc <- adpc %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  adpc,
-  display_vars = exprs(USUBJID, AVISIT, PCTPT, NFRLT, NRRLT, NXRLT)
+  adpc_nrrlt,
+  display_vars = exprs(
+    USUBJID, AVISIT, PCTPT, NFRLT, NRRLT, NXRLT
+  )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
@@ -391,7 +400,7 @@ dataset_vignette(
 # Derive PARAMCD and relative time units
 # Derive AVAL, AVALU and AVALCAT1
 
-adpc <- adpc %>%
+adpc_aval <- adpc_nrrlt %>%
   mutate(
     ATPTN = case_when(
       EVID == 1 ~ 0,
@@ -418,7 +427,7 @@ adpc <- adpc %>%
     DOSEA = case_when(
       EVID == 1 ~ EXDOSE,
       is.na(EXDOSE_prev) ~ EXDOSE_next,
-      TRUE ~ EXDOSE_next
+      TRUE ~ EXDOSE_prev
     ),
     # Derive Planned Dose
     DOSEP = case_when(
@@ -456,14 +465,16 @@ adpc <- adpc %>%
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
-  adpc,
-  display_vars = exprs(USUBJID, NFRLT, AVISIT, ATPT, ABLFL, ATPTREF, AVAL, AVALCAT1)
+  adpc_aval,
+  display_vars = exprs(
+    USUBJID, NFRLT, AVISIT, ATPT, ABLFL, ATPTREF, AVAL, AVALCAT1
+  )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Create DTYPE copy records ----
 
-dtype <- adpc %>%
+dtype <- adpc_aval %>%
   filter(NFRLT > 0 & NXRLT == 0 & EVID == 0 & !is.na(AVISIT_next)) %>%
   select(-PCRFTDT, -PCRFTTM) %>%
   # Re-derive variables in for DTYPE copy records
@@ -486,13 +497,15 @@ dtype <- adpc %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 dataset_vignette(
   dtype,
-  display_vars = exprs(USUBJID, DTYPE, ATPT, NFRLT, NRRLT, AFRLT, ARRLT, BASETYPE)
+  display_vars = exprs(
+    USUBJID, DTYPE, ATPT, NFRLT, NRRLT, AFRLT, ARRLT, BASETYPE
+  )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Combine original records and DTYPE copy records ----
 
-adpc <- bind_rows(adpc, dtype) %>%
+adpc_dtype <- bind_rows(adpc_aval, dtype) %>%
   arrange(STUDYID, USUBJID, BASETYPE, ADTM, NFRLT) %>%
   mutate(
     # Derive MRRLT, ANL01FL and ANL02FL
@@ -502,14 +515,15 @@ adpc <- bind_rows(adpc, dtype) %>%
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-adpc %>%
-  dataset_vignette(display_vars = exprs(STUDYID, USUBJID, BASETYPE, ADTM, ATPT, NFRLT, NRRLT, ARRLT, MRRLT))
+adpc_dtype %>%
+  dataset_vignette(display_vars = exprs(
+    STUDYID, USUBJID, BASETYPE, ADTM, ATPT, NFRLT, NRRLT, ARRLT, MRRLT
+  ))
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
-
 # ---- Derive BASE and Calculate Change from Baseline ----
 
-adpc <- adpc %>%
+adpc_base <- adpc_dtype %>%
   # Derive BASE
   derive_var_base(
     by_vars = exprs(STUDYID, USUBJID, PARAMCD, BASETYPE),
@@ -518,11 +532,11 @@ adpc <- adpc %>%
     filter = ABLFL == "Y"
   )
 
-adpc <- derive_var_chg(adpc)
+adpc_chg <- derive_var_chg(adpc_base)
 
 # ---- Add ASEQ ----
 
-adpc <- adpc %>%
+adpc_aseq <- adpc_chg %>%
   # Calculate ASEQ
   derive_var_obs_number(
     new_var = ASEQ,
@@ -537,18 +551,19 @@ adpc <- adpc %>%
     -ends_with("prev"), -DRUG, -EVID, -AXRLT, -NXRLT, -VISITDY
   ) %>%
   # Derive PARAM and PARAMN
-  derive_vars_merged(dataset_add = select(param_lookup, -PCTESTCD), by_vars = exprs(PARAMCD))
+  derive_vars_merged(
+    dataset_add = select(param_lookup, -PCTESTCD), by_vars = exprs(PARAMCD)
+  )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-adpc %>%
+adpc_aseq %>%
   dataset_vignette(display_vars = exprs(
     USUBJID, BASETYPE, DTYPE, AVISIT, ATPT, AVAL, NFRLT, NRRLT, AFRLT, ARRLT, BASE, CHG
   ))
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
-
 # Derive additional baselines from VS
-adpc <- adpc %>%
+adpc_baselines <- adpc_aseq %>%
   derive_vars_merged(
     dataset_add = vs,
     filter_add = VSTESTCD == "HEIGHT",
@@ -567,16 +582,396 @@ adpc <- adpc %>%
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-adpc %>%
+adpc_baselines %>%
   dataset_vignette(display_vars = exprs(
     USUBJID, HTBL, HTBLU, WTBL, WTBLU, BMIBL, BMIBLU, BASETYPE, ATPT, AVAL
   ))
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # Add all ADSL variables
-adpc <- adpc %>%
+adpc <- adpc_baselines %>%
   derive_vars_merged(
     dataset_add = select(adsl, !!!negate_vars(adsl_vars)),
     by_vars = exprs(STUDYID, USUBJID)
   )
+
+## ----eval=TRUE, echo=TRUE, message=FALSE--------------------------------------
+# ---- Find first dose per treatment per subject ----
+# ---- Join with ADPC data and keep only subjects with dosing ----
+
+adppk_first_dose <- pc_dates %>%
+  derive_vars_merged(
+    dataset_add = ex_exp,
+    filter_add = (!is.na(ADTM)),
+    new_vars = exprs(FANLDTM = ADTM, EXDOSE_first = EXDOSE),
+    order = exprs(ADTM, EXSEQ),
+    mode = "first",
+    by_vars = exprs(STUDYID, USUBJID, DRUG)
+  ) %>%
+  filter(!is.na(FANLDTM)) %>%
+  # Derive AVISIT based on nominal relative time
+  # Derive AVISITN to nominal time in whole days using integer division
+  # Define AVISIT based on nominal day
+  mutate(
+    AVISITN = NFRLT %/% 24 + 1,
+    AVISIT = paste("Day", AVISITN),
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(
+  adppk_first_dose,
+  display_vars = exprs(
+    USUBJID, FANLDTM, AVISIT, ADTM, PCTPT
+  )
+)
+
+## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+# ---- Find previous dose  ----
+
+adppk_prev <- adppk_first_dose %>%
+  derive_vars_joined(
+    dataset_add = ex_exp,
+    by_vars = exprs(USUBJID),
+    order = exprs(ADTM),
+    new_vars = exprs(
+      ADTM_prev = ADTM, EXDOSE_prev = EXDOSE, AVISIT_prev = AVISIT,
+      AENDTM_prev = AENDTM
+    ),
+    join_vars = exprs(ADTM),
+    filter_add = NULL,
+    filter_join = ADTM > ADTM.join,
+    mode = "last",
+    check_type = "none"
+  )
+
+# ---- Find previous nominal dose ----
+
+adppk_nom_prev <- adppk_prev %>%
+  derive_vars_joined(
+    dataset_add = ex_exp,
+    by_vars = exprs(USUBJID),
+    order = exprs(NFRLT),
+    new_vars = exprs(NFRLT_prev = NFRLT),
+    join_vars = exprs(NFRLT),
+    filter_add = NULL,
+    filter_join = NFRLT > NFRLT.join,
+    mode = "last",
+    check_type = "none"
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(
+  adppk_nom_prev,
+  display_vars = exprs(
+    USUBJID, VISIT, ADTM, VISIT, PCTPT, ADTM_prev, NFRLT_prev
+  )
+)
+
+## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+# ---- Combine ADPPK and EX data ----
+# Derive Relative Time Variables
+
+adppk_aprlt <- bind_rows(adppk_nom_prev, ex_exp) %>%
+  group_by(USUBJID, DRUG) %>%
+  mutate(
+    FANLDTM = min(FANLDTM, na.rm = TRUE),
+    min_NFRLT = min(NFRLT, na.rm = TRUE),
+    maxdate = max(ADT[EVID == 0], na.rm = TRUE), .after = USUBJID
+  ) %>%
+  arrange(USUBJID, ADTM) %>%
+  ungroup() %>%
+  filter(ADT <= maxdate) %>%
+  # Derive Actual Relative Time from First Dose (AFRLT)
+  derive_vars_duration(
+    new_var = AFRLT,
+    start_date = FANLDTM,
+    end_date = ADTM,
+    out_unit = "hours",
+    floor_in = FALSE,
+    add_one = FALSE
+  ) %>%
+  # Derive Actual Relative Time from Reference Dose (APRLT)
+  derive_vars_duration(
+    new_var = APRLT,
+    start_date = ADTM_prev,
+    end_date = ADTM,
+    out_unit = "hours",
+    floor_in = FALSE,
+    add_one = FALSE
+  ) %>%
+  # Derive APRLT
+  mutate(
+    APRLT = case_when(
+      EVID == 1 ~ 0,
+      is.na(APRLT) ~ AFRLT,
+      TRUE ~ APRLT
+    ),
+    NPRLT = case_when(
+      EVID == 1 ~ 0,
+      is.na(NFRLT_prev) ~ NFRLT - min_NFRLT,
+      TRUE ~ NFRLT - NFRLT_prev
+    )
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(
+  adppk_aprlt,
+  display_vars = exprs(
+    USUBJID, EVID, NFRLT, AFRLT, APRLT, NPRLT
+  )
+)
+
+## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+# ---- Derive Analysis Variables ----
+# Derive actual dose DOSEA and planned dose DOSEP,
+# Derive AVAL and DV
+
+adppk_aval <- adppk_aprlt %>%
+  mutate(
+    # Derive Actual Dose
+    DOSEA = case_when(
+      EVID == 1 ~ EXDOSE,
+      is.na(EXDOSE_prev) ~ EXDOSE_first,
+      TRUE ~ EXDOSE_prev
+    ),
+    # Derive Planned Dose
+    DOSEP = case_when(
+      TRT01P == "Xanomeline High Dose" ~ 81,
+      TRT01P == "Xanomeline Low Dose" ~ 54,
+      TRT01P == "Placebo" ~ 0
+    ),
+    # Derive PARAMCD
+    PARAMCD = case_when(
+      EVID == 1 ~ "DOSE",
+      TRUE ~ PCTESTCD
+    ),
+    ALLOQ = PCLLOQ,
+    # Derive CMT
+    CMT = case_when(
+      EVID == 1 ~ 1,
+      TRUE ~ 2
+    ),
+    # Derive BLQFL/BLQFN
+    BLQFL = case_when(
+      PCSTRESC == "<BLQ" ~ "Y",
+      TRUE ~ "N"
+    ),
+    BLQFN = case_when(
+      PCSTRESC == "<BLQ" ~ 1,
+      TRUE ~ 0
+    ),
+    AMT = case_when(
+      EVID == 1 ~ EXDOSE,
+      TRUE ~ NA_real_
+    ),
+    # Derive DV and AVAL
+    DV = PCSTRESN,
+    AVAL = DV,
+    DVL = case_when(
+      DV != 0 ~ log(DV),
+      TRUE ~ NA_real_
+    ),
+    # Derive MDV
+    MDV = case_when(
+      EVID == 1 ~ 1,
+      is.na(DV) ~ 1,
+      TRUE ~ 0
+    ),
+    AVALU = case_when(
+      EVID == 1 ~ NA_character_,
+      TRUE ~ PCSTRESU
+    ),
+    UDTC = format_ISO8601(ADTM),
+    II = if_else(EVID == 1, 1, 0),
+    SS = if_else(EVID == 1, 1, 0)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(
+  adppk_aval,
+  display_vars = exprs(
+    USUBJID, EVID, DOSEA, AMT, NFRLT, AFRLT, CMT, DV, MDV, BLQFN
+  )
+)
+
+## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+# ---- Add ASEQ ----
+
+adppk_aseq <- adppk_aval %>%
+  # Calculate ASEQ
+  derive_var_obs_number(
+    new_var = ASEQ,
+    by_vars = exprs(STUDYID, USUBJID),
+    order = exprs(AFRLT, EVID),
+    check_type = "error"
+  ) %>%
+  # Derive PARAM and PARAMN
+  derive_vars_merged(dataset_add = select(param_lookup, -PCTESTCD), by_vars = exprs(PARAMCD)) %>%
+  mutate(
+    PROJID = DRUG,
+    PROJIDN = 1
+  ) %>%
+  # Remove temporary variables
+  select(
+    -DOMAIN, -starts_with("min"), -starts_with("max"), -starts_with("EX"),
+    -starts_with("PC"), -ends_with("first"), -ends_with("prev"),
+    -ends_with("DTM"), -ends_with("DT"), -ends_with("TM"), -starts_with("VISIT"),
+    -starts_with("AVISIT"), -starts_with("PARAM"),
+    -ends_with("TMF"), -starts_with("TRT"), -starts_with("ATPT"), -DRUG
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(
+  adppk_aseq,
+  display_vars = exprs(
+    USUBJID, EVID, DOSEA, AMT, NFRLT, AFRLT, CMT, DV, MDV, BLQFN, ASEQ
+  )
+)
+
+## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+#---- Derive Covariates ----
+# Include numeric values for STUDYIDN, USUBJIDN, SEXN, RACEN etc.
+
+covar <- adsl %>%
+  mutate(
+    STUDYIDN = as.numeric(word(USUBJID, 1, sep = fixed("-"))),
+    SITEIDN = as.numeric(word(USUBJID, 2, sep = fixed("-"))),
+    USUBJIDN = as.numeric(word(USUBJID, 3, sep = fixed("-"))),
+    SUBJIDN = as.numeric(SUBJID),
+    SEXN = case_when(
+      SEX == "M" ~ 1,
+      SEX == "F" ~ 2,
+      TRUE ~ 3
+    ),
+    RACEN = case_when(
+      RACE == "AMERICAN INDIAN OR ALASKA NATIVE" ~ 1,
+      RACE == "ASIAN" ~ 2,
+      RACE == "BLACK OR AFRICAN AMERICAN" ~ 3,
+      RACE == "NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER" ~ 4,
+      RACE == "WHITE" ~ 5,
+      TRUE ~ 6
+    ),
+    ETHNICN = case_when(
+      ETHNIC == "HISPANIC OR LATINO" ~ 1,
+      ETHNIC == "NOT HISPANIC OR LATINO" ~ 2,
+      TRUE ~ 3
+    ),
+    ARMN = case_when(
+      ARM == "Placebo" ~ 0,
+      ARM == "Xanomeline Low Dose" ~ 1,
+      ARM == "Xanomeline High Dose" ~ 2,
+      TRUE ~ 3
+    ),
+    ACTARMN = case_when(
+      ACTARM == "Placebo" ~ 0,
+      ACTARM == "Xanomeline Low Dose" ~ 1,
+      ACTARM == "Xanomeline High Dose" ~ 2,
+      TRUE ~ 3
+    ),
+    COHORT = ARMN,
+    COHORTC = ARM,
+    ROUTE = unique(ex$EXROUTE),
+    ROUTEN = case_when(
+      ROUTE == "TRANSDERMAL" ~ 3,
+      TRUE ~ NA_real_
+    ),
+    FORM = unique(ex$EXDOSFRM),
+    FORMN = case_when(
+      FORM == "PATCH" ~ 3,
+      TRUE ~ 4
+    ),
+    COUNTRYN = case_when(
+      COUNTRY == "USA" ~ 1,
+      COUNTRY == "CAN" ~ 2,
+      COUNTRY == "GBR" ~ 3
+    ),
+    REGION1N = COUNTRYN,
+  ) %>%
+  select(
+    STUDYID, STUDYIDN, SITEID, SITEIDN, USUBJID, USUBJIDN,
+    SUBJID, SUBJIDN, AGE, SEX, SEXN, COHORT, COHORTC, ROUTE, ROUTEN,
+    RACE, RACEN, ETHNIC, ETHNICN, FORM, FORMN, COUNTRY, COUNTRYN,
+    REGION1, REGION1N
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(
+  covar,
+  display_vars = exprs(
+    STUDYIDN, USUBJIDN, SITEIDN, AGE, SEXN, RACEN, COHORT, ROUTEN
+  )
+)
+
+## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+#---- Derive additional baselines from VS and LB ----
+
+labsbl <- lb %>%
+  filter(LBBLFL == "Y" & LBTESTCD %in% c("CREAT", "ALT", "AST", "BILI")) %>%
+  mutate(LBTESTCDB = paste0(LBTESTCD, "BL")) %>%
+  select(STUDYID, USUBJID, LBTESTCDB, LBSTRESN)
+
+covar_vslb <- covar %>%
+  derive_vars_merged(
+    dataset_add = vs,
+    filter_add = VSTESTCD == "HEIGHT",
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(HTBL = VSSTRESN)
+  ) %>%
+  derive_vars_merged(
+    dataset_add = vs,
+    filter_add = VSTESTCD == "WEIGHT" & VSBLFL == "Y",
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(WTBL = VSSTRESN)
+  ) %>%
+  derive_vars_transposed(
+    dataset_merge = labsbl,
+    by_vars = exprs(STUDYID, USUBJID),
+    key_var = LBTESTCDB,
+    value_var = LBSTRESN
+  ) %>%
+  mutate(
+    BMIBL = compute_bmi(height = HTBL, weight = WTBL),
+    BSABL = compute_bsa(
+      height = HTBL,
+      weight = HTBL,
+      method = "Mosteller"
+    ),
+    # Derive CRCLBL and EGFRBL using new function
+    CRCLBL = compute_egfr(
+      creat = CREATBL, creatu = "SI", age = AGE, wt = WTBL, sex = SEX,
+      method = "CRCL"
+    ),
+    EGFRBL = compute_egfr(
+      creat = CREATBL, creatu = "SI", age = AGE, wt = WTBL, sex = SEX,
+      method = "CKD-EPI"
+    )
+  ) %>%
+  rename(TBILBL = BILIBL)
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(
+  covar_vslb,
+  display_vars = exprs(
+    USUBJIDN, AGE, SEXN, HTBL, WTBL, CREATBL, ALTBL, ASTBL
+  )
+)
+
+## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+# Combine covariates with APPPK data
+
+adppk <- adppk_aseq %>%
+  derive_vars_merged(
+    dataset_add = covar_vslb,
+    by_vars = exprs(STUDYID, USUBJID)
+  ) %>%
+  arrange(STUDYIDN, USUBJIDN, AFRLT, EVID) %>%
+  mutate(RECSEQ = row_number())
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+dataset_vignette(
+  adppk,
+  display_vars = exprs(
+    USUBJIDN, AGE, SEXN, CREATBL, EVID, AMT, DV, MDV, RECSEQ
+  )
+)
 
