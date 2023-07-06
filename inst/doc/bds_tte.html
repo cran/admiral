@@ -465,15 +465,6 @@ which should cover the most common use cases.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">ae_gr35_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR %in% c(“3”, “4”, “5”)</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 3-5 ADVERSE EVENT”<br>SRCDOM:
-“ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="even">
 <td align="left">ae_gr3_event</td>
 <td align="left">adae</td>
 <td align="left">TRTEMFL == “Y” &amp; ATOXGR == “3”</td>
@@ -482,13 +473,22 @@ which should cover the most common use cases.</p>
 <td align="left">EVNTDESC: “GRADE 3 ADVERSE EVENT”<br>SRCDOM:
 “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
-<tr class="odd">
-<td align="left">ae_gr5_event</td>
+<tr class="even">
+<td align="left">ae_wd_event</td>
 <td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “5”</td>
+<td align="left">TRTEMFL == “Y” &amp; AEACN == “DRUG WITHDRAWN”</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 5 ADVERSE EVENT”<br>SRCDOM:
+<td align="left">EVNTDESC: “ADVERSE EVENT LEADING TO DRUG
+WITHDRAWAL”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="odd">
+<td align="left">ae_gr35_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR %in% c(“3”, “4”, “5”)</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 3-5 ADVERSE EVENT”<br>SRCDOM:
 “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">
@@ -501,48 +501,12 @@ which should cover the most common use cases.</p>
 “LSTALVDT”</td>
 </tr>
 <tr class="odd">
-<td align="left">ae_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR:
-“ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="even">
-<td align="left">ae_wd_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; AEACN == “DRUG WITHDRAWN”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “ADVERSE EVENT LEADING TO DRUG
-WITHDRAWAL”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="odd">
-<td align="left">ae_gr4_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “4”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “GRADE 4 ADVERSE EVENT”<br>SRCDOM:
-“ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="even">
 <td align="left">ae_gr1_event</td>
 <td align="left">adae</td>
 <td align="left">TRTEMFL == “Y” &amp; ATOXGR == “1”</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
 <td align="left">EVNTDESC: “GRADE 1 ADVERSE EVENT”<br>SRCDOM:
-“ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
-</tr>
-<tr class="odd">
-<td align="left">ae_sev_event</td>
-<td align="left">adae</td>
-<td align="left">TRTEMFL == “Y” &amp; AESEV == “SEVERE”</td>
-<td align="left">ASTDT</td>
-<td align="right">0</td>
-<td align="left">EVNTDESC: “SEVERE ADVERSE EVENT”<br>SRCDOM:
 “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">
@@ -561,6 +525,42 @@ WITHDRAWAL”<br>SRCDOM: “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 <td align="left">ASTDT</td>
 <td align="right">0</td>
 <td align="left">EVNTDESC: “GRADE 2 ADVERSE EVENT”<br>SRCDOM:
+“ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="even">
+<td align="left">ae_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “ADVERSE EVENT”<br>SRCDOM: “ADAE”<br>SRCVAR:
+“ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="odd">
+<td align="left">ae_gr4_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “4”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 4 ADVERSE EVENT”<br>SRCDOM:
+“ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="even">
+<td align="left">ae_gr5_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; ATOXGR == “5”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “GRADE 5 ADVERSE EVENT”<br>SRCDOM:
+“ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
+</tr>
+<tr class="odd">
+<td align="left">ae_sev_event</td>
+<td align="left">adae</td>
+<td align="left">TRTEMFL == “Y” &amp; AESEV == “SEVERE”</td>
+<td align="left">ASTDT</td>
+<td align="right">0</td>
+<td align="left">EVNTDESC: “SEVERE ADVERSE EVENT”<br>SRCDOM:
 “ADAE”<br>SRCVAR: “ASTDT”<br>SRCSEQ: AESEQ</td>
 </tr>
 <tr class="even">

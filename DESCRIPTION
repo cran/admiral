@@ -1,7 +1,7 @@
 Package: admiral
 Type: Package
 Title: ADaM in R Asset Library
-Version: 0.11.0
+Version: 0.11.1
 Authors@R: c(
     person("Ben", "Straub", email = "ben.x.straub@gsk.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut"),
@@ -88,7 +88,7 @@ Suggests: admiral.test (>= 0.6.0), covr, devtools, DT, diffdf, knitr,
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-06-06 20:43:11 UTC; zelos.zhu
+Packaged: 2023-07-05 18:40:47 UTC; r590548
 Author: Ben Straub [aut, cre],
   Stefan Bundfuss [aut],
   Thomas Neitmann [aut],
@@ -150,4 +150,4 @@ Author: Ben Straub [aut, cre],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Ben Straub <ben.x.straub@gsk.com>
 Repository: CRAN
-Date/Publication: 2023-06-08 22:32:58 UTC
+Date/Publication: 2023-07-06 18:50:05 UTC

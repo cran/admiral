@@ -1,6 +1,6 @@
-c757cd1d3e2d8b5ccd2bb3be90bb6b5d *DESCRIPTION
+408f05683226f145b6df29ea538e8496 *DESCRIPTION
 6b1aa7fc8db5d8211a24f5c06175633a *NAMESPACE
-fc106f47f43b2d173372828f7075d8d1 *NEWS.md
+1fdbde3c0171bcd3c5f98f680163cfdf *NEWS.md
 0525c415236fd58b148e98f352a7dcad *R/admiral-package.R
 63bf83650e8e5b233606f78d5c10aa79 *R/admiral_environment.R
 e9926525d207834a168b45b6074f2c75 *R/admiral_options.R
@@ -33,7 +33,7 @@ fcd50a415bf2f6da7f9e913cbe52da47 *R/derive_param_exposure.R
 f5c8d0e6e7f42c7da659293a5ff20cb4 *R/derive_param_extreme_event.R
 beef7715c2d94b73ac6434fcfd2eed7d *R/derive_param_extreme_record.R
 269def9efe52333aa1db86578fd67dee *R/derive_param_framingham.R
-c166f4ea66fe694e2b49e106f75495ad *R/derive_param_tte.R
+dabc75d8cb383f2f2740ce1fb758aa60 *R/derive_param_tte.R
 f2b58350d5c0553b1957c659eb87e90c *R/derive_param_wbc_abs.R
 595c49f094d7302a5e3ff17344590d49 *R/derive_summary_records.R
 fc7dc2bb55d5076abdfe8f58e7f6de3a *R/derive_var_analysis_ratio.R
@@ -80,8 +80,8 @@ a3e16a7ee6cd8d2e61b339ca69b11c66 *R/slice_derivation.R
 2a375f247daf560ff9e2cd5ae301edf5 *R/tte_sources.R
 8972750102a9a6514055f072708b142a *R/user_helpers.R
 cc356967a4c26ff0bebb467241aa826d *R/user_utils.R
-9b89af2775e9c6479f3d7800ba473459 *README.md
-b3ded5793e750b571bafac5e13e7c9d0 *build/vignette.rds
+99ec1e8d2a00e954429af1052ea44461 *README.md
+c1567a1dcaf1cfe8d6ff3d9db54e8035 *build/vignette.rds
 70082097fb3b4ec04d6a09176c33032b *data/admiral_adlb.rda
 2c2fc1b37990073e35814b669864a4f7 *data/admiral_adsl.rda
 4b5362a5a47d1bdc88f29ccbd22dfe7c *data/atoxgr_criteria_ctcv4.rda
@@ -105,7 +105,7 @@ a4d2e6c98d68b4fd1187e9b8343f83d1 *inst/doc/bds_finding.R
 766c31c5015024b9489e60dabe64e48f *inst/doc/bds_finding.html
 227779afb4fa876356f413a151522de9 *inst/doc/bds_tte.R
 903544b0718712cab319a23c38f2060a *inst/doc/bds_tte.Rmd
-44a461e27c1aac8df28d5905bc4f6316 *inst/doc/bds_tte.html
+d05eeef3cc133970b0ec3352d0ae8e2c *inst/doc/bds_tte.html
 9809b14a863ae92b089b53aeb2f91b55 *inst/doc/generic.R
 0cd4f403872b9f167f2c5dd7d4e45fec *inst/doc/generic.Rmd
 a9084e6f423c90ad8836d55926ba9b65 *inst/doc/generic.html
