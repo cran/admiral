@@ -9,16 +9,16 @@ library(admiraldev)
 ## ----message=FALSE------------------------------------------------------------
 library(admiral)
 library(dplyr, warn.conflicts = FALSE)
-library(admiral.test)
+library(pharmaversesdtm)
 library(lubridate)
 library(stringr)
 library(tibble)
 
 data("admiral_adsl")
-data("admiral_ex")
+data("ex")
 
 adsl <- admiral_adsl
-ex <- convert_blanks_to_na(admiral_ex)
+ex <- convert_blanks_to_na(ex)
 
 ## ----echo=FALSE---------------------------------------------------------------
 ex <- filter(ex, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01-703-1096", "01-707-1037", "01-716-1024"))

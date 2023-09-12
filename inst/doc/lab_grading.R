@@ -8,15 +8,15 @@ library(admiraldev)
 
 ## ----message=FALSE------------------------------------------------------------
 library(admiral)
-library(admiral.test)
+library(pharmaversesdtm)
 library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 library(tibble)
 
-data("admiral_lb")
+data("lb")
 
 adsl <- admiral_adsl
-lb <- convert_blanks_to_na(admiral_lb)
+lb <- convert_blanks_to_na(lb)
 
 ## ----echo=FALSE---------------------------------------------------------------
 lb <- filter(lb, USUBJID %in% c("01-701-1115", "01-705-1186", "01-705-1349", "01-708-1286", "01-707-1037", "01-716-1024"))
@@ -31,6 +31,14 @@ atoxgr_criteria_ctcv4 %>%
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
 atoxgr_criteria_ctcv5 %>%
   filter(!is.na(TERM)) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(!is.na(TERM)) %>%
+  distinct(TERM) %>%
   dataset_vignette(
     display_vars = exprs(TERM)
   )
@@ -263,5 +271,61 @@ atoxgr_criteria_ctcv5 %>%
   filter(str_detect(TERM, "Hypokalemia") | str_detect(TERM, "Hyponatremia")) %>%
   dataset_vignette(
     display_vars = exprs(TERM, Grade_1, Grade_2, Grade_3, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(str_detect(TERM, "Cholesterol")) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, FILTER)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(str_detect(COMMENT, "No criteria given")) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, FILTER, GRADE_CRITERIA_CODE)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(TERM %in% c("INR, High", "PT, High", "PTT, High")) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(str_detect(COMMENT, "HIV infected")) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(str_detect(COMMENT, "lifethreatening")) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(str_detect(TERM, "Lactate")) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, Grade_1, Grade_1)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(str_detect(TERM, "Lactate")) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, COMMENT)
+  )
+
+## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(str_detect(COMMENT, "conver")) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, FILTER, COMMENT)
   )
 

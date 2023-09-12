@@ -8,15 +8,15 @@ library(admiraldev)
 
 ## ---- warning=FALSE, message=FALSE--------------------------------------------
 library(admiral)
-library(admiral.test)
+library(pharmaversesdtm)
 library(dplyr, warn.conflicts = FALSE)
 
 data("admiral_adsl")
-data("admiral_ae")
-data("admiral_vs")
+data("ae")
+data("vs")
 adsl <- admiral_adsl
-ae <- convert_blanks_to_na(admiral_ae)
-vs <- convert_blanks_to_na(admiral_vs)
+ae <- convert_blanks_to_na(ae)
+vs <- convert_blanks_to_na(vs)
 
 ## ----echo=FALSE---------------------------------------------------------------
 adsl <- filter(adsl, USUBJID %in% c("01-701-1111", "01-705-1393"))

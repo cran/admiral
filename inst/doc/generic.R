@@ -7,19 +7,19 @@ library(admiraldev)
 
 ## ---- warning=FALSE, message=FALSE--------------------------------------------
 library(admiral)
-library(admiral.test)
+library(pharmaversesdtm)
 library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 library(tibble)
 
-data("admiral_dm")
-data("admiral_ds")
-data("admiral_ex")
-data("admiral_ae")
-dm <- convert_blanks_to_na(admiral_dm)
-ds <- convert_blanks_to_na(admiral_ds)
-ex <- convert_blanks_to_na(admiral_ex)
-ae <- convert_blanks_to_na(admiral_ae)
+data("dm")
+data("ds")
+data("ex")
+data("ae")
+dm <- convert_blanks_to_na(dm)
+ds <- convert_blanks_to_na(ds)
+ex <- convert_blanks_to_na(ex)
+ae <- convert_blanks_to_na(ae)
 
 ## ----echo=FALSE---------------------------------------------------------------
 # Filter test patients and make more realistic and interesting for the examples

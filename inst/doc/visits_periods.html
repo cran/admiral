@@ -354,10 +354,10 @@ functions are provided which support those derivations.</p>
 <div id="required-packages" class="section level2">
 <h2>Required Packages</h2>
 <p>The examples of this vignette require the following packages.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code></pre></div>
 </div>
 </div>
 <div id="visits" class="section level1">
@@ -377,38 +377,38 @@ created which provides for each visit the start and end day
 (<code>AWLO</code> and <code>AWHI</code>) and the values of other visit
 related variables (<code>AVISIT</code>, <code>AVISITN</code>,
 <code>AWTARGET</code>, …).</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>windows <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>AVISIT,    <span class="sc">~</span>AWLO, <span class="sc">~</span>AWHI, <span class="sc">~</span>AVISITN, <span class="sc">~</span>AWTARGET,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BASELINE&quot;</span>,   <span class="sc">-</span><span class="dv">30</span>,     <span class="dv">1</span>,        <span class="dv">0</span>,         <span class="dv">1</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;WEEK 1&quot;</span>,       <span class="dv">2</span>,     <span class="dv">7</span>,        <span class="dv">1</span>,         <span class="dv">5</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;WEEK 2&quot;</span>,       <span class="dv">8</span>,    <span class="dv">15</span>,        <span class="dv">2</span>,        <span class="dv">11</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;WEEK 3&quot;</span>,      <span class="dv">16</span>,    <span class="dv">22</span>,        <span class="dv">3</span>,        <span class="dv">19</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;WEEK 4&quot;</span>,      <span class="dv">23</span>,    <span class="dv">30</span>,        <span class="dv">4</span>,        <span class="dv">26</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>windows <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="sc">~</span>AVISIT,    <span class="sc">~</span>AWLO, <span class="sc">~</span>AWHI, <span class="sc">~</span>AVISITN, <span class="sc">~</span>AWTARGET,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="st">&quot;BASELINE&quot;</span>,   <span class="sc">-</span><span class="dv">30</span>,     <span class="dv">1</span>,        <span class="dv">0</span>,         <span class="dv">1</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="st">&quot;WEEK 1&quot;</span>,       <span class="dv">2</span>,     <span class="dv">7</span>,        <span class="dv">1</span>,         <span class="dv">5</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="st">&quot;WEEK 2&quot;</span>,       <span class="dv">8</span>,    <span class="dv">15</span>,        <span class="dv">2</span>,        <span class="dv">11</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="st">&quot;WEEK 3&quot;</span>,      <span class="dv">16</span>,    <span class="dv">22</span>,        <span class="dv">3</span>,        <span class="dv">19</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="st">&quot;WEEK 4&quot;</span>,      <span class="dv">23</span>,    <span class="dv">30</span>,        <span class="dv">4</span>,        <span class="dv">26</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>)</span></code></pre></div>
 <p>Then the visits can be assigned based on the analysis day
 (<code>ADY</code>) by calling <code>derive_vars_joined()</code>:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adbds <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ADY,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,       <span class="sc">-</span><span class="dv">33</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,        <span class="sc">-</span><span class="dv">2</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,         <span class="dv">3</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,        <span class="dv">24</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,        <span class="cn">NA</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">derive_vars_joined</span>(</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  adbds,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> windows,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_join =</span> AWLO <span class="sc">&lt;=</span> ADY <span class="sc">&amp;</span> ADY <span class="sc">&lt;=</span> AWHI</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 7</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   USUBJID   ADY AVISIT    AWLO  AWHI AVISITN AWTARGET</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1         -33 &lt;NA&gt;        NA    NA      NA       NA</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 1          -2 BASELINE   -30     1       0        1</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 1           3 WEEK 1       2     7       1        5</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 1          24 WEEK 4      23    30       4       26</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 2          NA &lt;NA&gt;        NA    NA      NA       NA</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>adbds <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ADY,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,       <span class="sc">-</span><span class="dv">33</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,        <span class="sc">-</span><span class="dv">2</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,         <span class="dv">3</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,        <span class="dv">24</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,        <span class="cn">NA</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="fu">derive_vars_joined</span>(</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  adbds,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">dataset_add =</span> windows,</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="at">filter_join =</span> AWLO <span class="sc">&lt;=</span> ADY <span class="sc">&amp;</span> ADY <span class="sc">&lt;=</span> AWHI</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>)</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 7</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;   USUBJID   ADY AVISIT    AWLO  AWHI AVISITN AWTARGET</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt; 1 1         -33 &lt;NA&gt;        NA    NA      NA       NA</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; 2 1          -2 BASELINE   -30     1       0        1</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; 3 1           3 WEEK 1       2     7       1        5</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; 4 1          24 WEEK 4      23    30       4       26</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; 5 2          NA &lt;NA&gt;        NA    NA      NA       NA</span></span></code></pre></div>
 </div>
 <div id="period-subperiod-and-phase-variables" class="section level1">
 <h1>Period, Subperiod, and Phase Variables</h1>
@@ -442,21 +442,21 @@ calling <code>derive_vars_period()</code>.</p>
 <p>For example the period reference dataset from the previous section
 can be used to add the phase variables (<code>PHwSDT</code>,
 <code>PHwEDT</code>, and <code>APHASEw</code>) to ADSL:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">STUDYID =</span> <span class="st">&quot;xyz&quot;</span>, <span class="at">USUBJID =</span> <span class="fu">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>))</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> <span class="fu">derive_vars_period</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  adsl,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_ref =</span> phase_ref,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">PHwSDT =</span> PHSDT, <span class="at">PHwEDT =</span> PHEDT, <span class="at">APHASEw =</span> APHASE)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, PH1SDT, PH1EDT, PH2SDT, PH2EDT, APHASE1, APHASE2)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>adsl</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 8</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID PH1SDT     PH1EDT     PH2SDT     PH2EDT     APHASE1   APHASE2</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     &lt;chr&gt;  </span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 xyz     1       2021-01-04 2021-02-06 2021-02-07 2021-03-07 TREATMENT FUP    </span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 xyz     2       2021-02-02 2021-03-02 NA         NA         TREATMENT &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">STUDYID =</span> <span class="st">&quot;xyz&quot;</span>, <span class="at">USUBJID =</span> <span class="fu">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> <span class="fu">derive_vars_period</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  adsl,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">dataset_ref =</span> phase_ref,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">PHwSDT =</span> PHSDT, <span class="at">PHwEDT =</span> PHEDT, <span class="at">APHASEw =</span> APHASE)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, PH1SDT, PH1EDT, PH2SDT, PH2EDT, APHASE1, APHASE2)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>adsl</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 8</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID PH1SDT     PH1EDT     PH2SDT     PH2EDT     APHASE1   APHASE2</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     &lt;chr&gt;  </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; 1 xyz     1       2021-01-04 2021-02-06 2021-02-07 2021-03-07 TREATMENT FUP    </span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; 2 xyz     2       2021-02-02 2021-03-02 NA         NA         TREATMENT &lt;NA&gt;</span></span></code></pre></div>
 </div>
 <div id="periods_bds" class="section level2">
 <h2>Creating BDS and OCCDS Period, Subperiod, or Phase Variables</h2>
@@ -466,48 +466,48 @@ for periods, subperiods, or phases can be created by calling
 <p>For example the variables <code>APHASEN</code>, <code>PHSDT</code>,
 <code>PHEDT</code>, <code>APHASE</code> can be derived from the period
 reference dataset defined above.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDT,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-01-01&quot;</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-01-05&quot;</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-02-05&quot;</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-03-05&quot;</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-04-05&quot;</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2021-02-15&quot;</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ASTDT =</span> <span class="fu">ymd</span>(ASTDT))</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">derive_vars_joined</span>(</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  adae,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> phase_ref,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_join =</span> PHSDT <span class="sc">&lt;=</span> ASTDT <span class="sc">&amp;</span> ASTDT <span class="sc">&lt;=</span> PHEDT</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 7</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   USUBJID ASTDT      STUDYID APHASEN PHSDT      PHEDT      APHASE   </span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;chr&gt;     &lt;int&gt; &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;    </span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1       2021-01-01 &lt;NA&gt;         NA NA         NA         &lt;NA&gt;     </span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 1       2021-01-05 xyz           1 2021-01-04 2021-02-06 TREATMENT</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 1       2021-02-05 xyz           1 2021-01-04 2021-02-06 TREATMENT</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 1       2021-03-05 xyz           2 2021-02-07 2021-03-07 FUP      </span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 1       2021-04-05 &lt;NA&gt;         NA NA         NA         &lt;NA&gt;     </span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 2       2021-02-15 xyz           1 2021-02-02 2021-03-02 TREATMENT</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDT,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-01-01&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-01-05&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-02-05&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-03-05&quot;</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-04-05&quot;</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2021-02-15&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ASTDT =</span> <span class="fu">ymd</span>(ASTDT))</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="fu">derive_vars_joined</span>(</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  adae,</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="at">dataset_add =</span> phase_ref,</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="at">filter_join =</span> PHSDT <span class="sc">&lt;=</span> ASTDT <span class="sc">&amp;</span> ASTDT <span class="sc">&lt;=</span> PHEDT</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>)</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 7</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt;   USUBJID ASTDT      STUDYID APHASEN PHSDT      PHEDT      APHASE   </span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;chr&gt;     &lt;int&gt; &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;    </span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; 1 1       2021-01-01 &lt;NA&gt;         NA NA         NA         &lt;NA&gt;     </span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; 2 1       2021-01-05 xyz           1 2021-01-04 2021-02-06 TREATMENT</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; 3 1       2021-02-05 xyz           1 2021-01-04 2021-02-06 TREATMENT</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; 4 1       2021-03-05 xyz           2 2021-02-07 2021-03-07 FUP      </span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co">#&gt; 5 1       2021-04-05 &lt;NA&gt;         NA NA         NA         &lt;NA&gt;     </span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="co">#&gt; 6 2       2021-02-15 xyz           1 2021-02-02 2021-03-02 TREATMENT</span></span></code></pre></div>
 <p>If no period reference dataset is available but period variables are
 in ADSL, the period reference dataset can be created from ADSL by
 calling <code>create_period_dataset()</code>.</p>
 <p>For <span id="adsl_example">example</span>, a period reference
 dataset for phases can be created from the ADSL dataset created
 above:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_period_dataset</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  adsl,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">PHSDT =</span> PHwSDT, <span class="at">PHEDT =</span> PHwEDT, <span class="at">APHASE =</span> APHASEw)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 6</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID APHASEN PHSDT      PHEDT      APHASE   </span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt; &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;    </span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 xyz     1             1 2021-01-04 2021-02-06 TREATMENT</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 xyz     1             2 2021-02-07 2021-03-07 FUP      </span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 xyz     2             1 2021-02-02 2021-03-02 TREATMENT</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">create_period_dataset</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  adsl,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">PHSDT =</span> PHwSDT, <span class="at">PHEDT =</span> PHwEDT, <span class="at">APHASE =</span> APHASEw)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 6</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID APHASEN PHSDT      PHEDT      APHASE   </span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt; &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;    </span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; 1 xyz     1             1 2021-01-04 2021-02-06 TREATMENT</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; 2 xyz     1             2 2021-02-07 2021-03-07 FUP      </span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; 3 xyz     2             1 2021-02-02 2021-03-02 TREATMENT</span></span></code></pre></div>
 </div>
 </div>
 <div id="treatment-variables-trtxxp-trtxxa-trtp-trta" class="section level1">
@@ -526,41 +526,41 @@ and phase variables.</p>
 <p>If the treatment information is included in the period reference
 dataset, the treatment ADSL variables can be created by calling
 <code>derive_vars_period()</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add period variables to ADSL</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>period_ref <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>APERIOD, <span class="sc">~</span>APERSDT,     <span class="sc">~</span>APEREDT,     <span class="sc">~</span>TRTA,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,             <span class="dv">1</span>, <span class="st">&quot;2021-01-04&quot;</span>, <span class="st">&quot;2021-02-06&quot;</span>, <span class="st">&quot;DRUG A&quot;</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,             <span class="dv">2</span>, <span class="st">&quot;2021-02-07&quot;</span>, <span class="st">&quot;2021-03-07&quot;</span>, <span class="st">&quot;DRUG B&quot;</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,             <span class="dv">1</span>, <span class="st">&quot;2021-02-02&quot;</span>, <span class="st">&quot;2021-03-02&quot;</span>, <span class="st">&quot;DRUG B&quot;</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,             <span class="dv">2</span>, <span class="st">&quot;2021-03-03&quot;</span>, <span class="st">&quot;2021-04-01&quot;</span>, <span class="st">&quot;DRUG B&quot;</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">STUDYID =</span> <span class="st">&quot;xyz&quot;</span>,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">APERIOD =</span> <span class="fu">as.integer</span>(APERIOD),</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">ends_with</span>(<span class="st">&quot;DT&quot;</span>), ymd)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> <span class="fu">derive_vars_period</span>(</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  adsl,</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_ref =</span> period_ref,</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">APxxSDT =</span> APERSDT,</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">APxxEDT =</span> APEREDT,</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">TRTxxA =</span> TRTA</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    STUDYID, USUBJID,</span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    TRT01A, TRT02A,</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    AP01SDT, AP01EDT, AP02SDT, AP02EDT</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>adsl</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 8</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID TRT01A TRT02A AP01SDT    AP01EDT    AP02SDT    AP02EDT   </span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;  &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;    </span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 xyz     1       DRUG A DRUG B 2021-01-04 2021-02-06 2021-02-07 2021-03-07</span></span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 xyz     2       DRUG B DRUG B 2021-02-02 2021-03-02 2021-03-03 2021-04-01</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Add period variables to ADSL</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>period_ref <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>APERIOD, <span class="sc">~</span>APERSDT,     <span class="sc">~</span>APEREDT,     <span class="sc">~</span>TRTA,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,             <span class="dv">1</span>, <span class="st">&quot;2021-01-04&quot;</span>, <span class="st">&quot;2021-02-06&quot;</span>, <span class="st">&quot;DRUG A&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,             <span class="dv">2</span>, <span class="st">&quot;2021-02-07&quot;</span>, <span class="st">&quot;2021-03-07&quot;</span>, <span class="st">&quot;DRUG B&quot;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,             <span class="dv">1</span>, <span class="st">&quot;2021-02-02&quot;</span>, <span class="st">&quot;2021-03-02&quot;</span>, <span class="st">&quot;DRUG B&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,             <span class="dv">2</span>, <span class="st">&quot;2021-03-03&quot;</span>, <span class="st">&quot;2021-04-01&quot;</span>, <span class="st">&quot;DRUG B&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    <span class="at">STUDYID =</span> <span class="st">&quot;xyz&quot;</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>    <span class="at">APERIOD =</span> <span class="fu">as.integer</span>(APERIOD),</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">ends_with</span>(<span class="st">&quot;DT&quot;</span>), ymd)</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  )</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> <span class="fu">derive_vars_period</span>(</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>  adsl,</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="at">dataset_ref =</span> period_ref,</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>    <span class="at">APxxSDT =</span> APERSDT,</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    <span class="at">APxxEDT =</span> APEREDT,</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>    <span class="at">TRTxxA =</span> TRTA</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>  )</span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>    STUDYID, USUBJID,</span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>    TRT01A, TRT02A,</span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>    AP01SDT, AP01EDT, AP02SDT, AP02EDT</span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>  )</span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>adsl</span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 8</span></span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID TRT01A TRT02A AP01SDT    AP01EDT    AP02SDT    AP02EDT   </span></span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;  &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;date&gt;    </span></span>
+<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a><span class="co">#&gt; 1 xyz     1       DRUG A DRUG B 2021-01-04 2021-02-06 2021-02-07 2021-03-07</span></span>
+<span id="cb8-35"><a href="#cb8-35" tabindex="-1"></a><span class="co">#&gt; 2 xyz     2       DRUG B DRUG B 2021-02-02 2021-03-02 2021-03-03 2021-04-01</span></span></code></pre></div>
 </div>
 <div id="treatment_bds" class="section level2">
 <h2>Creating BDS and OCCDS Treatment Variables</h2>
@@ -569,53 +569,53 @@ for treatment can be created by calling
 <code>derive_vars_joined()</code>.</p>
 <p>For example the variables <code>APERIOD</code> and <code>TRTA</code>
 can be derived from the period reference dataset defined above.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDT,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-01-05&quot;</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-02-05&quot;</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-03-05&quot;</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-04-05&quot;</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2021-02-15&quot;</span>,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2021-03-10&quot;</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ASTDT =</span> <span class="fu">ymd</span>(ASTDT),</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">STUDYID =</span> <span class="st">&quot;xyz&quot;</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">derive_vars_joined</span>(</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  adae,</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> period_ref,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(APERIOD, TRTA),</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">join_vars =</span> <span class="fu">exprs</span>(APERSDT, APEREDT),</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_join =</span> APERSDT <span class="sc">&lt;=</span> ASTDT <span class="sc">&amp;</span> ASTDT <span class="sc">&lt;=</span> APEREDT</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 5</span></span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   USUBJID ASTDT      STUDYID APERIOD TRTA  </span></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; </span></span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1       2021-01-05 xyz           1 DRUG A</span></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 1       2021-02-05 xyz           1 DRUG A</span></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 1       2021-03-05 xyz           2 DRUG B</span></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 1       2021-04-05 xyz          NA &lt;NA&gt;  </span></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 2       2021-02-15 xyz           1 DRUG B</span></span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 2       2021-03-10 xyz           2 DRUG B</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDT,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-01-05&quot;</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-02-05&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-03-05&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2021-04-05&quot;</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2021-02-15&quot;</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2021-03-10&quot;</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>    <span class="at">ASTDT =</span> <span class="fu">ymd</span>(ASTDT),</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>    <span class="at">STUDYID =</span> <span class="st">&quot;xyz&quot;</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  )</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="fu">derive_vars_joined</span>(</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  adae,</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="at">dataset_add =</span> period_ref,</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(APERIOD, TRTA),</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>  <span class="at">join_vars =</span> <span class="fu">exprs</span>(APERSDT, APEREDT),</span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>  <span class="at">filter_join =</span> APERSDT <span class="sc">&lt;=</span> ASTDT <span class="sc">&amp;</span> ASTDT <span class="sc">&lt;=</span> APEREDT</span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>)</span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt;   USUBJID ASTDT      STUDYID APERIOD TRTA  </span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;chr&gt;     &lt;int&gt; &lt;chr&gt; </span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; 1 1       2021-01-05 xyz           1 DRUG A</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; 2 1       2021-02-05 xyz           1 DRUG A</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a><span class="co">#&gt; 3 1       2021-03-05 xyz           2 DRUG B</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a><span class="co">#&gt; 4 1       2021-04-05 xyz          NA &lt;NA&gt;  </span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a><span class="co">#&gt; 5 2       2021-02-15 xyz           1 DRUG B</span></span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a><span class="co">#&gt; 6 2       2021-03-10 xyz           2 DRUG B</span></span></code></pre></div>
 <p>If no period reference dataset is available but period variables are
 in ADSL, the period reference dataset can be created from ADSL by
 calling <code>create_period_dataset()</code>.</p>
 <p>For example, a period reference dataset for periods and treatments
 can be created from the ADSL dataset created above:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_period_dataset</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  adsl,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">APERSDT =</span> APxxSDT, <span class="at">APEREDT =</span> APxxEDT, <span class="at">TRTA =</span> TRTxxA)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 6</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID APERIOD APERSDT    APEREDT    TRTA  </span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt; &lt;date&gt;     &lt;date&gt;     &lt;chr&gt; </span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 xyz     1             1 2021-01-04 2021-02-06 DRUG A</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 xyz     1             2 2021-02-07 2021-03-07 DRUG B</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 xyz     2             1 2021-02-02 2021-03-02 DRUG B</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 xyz     2             2 2021-03-03 2021-04-01 DRUG B</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">create_period_dataset</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  adsl,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">APERSDT =</span> APxxSDT, <span class="at">APEREDT =</span> APxxEDT, <span class="at">TRTA =</span> TRTxxA)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 6</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID APERIOD APERSDT    APEREDT    TRTA  </span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt; &lt;date&gt;     &lt;date&gt;     &lt;chr&gt; </span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; 1 xyz     1             1 2021-01-04 2021-02-06 DRUG A</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; 2 xyz     1             2 2021-02-07 2021-03-07 DRUG B</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; 3 xyz     2             1 2021-02-02 2021-03-02 DRUG B</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; 4 xyz     2             2 2021-03-03 2021-04-01 DRUG B</span></span></code></pre></div>
 </div>
 </div>
 <div id="study-specific-code" class="section level1">

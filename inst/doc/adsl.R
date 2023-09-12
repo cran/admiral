@@ -9,21 +9,21 @@ library(admiraldev)
 ## ---- message=FALSE, warning=FALSE--------------------------------------------
 library(admiral)
 library(dplyr, warn.conflicts = FALSE)
-library(admiral.test)
+library(pharmaversesdtm)
 library(lubridate)
 library(stringr)
 
-data("admiral_dm")
-data("admiral_ds")
-data("admiral_ex")
-data("admiral_ae")
-data("admiral_lb")
+data("dm")
+data("ds")
+data("ex")
+data("ae")
+data("lb")
 
-dm <- convert_blanks_to_na(admiral_dm)
-ds <- convert_blanks_to_na(admiral_ds)
-ex <- convert_blanks_to_na(admiral_ex)
-ae <- convert_blanks_to_na(admiral_ae)
-lb <- convert_blanks_to_na(admiral_lb)
+dm <- convert_blanks_to_na(dm)
+ds <- convert_blanks_to_na(ds)
+ex <- convert_blanks_to_na(ex)
+ae <- convert_blanks_to_na(ae)
+lb <- convert_blanks_to_na(lb)
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- dm %>%
@@ -131,7 +131,7 @@ adsl <- adsl %>%
     by_vars = exprs(STUDYID, USUBJID),
     filter_add = DSCAT == "DISPOSITION EVENT",
     new_vars = exprs(EOSSTT = format_eosstt(DSDECOD)),
-    missing_value = exprs(EOSSTT = "ONGOING")
+    missing_values = exprs(EOSSTT = "ONGOING")
   )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
@@ -256,7 +256,7 @@ src_ae <- dthcaus_source(
   date = convert_dtc_to_dtm(AESTDTC, highest_imputation = "M"),
   mode = "first",
   dthcaus = AEDECOD,
-  traceability_vars = exprs(DTHDOM = "AE", DTHSEQ = AESEQ)
+  set_values_to = exprs(DTHDOM = "AE", DTHSEQ = AESEQ)
 )
 
 src_ds <- dthcaus_source(
@@ -265,7 +265,7 @@ src_ds <- dthcaus_source(
   date = DSSTDT,
   mode = "first",
   dthcaus = DSTERM,
-  traceability_vars = exprs(DTHDOM = "DS", DTHSEQ = DSSEQ)
+  set_values_to = exprs(DTHDOM = "DS", DTHSEQ = DSSEQ)
 )
 adsl <- adsl %>%
   select(-DTHCAUS) %>% # remove it before deriving it again
@@ -343,22 +343,22 @@ dataset_vignette(
 ae_start_date <- date_source(
   dataset_name = "ae",
   date = convert_dtc_to_dt(AESTDTC, highest_imputation = "M"),
-  traceability_vars = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AESTDTC")
+  set_values_to = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AESTDTC")
 )
 ae_end_date <- date_source(
   dataset_name = "ae",
   date = convert_dtc_to_dt(AEENDTC, highest_imputation = "M"),
-  traceability_vars = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AEENDTC")
+  set_values_to = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AEENDTC")
 )
 lb_date <- date_source(
   dataset_name = "lb",
   date = convert_dtc_to_dt(LBDTC, highest_imputation = "M"),
-  traceability_vars = exprs(LALVDOM = "LB", LALVSEQ = LBSEQ, LALVVAR = "LBDTC")
+  set_values_to = exprs(LALVDOM = "LB", LALVSEQ = LBSEQ, LALVVAR = "LBDTC")
 )
 trt_end_date <- date_source(
   dataset_name = "adsl",
   date = TRTEDTM,
-  traceability_vars = exprs(LALVDOM = "ADSL", LALVSEQ = NA_integer_, LALVVAR = "TRTEDTM")
+  set_values_to = exprs(LALVDOM = "ADSL", LALVSEQ = NA_integer_, LALVVAR = "TRTEDTM")
 )
 
 adsl <- adsl %>%

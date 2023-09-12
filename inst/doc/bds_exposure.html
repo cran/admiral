@@ -382,31 +382,31 @@ etc. from Reference Tables</a></li>
 company specific process. Some of the data frames needed may be
 <code>EX</code> and <code>ADSL</code>.</p>
 <p>For example purpose, the CDISC Pilot SDTM and ADaM datasets—which are
-included in <code>{admiral.test}</code>—are used.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_ex&quot;</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(admiral_ex)</span></code></pre></div>
+included in <code>{pharmaversesdtm}</code>—are used.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(pharmaversesdtm)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ex&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ex)</span></code></pre></div>
 <p>At this step, it may be useful to join <code>ADSL</code> to your
 <code>EX</code> domain as well. Only the <code>ADSL</code> variables
 used for derivations are selected at this step. The rest of the relevant
 <code>ADSL</code> variables would be added later.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>adsl_vars <span class="ot">&lt;-</span> <span class="fu">exprs</span>(TRTSDT, TRTSDTM, TRTEDT, TRTEDTM)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  ex,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> adsl,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> adsl_vars,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>adsl_vars <span class="ot">&lt;-</span> <span class="fu">exprs</span>(TRTSDT, TRTSDTM, TRTEDT, TRTEDTM)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  ex,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">dataset_add =</span> adsl,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">new_vars =</span> adsl_vars,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="11%" />
@@ -548,32 +548,32 @@ used for derivations are selected at this step. The rest of the relevant
 <p>The CDISC pilot <code>EX</code> domain data does not contain a dose
 adjustment flag or the planned dose information. For demonstration
 purposes, this will be added to the data.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">EXADJ =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1028&quot;</span> <span class="sc">&amp;</span> VISIT <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;WEEK 2&quot;</span>) <span class="sc">~</span> <span class="st">&quot;ADVERSE EVENT&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1148&quot;</span> <span class="sc">&amp;</span> VISIT <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;WEEK 2&quot;</span>, <span class="st">&quot;WEEK 24&quot;</span>) <span class="sc">~</span> <span class="st">&quot;MEDICATION ERROR&quot;</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">EXDOSE =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1028&quot;</span> <span class="sc">&amp;</span> VISIT <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;WEEK 2&quot;</span>) <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1148&quot;</span> <span class="sc">&amp;</span> VISIT <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;WEEK 2&quot;</span>, <span class="st">&quot;WEEK 24&quot;</span>) <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> EXDOSE</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">EXPLDOS =</span> <span class="fu">if_else</span>(EXTRT <span class="sc">==</span> <span class="st">&quot;PLACEBO&quot;</span>, <span class="dv">0</span>, <span class="dv">54</span>))</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">distinct</span>(adex, EXTRT, EXPLDOS)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 2</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   EXTRT      EXPLDOS</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 PLACEBO          0</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 XANOMELINE      54</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(adex, EXADJ)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 2</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   EXADJ     n</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;int&gt;</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 &lt;NA&gt;     13</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">EXADJ =</span> <span class="fu">case_when</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>      USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1028&quot;</span> <span class="sc">&amp;</span> VISIT <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;WEEK 2&quot;</span>) <span class="sc">~</span> <span class="st">&quot;ADVERSE EVENT&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>      USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1148&quot;</span> <span class="sc">&amp;</span> VISIT <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;WEEK 2&quot;</span>, <span class="st">&quot;WEEK 24&quot;</span>) <span class="sc">~</span> <span class="st">&quot;MEDICATION ERROR&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    ),</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">EXDOSE =</span> <span class="fu">case_when</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>      USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1028&quot;</span> <span class="sc">&amp;</span> VISIT <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;WEEK 2&quot;</span>) <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>      USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1148&quot;</span> <span class="sc">&amp;</span> VISIT <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;WEEK 2&quot;</span>, <span class="st">&quot;WEEK 24&quot;</span>) <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> EXDOSE</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    )</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">EXPLDOS =</span> <span class="fu">if_else</span>(EXTRT <span class="sc">==</span> <span class="st">&quot;PLACEBO&quot;</span>, <span class="dv">0</span>, <span class="dv">54</span>))</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="fu">distinct</span>(adex, EXTRT, EXPLDOS)</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 2</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;   EXTRT      EXPLDOS</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; 1 PLACEBO          0</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; 2 XANOMELINE      54</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="fu">count</span>(adex, EXADJ)</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 2</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt;   EXADJ     n</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;int&gt;</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; 1 &lt;NA&gt;     13</span></span></code></pre></div>
 </div>
 <div id="datetime" class="section level2">
 <h2>Derive/Impute Numeric Date/Time and Analysis Day (<code>ADT</code>,
@@ -583,8 +583,8 @@ purposes, this will be added to the data.</p>
 <code>ADT</code>. This function allows the user to impute the date as
 well.</p>
 <p>Example calls:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(adex, <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>, <span class="at">dtc =</span> EXSTDTC)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(adex, <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>, <span class="at">dtc =</span> EXENDTC)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(adex, <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>, <span class="at">dtc =</span> EXSTDTC)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dt</span>(adex, <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>, <span class="at">dtc =</span> EXENDTC)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -682,20 +682,20 @@ well.</p>
 <p>The next examples demonstrates the datetime imputation features
 available in the <code>derive_vars_dtm()</code> function, where the time
 is imputed as “00:00:00”:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  adex,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> EXSTDTC,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  adex,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> EXENDTC,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  adex,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">dtc =</span> EXSTDTC,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  adex,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">dtc =</span> EXENDTC,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -795,11 +795,11 @@ the month and imputes the end date to the last day of the month.</p>
 <p>Please see the <a href="imputation.Rmd">Date and Time Imputation</a>
 for additional examples on calculating and imputing analysis dates.</p>
 <p>Next, the analysis study days can be derived:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dy</span>(adex,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">reference_date =</span> TRTSDT,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_vars =</span> <span class="fu">exprs</span>(ASTDT, AENDT)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">derive_vars_dy</span>(adex,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    <span class="at">reference_date =</span> TRTSDT,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="at">source_vars =</span> <span class="fu">exprs</span>(ASTDT, AENDT)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="18%" />
@@ -919,12 +919,12 @@ for additional examples on calculating and imputing analysis dates.</p>
 <h2>Compute duration for a record</h2>
 <p>To compute the duration of treatment or exposure for a record, the
 <code>derive_vars_duration()</code> function can be used.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> EXDURD,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> ASTDT,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> AENDT</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    <span class="at">new_var =</span> EXDURD,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="at">start_date =</span> ASTDT,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">end_date =</span> AENDT</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1032,13 +1032,13 @@ for additional examples on calculating and imputing analysis dates.</p>
 </table>
 <p>The units of the calculated duration can also be changed. In this
 example, the duration is output as years:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> EXDURDY,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;years&quot;</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> ASTDT,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> AENDT</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="at">new_var =</span> EXDURDY,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;years&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="at">start_date =</span> ASTDT,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="at">end_date =</span> AENDT</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1057,7 +1057,7 @@ example, the duration is output as years:</p>
 <td align="left">2014-01-02</td>
 <td align="left">2014-01-16</td>
 <td align="right">15</td>
-<td align="right">0.0410940</td>
+<td align="right">0.0410678</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -1065,7 +1065,7 @@ example, the duration is output as years:</p>
 <td align="left">2014-01-17</td>
 <td align="left">2014-06-18</td>
 <td align="right">153</td>
-<td align="right">0.4191762</td>
+<td align="right">0.4188912</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1015</td>
@@ -1073,7 +1073,7 @@ example, the duration is output as years:</p>
 <td align="left">2014-06-19</td>
 <td align="left">2014-07-02</td>
 <td align="right">14</td>
-<td align="right">0.0383543</td>
+<td align="right">0.0383299</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1023</td>
@@ -1081,7 +1081,7 @@ example, the duration is output as years:</p>
 <td align="left">2012-08-05</td>
 <td align="left">2012-08-27</td>
 <td align="right">23</td>
-<td align="right">0.0630118</td>
+<td align="right">0.0629706</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1023</td>
@@ -1089,7 +1089,7 @@ example, the duration is output as years:</p>
 <td align="left">2012-08-28</td>
 <td align="left">2012-09-01</td>
 <td align="right">5</td>
-<td align="right">0.0136968</td>
+<td align="right">0.0136893</td>
 </tr>
 <tr class="even">
 <td align="left">01-703-1086</td>
@@ -1097,7 +1097,7 @@ example, the duration is output as years:</p>
 <td align="left">2012-09-02</td>
 <td align="left">2012-09-16</td>
 <td align="right">15</td>
-<td align="right">0.0410940</td>
+<td align="right">0.0410678</td>
 </tr>
 <tr class="odd">
 <td align="left">01-703-1086</td>
@@ -1105,7 +1105,7 @@ example, the duration is output as years:</p>
 <td align="left">2012-09-17</td>
 <td align="left">2012-12-04</td>
 <td align="right">79</td>
-<td align="right">0.2164365</td>
+<td align="right">0.2162902</td>
 </tr>
 <tr class="even">
 <td align="left">01-703-1096</td>
@@ -1113,7 +1113,7 @@ example, the duration is output as years:</p>
 <td align="left">2013-01-25</td>
 <td align="left">2013-02-09</td>
 <td align="right">16</td>
-<td align="right">0.0438337</td>
+<td align="right">0.0438056</td>
 </tr>
 <tr class="odd">
 <td align="left">01-703-1096</td>
@@ -1121,7 +1121,7 @@ example, the duration is output as years:</p>
 <td align="left">2013-02-10</td>
 <td align="left">2013-03-16</td>
 <td align="right">35</td>
-<td align="right">0.0958885</td>
+<td align="right">0.0958248</td>
 </tr>
 <tr class="even">
 <td align="left">01-707-1037</td>
@@ -1129,7 +1129,7 @@ example, the duration is output as years:</p>
 <td align="left">2013-12-20</td>
 <td align="left">2013-12-24</td>
 <td align="right">5</td>
-<td align="right">0.0136968</td>
+<td align="right">0.0136893</td>
 </tr>
 </tbody>
 </table>
@@ -1138,11 +1138,11 @@ for detailed information on the input parameters.</p>
 <p>It may be necessary to calculate additional intermediate values. For
 example, the cumulative doses received and cumulative planned doses may
 be calculated as:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">DOSEO =</span> EXDOSE <span class="sc">*</span> EXDURD,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">PDOSEO =</span> EXPLDOS <span class="sc">*</span> EXDURD</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>    <span class="at">DOSEO =</span> EXDOSE <span class="sc">*</span> EXDURD,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    <span class="at">PDOSEO =</span> EXPLDOS <span class="sc">*</span> EXDURD</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1246,9 +1246,9 @@ record. This is another approach to deriving a total dose parameter when
 expand a record containing a start date, an end date, and a dosing
 frequency to a corresponding set of records each representing one dose
 (i.e. <code>EXDOSFRQ == &quot;ONCE&quot;</code>).</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>single_dose <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1015&quot;</span> <span class="sc">&amp;</span> EXSTDY <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">create_single_dose_dataset</span>(<span class="at">keep_source_vars =</span> <span class="fu">exprs</span>(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>single_dose <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">filter</span>(USUBJID <span class="sc">==</span> <span class="st">&quot;01-701-1015&quot;</span> <span class="sc">&amp;</span> EXSTDY <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">create_single_dose_dataset</span>(<span class="at">keep_source_vars =</span> <span class="fu">exprs</span>(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT))</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1357,54 +1357,54 @@ duration, dose administered, dose adjusted, etc. based on one exposure
 record in SDTM.</p>
 <p>These records can be derived using simple <code>dplyr::mutate</code>
 assignments and then combined:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>adex_durd <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;DURD&quot;</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVAL =</span> EXDURD</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>adex_dose <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVAL =</span> DOSEO</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>adex_pldos <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;PLDOSE&quot;</span>,</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVAL =</span> PDOSEO</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>adex_adj <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;ADJ&quot;</span>,</span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVALC =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(EXADJ), <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>adex_adjae <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;ADJAE&quot;</span>,</span>
-<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVALC =</span> <span class="fu">if_else</span>(EXADJ <span class="sc">==</span> <span class="st">&quot;ADVERSE EVENT&quot;</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
-<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>  adex_durd,</span>
-<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  adex_dose,</span>
-<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>  adex_pldos,</span>
-<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  adex_adj,</span>
-<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>  adex_adjae</span>
-<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PARCAT1 =</span> <span class="st">&quot;INDIVIDUAL&quot;</span>)</span>
-<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD)</span>
-<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 2</span></span>
-<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   PARAMCD     n</span></span>
-<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;int&gt;</span></span>
-<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 ADJ        13</span></span>
-<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 ADJAE      13</span></span>
-<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 DOSE       13</span></span>
-<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 DURD       13</span></span>
-<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 PLDOSE     13</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>adex_durd <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;DURD&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="at">AVAL =</span> EXDURD</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  )</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>adex_dose <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="at">AVAL =</span> DOSEO</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  )</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>adex_pldos <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;PLDOSE&quot;</span>,</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>    <span class="at">AVAL =</span> PDOSEO</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>  )</span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>adex_adj <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;ADJ&quot;</span>,</span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>    <span class="at">AVALC =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(EXADJ), <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>  )</span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a>adex_adjae <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;ADJAE&quot;</span>,</span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>    <span class="at">AVALC =</span> <span class="fu">if_else</span>(EXADJ <span class="sc">==</span> <span class="st">&quot;ADVERSE EVENT&quot;</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a>  )</span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a>  adex_durd,</span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a>  adex_dose,</span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a>  adex_pldos,</span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a>  adex_adj,</span>
+<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a>  adex_adjae</span>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PARCAT1 =</span> <span class="st">&quot;INDIVIDUAL&quot;</span>)</span>
+<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD)</span>
+<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 2</span></span>
+<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a><span class="co">#&gt;   PARAMCD     n</span></span>
+<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;int&gt;</span></span>
+<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a><span class="co">#&gt; 1 ADJ        13</span></span>
+<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a><span class="co">#&gt; 2 ADJAE      13</span></span>
+<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a><span class="co">#&gt; 3 DOSE       13</span></span>
+<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a><span class="co">#&gt; 4 DURD       13</span></span>
+<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a><span class="co">#&gt; 5 PLDOSE     13</span></span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1521,14 +1521,14 @@ to creating a summarized <code>AVAL</code>, the function will also
 compute minimum and maximum dates for the record.</p>
 <p>For example, to calculate the total dose by subject and
 treatment,</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_param_exposure</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  adex,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars),</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">input_code =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_param_exposure</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  adex,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars),</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">input_code =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">analysis_var =</span> AVAL,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="17%" />
@@ -1655,58 +1655,58 @@ variables specified in the <code>by_vars</code> argument will be
 populated in the new records.</p>
 <p>Multiple parameters (records) may be created at one time using the
 <code>call_derivation()</code> function:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">call_derivation</span>(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">derivation =</span> derive_param_exposure,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">variable_params =</span> <span class="fu">list</span>(</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TPDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;PLDOSE&quot;</span>,</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDURD&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;DURD&quot;</span>,</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TADJ&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;ADJ&quot;</span>,</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVALC,</span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">if_else</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TADJAE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;ADJAE&quot;</span>,</span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVALC,</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">if_else</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars)</span>
-<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD, PARCAT1)</span>
-<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 3</span></span>
-<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    PARAMCD PARCAT1        n</span></span>
-<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt;</span></span>
-<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 ADJ     INDIVIDUAL    13</span></span>
-<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 ADJAE   INDIVIDUAL    13</span></span>
-<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 DOSE    INDIVIDUAL    13</span></span>
-<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 DURD    INDIVIDUAL    13</span></span>
-<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 PLDOSE  INDIVIDUAL    13</span></span>
-<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 TADJ    OVERALL        6</span></span>
-<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 TADJAE  OVERALL        6</span></span>
-<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 TDOSE   OVERALL        6</span></span>
-<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 TDURD   OVERALL        6</span></span>
-<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 TPDOSE  OVERALL        6</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="fu">call_derivation</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>    <span class="at">derivation =</span> derive_param_exposure,</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>    <span class="at">variable_params =</span> <span class="fu">list</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>      <span class="fu">params</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>      ),</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>      <span class="fu">params</span>(</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TPDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;PLDOSE&quot;</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>      ),</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>      <span class="fu">params</span>(</span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDURD&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;DURD&quot;</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a>      ),</span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a>      <span class="fu">params</span>(</span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TADJ&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;ADJ&quot;</span>,</span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVALC,</span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">if_else</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
+<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a>      ),</span>
+<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a>      <span class="fu">params</span>(</span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TADJAE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
+<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;ADJAE&quot;</span>,</span>
+<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVALC,</span>
+<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">if_else</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
+<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a>      )</span>
+<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a>    ),</span>
+<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars)</span>
+<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a>  )</span>
+<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a></span>
+<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD, PARCAT1)</span>
+<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 3</span></span>
+<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a><span class="co">#&gt;    PARAMCD PARCAT1        n</span></span>
+<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt;</span></span>
+<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a><span class="co">#&gt;  1 ADJ     INDIVIDUAL    13</span></span>
+<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a><span class="co">#&gt;  2 ADJAE   INDIVIDUAL    13</span></span>
+<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a><span class="co">#&gt;  3 DOSE    INDIVIDUAL    13</span></span>
+<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a><span class="co">#&gt;  4 DURD    INDIVIDUAL    13</span></span>
+<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a><span class="co">#&gt;  5 PLDOSE  INDIVIDUAL    13</span></span>
+<span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a><span class="co">#&gt;  6 TADJ    OVERALL        6</span></span>
+<span id="cb13-49"><a href="#cb13-49" tabindex="-1"></a><span class="co">#&gt;  7 TADJAE  OVERALL        6</span></span>
+<span id="cb13-50"><a href="#cb13-50" tabindex="-1"></a><span class="co">#&gt;  8 TDOSE   OVERALL        6</span></span>
+<span id="cb13-51"><a href="#cb13-51" tabindex="-1"></a><span class="co">#&gt;  9 TDURD   OVERALL        6</span></span>
+<span id="cb13-52"><a href="#cb13-52" tabindex="-1"></a><span class="co">#&gt; 10 TPDOSE  OVERALL        6</span></span></code></pre></div>
 <table>
 <colgroup>
 <col width="16%" />
@@ -1838,13 +1838,13 @@ populated in the new records.</p>
 dose are passed into the function and a new record is created with the
 dose intensity calculation. Again, only those variables specified in the
 <code>by_vars</code> argument will be populated in this new record.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_param_doseint</span>(</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TNDOSINT&quot;</span>),</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">tadm_code =</span> <span class="st">&quot;TDOSE&quot;</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">tpadm_code =</span> <span class="st">&quot;TPDOSE&quot;</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">derive_param_doseint</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars),</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TNDOSINT&quot;</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="at">tadm_code =</span> <span class="st">&quot;TDOSE&quot;</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">tpadm_code =</span> <span class="st">&quot;TPDOSE&quot;</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  )</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="13%" />
@@ -2062,27 +2062,27 @@ ADaM <code>PARAMCD</code> value may be created:</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  adex,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> param_lookup,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD, PARAM, PARAMN)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 11 × 4</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    PARAMCD  PARAM                                                   PARAMN     n</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;                                                    &lt;dbl&gt; &lt;int&gt;</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 ADJ      Dose adjusted during constant dosing interval                4    13</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 ADJAE    Dose adjusted  due to AE during constant dosing interv…      5    13</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 DOSE     Dose administered during constant dosing interval (mg)       2    13</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 DURD     Study drug duration during constant dosing interval (d…      1    13</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 PLDOSE   Planned dose during constant dosing interval (mg)            3    13</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 TADJ     Dose adjusted during study                                  10     6</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 TADJAE   Dose adjusted during study due to AE                        11     6</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 TDOSE    Total dose administered (mg)                                 7     6</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 TDURD    Overall duration (days)                                      6     6</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 TNDOSINT Overall dose intensity (%)                                  12     6</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 TPDOSE   Total planned dose (mg)                                      9     6</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  adex,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="at">dataset_add =</span> param_lookup,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD, PARAM, PARAMN)</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; # A tibble: 11 × 4</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt;    PARAMCD  PARAM                                                   PARAMN     n</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;                                                    &lt;dbl&gt; &lt;int&gt;</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt;  1 ADJ      Dose adjusted during constant dosing interval                4    13</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt;  2 ADJAE    Dose adjusted  due to AE during constant dosing interv…      5    13</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt;  3 DOSE     Dose administered during constant dosing interval (mg)       2    13</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="co">#&gt;  4 DURD     Study drug duration during constant dosing interval (d…      1    13</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt;  5 PLDOSE   Planned dose during constant dosing interval (mg)            3    13</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt;  6 TADJ     Dose adjusted during study                                  10     6</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="co">#&gt;  7 TADJAE   Dose adjusted during study due to AE                        11     6</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a><span class="co">#&gt;  8 TDOSE    Total dose administered (mg)                                 7     6</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a><span class="co">#&gt;  9 TDURD    Overall duration (days)                                      6     6</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co">#&gt; 10 TNDOSINT Overall dose intensity (%)                                  12     6</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a><span class="co">#&gt; 11 TPDOSE   Total planned dose (mg)                                      9     6</span></span></code></pre></div>
 <p>Please note, this is an example only and additional columns may be
 needed for the join depending on your lookup/metadata table.</p>
 </div>
@@ -2092,17 +2092,17 @@ needed for the join depending on your lookup/metadata table.</p>
 aid in assigning <code>AVALCATx</code>/ <code>AVALCAxN</code> values.
 Below is a simple example of how these values may be assigned using the
 <code>dplyr::mutate</code> function:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVALCAT1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">&quot;&lt; 30 days&quot;</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">30</span> <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">90</span> <span class="sc">~</span> <span class="st">&quot;&gt;= 30 and &lt; 90 days&quot;</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">90</span> <span class="sc">~</span> <span class="st">&quot;&gt;=90 days&quot;</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDOSE&quot;</span>, <span class="st">&quot;TPDOSE&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">1000</span> <span class="sc">~</span> <span class="st">&quot;&lt; 1000 mg&quot;</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDOSE&quot;</span>, <span class="st">&quot;TPDOSE&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">1000</span> <span class="sc">~</span> <span class="st">&quot;&gt;= 1000 mg&quot;</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>    <span class="at">AVALCAT1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">&quot;&lt; 30 days&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">30</span> <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">90</span> <span class="sc">~</span> <span class="st">&quot;&gt;= 30 and &lt; 90 days&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">90</span> <span class="sc">~</span> <span class="st">&quot;&gt;=90 days&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDOSE&quot;</span>, <span class="st">&quot;TPDOSE&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">1000</span> <span class="sc">~</span> <span class="st">&quot;&lt; 1000 mg&quot;</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDOSE&quot;</span>, <span class="st">&quot;TPDOSE&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">1000</span> <span class="sc">~</span> <span class="st">&quot;&gt;= 1000 mg&quot;</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>    )</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -2203,13 +2203,13 @@ Below is a simple example of how these values may be assigned using the
 <p>The <code>{admiral}</code> function
 <code>derive_var_obs_number()</code> can be used to derive
 <code>ASEQ</code>. An example call is:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_var_obs_number</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  adex,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_var =</span> ASEQ,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(PARCAT1, ASTDT, VISIT, VISITNUM, EXSEQ, PARAMN),</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_var_obs_number</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  adex,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="at">new_var =</span> ASEQ,</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(PARCAT1, ASTDT, VISIT, VISITNUM, EXSEQ, PARAMN),</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -2320,11 +2320,11 @@ Below is a simple example of how these values may be assigned using the
 <h2>Add the <code>ADSL</code> variables</h2>
 <p>If needed, the other <code>ADSL</code> variables can now be
 added:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  )</span></code></pre></div>
 </div>
 <div id="attributes" class="section level2">
 <h2>Add Labels and Attributes</h2>

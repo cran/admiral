@@ -9,16 +9,16 @@ library(admiraldev)
 ## ---- warning=FALSE, message=FALSE--------------------------------------------
 library(admiral)
 library(dplyr, warn.conflicts = FALSE)
-library(admiral.test)
+library(pharmaversesdtm)
 
 ## ---- warning=FALSE, message=FALSE, include=FALSE-----------------------------
 library(lubridate)
 
 ## -----------------------------------------------------------------------------
-data("admiral_ae")
+data("ae")
 data("admiral_adsl")
 
-ae <- convert_blanks_to_na(admiral_ae)
+ae <- convert_blanks_to_na(ae)
 adsl <- admiral_adsl
 
 ## ----echo=FALSE---------------------------------------------------------------

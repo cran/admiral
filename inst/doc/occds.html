@@ -375,29 +375,29 @@ Grade</a></li>
 company specific process. Some of the data frames needed may be
 <code>AE</code> and <code>ADSL</code></p>
 <p>For example purpose, the CDISC Pilot SDTM and ADaM datasets —which
-are included in <code>{admiral.test}</code>— are used.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral.test)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_ae&quot;</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(admiral_ae)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span></code></pre></div>
+are included in <code>{pharmaversesdtm}</code>— are used.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(pharmaversesdtm)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ae&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ae)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span></code></pre></div>
 <p>At this step, it may be useful to join <code>ADSL</code> to your
 <code>AE</code> domain as well. Only the <code>ADSL</code> variables
 used for derivations are selected at this step. The rest of the relevant
 <code>ADSL</code> variables would be added later.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>adsl_vars <span class="ot">&lt;-</span> <span class="fu">exprs</span>(TRTSDT, TRTEDT, TRT01A, TRT01P, DTHDT, EOSDT)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  ae,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> adsl,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> adsl_vars,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>adsl_vars <span class="ot">&lt;-</span> <span class="fu">exprs</span>(TRTSDT, TRTEDT, TRT01A, TRT01P, DTHDT, EOSDT)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  ae,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">dataset_add =</span> adsl,</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">new_vars =</span> adsl_vars,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="8%" />
@@ -560,26 +560,26 @@ used to derive <code>ASTDTM</code> and <code>AENDTM</code> where
 <code>AENDTM</code>, respectively, using function
 <code>derive_vars_dtm_to_dt()</code>. <code>derive_vars_dy()</code> can
 be used to create <code>ASTDY</code> and <code>AENDY</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_dates =</span> <span class="fu">exprs</span>(TRTSDT)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AEENDTC,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_dates =</span> <span class="fu">exprs</span>(DTHDT, EOSDT)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(ASTDTM, AENDTM)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dy</span>(</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">reference_date =</span> TRTSDT,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_vars =</span> <span class="fu">exprs</span>(ASTDT, AENDT)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="at">min_dates =</span> <span class="fu">exprs</span>(TRTSDT)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="at">dtc =</span> AEENDTC,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="at">max_dates =</span> <span class="fu">exprs</span>(DTHDT, EOSDT)</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(ASTDTM, AENDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  <span class="fu">derive_vars_dy</span>(</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>    <span class="at">reference_date =</span> TRTSDT,</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>    <span class="at">source_vars =</span> <span class="fu">exprs</span>(ASTDT, AENDT)</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="12%" />
@@ -724,13 +724,13 @@ be used to create <code>ASTDY</code> and <code>AENDY</code>.</p>
 <h2>Derive Durations</h2>
 <p>The function <code>derive_vars_duration()</code> can be used to
 create the variables <code>ADURN</code> and <code>ADURU</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var =</span> ADURN,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var_unit =</span> ADURU,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_date =</span> ASTDT,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_date =</span> AENDT</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="at">new_var =</span> ADURN,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="at">new_var_unit =</span> ADURU,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="at">start_date =</span> ASTDT,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="at">end_date =</span> AENDT</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="17%" />
@@ -854,45 +854,45 @@ Class Variables.</p>
 <code>FACM</code> to <code>ADCM</code>.</p>
 <p>The expected result is the input dataset with ATC variables
 added.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>CMGRPID, <span class="sc">~</span>CMREFID,  <span class="sc">~</span>CMDECOD,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;14&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;PARACETAMOL&quot;</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;18&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;SOLUMEDROL&quot;</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,     <span class="st">&quot;19&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;SPIRONOLACTONE&quot;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>facm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>FAGRPID,  <span class="sc">~</span>FAREFID, <span class="sc">~</span>FATESTCD,  <span class="sc">~</span>FASTRESC,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;N&quot;</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;N02&quot;</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;N02B&quot;</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;N02BE&quot;</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;D&quot;</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;D10&quot;</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;D10A&quot;</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;D10AA&quot;</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;D&quot;</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;D07&quot;</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;D07A&quot;</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;D07AA&quot;</span>,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;H&quot;</span>,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;H02&quot;</span>,</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;H02A&quot;</span>,</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;H02AB&quot;</span>,</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;C&quot;</span>,</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;C03&quot;</span>,</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;C03D&quot;</span>,</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;C03DA&quot;</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="fu">derive_vars_atc</span>(cm, facm)</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 8</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   USUBJID      CMGRPID CMREFID CMDECOD        ATC1CD ATC2CD ATC3CD ATC4CD</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; </span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 BP40257-1001 14      1192056 PARACETAMOL    N      N02    N02B   N02BE </span></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 BP40257-1001 18      2007001 SOLUMEDROL     D      D10    D10A   D10AA </span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 BP40257-1001 18      2007001 SOLUMEDROL     D      D07    D07A   D07AA </span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 BP40257-1001 18      2007001 SOLUMEDROL     H      H02    H02A   H02AB </span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 BP40257-1002 19      2791596 SPIRONOLACTONE C      C03    C03D   C03DA</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>CMGRPID, <span class="sc">~</span>CMREFID,  <span class="sc">~</span>CMDECOD,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;14&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;PARACETAMOL&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;18&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;SOLUMEDROL&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,     <span class="st">&quot;19&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;SPIRONOLACTONE&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>facm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>FAGRPID,  <span class="sc">~</span>FAREFID, <span class="sc">~</span>FATESTCD,  <span class="sc">~</span>FASTRESC,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;N02&quot;</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;N02B&quot;</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;N02BE&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;D&quot;</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;D10&quot;</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;D10A&quot;</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;D10AA&quot;</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;D&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;D07&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;D07A&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;D07AA&quot;</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;H&quot;</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;H02&quot;</span>,</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;H02A&quot;</span>,</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;H02AB&quot;</span>,</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;C&quot;</span>,</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;C03&quot;</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;C03D&quot;</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;C03DA&quot;</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>)</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="fu">derive_vars_atc</span>(cm, facm)</span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 8</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt;   USUBJID      CMGRPID CMREFID CMDECOD        ATC1CD ATC2CD ATC3CD ATC4CD</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; </span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; 1 BP40257-1001 14      1192056 PARACETAMOL    N      N02    N02B   N02BE </span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; 2 BP40257-1001 18      2007001 SOLUMEDROL     D      D10    D10A   D10AA </span></span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt; 3 BP40257-1001 18      2007001 SOLUMEDROL     D      D07    D07A   D07AA </span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="co">#&gt; 4 BP40257-1001 18      2007001 SOLUMEDROL     H      H02    H02A   H02AB </span></span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="co">#&gt; 5 BP40257-1002 19      2791596 SPIRONOLACTONE C      C03    C03D   C03DA</span></span></code></pre></div>
 </div>
 <div id="trtpa" class="section level2">
 <h2>Derive Planned and Actual Treatment</h2>
@@ -903,14 +903,14 @@ of the character treatment variables in ADSL (e.g.,
 <code>TRxxAGy</code>/<code>TRxxPGy</code>).</p>
 <p>An example of a simple implementation for a study without periods
 could be:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">mutate</span>(adae, <span class="at">TRTP =</span> TRT01P, <span class="at">TRTA =</span> TRT01A)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(adae, TRTP, TRTA, TRT01P, TRT01A)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 5</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   TRTP                TRTA                TRT01P              TRT01A           n</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;               &lt;chr&gt;               &lt;chr&gt;               &lt;chr&gt;        &lt;int&gt;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Placebo             Placebo             Placebo             Placebo         10</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Xanomeline Low Dose Xanomeline Low Dose Xanomeline Low Dose Xanomeline …     6</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">mutate</span>(adae, <span class="at">TRTP =</span> TRT01P, <span class="at">TRTA =</span> TRT01A)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">count</span>(adae, TRTP, TRTA, TRT01P, TRT01A)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 5</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt;   TRTP                TRTA                TRT01P              TRT01A           n</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;               &lt;chr&gt;               &lt;chr&gt;               &lt;chr&gt;        &lt;int&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; 1 Placebo             Placebo             Placebo             Placebo         10</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; 2 Xanomeline Low Dose Xanomeline Low Dose Xanomeline Low Dose Xanomeline …     6</span></span></code></pre></div>
 <p>For studies with periods see the <a href="visits_periods.html#treatment_bds">“Visit and Period Variables”
 vignette</a>.</p>
 </div>
@@ -918,25 +918,25 @@ vignette</a>.</p>
 <h2>Derive Date/Date-time of Last Dose</h2>
 <p>The function <code>derive_vars_joined()</code> can be used to derive
 the last dose date before the start of the event.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(ex_single)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ex_single <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  ex_single,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">dtc =</span> EXSTDTC,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;EXST&quot;</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">flag_imputation =</span> <span class="st">&quot;none&quot;</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">derive_vars_joined</span>(</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  adae,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  ex_single,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">LDOSEDTM =</span> EXSTDTM),</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">join_vars =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(EXSTDTM),</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_join =</span> EXSTDTM <span class="sc">&lt;=</span> ASTDTM,</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;last&quot;</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">data</span>(ex_single)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>ex_single <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  ex_single,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">dtc =</span> EXSTDTC,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;EXST&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">flag_imputation =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  adae,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  ex_single,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">LDOSEDTM =</span> EXSTDTM),</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">join_vars =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(EXSTDTM),</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="at">filter_join =</span> EXSTDTM <span class="sc">&lt;=</span> ASTDTM,</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;last&quot;</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>)</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="10%" />
@@ -1070,23 +1070,23 @@ the last dose date before the start of the event.</p>
 <code>ATOXGR</code> can be added using simple
 <code>dplyr::mutate()</code> assignments, if no imputation is
 required.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">ASEV =</span> AESEV,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">AREL =</span> AEREL</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="at">ASEV =</span> AESEV,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="at">AREL =</span> AEREL</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  )</span></code></pre></div>
 </div>
 <div id="trtflag" class="section level2">
 <h2>Derive Treatment Emergent Flag</h2>
 <p>To derive the treatment emergent flag <code>TRTEMFL</code>, one can
 call <code>derive_var_trtemfl()</code>. In the example below, we use 30
 days in the flag derivation.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_trtemfl</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">trt_start_date =</span> TRTSDT,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">trt_end_date =</span> TRTEDT,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_window =</span> <span class="dv">30</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="fu">derive_var_trtemfl</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>    <span class="at">trt_start_date =</span> TRTSDT,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    <span class="at">trt_end_date =</span> TRTEDT,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>    <span class="at">end_window =</span> <span class="dv">30</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1189,72 +1189,72 @@ named <code>ONTRTFL</code> with a value of <code>&quot;Y&quot;</code> or
 <code>NA</code>.</p>
 <p>If you want to also check an end date, you could add the
 <code>end_date</code> argument. Note that in this scenario you could set
-<code>span_period = &quot;Y&quot;</code> if you want occurrences that started
+<code>span_period = TRUE</code> if you want occurrences that started
 prior to drug intake, and was ongoing or ended after this time to be
 considered as on-treatment.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>bds1 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ADT,              <span class="sc">~</span>TRTSDT,           <span class="sc">~</span>TRTEDT,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-02-24&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P02&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P03&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2019-12-31&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">derive_var_ontrtfl</span>(</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  bds1,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> ADT,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_start_date =</span> TRTSDT,</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_end_date =</span> TRTEDT</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   USUBJID ADT        TRTSDT     TRTEDT     ONTRTFL</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;  </span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 P01     2020-02-24 2020-01-01 2020-03-01 Y      </span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 P02     2020-01-01 2020-01-01 2020-03-01 Y      </span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 P03     2019-12-31 2020-01-01 2020-03-01 &lt;NA&gt;</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>bds2 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ADT,              <span class="sc">~</span>TRTSDT,           <span class="sc">~</span>TRTEDT,</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-07-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P02&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-04-30&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;P03&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-03-15&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>)</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="fu">derive_var_ontrtfl</span>(</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  bds2,</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> ADT,</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_start_date =</span> TRTSDT,</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_end_date =</span> TRTEDT,</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_end_window =</span> <span class="dv">60</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   USUBJID ADT        TRTSDT     TRTEDT     ONTRTFL</span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;  </span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 P01     2020-07-01 2020-01-01 2020-03-01 &lt;NA&gt;   </span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 P02     2020-04-30 2020-01-01 2020-03-01 Y      </span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 P03     2020-03-15 2020-01-01 2020-03-01 Y</span></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>bds3 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>ADTM,              <span class="sc">~</span>TRTSDTM,           <span class="sc">~</span>TRTEDTM,           <span class="sc">~</span>TPT,</span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2020-01-02T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="cn">NA</span>,</span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="st">&quot;PRE&quot;</span>,</span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-12-31T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="cn">NA</span></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">ADTM =</span> <span class="fu">ymd_hm</span>(ADTM),</span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">TRTSDTM =</span> <span class="fu">ymd_hm</span>(TRTSDTM),</span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">TRTEDTM =</span> <span class="fu">ymd_hm</span>(TRTEDTM)</span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a><span class="fu">derive_var_ontrtfl</span>(</span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>  bds3,</span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">start_date =</span> ADTM,</span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_start_date =</span> TRTSDTM,</span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_end_date =</span> TRTEDTM,</span>
-<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_pre_timepoint =</span> TPT <span class="sc">==</span> <span class="st">&quot;PRE&quot;</span></span>
-<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
-<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ADTM                TRTSDTM             TRTEDTM             TPT   ONTRTFL</span></span>
-<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt; &lt;chr&gt;  </span></span>
-<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 2020-01-02 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 &lt;NA&gt;  Y      </span></span>
-<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 2020-01-01 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 PRE   &lt;NA&gt;   </span></span>
-<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 2019-12-31 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 &lt;NA&gt;  &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>bds1 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ADT,              <span class="sc">~</span>TRTSDT,           <span class="sc">~</span>TRTEDT,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-02-24&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="st">&quot;P02&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="st">&quot;P03&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2019-12-31&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="fu">derive_var_ontrtfl</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  bds1,</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  <span class="at">start_date =</span> ADT,</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  <span class="at">ref_start_date =</span> TRTSDT,</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>  <span class="at">ref_end_date =</span> TRTEDT</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>)</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt;   USUBJID ADT        TRTSDT     TRTEDT     ONTRTFL</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;  </span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; 1 P01     2020-02-24 2020-01-01 2020-03-01 Y      </span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt; 2 P02     2020-01-01 2020-01-01 2020-03-01 Y      </span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; 3 P03     2019-12-31 2020-01-01 2020-03-01 &lt;NA&gt;</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>bds2 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ADT,              <span class="sc">~</span>TRTSDT,           <span class="sc">~</span>TRTEDT,</span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-07-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>  <span class="st">&quot;P02&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-04-30&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>),</span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>  <span class="st">&quot;P03&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2020-03-15&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2020-03-01&quot;</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>)</span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="fu">derive_var_ontrtfl</span>(</span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>  bds2,</span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>  <span class="at">start_date =</span> ADT,</span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>  <span class="at">ref_start_date =</span> TRTSDT,</span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>  <span class="at">ref_end_date =</span> TRTEDT,</span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>  <span class="at">ref_end_window =</span> <span class="dv">60</span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>)</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="co">#&gt;   USUBJID ADT        TRTSDT     TRTEDT     ONTRTFL</span></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;  </span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="co">#&gt; 1 P01     2020-07-01 2020-01-01 2020-03-01 &lt;NA&gt;   </span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a><span class="co">#&gt; 2 P02     2020-04-30 2020-01-01 2020-03-01 Y      </span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a><span class="co">#&gt; 3 P03     2020-03-15 2020-01-01 2020-03-01 Y</span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a>bds3 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a>  <span class="sc">~</span>ADTM,              <span class="sc">~</span>TRTSDTM,           <span class="sc">~</span>TRTEDTM,           <span class="sc">~</span>TPT,</span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a>  <span class="st">&quot;2020-01-02T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="cn">NA</span>,</span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a>  <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="st">&quot;PRE&quot;</span>,</span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a>  <span class="st">&quot;2019-12-31T12:00&quot;</span>, <span class="st">&quot;2020-01-01T12:00&quot;</span>, <span class="st">&quot;2020-03-01T12:00&quot;</span>, <span class="cn">NA</span></span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a>    <span class="at">ADTM =</span> <span class="fu">ymd_hm</span>(ADTM),</span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a>    <span class="at">TRTSDTM =</span> <span class="fu">ymd_hm</span>(TRTSDTM),</span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a>    <span class="at">TRTEDTM =</span> <span class="fu">ymd_hm</span>(TRTEDTM)</span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a>  )</span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a><span class="fu">derive_var_ontrtfl</span>(</span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a>  bds3,</span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a>  <span class="at">start_date =</span> ADTM,</span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a>  <span class="at">ref_start_date =</span> TRTSDTM,</span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a>  <span class="at">ref_end_date =</span> TRTEDTM,</span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a>  <span class="at">filter_pre_timepoint =</span> TPT <span class="sc">==</span> <span class="st">&quot;PRE&quot;</span></span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a>)</span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a><span class="co">#&gt;   ADTM                TRTSDTM             TRTEDTM             TPT   ONTRTFL</span></span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a><span class="co">#&gt;   &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt; &lt;chr&gt;  </span></span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a><span class="co">#&gt; 1 2020-01-02 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 &lt;NA&gt;  Y      </span></span>
+<span id="cb10-62"><a href="#cb10-62" tabindex="-1"></a><span class="co">#&gt; 2 2020-01-01 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 PRE   &lt;NA&gt;   </span></span>
+<span id="cb10-63"><a href="#cb10-63" tabindex="-1"></a><span class="co">#&gt; 3 2019-12-31 12:00:00 2020-01-01 12:00:00 2020-03-01 12:00:00 &lt;NA&gt;  &lt;NA&gt;</span></span></code></pre></div>
 </div>
 <div id="occflag" class="section level2">
 <h2>Derive Occurrence Flags</h2>
@@ -1263,38 +1263,38 @@ variables such as <code>AOCCIFL</code>, <code>AOCCPIFL</code>,
 <code>AOCCSIFL</code>, and <code>AOCCzzFL</code>.</p>
 <p>If grades were collected, the following can be used to flag first
 occurrence of maximum toxicity grade.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_extreme_flag,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">order =</span> <span class="fu">exprs</span>(<span class="fu">desc</span>(ATOXGR), ASTDTM, AESEQ),</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">new_var =</span> AOCCIFL,</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_extreme_flag,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>      <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>      <span class="at">order =</span> <span class="fu">exprs</span>(<span class="fu">desc</span>(ATOXGR), ASTDTM, AESEQ),</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>      <span class="at">new_var =</span> AOCCIFL,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>      <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    ),</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  )</span></code></pre></div>
 <p>Similarly, <code>ASEV</code> can also be used to derive the
 occurrence flags, if severity is collected. In this case, the variable
 will need to be recoded to a numeric variable. Flag first occurrence of
 most severe adverse event:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_extreme_flag,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">order =</span> <span class="fu">exprs</span>(</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.integer</span>(<span class="fu">factor</span>(</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>          ASEV,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;DEATH THREATENING&quot;</span>, <span class="st">&quot;SEVERE&quot;</span>, <span class="st">&quot;MODERATE&quot;</span>, <span class="st">&quot;MILD&quot;</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        )),</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        ASTDTM, AESEQ</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">new_var =</span> AOCCIFL,</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_extreme_flag,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>      <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>      <span class="at">order =</span> <span class="fu">exprs</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>        <span class="fu">as.integer</span>(<span class="fu">factor</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>          ASEV,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>          <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;DEATH THREATENING&quot;</span>, <span class="st">&quot;SEVERE&quot;</span>, <span class="st">&quot;MODERATE&quot;</span>, <span class="st">&quot;MILD&quot;</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>        )),</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>        ASTDTM, AESEQ</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>      ),</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>      <span class="at">new_var =</span> AOCCIFL,</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>      <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>    ),</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>    <span class="at">filter =</span> TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1402,7 +1402,7 @@ dataset. The <code>create_query_data()</code> function can be used to
 create queries datasets.</p>
 <p>The following example shows how to derive query variables for
 Standardized MedDRA Queries (SMQs) in ADAE.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;queries&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;queries&quot;</span>)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="5%" />
@@ -1529,19 +1529,19 @@ Standardized MedDRA Queries (SMQs) in ADAE.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>adae1 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDTM, <span class="sc">~</span>AETERM, <span class="sc">~</span>AESEQ, <span class="sc">~</span>AEDECOD, <span class="sc">~</span>AELLT, <span class="sc">~</span>AELLTCD,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;01&quot;</span>, <span class="st">&quot;2020-06-02 23:59:59&quot;</span>, <span class="st">&quot;ALANINE AMINOTRANSFERASE ABNORMAL&quot;</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">3</span>, <span class="st">&quot;Alanine aminotransferase abnormal&quot;</span>, <span class="cn">NA_character_</span>, <span class="cn">NA_integer_</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;02&quot;</span>, <span class="st">&quot;2020-06-05 23:59:59&quot;</span>, <span class="st">&quot;BASEDOW&#39;S DISEASE&quot;</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">5</span>, <span class="st">&quot;Basedow&#39;s disease&quot;</span>, <span class="cn">NA_character_</span>, 1L,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;03&quot;</span>, <span class="st">&quot;2020-06-07 23:59:59&quot;</span>, <span class="st">&quot;SOME TERM&quot;</span>,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>, <span class="st">&quot;Some query&quot;</span>, <span class="st">&quot;Some term&quot;</span>, <span class="cn">NA_integer_</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;05&quot;</span>, <span class="st">&quot;2020-06-09 23:59:59&quot;</span>, <span class="st">&quot;ALVEOLAR PROTEINOSIS&quot;</span>,</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="dv">7</span>, <span class="st">&quot;Alveolar proteinosis&quot;</span>, <span class="cn">NA_character_</span>, <span class="cn">NA_integer_</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>adae_query <span class="ot">&lt;-</span> <span class="fu">derive_vars_query</span>(<span class="at">dataset =</span> adae1, <span class="at">dataset_queries =</span> queries)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>adae1 <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDTM, <span class="sc">~</span>AETERM, <span class="sc">~</span>AESEQ, <span class="sc">~</span>AEDECOD, <span class="sc">~</span>AELLT, <span class="sc">~</span>AELLTCD,</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="st">&quot;01&quot;</span>, <span class="st">&quot;2020-06-02 23:59:59&quot;</span>, <span class="st">&quot;ALANINE AMINOTRANSFERASE ABNORMAL&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="dv">3</span>, <span class="st">&quot;Alanine aminotransferase abnormal&quot;</span>, <span class="cn">NA_character_</span>, <span class="cn">NA_integer_</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="st">&quot;02&quot;</span>, <span class="st">&quot;2020-06-05 23:59:59&quot;</span>, <span class="st">&quot;BASEDOW&#39;S DISEASE&quot;</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="dv">5</span>, <span class="st">&quot;Basedow&#39;s disease&quot;</span>, <span class="cn">NA_character_</span>, 1L,</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  <span class="st">&quot;03&quot;</span>, <span class="st">&quot;2020-06-07 23:59:59&quot;</span>, <span class="st">&quot;SOME TERM&quot;</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="dv">2</span>, <span class="st">&quot;Some query&quot;</span>, <span class="st">&quot;Some term&quot;</span>, <span class="cn">NA_integer_</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  <span class="st">&quot;05&quot;</span>, <span class="st">&quot;2020-06-09 23:59:59&quot;</span>, <span class="st">&quot;ALVEOLAR PROTEINOSIS&quot;</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  <span class="dv">7</span>, <span class="st">&quot;Alveolar proteinosis&quot;</span>, <span class="cn">NA_character_</span>, <span class="cn">NA_integer_</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>)</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>adae_query <span class="ot">&lt;-</span> <span class="fu">derive_vars_query</span>(<span class="at">dataset =</span> adae1, <span class="at">dataset_queries =</span> queries)</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="2%" />
@@ -1706,22 +1706,22 @@ Standardized MedDRA Queries (SMQs) in ADAE.</p>
 </table>
 <p>Similarly to SMQ, the <code>derive_vars_query()</code> function can
 be used to derive Standardized Drug Groupings (SDG).</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sdg <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>PREFIX,     <span class="sc">~</span>GRPNAME,       <span class="sc">~</span>GRPID,   <span class="sc">~</span>SCOPE, <span class="sc">~</span>SCOPEN,  <span class="sc">~</span>SRCVAR,     <span class="sc">~</span>TERMNAME,         <span class="sc">~</span>TERMID,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,        <span class="dv">11</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 1&quot;</span>,           <span class="cn">NA</span>,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,        <span class="dv">11</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 2&quot;</span>,           <span class="cn">NA</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 1&quot;</span>,     <span class="cn">NA</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 2&quot;</span>,     <span class="cn">NA</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 3&quot;</span>,     <span class="cn">NA</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>adcm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDTM,               <span class="sc">~</span>CMDECOD,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;01&quot;</span>,     <span class="st">&quot;2020-06-02 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 1&quot;</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;02&quot;</span>,     <span class="st">&quot;2020-06-05 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 1&quot;</span>,</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;03&quot;</span>,     <span class="st">&quot;2020-06-07 23:59:59&quot;</span>, <span class="st">&quot;Costicosteroid 2&quot;</span>,</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;05&quot;</span>,     <span class="st">&quot;2020-06-09 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 2&quot;</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>adcm_query <span class="ot">&lt;-</span> <span class="fu">derive_vars_query</span>(adcm, sdg)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>sdg <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="sc">~</span>PREFIX,     <span class="sc">~</span>GRPNAME,       <span class="sc">~</span>GRPID,   <span class="sc">~</span>SCOPE, <span class="sc">~</span>SCOPEN,  <span class="sc">~</span>SRCVAR,     <span class="sc">~</span>TERMNAME,         <span class="sc">~</span>TERMID,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,        <span class="dv">11</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 1&quot;</span>,           <span class="cn">NA</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,        <span class="dv">11</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 2&quot;</span>,           <span class="cn">NA</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 1&quot;</span>,     <span class="cn">NA</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 2&quot;</span>,     <span class="cn">NA</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 3&quot;</span>,     <span class="cn">NA</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>adcm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDTM,               <span class="sc">~</span>CMDECOD,</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>  <span class="st">&quot;01&quot;</span>,     <span class="st">&quot;2020-06-02 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 1&quot;</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>  <span class="st">&quot;02&quot;</span>,     <span class="st">&quot;2020-06-05 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 1&quot;</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>  <span class="st">&quot;03&quot;</span>,     <span class="st">&quot;2020-06-07 23:59:59&quot;</span>, <span class="st">&quot;Costicosteroid 2&quot;</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>  <span class="st">&quot;05&quot;</span>,     <span class="st">&quot;2020-06-09 23:59:59&quot;</span>, <span class="st">&quot;Diuretic 2&quot;</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>)</span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>adcm_query <span class="ot">&lt;-</span> <span class="fu">derive_vars_query</span>(adcm, sdg)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="6%" />
@@ -1811,11 +1811,11 @@ be used to derive Standardized Drug Groupings (SDG).</p>
 <h2>Add the <code>ADSL</code> variables</h2>
 <p>If needed, the other <code>ADSL</code> variables can now be
 added:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> adae <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="11%" />
@@ -1964,22 +1964,22 @@ records within the dataset.</p>
 <code>ADCM</code> for a single subject with the same <code>ASTDTM</code>
 and <code>CMSEQ</code> variables. But these records still differ at ATC
 level:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>adcm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>ASTDTM,          <span class="sc">~</span>CMSEQ, <span class="sc">~</span>CMDECOD,         <span class="sc">~</span>ATC1CD, <span class="sc">~</span>ATC2CD, <span class="sc">~</span>ATC3CD, <span class="sc">~</span>ATC4CD,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-07-05 UTC&quot;</span>, <span class="st">&quot;14&quot;</span>,   <span class="st">&quot;PARACETAMOL&quot;</span>,    <span class="st">&quot;N&quot;</span>,     <span class="st">&quot;N02&quot;</span>,   <span class="st">&quot;N02B&quot;</span>,  <span class="st">&quot;N02BE&quot;</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-08-15 UTC&quot;</span>, <span class="st">&quot;18&quot;</span>,   <span class="st">&quot;SOLUMEDROL&quot;</span>,     <span class="st">&quot;D&quot;</span>,     <span class="st">&quot;D10&quot;</span>,   <span class="st">&quot;D10A&quot;</span>,  <span class="st">&quot;D10AA&quot;</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-08-15 UTC&quot;</span>, <span class="st">&quot;18&quot;</span>,   <span class="st">&quot;SOLUMEDROL&quot;</span>,     <span class="st">&quot;D&quot;</span>,     <span class="st">&quot;D07&quot;</span>,   <span class="st">&quot;D07A&quot;</span>,  <span class="st">&quot;D07AA&quot;</span>,</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-08-15 UTC&quot;</span>, <span class="st">&quot;18&quot;</span>,   <span class="st">&quot;SOLUMEDROL&quot;</span>,     <span class="st">&quot;H&quot;</span>,     <span class="st">&quot;H02&quot;</span>,   <span class="st">&quot;H02A&quot;</span>,  <span class="st">&quot;H02AB&quot;</span>,</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>, <span class="st">&quot;2012-12-15 UTC&quot;</span>, <span class="st">&quot;19&quot;</span>,   <span class="st">&quot;SPIRONOLACTONE&quot;</span>, <span class="st">&quot;C&quot;</span>,     <span class="st">&quot;C03&quot;</span>,   <span class="st">&quot;C03D&quot;</span>,  <span class="st">&quot;C03DA&quot;</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>adcm_aseq <span class="ot">&lt;-</span> adcm <span class="sc">%&gt;%</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">by_vars    =</span> <span class="fu">exprs</span>(USUBJID),</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">order      =</span> <span class="fu">exprs</span>(ASTDTM, CMSEQ, ATC1CD, ATC2CD, ATC3CD, ATC4CD),</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_var    =</span> ASEQ,</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>adcm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>ASTDTM,          <span class="sc">~</span>CMSEQ, <span class="sc">~</span>CMDECOD,         <span class="sc">~</span>ATC1CD, <span class="sc">~</span>ATC2CD, <span class="sc">~</span>ATC3CD, <span class="sc">~</span>ATC4CD,</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-07-05 UTC&quot;</span>, <span class="st">&quot;14&quot;</span>,   <span class="st">&quot;PARACETAMOL&quot;</span>,    <span class="st">&quot;N&quot;</span>,     <span class="st">&quot;N02&quot;</span>,   <span class="st">&quot;N02B&quot;</span>,  <span class="st">&quot;N02BE&quot;</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-08-15 UTC&quot;</span>, <span class="st">&quot;18&quot;</span>,   <span class="st">&quot;SOLUMEDROL&quot;</span>,     <span class="st">&quot;D&quot;</span>,     <span class="st">&quot;D10&quot;</span>,   <span class="st">&quot;D10A&quot;</span>,  <span class="st">&quot;D10AA&quot;</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-08-15 UTC&quot;</span>, <span class="st">&quot;18&quot;</span>,   <span class="st">&quot;SOLUMEDROL&quot;</span>,     <span class="st">&quot;D&quot;</span>,     <span class="st">&quot;D07&quot;</span>,   <span class="st">&quot;D07A&quot;</span>,  <span class="st">&quot;D07AA&quot;</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2013-08-15 UTC&quot;</span>, <span class="st">&quot;18&quot;</span>,   <span class="st">&quot;SOLUMEDROL&quot;</span>,     <span class="st">&quot;H&quot;</span>,     <span class="st">&quot;H02&quot;</span>,   <span class="st">&quot;H02A&quot;</span>,  <span class="st">&quot;H02AB&quot;</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>, <span class="st">&quot;2012-12-15 UTC&quot;</span>, <span class="st">&quot;19&quot;</span>,   <span class="st">&quot;SPIRONOLACTONE&quot;</span>, <span class="st">&quot;C&quot;</span>,     <span class="st">&quot;C03&quot;</span>,   <span class="st">&quot;C03D&quot;</span>,  <span class="st">&quot;C03DA&quot;</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>)</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>adcm_aseq <span class="ot">&lt;-</span> adcm <span class="sc">%&gt;%</span></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>    <span class="at">by_vars    =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>    <span class="at">order      =</span> <span class="fu">exprs</span>(ASTDTM, CMSEQ, ATC1CD, ATC2CD, ATC3CD, ATC4CD),</span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>    <span class="at">new_var    =</span> ASEQ,</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  )</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="15%" />

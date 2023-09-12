@@ -9,31 +9,31 @@ library(admiraldev)
 ## ----message=FALSE------------------------------------------------------------
 library(dplyr, warn.conflicts = FALSE)
 library(admiral)
-library(admiral.test)
+library(pharmaversesdtm)
 library(lubridate)
 library(stringr)
 library(tibble)
 
 data("admiral_adsl")
-data("admiral_ex")
-data("admiral_pc")
-data("admiral_vs")
-data("admiral_lb")
+data("ex")
+data("pc")
+data("vs")
+data("lb")
 
 adsl <- admiral_adsl
-ex <- convert_blanks_to_na(admiral_ex)
+ex <- convert_blanks_to_na(ex)
 
 # Load PC
 
-pc <- convert_blanks_to_na(admiral_pc)
+pc <- convert_blanks_to_na(pc)
 
 # Load VS for baseline height and weight
 
-vs <- convert_blanks_to_na(admiral_vs)
+vs <- convert_blanks_to_na(vs)
 
 # Load LB for baseline lab values
 
-lb <- convert_blanks_to_na(admiral_lb) %>%
+lb <- convert_blanks_to_na(lb) %>%
   filter(LBBLFL == "Y")
 
 # ---- Lookup tables ----
@@ -938,11 +938,11 @@ covar_vslb <- covar %>%
     ),
     # Derive CRCLBL and EGFRBL using new function
     CRCLBL = compute_egfr(
-      creat = CREATBL, creatu = "SI", age = AGE, wt = WTBL, sex = SEX,
+      creat = CREATBL, creatu = "SI", age = AGE, weight = WTBL, sex = SEX,
       method = "CRCL"
     ),
     EGFRBL = compute_egfr(
-      creat = CREATBL, creatu = "SI", age = AGE, wt = WTBL, sex = SEX,
+      creat = CREATBL, creatu = "SI", age = AGE, weight = WTBL, sex = SEX,
       method = "CKD-EPI"
     )
   ) %>%

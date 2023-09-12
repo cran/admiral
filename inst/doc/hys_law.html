@@ -360,8 +360,8 @@ preexisting liver disease.</li>
 <div id="required-packages" class="section level2">
 <h2>Required Packages</h2>
 <p>The examples of this vignette require the following packages.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="programming-workflow" class="section level1">
@@ -380,9 +380,9 @@ Potential Events</a></li>
 <p>We assume that an <code>ADLB</code> dataset is available <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 <p>First we read in the ADLB parameters required for the Hy’s Law
 parameters:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(admiral_adlb)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>adlb <span class="ot">&lt;-</span> admiral_adlb <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;BILI&quot;</span>) <span class="sc">&amp;</span> <span class="fu">is.na</span>(DTYPE))</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(admiral_adlb)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>adlb <span class="ot">&lt;-</span> admiral_adlb <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;BILI&quot;</span>) <span class="sc">&amp;</span> <span class="fu">is.na</span>(DTYPE))</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="1%" />
@@ -1309,21 +1309,21 @@ ALT/AST and the 2-fold or greater than upper limit of normal of
 BILI.</p>
 <p>To increase visibility and for simplicity, we will retain only
 columns that are relevant to a Hy’s Law analysis for now.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>adlb_annotated <span class="ot">&lt;-</span> adlb <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">CRIT1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;AST&quot;</span> <span class="sc">~</span> <span class="st">&quot;AST &gt;=3xULN&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;ALT&quot;</span> <span class="sc">~</span> <span class="st">&quot;ALT &gt;=3xULN&quot;</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span> <span class="sc">~</span> <span class="st">&quot;BILI &gt;=2xULN&quot;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">CRIT1FL =</span> <span class="fu">if_else</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      (AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">3</span> <span class="sc">&amp;</span> PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>)) <span class="sc">|</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        (AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">2</span> <span class="sc">&amp;</span> PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span>),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">NA_character_</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A, PARAMCD, LBSEQ, ADT, AVISIT, ADY, AVAL, ANRHI, CRIT1, CRIT1FL)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>adlb_annotated <span class="ot">&lt;-</span> adlb <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">CRIT1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;AST&quot;</span> <span class="sc">~</span> <span class="st">&quot;AST &gt;=3xULN&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;ALT&quot;</span> <span class="sc">~</span> <span class="st">&quot;ALT &gt;=3xULN&quot;</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span> <span class="sc">~</span> <span class="st">&quot;BILI &gt;=2xULN&quot;</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    ),</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">CRIT1FL =</span> <span class="fu">if_else</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>      (AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">3</span> <span class="sc">&amp;</span> PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>)) <span class="sc">|</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>        (AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">2</span> <span class="sc">&amp;</span> PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>      <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>      <span class="cn">NA_character_</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    )</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A, PARAMCD, LBSEQ, ADT, AVISIT, ADY, AVAL, ANRHI, CRIT1, CRIT1FL)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="12%" />
@@ -1519,21 +1519,21 @@ that would indicate a potential Hy’s Law event,</li>
 The dataset may also prove useful for a listing where you have to
 display the two lab-records in one row to showcase the potential
 event.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>altast_records <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>))</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>bili_records <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;BILI&quot;</span>))</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>hylaw_records <span class="ot">&lt;-</span> <span class="fu">derive_vars_joined</span>(</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset =</span> altast_records,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> bili_records,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(ADY),</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">filter_join =</span> <span class="dv">0</span> <span class="sc">&lt;=</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&amp;</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&lt;=</span> <span class="dv">14</span> <span class="sc">&amp;</span> CRIT1FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> CRIT1FL.join <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">BILI_DT =</span> ADT, <span class="at">BILI_CRITFL =</span> CRIT1FL),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>altast_records <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>bili_records <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;BILI&quot;</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>hylaw_records <span class="ot">&lt;-</span> <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">dataset =</span> altast_records,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="at">dataset_add =</span> bili_records,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(ADY),</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">filter_join =</span> <span class="dv">0</span> <span class="sc">&lt;=</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&amp;</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&lt;=</span> <span class="dv">14</span> <span class="sc">&amp;</span> CRIT1FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> CRIT1FL.join <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">BILI_DT =</span> ADT, <span class="at">BILI_CRITFL =</span> CRIT1FL),</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="8%" />
@@ -1752,27 +1752,27 @@ following code.</p>
 <li>Any sort of baseline/post-baseline based analysis</li>
 <li>Flags for other lab values like ALP if modified in above too</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hylaw_records_pts_visits <span class="ot">&lt;-</span> hylaw_records <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A) <span class="sc">%&gt;%</span> <span class="co"># add AVISIT, ADT for by visit</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>hylaw_records_fls <span class="ot">&lt;-</span> hylaw_records <span class="sc">%&gt;%</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A, CRIT1FL, BILI_CRITFL) <span class="sc">%&gt;%</span> <span class="co"># add AVISIT, ADT for by visit</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>hylaw_params <span class="ot">&lt;-</span> <span class="fu">derive_param_exist_flag</span>(</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_ref =</span> hylaw_records_pts_visits,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataset_add =</span> hylaw_records_fls,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> CRIT1FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> BILI_CRITFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">false_value =</span> <span class="st">&quot;N&quot;</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">missing_value =</span> <span class="st">&quot;N&quot;</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, TRT01A), <span class="co"># add AVISIT, ADT for by visit</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;HYSLAW&quot;</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">PARAM =</span> <span class="st">&quot;ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN&quot;</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">yn_to_numeric</span>(AVALC)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>hylaw_records_pts_visits <span class="ot">&lt;-</span> hylaw_records <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A) <span class="sc">%&gt;%</span> <span class="co"># add AVISIT, ADT for by visit</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>hylaw_records_fls <span class="ot">&lt;-</span> hylaw_records <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A, CRIT1FL, BILI_CRITFL) <span class="sc">%&gt;%</span> <span class="co"># add AVISIT, ADT for by visit</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>hylaw_params <span class="ot">&lt;-</span> <span class="fu">derive_param_exist_flag</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">dataset_ref =</span> hylaw_records_pts_visits,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="at">dataset_add =</span> hylaw_records_fls,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="at">condition =</span> CRIT1FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> BILI_CRITFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="at">false_value =</span> <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="at">missing_value =</span> <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, TRT01A), <span class="co"># add AVISIT, ADT for by visit</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;HYSLAW&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>    <span class="at">PARAM =</span> <span class="st">&quot;ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">yn_to_numeric</span>(AVALC)</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  )</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="13%" />
@@ -1894,8 +1894,8 @@ object.</p>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>adlbhy <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(hylaw_params)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>adlbhy <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">bind_rows</span>(hylaw_params)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="11%" />

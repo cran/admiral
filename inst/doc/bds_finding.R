@@ -9,16 +9,16 @@ library(admiraldev)
 ## ----message=FALSE------------------------------------------------------------
 library(admiral)
 library(dplyr, warn.conflicts = FALSE)
-library(admiral.test)
+library(pharmaversesdtm)
 library(lubridate)
 library(stringr)
 library(tibble)
 
 data("admiral_adsl")
-data("admiral_vs")
+data("vs")
 
 adsl <- admiral_adsl
-vs <- convert_blanks_to_na(admiral_vs)
+vs <- convert_blanks_to_na(vs)
 
 ## ----echo=FALSE---------------------------------------------------------------
 vs <- filter(vs, USUBJID %in% c("01-701-1015", "01-701-1023", "01-703-1086", "01-703-1096", "01-707-1037", "01-716-1024"))
@@ -166,7 +166,8 @@ advs <- derive_param_bsa(
   method = "Mosteller",
   set_values_to = exprs(PARAMCD = "BSA"),
   get_unit_expr = VSSTRESU,
-  filter = VSSTAT != "NOT DONE" | is.na(VSSTAT)
+  filter = VSSTAT != "NOT DONE" | is.na(VSSTAT),
+  constant_by_vars = exprs(USUBJID)
 )
 
 advs <- derive_param_bmi(
@@ -174,7 +175,8 @@ advs <- derive_param_bmi(
   by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars, VISIT, VISITNUM, ADT, ADY, VSTPT, VSTPTNUM),
   set_values_to = exprs(PARAMCD = "BMI"),
   get_unit_expr = VSSTRESU,
-  filter = VSSTAT != "NOT DONE" | is.na(VSSTAT)
+  filter = VSSTAT != "NOT DONE" | is.na(VSSTAT),
+  constant_by_vars = exprs(USUBJID)
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
@@ -318,7 +320,7 @@ advs <- derive_var_ontrtfl(
   end_date = AENDT,
   ref_start_date = AP01SDT,
   ref_end_date = AP01EDT,
-  span_period = "Y"
+  span_period = TRUE
 )
 
 ## ---- eval=TRUE, echo=FALSE---------------------------------------------------
@@ -568,7 +570,7 @@ advs_ex1 <- advs %>%
     by_vars = exprs(STUDYID, USUBJID, PARAMCD),
     order = exprs(ADT, AVISITN, ATPTN, AVAL),
     mode = "last",
-    filter = (4 < AVISITN & AVISITN <= 12 & ANL01FL == "Y"),
+    filter_add = (4 < AVISITN & AVISITN <= 12 & ANL01FL == "Y"),
     set_values_to = exprs(
       AVISIT = "End of Treatment",
       AVISITN = 99,
@@ -589,7 +591,7 @@ advs_ex1 <- advs %>%
     by_vars = exprs(STUDYID, USUBJID, PARAMCD),
     order = exprs(AVAL, ADT, AVISITN, ATPTN),
     mode = "first",
-    filter = (4 < AVISITN & AVISITN <= 12 & ANL01FL == "Y" & !is.na(AVAL)),
+    filter_add = (4 < AVISITN & AVISITN <= 12 & ANL01FL == "Y" & !is.na(AVAL)),
     set_values_to = exprs(
       AVISIT = "Minimum on Treatment",
       AVISITN = 98,
@@ -625,8 +627,8 @@ advs_ex3 <- derive_param_computed(
   advs,
   by_vars = exprs(USUBJID, VISIT, ATPT),
   parameters = c("SYSBP", "DIABP"),
-  analysis_value = (AVAL.SYSBP - AVAL.DIABP) / 3 + AVAL.DIABP,
   set_values_to = exprs(
+    AVAL = (AVAL.SYSBP - AVAL.DIABP) / 3 + AVAL.DIABP,
     PARAMCD = "MAP2",
     PARAM = "Mean Arterial Pressure 2 (mmHg)"
   )

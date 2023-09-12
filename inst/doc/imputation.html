@@ -342,6 +342,27 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
+<p>This vignette is broken into three major sections. The first section
+briefly explores the imputation rules used in <code>{admiral}</code>.
+The second section focuses on imputation functions that work on vectors
+with lots of small examples to explore the imputation rules. These
+<strong>vector-based</strong> functions form the backbone of
+<code>{admiral}</code>’s more powerful functions
+<code>derive_vars_dt()</code> and <code>derive_vars_dtm()</code> for
+building ADaM dataset. The final section moves into more detailed
+examples that a user might face while working on ADaMs in need of
+<code>---DT</code> and <code>---DTM</code> variables.</p>
+<div id="required-packages" class="section level2">
+<h2>Required Packages</h2>
+<p>The examples of this vignette require the following packages.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="imputation-rules" class="section level1">
+<h1>Imputation Rules</h1>
 <p>Date and time is collected in SDTM as character values using the
 extended <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>
 format. For example, <code>&quot;2019-10-9T13:42:00&quot;</code>. It allows that
@@ -352,148 +373,165 @@ or <code>ADY</code> (Analysis Relative Day) are numeric variables. They
 can be derived only if the date or datetime is complete. Therefore
 <code>{admiral}</code> provides imputation functions which fill in
 missing date or time parts according to certain imputation rules.</p>
-<p>In {admiral} we use only two functions <code>derive_vars_dt()</code>
-and <code>derive_vars_dtm()</code> for date and datetime imputations
-respectively. In all other functions where dates can be passed as an
-argument, we expect full dates or datetimes (unless otherwise
-specified), so if any possibility of partials then these functions
-should be used as a first step to make the required imputation.</p>
-<div id="required-packages" class="section level2">
-<h2>Required Packages</h2>
-<p>The examples of this vignette require the following packages.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-</div>
-</div>
-<div id="imputation-rules" class="section level1">
-<h1>Imputation Rules</h1>
-<p>In {admiral} we don’t allow users to pick any single part of the
-date/time to impute, we only enable to impute up to a highest level,
-i.e. you couldn’t choose to say impute months, but not days.</p>
-<p>The simplest imputation rule is to set the missing parts to a fixed
-value. For example</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-10&quot;</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;01-01&quot;</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-10-01T00:00:00&quot;</span></span></code></pre></div>
-<p>Sometimes this does not work as it would result in invalid dates,
-e.g.,</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;02-31&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-31T00:00:00&quot;</span></span></code></pre></div>
+<p>In <code>{admiral}</code> users will primarily use two functions
+<code>derive_vars_dt()</code> and <code>derive_vars_dtm()</code> for
+date and datetime imputations respectively. In all other functions where
+dates can be passed as an argument, we expect full dates or datetimes
+(unless otherwise specified), so if any possibility of partials then
+these functions should be used as a first step to make the required
+imputation.</p>
+<p>The functions that need to do date/time imputation follow a rule that
+we have called <strong>Highest Imputation</strong>, which has a
+corresponding argument in all our functions called
+<code>highest_imputation</code>. The rule is best explained by working
+through the examples below, but to put it briefly, this rule allows a
+user to control which components of the DTC value are imputed if they
+are missing.</p>
+<p>The default imputation for <code>_dtm()</code> functions,
+e.g. <code>impute_dtc_dtm()</code>, <code>derive_vars_dtm()</code>, is
+“h” (hours). A user can specify that that no imputation is to be done by
+setting <code>highest_imputation = n</code>. However, for for
+<code>_dt()</code> functions, e.g. <code>impute_dtc_dt()</code>,
+<code>derive_vars_dt()</code> the default imputation is already set as
+<code>highest_imputation = &quot;n&quot;</code>.</p>
+<p>Care must be taken when deciding on level of imputation. If a
+component is at a higher level than the highest imputation level is
+missing, <code>NA_character_</code> is returned. For example, for
+<code>highest_imputation = &quot;D&quot;</code> <code>&quot;2020&quot;</code> results in
+<code>NA_character_</code> because the month is missing.</p>
+<p>We encourage readers to explore in more detail the
+<code>highest_imputation</code> options in both the <code>_dtm()</code>
+and <code>_dt()</code> function documentations and in the examples
+below.</p>
+<div id="imputation-on-a-vector" class="section level2">
+<h2>Imputation on a Vector</h2>
+<p>In our first example, we will make use of
+<code>impute_dtc_dtm()</code> on <code>2019-10</code> setting
+<code>highest_imputation = &quot;M&quot;</code>. The argument
+<code>date_imputation</code> and <code>time_imputation</code> are given
+expressed inputs of the imputation we would like to see done.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="st">&quot;2019-10&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;01-01&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-10-01T00:00:00&quot;</span></span></code></pre></div>
+<p>Next we impute using <code>2019-02</code>, which if done naively can
+result in invalid dates, e.g.,</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;02-31&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-31T00:00:00&quot;</span></span></code></pre></div>
 <p>Therefore the keywords <code>&quot;first&quot;</code> or <code>&quot;last&quot;</code>
-can be specified to request that missing parts are replaced by the first
-or last possible value:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-28T00:00:00&quot;</span></span></code></pre></div>
+can be specified in <code>date_imputation</code> to request that missing
+parts are replaced by the first or last possible value - giving us a
+valid date!</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-28T00:00:00&quot;</span></span></code></pre></div>
 <p>For dates, there is the additional option to use keyword
 <code>&quot;mid&quot;</code> to impute missing day to <code>15</code> or missing
 day and month to <code>06-30</code>, but note the different behavior
-below depending on <code>preserve</code> argument for case when month
-only is missing:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019&quot;</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019---01&quot;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  dates,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;mid&quot;</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">preserve =</span> <span class="cn">FALSE</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-15T00:00:00&quot; &quot;2019-06-30T00:00:00&quot; &quot;2019-06-30T00:00:00&quot;</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  dates,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;mid&quot;</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">preserve =</span> <span class="cn">TRUE</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-15T00:00:00&quot; &quot;2019-06-30T00:00:00&quot; &quot;2019-06-01T00:00:00&quot;</span></span></code></pre></div>
+below depending on the <code>preserve</code> argument for the case when
+month only is missing:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="st">&quot;2019&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="st">&quot;2019---01&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  dates,</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;mid&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="at">preserve =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>)</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-15T00:00:00&quot; &quot;2019-06-30T00:00:00&quot; &quot;2019-06-30T00:00:00&quot;</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  dates,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;mid&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="at">preserve =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>)</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-15T00:00:00&quot; &quot;2019-06-30T00:00:00&quot; &quot;2019-06-01T00:00:00&quot;</span></span></code></pre></div>
 <p>If you wanted to achieve a similar result by replacing any missing
 part of the date with a fixed value <code>06-15</code>, this is also
 possible, but note the difference in days for cases when month is
 missing:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019&quot;</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019---01&quot;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  dates,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;06-15&quot;</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-15T00:00:00&quot; &quot;2019-06-15T00:00:00&quot; &quot;2019-06-15T00:00:00&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="st">&quot;2019&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="st">&quot;2019---01&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  dates,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;06-15&quot;</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;00:00:00&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-15T00:00:00&quot; &quot;2019-06-15T00:00:00&quot; &quot;2019-06-15T00:00:00&quot;</span></span></code></pre></div>
+</div>
 <div id="imputation-level" class="section level2">
 <h2>Imputation Level</h2>
 <p>The imputation level, i.e., which components are imputed if they are
 missing, is controlled by the <code>highest_imputation</code> argument.
 All components up to the specified level are imputed.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02-03T12:30:15&quot;</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02-03T12:30&quot;</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02-03&quot;</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019&quot;</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Do not impute</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  dates,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;n&quot;</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; NA                    NA                   </span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] NA                    NA</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute seconds only</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  dates,</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;s&quot;</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; &quot;2019-02-03T12:30:00&quot; NA                   </span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] NA                    NA</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute time (hours, minutes, seconds) only</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  dates,</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;h&quot;</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; &quot;2019-02-03T12:30:00&quot; &quot;2019-02-03T00:00:00&quot;</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] NA                    NA</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute days and time</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>  dates,</span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;D&quot;</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; &quot;2019-02-03T12:30:00&quot; &quot;2019-02-03T00:00:00&quot;</span></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;2019-02-01T00:00:00&quot; NA</span></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute date (months and days) and time</span></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>  dates,</span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; &quot;2019-02-03T12:30:00&quot; &quot;2019-02-03T00:00:00&quot;</span></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;2019-02-01T00:00:00&quot; &quot;2019-01-01T00:00:00&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="st">&quot;2019-02-03T12:30:15&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="st">&quot;2019-02-03T12:30&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="st">&quot;2019-02-03&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="st">&quot;2019&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co"># Do not impute</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  dates,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;n&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>)</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; NA                    NA                   </span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt; [4] NA                    NA</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co"># Impute seconds only</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  dates,</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;s&quot;</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>)</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; &quot;2019-02-03T12:30:00&quot; NA                   </span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt; [4] NA                    NA</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="co"># Impute time (hours, minutes, seconds) only</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>  dates,</span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;h&quot;</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>)</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; &quot;2019-02-03T12:30:00&quot; &quot;2019-02-03T00:00:00&quot;</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a><span class="co">#&gt; [4] NA                    NA</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a><span class="co"># Impute days and time</span></span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>  dates,</span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;D&quot;</span></span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a>)</span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; &quot;2019-02-03T12:30:00&quot; &quot;2019-02-03T00:00:00&quot;</span></span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a><span class="co">#&gt; [4] &quot;2019-02-01T00:00:00&quot; NA</span></span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a><span class="co"># Impute date (months and days) and time</span></span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>  dates,</span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span></span>
+<span id="cb7-45"><a href="#cb7-45" tabindex="-1"></a>)</span>
+<span id="cb7-46"><a href="#cb7-46" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-03T12:30:15&quot; &quot;2019-02-03T12:30:00&quot; &quot;2019-02-03T00:00:00&quot;</span></span>
+<span id="cb7-47"><a href="#cb7-47" tabindex="-1"></a><span class="co">#&gt; [4] &quot;2019-02-01T00:00:00&quot; &quot;2019-01-01T00:00:00&quot;</span></span></code></pre></div>
 <p>For imputation of years (<code>highest_imputation = &quot;Y&quot;</code>) see
 next section.</p>
 </div>
@@ -504,49 +542,49 @@ certain dates. For example an imputed date after data cut off date or
 death date is not desirable. The <code>{admiral}</code> imputation
 functions provide the <code>min_dates</code> and <code>max_dates</code>
 argument to specify those dates. For example:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_dates =</span> <span class="fu">list</span>(<span class="fu">ymd</span>(<span class="st">&quot;2019-01-14&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-02-25&quot;</span>))</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-25T23:59:59&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="st">&quot;2019-02&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="at">max_dates =</span> <span class="fu">list</span>(<span class="fu">ymd</span>(<span class="st">&quot;2019-01-14&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-02-25&quot;</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-25T23:59:59&quot;</span></span></code></pre></div>
 <p>It is ensured that the imputed date is not after any of the specified
-dates. Only dates which are in the range of possible dates of the dtc
+dates. Only dates which are in the range of possible dates of the DTC
 value are considered. The possible dates are defined by the missing
-parts of the dtc date, i.e., for “2019-02” the possible dates range from
+parts of the DTC date, i.e., for “2019-02” the possible dates range from
 “2019-02-01” to “2019-02-28”. Thus “2019-01-14” is ignored. This ensures
-that the non-missing parts of the dtc date are not changed.</p>
+that the non-missing parts of the DTC date are not changed.</p>
 <p>If the <code>min_dates</code> or <code>max_dates</code> argument is
 specified, it is also possible to impute completely missing dates. For
 <code>date_imputation = &quot;first&quot;</code> the <code>min_dates</code>
 argument must be specified and for <code>date_imputation = &quot;last&quot;</code>
 the <code>max_dates</code> argument. For other imputation rules imputing
 the year is not possible.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute year to first</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;2019-02&quot;</span>, <span class="cn">NA</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_dates =</span> <span class="fu">list</span>(</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ymd</span>(<span class="st">&quot;2019-01-14&quot;</span>, <span class="cn">NA</span>),</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ymd</span>(<span class="st">&quot;2019-02-25&quot;</span>, <span class="st">&quot;2020-01-01&quot;</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-25T00:00:00&quot; &quot;2020-01-01T00:00:00&quot;</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Impute year to last</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;2019-02&quot;</span>, <span class="cn">NA</span>),</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_dates =</span> <span class="fu">list</span>(</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ymd</span>(<span class="st">&quot;2019-01-14&quot;</span>, <span class="cn">NA</span>),</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ymd</span>(<span class="st">&quot;2019-02-25&quot;</span>, <span class="st">&quot;2020-01-01&quot;</span>)</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-25T23:59:59&quot; &quot;2020-01-01T23:59:59&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Impute year to first</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;2019-02&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">min_dates =</span> <span class="fu">list</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>    <span class="fu">ymd</span>(<span class="st">&quot;2019-01-14&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>    <span class="fu">ymd</span>(<span class="st">&quot;2019-02-25&quot;</span>, <span class="st">&quot;2020-01-01&quot;</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>  )</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-25T00:00:00&quot; &quot;2020-01-01T00:00:00&quot;</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co"># Impute year to last</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="fu">impute_dtc_dtm</span>(</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;2019-02&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  <span class="at">highest_imputation =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="at">max_dates =</span> <span class="fu">list</span>(</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>    <span class="fu">ymd</span>(<span class="st">&quot;2019-01-14&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>    <span class="fu">ymd</span>(<span class="st">&quot;2019-02-25&quot;</span>, <span class="st">&quot;2020-01-01&quot;</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>  )</span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>)</span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-25T23:59:59&quot; &quot;2020-01-01T23:59:59&quot;</span></span></code></pre></div>
 </div>
 </div>
 <div id="imputation-flags" class="section level1">
@@ -607,21 +645,21 @@ already done for the datetime variable. CDISC considers the datetime and
 the date variable as two representations of the same date. Thus the
 imputation must be the same and the imputation flags are valid for both
 the datetime and the date variable.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(ASTDTM))</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(ASTDTM))</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -669,19 +707,19 @@ the datetime and the date variable.</p>
 <p>If an imputed date variable without a corresponding datetime variable
 is required, it can be derived by the <code>derive_vars_dt()</code>
 function.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dt</span>(</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="fu">derive_vars_dt</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -721,19 +759,19 @@ function.</p>
 <code>&quot;h&quot;</code>. This results in <code>NA</code> if the date is
 partial. As no date is imputed the date imputation flag is not
 created.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;h&quot;</span>,</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;h&quot;</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -780,21 +818,21 @@ the non missing date and time parts of <code>AESTDTC</code> coincide
 with those of <code>TRTSDTM</code>. Therefore <code>2019-10</code> is
 not imputed as <code>2019-11-11 12:34:56</code>. This ensures that
 collected information is not changed by the imputation.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,              <span class="sc">~</span>TRTSDTM,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-10&quot;</span>,             <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-11&quot;</span>,             <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_dates =</span> <span class="fu">exprs</span>(TRTSDTM)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,              <span class="sc">~</span>TRTSDTM,</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="st">&quot;2019-10&quot;</span>,             <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="st">&quot;2019-11&quot;</span>,             <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AST&quot;</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>    <span class="at">min_dates =</span> <span class="fu">exprs</span>(TRTSDTM)</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="27%" />
@@ -855,21 +893,21 @@ off or death. This can be achieved by specifying the dates for the
 although it is after the data cut off date. It may make sense to replace
 it by the data cut off date but this is not part of the imputation. It
 should be done in a separate data cleaning or data cut off step.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>AEENDTC,              <span class="sc">~</span>DTHDT,            <span class="sc">~</span>DCUTDT,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-11&quot;</span>,             <span class="fu">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-12&quot;</span>,             <span class="cn">NA</span>,                <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="cn">NA</span>,                <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">dtc =</span> AEENDTC,</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_dates =</span> <span class="fu">exprs</span>(DTHDT, DCUTDT)</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="sc">~</span>AEENDTC,              <span class="sc">~</span>DTHDT,            <span class="sc">~</span>DCUTDT,</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="st">&quot;2019-11&quot;</span>,             <span class="fu">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="st">&quot;2019-12&quot;</span>,             <span class="cn">NA</span>,                <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="cn">NA</span>,                <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">dtc =</span> AEENDTC,</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    <span class="at">new_vars_prefix =</span> <span class="st">&quot;AEN&quot;</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>    <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>    <span class="at">date_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>    <span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>    <span class="at">max_dates =</span> <span class="fu">exprs</span>(DTHDT, DCUTDT)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>  )</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="26%" />
@@ -930,20 +968,20 @@ should be done in a separate data cleaning or data cut off step.</p>
 <p>If imputation is required without creating a new variable the
 <code>convert_dtc_to_dt()</code> function can be called to obtain a
 vector of imputed dates. It can be used for example in conditions:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mh <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>MHSTDTC,     <span class="sc">~</span>TRTSDT,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-04&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-04-01&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-05&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-06-21&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">convert_dtc_to_dt</span>(</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      MHSTDTC,</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">&lt;</span> TRTSDT</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>mh <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="sc">~</span>MHSTDTC,     <span class="sc">~</span>TRTSDT,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="st">&quot;2019-04&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="st">&quot;2019-04-01&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="st">&quot;2019-05&quot;</span>,    <span class="fu">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="st">&quot;2019-06-21&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-04-15&quot;</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>    <span class="fu">convert_dtc_to_dt</span>(</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>      MHSTDTC,</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>      <span class="at">highest_imputation =</span> <span class="st">&quot;M&quot;</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>      <span class="at">date_imputation =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>    ) <span class="sc">&lt;</span> TRTSDT</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -967,28 +1005,28 @@ vector of imputed dates. It can be used for example in conditions:</p>
 <h2>Using More Than One Imputation Rule for a Variable</h2>
 <p>Using different imputation rules depending on the observation can be
 done by using <code>slice_derivation()</code>.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>VSDTC,                <span class="sc">~</span>VSTPT,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="cn">NA</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-10-12&quot;</span>,          <span class="st">&quot;PRE-DOSE&quot;</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-11-10&quot;</span>,          <span class="cn">NA</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="cn">NA</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_derivation</span>(</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">derivation =</span> derive_vars_dtm,</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">dtc =</span> VSDTC,</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">derivation_slice</span>(</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">filter =</span> VSTPT <span class="sc">==</span> <span class="st">&quot;PRE-DOSE&quot;</span>,</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">args =</span> <span class="fu">params</span>(<span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span>)</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">derivation_slice</span>(</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">filter =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">args =</span> <span class="fu">params</span>(<span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>)</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="sc">~</span>VSDTC,                <span class="sc">~</span>VSTPT,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="cn">NA</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="st">&quot;2019-10-12&quot;</span>,          <span class="st">&quot;PRE-DOSE&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="st">&quot;2019-11-10&quot;</span>,          <span class="cn">NA</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="cn">NA</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>  <span class="fu">slice_derivation</span>(</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>    <span class="at">derivation =</span> derive_vars_dtm,</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>      <span class="at">dtc =</span> VSDTC,</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>      <span class="at">new_vars_prefix =</span> <span class="st">&quot;A&quot;</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>    ),</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>    <span class="fu">derivation_slice</span>(</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>      <span class="at">filter =</span> VSTPT <span class="sc">==</span> <span class="st">&quot;PRE-DOSE&quot;</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>      <span class="at">args =</span> <span class="fu">params</span>(<span class="at">time_imputation =</span> <span class="st">&quot;first&quot;</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>    ),</span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>    <span class="fu">derivation_slice</span>(</span>
+<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a>      <span class="at">filter =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a>      <span class="at">args =</span> <span class="fu">params</span>(<span class="at">time_imputation =</span> <span class="st">&quot;last&quot;</span>)</span>
+<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a>    )</span>
+<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
