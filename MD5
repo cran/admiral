@@ -1,6 +1,6 @@
-8ff8de89cbc8df7c38866d45f6d184a4 *DESCRIPTION
+ddac3c44c77994e7ed92d769dc40eb46 *DESCRIPTION
 97183cb3d58e91b7aecd03c7d20598a4 *NAMESPACE
-f2d866ca87730711bd260f36cd3e2d83 *NEWS.md
+f3f30a9e6e92eef9ef924a39c0b9175f *NEWS.md
 0525c415236fd58b148e98f352a7dcad *R/admiral-package.R
 63bf83650e8e5b233606f78d5c10aa79 *R/admiral_environment.R
 e9926525d207834a168b45b6074f2c75 *R/admiral_options.R
@@ -22,7 +22,7 @@ fc7081528e4f313661b81c2219934f99 *R/derive_basetype_records.R
 288b38f2f1d6f2a3143e5e59fad0d883 *R/derive_date_vars.R
 32021b26f16f03edb4a95818ddd2878a *R/derive_expected_records.R
 079e8058f2daa3215291687a7ae2b4a0 *R/derive_extreme_event.R
-85f815001f60dcc6d083f4f3564500b2 *R/derive_extreme_records.R
+cb178a76f0c6a79c77310e679e00dde3 *R/derive_extreme_records.R
 2eb373cb71d8702672515a71dad6491d *R/derive_joined.R
 1bdd5ac21ecf99664a3d16d93bd8bdfe *R/derive_locf_records.R
 4f9b9d09ffa5391ddab22c5fd1f0da1b *R/derive_merged.R
@@ -56,10 +56,10 @@ bd47c018f548db5816cef35c92afdb7e *R/derive_var_relative_flag.R
 48fd243141ee2e7978bbfee5c28b0abf *R/derive_var_shift.R
 1674bc775ab358c2833fc67900f38f3a *R/derive_var_trtdurd.R
 ed27ca9d51254cef0fa8eb5163132f2a *R/derive_var_trtemfl.R
-84bc30363549a2889473b7e84843bbf3 *R/derive_vars_aage.R
+cc4f3ec44bb263a3ae70d67f77c80b44 *R/derive_vars_aage.R
 2a16997271bf7fb234f0c832321a90c8 *R/derive_vars_dtm_to_dt.R
 4cc336a54fcd545fbd28f07e9154745c *R/derive_vars_dtm_to_tm.R
-b448ce7259a063387edf08d24cec75ad *R/derive_vars_duration.R
+92e1bf6288d2eb9b208e8ba62c5b5dfb *R/derive_vars_duration.R
 5c6c04c2b1bef281bb5f7de017630c8d *R/derive_vars_dy.R
 47edbe7dd6085d025c93b070c8d67da1 *R/derive_vars_last_dose.R
 0bfea79eea420ea0d9037b94b2f9c229 *R/derive_vars_query.R
@@ -78,7 +78,7 @@ af7baf7809309af36523be83d84ecfe8 *R/restrict_derivation.R
 2a375f247daf560ff9e2cd5ae301edf5 *R/tte_sources.R
 6f4f018286c6d370c6b1219d0141471d *R/user_helpers.R
 414b419a42373b196d2dda6596d8369d *R/user_utils.R
-b4c41068bdb11183cacdd5b92c22838a *README.md
+35653d09b036b5fd36064f842583f461 *README.md
 c1567a1dcaf1cfe8d6ff3d9db54e8035 *build/vignette.rds
 70082097fb3b4ec04d6a09176c33032b *data/admiral_adlb.rda
 2c2fc1b37990073e35814b669864a4f7 *data/admiral_adsl.rda
@@ -146,7 +146,7 @@ a54faa12c805c7244b736fd96eebb188 *inst/templates/ad_adex.R
 1854df2879794200f018590cd7d50e1d *inst/templates/ad_adlbhy.R
 a3b0904fbfe7d8364f8342ad2af71cf4 *inst/templates/ad_admh.R
 88d66961a399c2f3e2e2d97ac1ab08fe *inst/templates/ad_adpc.R
-362ad7036da296dda422721e9448868f *inst/templates/ad_adpp.R
+db4bda325feebec6eb8d34f0751103ba *inst/templates/ad_adpp.R
 f01a8200cae775b83b25eb1fa4847b08 *inst/templates/ad_adppk.R
 8a1fd0ebcba84c8d996a90db06740b9b *inst/templates/ad_adsl.R
 3877ed8baac73ae5e73f3e8717671d24 *inst/templates/ad_advs.R
@@ -240,13 +240,13 @@ f021be7b51b9b17967ce007f1971b9c0 *man/derive_var_pchg.Rd
 d2a226b8591453470aeee9c24b06670d *man/derive_var_shift.Rd
 75eed03fe813669ea8c84635d5e342df *man/derive_var_trtdurd.Rd
 164f773a0bf7733a5d55f69cb03ef410 *man/derive_var_trtemfl.Rd
-ebcfb9ff907c52e1a900f9da657d47f6 *man/derive_vars_aage.Rd
+5ace4f6e7651ca73eeda913764e6feaa *man/derive_vars_aage.Rd
 cc74f7843fb2ba09a60501a7cc8d4a68 *man/derive_vars_atc.Rd
 f2e63de4fc5c5e70c492ad358200d069 *man/derive_vars_dt.Rd
 1f5919d0fd3db1537641c305e9106e23 *man/derive_vars_dtm.Rd
 9c14dfeee91a6c7e8171ae73ddc7125e *man/derive_vars_dtm_to_dt.Rd
 baab60fb9daf8cea31f73e8b7ba9c563 *man/derive_vars_dtm_to_tm.Rd
-55d3f351021b3ae5775ed2c6b4993cc8 *man/derive_vars_duration.Rd
+cc73f4da611923d90c08cb8ecdac4a89 *man/derive_vars_duration.Rd
 99edb385fd40ed5161a9efa50c85c0d6 *man/derive_vars_dy.Rd
 4c3b4c3604c9baecb489fc4d7fa64df8 *man/derive_vars_joined.Rd
 64b6ed63224ffeded96e14e524a532d2 *man/derive_vars_last_dose.Rd
@@ -347,7 +347,7 @@ e15e35e3afcf0bb50f86808a7fdd8171 *tests/testthat/test-derive_advs_params.R
 d30c827c6cc8538d6e993d7d252610a4 *tests/testthat/test-derive_date_vars.R
 3e9b9b2a30c91653e775bac046b8e452 *tests/testthat/test-derive_expected_records.R
 6dfdba374f87ee14edcdfcc357ad6a03 *tests/testthat/test-derive_extreme_event.R
-4f00f689f1f597fddd12f68b1800b8db *tests/testthat/test-derive_extreme_records.R
+c9d8f840f23dda03869f759a619a6c22 *tests/testthat/test-derive_extreme_records.R
 b26e0ca54c8db4796e8a1503049be904 *tests/testthat/test-derive_joined.R
 1d5aaec5aaa2cce5f520b15797e457a4 *tests/testthat/test-derive_locf_records.R
 4fb3cfef1729440fa402efd5eaea7548 *tests/testthat/test-derive_merged.R
@@ -385,7 +385,7 @@ fb6ae6e166d7afd414bbf0d5a93b3805 *tests/testthat/test-derive_var_trtdurd.R
 893a4aeff1d53999fd13fb2e11e682cf *tests/testthat/test-derive_vars_aage.R
 d0804fb9cbe5de0c01d175dba8d9d24c *tests/testthat/test-derive_vars_dtm_to_dt.R
 ec61df9a309d98680e09411dd610324c *tests/testthat/test-derive_vars_dtm_to_tm.R
-57e92ee3684d6fcb870bb7b3cf4193c0 *tests/testthat/test-derive_vars_duration.R
+0d33a983e2a1449159c257b8ab3b584f *tests/testthat/test-derive_vars_duration.R
 e17f56f32e526f070291689c6d9c2a32 *tests/testthat/test-derive_vars_dy.R
 33f84ae85c1cfcf9781768cccc677c53 *tests/testthat/test-derive_vars_last_dose.R
 c54eae84d4ff8dc69c473d8a60c1f01c *tests/testthat/test-derive_vars_query.R
