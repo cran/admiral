@@ -1,7 +1,7 @@
 Package: admiral
 Type: Package
 Title: ADaM in R Asset Library
-Version: 0.12.1
+Version: 0.12.2
 Authors@R: c(
     person("Ben", "Straub", email = "ben.x.straub@gsk.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut"),
@@ -28,7 +28,7 @@ Description: A toolbox for programming Clinical Data Interchange Standards Conso
     mandatory part of any New Drug or Biologics License Application submitted to the
     United States Food and Drug Administration (FDA). Analysis derivations are
     implemented in accordance with the "Analysis Data Model Implementation Guide"
-    (CDISC Analysis Data Model Team, 2021, <https://www.cdisc.org/standards/foundational/adam/adamig-v1-3-release-package>).
+    (CDISC Analysis Data Model Team, 2021, <https://www.cdisc.org/standards/foundational/adam>).
 Language: en-US
 License: Apache License (>= 2)
 BugReports: https://github.com/pharmaverse/admiral/issues
@@ -47,7 +47,7 @@ Suggests: pharmaversesdtm, DT, diffdf, knitr, rmarkdown, methods,
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-09-25 13:11:14 UTC; r590548
+Packaged: 2023-10-05 15:29:58 UTC; r590548
 Author: Ben Straub [aut, cre],
   Stefan Bundfuss [aut],
   Jeffrey Dickinson [aut],
@@ -69,4 +69,4 @@ Author: Ben Straub [aut, cre],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Ben Straub <ben.x.straub@gsk.com>
 Repository: CRAN
-Date/Publication: 2023-09-25 18:30:06 UTC
+Date/Publication: 2023-10-06 06:50:02 UTC

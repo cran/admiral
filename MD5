@@ -1,6 +1,6 @@
-ddac3c44c77994e7ed92d769dc40eb46 *DESCRIPTION
+81ce9666ce951d981dd422f498e2dd49 *DESCRIPTION
 97183cb3d58e91b7aecd03c7d20598a4 *NAMESPACE
-f3f30a9e6e92eef9ef924a39c0b9175f *NEWS.md
+a005161eb92188354ce0e8e87ee1f2f3 *NEWS.md
 0525c415236fd58b148e98f352a7dcad *R/admiral-package.R
 63bf83650e8e5b233606f78d5c10aa79 *R/admiral_environment.R
 e9926525d207834a168b45b6074f2c75 *R/admiral_options.R
@@ -78,7 +78,7 @@ af7baf7809309af36523be83d84ecfe8 *R/restrict_derivation.R
 2a375f247daf560ff9e2cd5ae301edf5 *R/tte_sources.R
 6f4f018286c6d370c6b1219d0141471d *R/user_helpers.R
 414b419a42373b196d2dda6596d8369d *R/user_utils.R
-35653d09b036b5fd36064f842583f461 *README.md
+8cc1b6434f91576212a95f9154afebaa *README.md
 c1567a1dcaf1cfe8d6ff3d9db54e8035 *build/vignette.rds
 70082097fb3b4ec04d6a09176c33032b *data/admiral_adlb.rda
 2c2fc1b37990073e35814b669864a4f7 *data/admiral_adsl.rda
@@ -150,7 +150,7 @@ db4bda325feebec6eb8d34f0751103ba *inst/templates/ad_adpp.R
 f01a8200cae775b83b25eb1fa4847b08 *inst/templates/ad_adppk.R
 8a1fd0ebcba84c8d996a90db06740b9b *inst/templates/ad_adsl.R
 3877ed8baac73ae5e73f3e8717671d24 *inst/templates/ad_advs.R
-db165d9b1ed4403d4f755833e035532b *man/admiral-package.Rd
+2ae13d68365d13c8507c76ceb20ddfe0 *man/admiral-package.Rd
 2455f43eff1a9eaa2244eaefe3906847 *man/admiral_adlb.Rd
 9cd4f1392dfee4ba4c1533f6edb6c78d *man/admiral_adsl.Rd
 685e59dde6129079f2dedb615a03b5fc *man/assert_db_requirements.Rd
@@ -351,7 +351,7 @@ c9d8f840f23dda03869f759a619a6c22 *tests/testthat/test-derive_extreme_records.R
 b26e0ca54c8db4796e8a1503049be904 *tests/testthat/test-derive_joined.R
 1d5aaec5aaa2cce5f520b15797e457a4 *tests/testthat/test-derive_locf_records.R
 4fb3cfef1729440fa402efd5eaea7548 *tests/testthat/test-derive_merged.R
-4a4a469fd6da1b098b4287cca3b4d2b3 *tests/testthat/test-derive_param_computed.R
+febada9bf8d059c17d0375580c202b0b *tests/testthat/test-derive_param_computed.R
 6098ae007003def469230cec2f6633f6 *tests/testthat/test-derive_param_doseint.R
 36bac3ce8a6e1059f954f2e2f88daa43 *tests/testthat/test-derive_param_exist_flag.R
 6c548531ee8ce58e9a40b1937cc7d26c *tests/testthat/test-derive_param_exposure.R
