@@ -5,47 +5,59 @@ test_that("call_derivation Test 1:  Test that call_derivation generates expected
 
   expected_output <- input %>%
     derive_summary_records(
+      dataset_add = input,
       by_vars = exprs(USUBJID, VSTESTCD),
-      analysis_var = VSSTRESN,
-      summary_fun = function(x) mean(x, na.rm = TRUE),
-      set_values_to = exprs(DTYPE = "AVERAGE"),
-      filter = dplyr::n() >= 2L
+      set_values_to = exprs(
+        VSSTRESN = mean(VSSTRESN, na.rm = TRUE),
+        DTYPE = "AVERAGE"
+      ),
+      filter_add = dplyr::n() >= 2L
     ) %>%
     derive_summary_records(
+      dataset_add = input,
       by_vars = exprs(USUBJID, VSTESTCD),
-      analysis_var = VSSTRESN,
-      summary_fun = function(x) max(x, na.rm = TRUE),
-      set_values_to = exprs(DTYPE = "MAXIMUM"),
-      filter = dplyr::n() >= 2L
+      set_values_to = exprs(
+        VSSTRESN = max(VSSTRESN, na.rm = TRUE),
+        DTYPE = "MAXIMUM"
+      ),
+      filter_add = dplyr::n() >= 2L
     ) %>%
     derive_summary_records(
+      dataset_add = input,
       by_vars = exprs(USUBJID, VSTESTCD),
-      analysis_var = VSSTRESN,
-      summary_fun = function(x) min(x, na.rm = TRUE),
-      set_values_to = exprs(DTYPE = "MINIMUM"),
-      filter = dplyr::n() >= 2L
+      set_values_to = exprs(
+        VSSTRESN = min(VSSTRESN, na.rm = TRUE),
+        DTYPE = "MINIMUM"
+      ),
+      filter_add = dplyr::n() >= 2L
     )
 
   actual_output <- call_derivation(
     dataset = input,
+    dataset_add = input,
     derivation = derive_summary_records,
     variable_params = list(
       params(
-        summary_fun = function(x) mean(x, na.rm = TRUE),
-        set_values_to = exprs(DTYPE = "AVERAGE")
+        set_values_to = exprs(
+          VSSTRESN = mean(VSSTRESN, na.rm = TRUE),
+          DTYPE = "AVERAGE"
+        )
       ),
       params(
-        summary_fun = function(x) max(x, na.rm = TRUE),
-        set_values_to = exprs(DTYPE = "MAXIMUM")
+        set_values_to = exprs(
+          VSSTRESN = max(VSSTRESN, na.rm = TRUE),
+          DTYPE = "MAXIMUM"
+        )
       ),
       params(
-        summary_fun = function(x) min(x, na.rm = TRUE),
-        set_values_to = exprs(DTYPE = "MINIMUM")
+        set_values_to = exprs(
+          VSSTRESN = min(VSSTRESN, na.rm = TRUE),
+          DTYPE = "MINIMUM"
+        )
       )
     ),
     by_vars = exprs(USUBJID, VSTESTCD),
-    analysis_var = VSSTRESN,
-    filter = dplyr::n() >= 2L
+    filter_add = dplyr::n() >= 2L
   )
 
   expect_dfs_equal(

@@ -932,11 +932,12 @@ the last dose date before the start of the event.</p>
 <span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
 <span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">LDOSEDTM =</span> EXSTDTM),</span>
 <span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">join_vars =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(EXSTDTM),</span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="at">filter_join =</span> EXSTDTM <span class="sc">&lt;=</span> ASTDTM,</span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;last&quot;</span></span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">join_type =</span> <span class="st">&quot;all&quot;</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(EXSTDTM),</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="at">filter_join =</span> EXSTDTM <span class="sc">&lt;=</span> ASTDTM,</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;last&quot;</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>)</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="10%" />
@@ -1403,16 +1404,16 @@ create queries datasets.</p>
 <p>The following example shows how to derive query variables for
 Standardized MedDRA Queries (SMQs) in ADAE.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;queries&quot;</span>)</span></code></pre></div>
-<table>
+<table style="width:100%;">
 <colgroup>
 <col width="5%" />
 <col width="31%" />
-<col width="7%" />
+<col width="6%" />
 <col width="5%" />
 <col width="5%" />
 <col width="6%" />
 <col width="33%" />
-<col width="5%" />
+<col width="6%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1422,8 +1423,8 @@ Standardized MedDRA Queries (SMQs) in ADAE.</p>
 <th align="left">SCOPE</th>
 <th align="right">SCOPEN</th>
 <th align="left">SRCVAR</th>
-<th align="left">TERMNAME</th>
-<th align="right">TERMID</th>
+<th align="left">TERMCHAR</th>
+<th align="right">TERMNUM</th>
 </tr>
 </thead>
 <tbody>
@@ -1707,12 +1708,12 @@ Standardized MedDRA Queries (SMQs) in ADAE.</p>
 <p>Similarly to SMQ, the <code>derive_vars_query()</code> function can
 be used to derive Standardized Drug Groupings (SDG).</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>sdg <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="sc">~</span>PREFIX,     <span class="sc">~</span>GRPNAME,       <span class="sc">~</span>GRPID,   <span class="sc">~</span>SCOPE, <span class="sc">~</span>SCOPEN,  <span class="sc">~</span>SRCVAR,     <span class="sc">~</span>TERMNAME,         <span class="sc">~</span>TERMID,</span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,        <span class="dv">11</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 1&quot;</span>,           <span class="cn">NA</span>,</span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>,     <span class="st">&quot;Diuretics&quot;</span>,        <span class="dv">11</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Diuretic 2&quot;</span>,           <span class="cn">NA</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 1&quot;</span>,     <span class="cn">NA</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 2&quot;</span>,     <span class="cn">NA</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>,     <span class="st">&quot;Costicosteroids&quot;</span>,  <span class="dv">12</span>,  <span class="st">&quot;BROAD&quot;</span>,       <span class="dv">1</span>,  <span class="st">&quot;CMDECOD&quot;</span>,   <span class="st">&quot;Costicosteroid 3&quot;</span>,     <span class="cn">NA</span>,</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  <span class="sc">~</span>PREFIX, <span class="sc">~</span>GRPNAME,          <span class="sc">~</span>GRPID, <span class="sc">~</span>SCOPE,  <span class="sc">~</span>SCOPEN, <span class="sc">~</span>SRCVAR,   <span class="sc">~</span>TERMCHAR,          <span class="sc">~</span>TERMNUM,</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>, <span class="st">&quot;Diuretics&quot;</span>,           <span class="dv">11</span>, <span class="st">&quot;BROAD&quot;</span>, <span class="dv">1</span>,       <span class="st">&quot;CMDECOD&quot;</span>, <span class="st">&quot;Diuretic 1&quot;</span>,       <span class="cn">NA</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="st">&quot;SDG01&quot;</span>, <span class="st">&quot;Diuretics&quot;</span>,           <span class="dv">11</span>, <span class="st">&quot;BROAD&quot;</span>, <span class="dv">1</span>,       <span class="st">&quot;CMDECOD&quot;</span>, <span class="st">&quot;Diuretic 2&quot;</span>,       <span class="cn">NA</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>, <span class="st">&quot;Costicosteroids&quot;</span>,     <span class="dv">12</span>, <span class="st">&quot;BROAD&quot;</span>, <span class="dv">1</span>,       <span class="st">&quot;CMDECOD&quot;</span>, <span class="st">&quot;Costicosteroid 1&quot;</span>, <span class="cn">NA</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>, <span class="st">&quot;Costicosteroids&quot;</span>,     <span class="dv">12</span>, <span class="st">&quot;BROAD&quot;</span>, <span class="dv">1</span>,       <span class="st">&quot;CMDECOD&quot;</span>, <span class="st">&quot;Costicosteroid 2&quot;</span>, <span class="cn">NA</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>  <span class="st">&quot;SDG02&quot;</span>, <span class="st">&quot;Costicosteroids&quot;</span>,     <span class="dv">12</span>, <span class="st">&quot;BROAD&quot;</span>, <span class="dv">1</span>,       <span class="st">&quot;CMDECOD&quot;</span>, <span class="st">&quot;Costicosteroid 3&quot;</span>, <span class="cn">NA</span>,</span>
 <span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>)</span>
 <span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>adcm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>ASTDTM,               <span class="sc">~</span>CMDECOD,</span>
@@ -1724,16 +1725,16 @@ be used to derive Standardized Drug Groupings (SDG).</p>
 <span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>adcm_query <span class="ot">&lt;-</span> <span class="fu">derive_vars_query</span>(adcm, sdg)</span></code></pre></div>
 <table>
 <colgroup>
-<col width="6%" />
-<col width="16%" />
-<col width="14%" />
-<col width="8%" />
-<col width="6%" />
-<col width="6%" />
 <col width="7%" />
-<col width="13%" />
-<col width="6%" />
-<col width="6%" />
+<col width="17%" />
+<col width="15%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
 <col width="7%" />
 </colgroup>
 <thead>
@@ -1756,10 +1757,10 @@ be used to derive Standardized Drug Groupings (SDG).</p>
 <td align="left">01</td>
 <td align="left">2020-06-02 23:59:59</td>
 <td align="left">Diuretic 1</td>
-<td align="left">Diuretics</td>
-<td align="right">11</td>
-<td align="left">BROAD</td>
-<td align="right">1</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 <td align="left">NA</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
@@ -1769,10 +1770,10 @@ be used to derive Standardized Drug Groupings (SDG).</p>
 <td align="left">02</td>
 <td align="left">2020-06-05 23:59:59</td>
 <td align="left">Diuretic 1</td>
-<td align="left">Diuretics</td>
-<td align="right">11</td>
-<td align="left">BROAD</td>
-<td align="right">1</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 <td align="left">NA</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
@@ -1786,19 +1787,19 @@ be used to derive Standardized Drug Groupings (SDG).</p>
 <td align="right">NA</td>
 <td align="left">NA</td>
 <td align="right">NA</td>
-<td align="left">Costicosteroids</td>
-<td align="right">12</td>
-<td align="left">BROAD</td>
-<td align="right">1</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">05</td>
 <td align="left">2020-06-09 23:59:59</td>
 <td align="left">Diuretic 2</td>
-<td align="left">Diuretics</td>
-<td align="right">11</td>
-<td align="left">BROAD</td>
-<td align="right">1</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
+<td align="left">NA</td>
+<td align="right">NA</td>
 <td align="left">NA</td>
 <td align="right">NA</td>
 <td align="left">NA</td>
@@ -2091,24 +2092,20 @@ example</a>.</p>
 <div id="example-scripts" class="section level1">
 <h1>Example Scripts</h1>
 <table>
-<colgroup>
-<col width="22%" />
-<col width="77%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th>ADaM</th>
-<th>Sample Code</th>
+<th>Sourcing Command</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>ADAE</td>
-<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adae.R" target="_blank"><code>ad_adae.R</code></a></td>
+<td><code>use_ad_template(&quot;ADAE&quot;)</code></td>
 </tr>
 <tr class="even">
 <td>ADCM</td>
-<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adcm.R" target="_blank"><code>ad_adcm.R</code></a></td>
+<td><code>use_ad_template(&quot;ADCM&quot;)</code></td>
 </tr>
 </tbody>
 </table>

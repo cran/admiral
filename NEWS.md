@@ -1,3 +1,225 @@
+# admiral 1.0.0
+
+## New Features
+
+- The new function `derive_vars_extreme_event()`, which works as `derive_extreme_event()` 
+but adds variables instead of a parameter. (#2138)
+
+- The new function `derive_var_merged_ef_msrc()` is provided to add a flag
+indicating if one of the conditions in one of multiple source datasets is
+fulfilled. (#1728)
+
+- New global option created `signif_digits` and added to `set_admiral_options()` to 
+handle floating point issue, the value is set to `15`, and is used with the `base R` 
+function `signif()` when comparing 2 numeric values. This is implemented in `admiral ` 
+functions `derive_var_atoxgr_dir()` and `derive_var_anrind()`. (#2134)
+
+    For more information, please see blog: [How admiral handles floating points](https://pharmaverse.github.io/blog/posts/2023-10-30_floating_point/floating_point.html)
+
+- The new function `derive_vars_computed()` is provided which has the same 
+functionality as `derive_param_computed()` but instead of adding the computed 
+values as a new parameter, adds it as a new variable. (#2178)
+
+## Updates of Existing Functions
+
+- Fixed a bug in `compute_tmf()` where the time imputation flag was being incorrectly
+populated when any of the existing time components (hour, minute and/or second) of the date
+character vector (`'--DTC'`), was imputed. (#2146)
+
+- `derive_extreme_records()`, `derive_var_extreme_flag()`,`derive_vars_joined()` and `derive_vars_merged()` were enhanced with the arguments `true_value` and `false_value` to align with preexisting functions that had similar functionality. (#2125)
+
+- `restrict_derivation()` now allows `{dplyr}` functions like `mutate()` in the
+`derivation` argument. (#2143)
+
+- `derive_summary_records()`, `derive_var_merged_summary()`, and `get_summary_records()`
+were enhanced such that more than one summary variable can be derived, e.g.,
+`AVAL` as the sum and `ADT` as the maximum of the contributing records. (#1792)
+
+- `derive_summary_records()` was enhanced with the following arguments: `dataset_add` (required), `dataset_ref` (optional), `missing_values` (optional). These arguments respectively, generate summary variables from additional datasets, retain/add specific records from a reference dataset, and impute user-defined missing values. Note that `dataset_add` can be set to the same value as `dataset` if a different additional dataset is not required. `derive_param_exposure()` was enhanced with `dataset_add` as well. (#2142)
+
+- The `missing_values` argument was added to `derive_var_merged_summary()`. It
+allows to define values for by groups, e.g., subjects which are not in the
+additional dataset. (#2230)
+
+- The argument `dataset` is now optional for `derive_summary_records()` and `derive_param_exposure()`. (#2142)
+
+- The "joined" functions (`derive_vars_joined()`, `derive_var_joined_exist_flag()`,
+`filter_joined()`, and `event_joined()`) were unified: (#2126)
+    - The `dataset_add` and `filter_add` arguments were added to
+    `derive_var_joined_exist_flag()` and `filter_joined()`.
+    - The `filter` argument was renamed to `filter_join` in
+    `derive_var_joined_exist_flag()` and `filter_joined()`.
+    - The `tmp_obs_nr_var`, the `join_type`, the `first_cond_lower`, and the
+    `first_cond_upper` arguments were added to `derive_vars_joined()`.
+    - In `derive_var_joined_exist_flag()`, `filter_joined()`, and `event_joined()`
+    the `first_cond` argument was renamed to `first_cond_upper` and the
+    `first_cond_lower` argument was added.
+    - In all "joined" functions the `filter_add` argument is applied to the
+    additional dataset grouped by `by_vars` and the `filter_join` argument is
+    applied to the joined dataset grouped by the observations from the input
+    dataset. I.e., summary functions like `all()` or `any()` can be used.
+
+- The `tmp_event_nr_var` argument was added to `derive_extreme_records()` to
+allow more control of the selection of records. It creates a temporary variable
+for the event number, which can be used in `order`. (#2140)
+
+- `signif_dig` argument added to both `derive_var_atoxgr_dir()` and `derive_var_anrind()`
+functions with default value set to general option `signif_digits`. The new argument to
+these functions handles any floating point issues. (#2134)
+
+- Fixed a bug in `derive_vars_period()` where the function was throwing an error whenever `dataset_ref` contained variables that were neither key variables, nor `APERIOD`, `ASPER`, `APHASEN`, nor mentioned in the `new_vars` argument. (#2231)
+
+- `compute_duration()`, `derive_vars_duration()`, `derive_vars_aage()` now accepts more terms for the `in_unit`, `out_unit`, and `age_unit` arguments (#2255)
+
+- Updated the unit test for `derive_var_obs_number()`. The new test checked the derivation of the default and customized `new_var`, 
+sorting with the the missing value and expected conditions. (#2260)
+
+- The check for existence of `TERMNUM`/`TERMCHAR` in queries dataset is now less strict depending on values of `SRCVAR` for `derive_vars_query()` (#2264)
+
+- DAIDS grading criteria fixed for `Grade = 0` for `TERM = "Absolute Lymphocyte Count, Low"`, criteria was `AVAL <= 0.65`, now corrected to `AVAL >= 0.65` (#2284).
+
+- A bug in `derive_extreme_event()` was fixed. The `condition` field is no
+longer ignored if `mode` is specified for `event()` (#2291).
+
+- A bug in `derive_vars_joined()` was fixed. The function no longer fails if
+renaming is used in `by_vars` and `new_vars` is not specified (#2289).
+
+## Breaking Changes
+
+- `{admiral}` now only supports R >= 4.0.0 
+
+- In `derive_extreme_records()` the `dataset_add` argument is now mandatory. (#2139)
+
+- In `derive_summary_records()` and `get_summary_records()` the arguments
+`analysis_var` and `summary_fun` were deprecated in favor of `set_values_to`.
+(#1792)
+
+- In `derive_summary_records()` and `derive_param_exposure()` the argument `filter` was renamed to `filter_add` (#2142)
+
+- In `derive_var_merged_summary()` the arguments `new_var`, `analysis_var`, and
+`summary_fun` were deprecated in favor of `new_vars`. (#1792)
+
+- In `derive_vars_merged()`, the argument `match_flag` was renamed to `exist_flag` (#2125)
+
+- The default value for the `false_value` argument in `derive_extreme_records()` was changed to `NA_character_` (#2125)
+
+- In `consolidate_metadata()`, the argument `check_keys` was renamed to `check_type` to align with other functions (#2184)
+
+- In `filter_joined()` and `derive_var_joined_exist_flag()` (#2126)
+    - the `first_cond` argument was deprecated in favor of `first_cond_upper` and
+    - the `filter` argument was deprecated in favor of `filter_join`.
+
+- In `event_joined()` the `first_cond` argument was deprecated in favor of
+`first_cond_upper`. (#2126)
+
+- In `derive_extreme_event()`, the `ignore_event_order` argument was deprecated
+and the selection of the records was changed to allow more control. Before, the
+records were selected first by event and then by `order`. Now they are selected
+by `order` only, but the event number can be added to it.
+
+   To achieve the old behavior update
+```
+order = exprs(my_order_var),
+ignore_event_order = FALSE,
+```
+to
+```
+tmp_event_nr_var = event_nr,
+order = exprs(event_nr, my_order_var),
+```
+and
+```
+order = exprs(my_order_var),
+ignore_event_order = TRUE,
+```
+to
+```
+order = exprs(my_order_var),
+```
+
+- `create_query_data()` and `derive_vars_query()` were updated to rename variables in 
+    query data set as follows: (#2186)
+    
+    - `TERMNAME` to `TERMCHAR`
+    - `TERMID` to `TERMNUM`
+  
+    Users need to adjust their `get_terms()` function accordingly.
+    
+- The following functions, which were deprecated in previous `{admiral}` versions, have been removed: (#2098)
+  - `derive_param_extreme_event()`
+  - `derive_vars_last_dose()`
+  - `derive_var_last_dose_amt()`
+  - `derive_var_last_dose_date()`
+  - `derive_var_last_dose_grp()`
+  - `derive_var_basetype()`
+  - `derive_var_merged_cat()`
+  - `derive_var_merged_character()`
+  - `derive_var_confirmation_flag()`
+  
+- The following function arguments are entering the next phase of the deprecation process: (#2098)
+  
+  - `compute_egfr(wt)`
+  - `derive_extreme_records(filter)`
+  - `derive_param_computed(analysis_value, analysis_var)`
+  - `derive_var_shift(na_val)`
+  - `derive_expected_records(dataset_expected_obs)` 
+  - `derive_var_ontrtfl(span_period)` 
+  
+  
+- The `derive_param_extreme_record()` function has been superseded in favor of `derive_extreme_event()`. (#2141)
+
+- The functions `derive_var_dthcaus()`, `derive_var_extreme_dt()`, and `derive_var_extreme_dtm()` have been superseded in favor of `derive_vars_extreme_event()`. (#2138)
+  
+## Documentation
+
+- The documentation of the `by_vars` and `constant_by_vars` argument was improved and unified across all functions where it is used. (#2137)
+
+- The functions `assert_db_requirements()`, `assert_terms()`, `assert_valid_queries()`,
+  `extend_source_datasets()`, `filter_date_sources()`, `validate_basket_select()`,
+  `validate_query()` are no longer exported and have had documentation removed. (#2220)
+  
+- The function `extract_duplicate_records()` has been re-classified as an `internal`
+  function, which means that the function still appears in our help pages but not
+  on our website. (#2220)
+
+- The "Generic Functions" vignette (now "Generic Derivations") was rewritten.
+Now it provides a more complete overview of the generic derivations, describe
+the common concepts, and makes it easier to find the appropriate function.
+(#2230)
+
+- A way to standardize roxygen labels and descriptions for function arguments was implemented and tested. (#2034)
+
+- A link to published CDISC Population PK (ADPPK) implementation guide was added. (#2161)
+
+- Removed Deprecation section in Reference tab. Added new Superseded section in 
+Reference tab. (#2174)
+
+- Added a link to the previous versions of the website to the navigation bar. (#2205)
+
+- The meaning of `date_imputation = "mid"` was clarified in the documentation of
+the imputation functions, e.g. `derive_vars_dtm()`. (#2222)
+
+- Added an example derivation of `DTHCGR1` to the ADSL vignette. (#2218)
+
+- Moved Development Process from `{admiraldev}` to Contribution Model in the 
+`admiral` website, updated GitHub strategy. (#2196)
+
+- Added new drop downs in Get Started navigation bar- Getting Started, Admiral Discovery, Cheatsheet. Community removed from top. (#2217)
+
+- All "Example Script(s)" sections in the User Guide vignettes were updated to point the user towards using `use_ad_template("ADaM")` rather 
+  than linking to the template in the code repository. (#2239)
+
+- Handling of `NA` values was added to the documentation of the `order` argument
+for all functions. (#2230, #2257)
+
+## Various
+
+- Website now has button/links to Slack channel and GitHub Issues. (#2127)
+
+- Added example derivations of `DTHCAUS` and `DTHCGR1` to the ADSL template. (#2218)
+
+- Cheat Sheet now added to website front page (#2130)
+
 # admiral 0.12.3
 
 - Fixed a bug in `derive_var_dthcaus()` where if a subject has observations in
@@ -660,7 +882,7 @@ updated to process additional parameter (#1125).
 imputation functions themselves (#1299). I.e., if a derivation like last known alive
 date is based on dates, DTC variables have to be converted to numeric date or
 datetime variables in a preprocessing step. For examples see the [ADSL
-vignette](https://pharmaverse.github.io/admiral/cran-release/articles/adsl.html).
+vignette](https://pharmaverse.github.io/admiral/articles/adsl.html).
   The following arguments were deprecated:
 
   - `date_imputation`, `time_imputation`, and `preserve` in `date_source()`
@@ -759,7 +981,7 @@ empty (#1309)
   
 
 - `create_query_data()` is provided to create the [queries
-dataset](https://pharmaverse.github.io/admiral/cran-release/articles/queries_dataset.html) required as input for `derive_vars_query()` (#606)
+dataset](https://pharmaverse.github.io/admiral/articles/queries_dataset.html) required as input for `derive_vars_query()` (#606)
 
 - `create_single_dose_dataset()` - Derives dataset of single dose from aggregate dose information (#660)
 
@@ -792,7 +1014,7 @@ first disease progression. (#1023)
 ### ADLB
 
   - New ADLB template script available `ad_adlb.R`, specific ADLB functions developed and
-  [BDS Finding vignette](https://pharmaverse.github.io/admiral/cran-release/articles/bds_finding.html) has examples enhanced with ADLB functions. (#1122)
+  [BDS Finding vignette](https://pharmaverse.github.io/admiral/articles/bds_finding.html) has examples enhanced with ADLB functions. (#1122)
 
   - `derive_var_shift()` - Derives a character shift variable containing concatenated shift in values based on user-defined pairing (#944)
   - `derive_var_analysis_ratio()` - Derives a ratio variable based on user-supplied variables from a BDS dataset, e.g. ADLB. (#943)
@@ -874,7 +1096,7 @@ specific for admiral. Derivations like this can be implemented calling
 - Updated `derive_var_worst_flag()` and `derive_var_extreme_flag()` vignettes to clarify their purpose (#691)
 
 - Added example of ASEQ derivation in ADCM to 
-[OCCDS vignette](https://pharmaverse.github.io/admiral/cran-release/articles/occds.html#aseq)
+[OCCDS vignette](https://pharmaverse.github.io/admiral/articles/occds.html#aseq)
 (#720)
 
 - Examples have been added for `format_reason_default()`, `format_eoxxstt_default()`, `extend_source_datasets()` and `filter_date_sources()` (#745)
@@ -960,9 +1182,9 @@ this case the day is imputed as `15` (#592)
 
 - README and site homepage has been updated with important new section around expectations of {admiral}, as well as other useful references such as links to conference talks (#868 & #802)
 
-- New vignette [Development Process](https://pharmaverse.github.io/admiraldev/main/articles/development_process.html) and improvements made to contribution vignettes (#765 & #758)
+- New vignette [Development Process](https://pharmaverse.github.io/admiral/CONTRIBUTING.html) and improvements made to contribution vignettes (#765 & #758)
 
-- Updated [Pull Request Review Guidance](https://pharmaverse.github.io/admiraldev/main/articles/pr_review_guidance.html) on using `task-list-completed` workflow (#817)
+- Updated [Pull Request Review Guidance](https://pharmaverse.github.io/admiraldev/articles/pr_review_guidance.html) on using `task-list-completed` workflow (#817)
 
 ## Various
 
@@ -974,9 +1196,9 @@ this case the day is imputed as `15` (#592)
 
 - The first truly open source release licensed under Apache 2.0 (#680)
 
-- New vignette [Contributing to admiral](https://pharmaverse.github.io/admiral/cran-release/articles/contribution_model.html) (#679)
+- New vignette [Contributing to admiral](https://pharmaverse.github.io/admiral/CONTRIBUTING.html) (#679)
 
-- New vignette [Unit Test Guidance](https://pharmaverse.github.io/admiraldev/main/articles/unit_test_guidance.html) (#679)
+- New vignette [Unit Test Guidance](https://pharmaverse.github.io/admiraldev/articles/unit_test_guidance.html) (#679)
 
 - Broken links in README have been fixed (#564)
 
@@ -996,7 +1218,7 @@ age in different units (#569)
 - `derive_param_tte()` derives time-to-event-parameters (#546)
 
 - For common time-to-event endpoints [event and censoring source
-objects](https://pharmaverse.github.io/admiral/cran-release/reference/index.html#section-pre-defined-time-to-event-sources) are
+objects](https://pharmaverse.github.io/admiral/reference/index.html#section-pre-defined-time-to-event-sources) are
 provided (#612)
 
 ### Developer
@@ -1031,13 +1253,13 @@ to specify the unit of the input age (#569)
 
 ## Documentation
 
-- New vignette [Creating a BDS Time-to-Event ADaM](https://pharmaverse.github.io/admiral/cran-release/articles/bds_tte.html) (#549)
+- New vignette [Creating a BDS Time-to-Event ADaM](https://pharmaverse.github.io/admiral/articles/bds_tte.html) (#549)
 
-- New vignette [Queries Dataset Documentation](https://pharmaverse.github.io/admiral/cran-release/articles/queries_dataset.html) (#561)
+- New vignette [Queries Dataset Documentation](https://pharmaverse.github.io/admiral/articles/queries_dataset.html) (#561)
 
-- New vignette [Writing Vignettes](https://pharmaverse.github.io/admiraldev/main/articles/writing_vignettes.html) (#334)
+- New vignette [Writing Vignettes](https://pharmaverse.github.io/admiraldev/articles/writing_vignettes.html) (#334)
 
-- New vignette [Pull Request Review Guidance](https://pharmaverse.github.io/admiraldev/main/articles/pr_review_guidance.html) (#554)
+- New vignette [Pull Request Review Guidance](https://pharmaverse.github.io/admiraldev/articles/pr_review_guidance.html) (#554)
 
 - A section on handling missing values when working with {admiral} has been added to the "Get Started" vignette (#577)
 
@@ -1228,10 +1450,10 @@ to specify the unit of the input age (#569)
 
 ## Documentation
 
-- [Frequently Asked Questions](https://pharmaverse.github.io/admiral/cran-release/articles/faq.html)
+- [Frequently Asked Questions](https://pharmaverse.github.io/admiral/articles/faq.html)
 
-- [Creating ADSL](https://pharmaverse.github.io/admiral/cran-release/articles/adsl.html)
+- [Creating ADSL](https://pharmaverse.github.io/admiral/articles/adsl.html)
 
-- [Creating a BDS Finding ADaM](https://pharmaverse.github.io/admiral/cran-release/articles/bds_finding.html)
+- [Creating a BDS Finding ADaM](https://pharmaverse.github.io/admiral/articles/bds_finding.html)
 
-- [Creating an OCCDS ADaM](https://pharmaverse.github.io/admiral/cran-release/articles/occds.html)
+- [Creating an OCCDS ADaM](https://pharmaverse.github.io/admiral/articles/occds.html)

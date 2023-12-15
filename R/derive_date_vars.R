@@ -26,26 +26,9 @@
 #'   and `min_dates` or `max_dates` should be specified respectively. Otherwise,
 #'   `NA_character_` is returned if the year component is missing.
 #'
-#'   *Default*: `"h"`
-#'
 #'   *Permitted Values*: `"Y"` (year, highest level), `"M"` (month), `"D"`
 #'   (day), `"h"` (hour), `"m"` (minute), `"s"` (second), `"n"` (none, lowest
 #'   level)
-#'
-#' @param date_imputation The value to impute the day/month when a datepart is
-#'   missing.
-#'
-#'   A character value is expected, either as a
-#'   - format with month and day specified as `"mm-dd"`: e.g. `"06-15"` for the
-#'   15th of June (The year can not be specified; for imputing the year
-#'   `"first"` or `"last"` together with `min_dates` or `max_dates` argument can
-#'   be used (see examples).),
-#'   - or as a keyword: `"first"`, `"mid"`, `"last"` to impute to the first/mid/last
-#'   day/month.
-#'
-#'   The argument is ignored if `highest_imputation` is less then `"D"`.
-#'
-#'   *Default*: `"first"`.
 #'
 #' @param time_imputation The value to impute the time when a timepart is
 #'   missing.
@@ -56,8 +39,6 @@
 #'   - or as a keyword: `"first"`,`"last"` to impute to the start/end of a day.
 #'
 #'   The argument is ignored if `highest_imputation = "n"`.
-#'
-#'   *Default*: `"first"`.
 #'
 #' @param min_dates Minimum dates
 #'
@@ -101,14 +82,16 @@
 #' `"23:59:59"`. Specifying date variables makes sense only if the date is
 #' imputed. If only time is imputed, date variables do not affect the result.
 
-#' @param preserve Preserve day if month is missing and day is present
+#' @param preserve Preserve lower level date/time part when higher order part
+#' is missing, e.g. preserve day if month is missing or
+#' preserve minute when hour is missing.
 #'
 #' For example `"2019---07"` would return `"2019-06-07` if `preserve = TRUE`
 #' (and `date_imputation = "mid"`).
 #'
 #' Permitted Values: `TRUE`, `FALSE`
 #'
-#' *Default*: `FALSE`
+#' @inheritParams impute_dtc_dt
 #'
 #' @details Usually this computation function can not be used with `%>%`.
 #'
@@ -605,8 +588,6 @@ restrict_imputed_dtc_dtm <- function(dtc,
 #'   and `min_dates` or `max_dates` should be specified respectively. Otherwise,
 #'   `NA_character_` is returned if the year component is missing.
 #'
-#'   *Default*: `"n"`
-#'
 #'   *Permitted Values*: `"Y"` (year, highest level), `"M"` (month), `"D"`
 #'   (day), `"n"` (none, lowest level)
 #'
@@ -619,11 +600,13 @@ restrict_imputed_dtc_dtm <- function(dtc,
 #'   `"first"` or `"last"` together with `min_dates` or `max_dates` argument can
 #'   be used (see examples).),
 #'   - or as a keyword: `"first"`, `"mid"`, `"last"` to impute to the first/mid/last
-#'   day/month.
+#'   day/month. If `"mid"` is specified, missing components are imputed as the
+#'   middle of the possible range:
+#'       - If both month and day are missing, they are imputed as `"06-30"`
+#'        (middle of the year).
+#'       - If only day is missing, it is imputed as `"15"` (middle of the month).
 #'
 #'   The argument is ignored if `highest_imputation` is less then `"D"`.
-#'
-#'   *Default*: `"first"`
 #'
 #' @param min_dates Minimum dates
 #'
@@ -665,8 +648,6 @@ restrict_imputed_dtc_dtm <- function(dtc,
 #' (and `date_imputation = "MID"`).
 #'
 #' Permitted Values: `TRUE`, `FALSE`
-#'
-#' Default: `FALSE`
 #'
 #' @details Usually this computation function can not be used with `%>%`.
 #'
@@ -1189,9 +1170,7 @@ compute_dtf <- function(dtc, dt) {
 #' (`'--DTM'`) as 00, then it is not necessary to set (`'--TMF'`) to `'S'`. A user can set this
 #' to `TRUE` so the `'S'` Flag is dropped from (`'--TMF'`).
 #'
-#'  A logical value
-#'
-#'   Default: `FALSE`
+#' *Permitted Values*: A logical value
 #'
 #' @details Usually this computation function can not be used with `%>%`.
 #'
@@ -1205,9 +1184,15 @@ compute_dtf <- function(dtc, dt) {
 #' @export
 #'
 #' @examples
-#' compute_tmf(dtc = "2019-07-18T15:25", dtm = as.POSIXct("2019-07-18T15:25:00"))
-#' compute_tmf(dtc = "2019-07-18T15", dtm = as.POSIXct("2019-07-18T15:25:00"))
-#' compute_tmf(dtc = "2019-07-18", dtm = as.POSIXct("2019-07-18"))
+#' library(lubridate)
+#'
+#' compute_tmf(dtc = "2019-07-18T15:25", dtm = ymd_hms("2019-07-18T15:25:00"))
+#' compute_tmf(dtc = "2019-07-18T15", dtm = ymd_hms("2019-07-18T15:25:00"))
+#' compute_tmf(dtc = "2019-07-18", dtm = ymd("2019-07-18"))
+#' compute_tmf(dtc = "2022-05--T00:00", dtm = ymd_hms("2022-05-15T23:59:59"))
+#' compute_tmf(dtc = "2022-05--T23:00", dtm = ymd_hms("2022-05-15T23:59:59"))
+#' compute_tmf(dtc = "2022-05--T23:59:00", dtm = ymd_hms("2022-05-15T23:59:59"))
+#'
 compute_tmf <- function(dtc,
                         dtm,
                         ignore_seconds_flag = FALSE) {
@@ -1215,15 +1200,30 @@ compute_tmf <- function(dtc,
   assert_character_vector(dtc)
   assert_logical_scalar(ignore_seconds_flag)
 
-  partial <- get_partialdatetime(dtc)
-  highest_miss <- convert_blanks_to_na(vector("character", length(dtc)))
-  for (c in c("hour", "minute", "second")) {
-    highest_miss <-
-      if_else(is.na(partial[[c]]) & is.na(highest_miss), c, highest_miss)
-  }
-  is_na <- is.na(dtm)
   valid_dtc <- is_valid_dtc(dtc)
   warn_if_invalid_dtc(dtc, valid_dtc)
+
+  partial <- get_partialdatetime(dtc)
+  highest_miss <- convert_blanks_to_na(vector("character", length(dtc)))
+
+  # concatenate lubridate functions: `hour()`, `minute()`, `second()` to map over dtm input
+  hms <- c("hour", "minute", "second")
+
+  # extract hour, minute, second over each value of dtm and put into a list time_part
+  time_part <-
+    map(set_names(hms), function(y) map_dbl(dtm, function(x) exec(y, x)))
+
+  for (c in hms) {
+    highest_miss <-
+      if_else((is.na(partial[[c]]) & is.na(highest_miss)) |
+        (
+          !is.na(partial[[c]]) &
+            is.na(highest_miss) & as.numeric(partial[[c]]) != time_part[[c]]
+        ),
+      c,
+      highest_miss
+      )
+  }
 
   map <- c(
     hour = "H",
@@ -1252,9 +1252,8 @@ compute_tmf <- function(dtc,
 #' impute, we only enable to impute up to a highest level, i.e. you couldn't
 #' choose to say impute months, but not days.
 #'
-#' @param dataset Input dataset.
-#'
-#'   The date character vector (`dtc`) must be present.
+#' @param dataset
+#' `r roxygen_param_dataset(expected_vars = c("dtc"))`
 #'
 #' @param new_vars_prefix Prefix used for the output variable(s).
 #'
@@ -1264,10 +1263,12 @@ compute_tmf <- function(dtc,
 #'
 #' @param flag_imputation Whether the date imputation flag must also be derived.
 #'
-#'   If `"auto"` is specified, the date imputation flag is derived if the
-#'   `date_imputation` argument is not null.
+#'   If `"auto"` is specified and `highest_imputation` argument is not `"n"`,
+#'   then date imputation flag is derived.
 #'
-#'   *Default*: `"auto"`
+#'   If `"date"` is specified, then date imputation flag is derived.
+#'
+#'   If `"none"` is specified, then no date imputation flag is derived.
 #'
 #'   *Permitted Values*: `"auto"`, `"date"` or `"none"`
 #'
@@ -1341,7 +1342,7 @@ compute_tmf <- function(dtc,
 #' )
 #'
 #' # Create BIRTHDT
-#' # Impute partial dates to 15th of June. No DTF
+#' # Impute partial dates to 15th of June. No Date Imputation Flag
 #' derive_vars_dt(
 #'   mhdt,
 #'   new_vars_prefix = "BIRTH",
@@ -1461,9 +1462,8 @@ derive_vars_dt <- function(dataset, # nolint: cyclocomp_linter
 #' impute, we only enable to impute up to a highest level, i.e. you couldn't
 #' choose to say impute months, but not days.
 #'
-#' @param dataset Input dataset
-#'
-#'   The date character vector (`dtc`) must be present.
+#' @param dataset
+#' `r roxygen_param_dataset(expected_vars = c("dtc"))`
 #'
 #' @param new_vars_prefix Prefix used for the output variable(s).
 #'
@@ -1475,11 +1475,15 @@ derive_vars_dt <- function(dataset, # nolint: cyclocomp_linter
 #'
 #' @param flag_imputation Whether the date/time imputation flag(s) must also be derived.
 #'
-#'   If `"auto"` is specified, the date imputation flag is derived if the
-#'   `date_imputation` argument is not null and the time imputation flag is
-#'   derived if the `time_imputation` argument is not null
+#'   If `"both"` or `"date"` is specified, then date imputation flag is derived.
+#'   If `"auto"` is specified and `highest_imputation` argument is greater than
+#'   `"h"`, then date imputation flag is derived.
 #'
-#'   *Default*: `"auto"`
+#'   If `"both"` or `"time"` is specified, then time imputation flag is derived.
+#'   If `"auto"` is specified and `highest_imputation` argument is not `"n"`,
+#'   then time imputation flag is derived.
+#'
+#'   If `"none"` is specified, then no date or time imputation flag is derived.
 #'
 #'   *Permitted Values*: `"auto"`, `"date"`, `"time"`, `"both"`, or `"none"`
 #'

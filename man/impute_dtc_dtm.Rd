@@ -37,8 +37,6 @@ If \code{"Y"} is specified, \code{date_imputation} should be \code{"first"} or \
 and \code{min_dates} or \code{max_dates} should be specified respectively. Otherwise,
 \code{NA_character_} is returned if the year component is missing.
 
-\emph{Default}: \code{"h"}
-
 \emph{Permitted Values}: \code{"Y"} (year, highest level), \code{"M"} (month), \code{"D"}
 (day), \code{"h"} (hour), \code{"m"} (minute), \code{"s"} (second), \code{"n"} (none, lowest
 level)}
@@ -53,12 +51,16 @@ A character value is expected, either as a
 \code{"first"} or \code{"last"} together with \code{min_dates} or \code{max_dates} argument can
 be used (see examples).),
 \item or as a keyword: \code{"first"}, \code{"mid"}, \code{"last"} to impute to the first/mid/last
-day/month.
+day/month. If \code{"mid"} is specified, missing components are imputed as the
+middle of the possible range:
+\itemize{
+\item If both month and day are missing, they are imputed as \code{"06-30"}
+(middle of the year).
+\item If only day is missing, it is imputed as \code{"15"} (middle of the month).
+}
 }
 
-The argument is ignored if \code{highest_imputation} is less then \code{"D"}.
-
-\emph{Default}: \code{"first"}.}
+The argument is ignored if \code{highest_imputation} is less then \code{"D"}.}
 
 \item{time_imputation}{The value to impute the time when a timepart is
 missing.
@@ -70,9 +72,7 @@ for the start of the day,
 \item or as a keyword: \code{"first"},\code{"last"} to impute to the start/end of a day.
 }
 
-The argument is ignored if \code{highest_imputation = "n"}.
-
-\emph{Default}: \code{"first"}.}
+The argument is ignored if \code{highest_imputation = "n"}.}
 
 \item{min_dates}{Minimum dates
 
@@ -115,14 +115,14 @@ For date variables (not datetime) in the list the time is imputed to
 \code{"23:59:59"}. Specifying date variables makes sense only if the date is
 imputed. If only time is imputed, date variables do not affect the result.}
 
-\item{preserve}{Preserve day if month is missing and day is present
+\item{preserve}{Preserve lower level date/time part when higher order part
+is missing, e.g. preserve day if month is missing or
+preserve minute when hour is missing.
 
 For example \code{"2019---07"} would return \verb{"2019-06-07} if \code{preserve = TRUE}
 (and \code{date_imputation = "mid"}).
 
-Permitted Values: \code{TRUE}, \code{FALSE}
-
-\emph{Default}: \code{FALSE}}
+Permitted Values: \code{TRUE}, \code{FALSE}}
 }
 \value{
 A character vector

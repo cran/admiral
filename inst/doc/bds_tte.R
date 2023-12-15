@@ -6,12 +6,12 @@ knitr::opts_chunk$set(
 
 library(admiraldev)
 
-## ---- warning=FALSE, message=FALSE--------------------------------------------
+## ----warning=FALSE, message=FALSE---------------------------------------------
 library(admiral)
 library(dplyr, warn.conflicts = FALSE)
 library(pharmaversesdtm)
 
-## ---- warning=FALSE, message=FALSE, include=FALSE-----------------------------
+## ----warning=FALSE, message=FALSE, include=FALSE------------------------------
 library(lubridate)
 
 ## -----------------------------------------------------------------------------
@@ -54,7 +54,7 @@ adtte <- derive_param_tte(
   set_values_to = exprs(PARAMCD = "TTAESER", PARAM = "Time to First Serious AE")
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(
   adtte,
   display_vars = exprs(USUBJID, PARAMCD, PARAM, STARTDT, ADT, CNSR)
@@ -83,7 +83,7 @@ adtte <- derive_param_tte(
   set_values_to = exprs(PARAMCD = "OS", PARAM = "Overall Survival")
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(
   adtte,
   display_vars = exprs(USUBJID, PARAMCD, PARAM, STARTDT, ADT, CNSR)
@@ -122,7 +122,7 @@ adtte <- derive_param_tte(
   set_values_to = exprs(PARAMCD = "OS", PARAM = "Overall Survival")
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(
   adtte,
   display_vars = exprs(USUBJID, EVNTDESC, SRCDOM, SRCVAR, CNSR, ADT)
@@ -131,7 +131,7 @@ dataset_vignette(
 adtte_bak <- adtte
 adsl_bak <- adsl
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 adsl <- tibble::tribble(
   ~USUBJID, ~DTHFL, ~DTHDT,            ~TRTSDT,           ~TRTSDTF,
   "01",     "Y",    ymd("2021-06-12"), ymd("2021-01-01"), "M",
@@ -147,7 +147,7 @@ dataset_vignette(
   display_vars = exprs(USUBJID, DTHFL, DTHDT, TRTSDT, TRTSDTF)
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 adrs <- tibble::tribble(
   ~USUBJID, ~AVALC, ~ADT,              ~ASEQ,
   "01",     "SD",   ymd("2021-01-03"), 1,
@@ -232,7 +232,7 @@ adtte <- derive_param_tte(
   set_values_to = exprs(PARAMCD = "PFS", PARAM = "Progression Free Survival")
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(
   adtte %>%
     select(
@@ -319,13 +319,13 @@ adaette <- call_derivation(
   censor_conditions = list(observation_end)
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 adaette %>%
   select(STUDYID, USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR) %>%
   arrange(USUBJID, PARAMCD) %>%
   dataset_vignette(display_vars = exprs(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR))
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 adsl <- tibble::tribble(
   ~USUBJID, ~TRTSDT,           ~EOSDT,
   "01",     ymd("2020-12-06"), ymd("2021-03-06"),
@@ -335,7 +335,7 @@ adsl <- tibble::tribble(
 
 dataset_vignette(adsl)
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 ae <- tibble::tribble(
   ~USUBJID, ~AESTDTC,           ~AESEQ, ~AEDECOD,
   "01",     "2021-01-03T10:56", 1,      "Flu",
@@ -389,7 +389,7 @@ adtte <- derive_param_tte(
   )
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(
   adtte %>%
     select(
@@ -411,7 +411,7 @@ adtte <- derive_vars_duration(
   end_date = ADT
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(
   adtte
 )
@@ -424,7 +424,7 @@ adtte <- derive_var_obs_number(
   check_type = "error"
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(adtte)
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -435,7 +435,7 @@ adtte <- derive_vars_merged(
   by_vars = exprs(STUDYID, USUBJID)
 )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(
   adtte,
   display_vars = exprs(USUBJID, PARAMCD, CNSR, AVAL, ARMCD, AGE, SEX)

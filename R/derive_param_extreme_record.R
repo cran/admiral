@@ -1,10 +1,14 @@
 #' Adds a Parameter Based on First or Last Record from Multiple Sources
 #'
+#' @description
+#' `r lifecycle::badge("superseded")` The `derive_param_extreme_record()`
+#' function has been superseded in favor of `derive_extreme_event()`.
+#'
 #' Generates parameter based on the first or last observation from multiple
 #' source datasets, based on user-defined filter, order and by group criteria.
 #' All variables of the selected observation are kept.
 #'
-#' @param dataset Input dataset
+#' @param dataset `r roxygen_param_dataset()`
 #'
 #' @param sources Sources
 #'
@@ -16,10 +20,12 @@
 #'   `records_source()` refers to the dataset provided in the list. The variables
 #'   specified by the `order` and the `by_vars` arguments are expected after applying `new_vars`.
 #'
-#' @param by_vars By variables
+#' @param by_vars Grouping variables
 #'
 #'   If the argument is specified, for each by group the observations are
 #'   selected separately.
+#'
+#'   `r roxygen_param_by_vars()`
 #'
 #' @param order Sort order
 #'
@@ -71,8 +77,8 @@
 #' The input dataset with the first or last observation of each by group
 #' added as new observations.
 #'
-#' @family der_prm_bds_findings
-#' @keywords der_prm_bds_findings
+#' @family superseded
+#' @keywords superseded
 #'
 #' @export
 #' @examples

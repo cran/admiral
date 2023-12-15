@@ -23,7 +23,7 @@ adsl <- admiral_adsl
 # When SAS datasets are imported into R using haven::read_sas(), missing
 # character values from SAS appear as "" characters in R, instead of appearing
 # as NA values. Further details can be obtained via the following link:
-# https://pharmaverse.github.io/admiral/cran-release/articles/admiral.html#handling-of-missing-values # nolint
+# https://pharmaverse.github.io/admiral/articles/admiral.html#handling-of-missing-values # nolint
 
 ex <- convert_blanks_to_na(ex)
 
@@ -148,6 +148,7 @@ adex <- adex %>%
         summary_fun = function(x) if_else(sum(!is.na(x)) > 0, "Y", NA_character_)
       )
     ),
+    dataset_add = adex,
     by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars)
   ) %>%
   # W2-W24 exposure
@@ -185,7 +186,8 @@ adex <- adex %>%
         summary_fun = function(x) if_else(sum(!is.na(x)) > 0, "Y", NA_character_)
       )
     ),
-    filter = VISIT %in% c("WEEK 2", "WEEK 24"),
+    dataset_add = adex,
+    filter_add = VISIT %in% c("WEEK 2", "WEEK 24"),
     by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars)
   ) %>%
   # Overall Dose intensity and W2-24 dose intensity
@@ -302,5 +304,10 @@ adex <- adex %>%
 
 # Save output ----
 
-dir <- tempdir() # Change to whichever directory you want to save the dataset in
-saveRDS(adex, file = file.path(dir, "adex.rds"), compress = "bzip2")
+# Change to whichever directory you want to save the dataset in
+dir <- tools::R_user_dir("admiral_templates_data", which = "cache")
+if (!file.exists(dir)) {
+  # Create the folder
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+}
+save(adex, file = file.path(dir, "adex.rda"), compress = "bzip2")

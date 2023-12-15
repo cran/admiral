@@ -11,7 +11,7 @@ derive_vars_duration(
   start_date,
   end_date,
   in_unit = "days",
-  out_unit = "days",
+  out_unit = "DAYS",
   floor_in = TRUE,
   add_one = TRUE,
   trunc_out = FALSE,
@@ -21,8 +21,7 @@ derive_vars_duration(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{start_date} and the \code{end_date} parameter are
-expected.}
+The variables specified by the \code{start_date} and \code{end_date} arguments are expected to be in the dataset.}
 
 \item{new_var}{Name of variable to create}
 
@@ -31,53 +30,77 @@ specified, no variable for the unit is created.}
 
 \item{start_date}{The start date
 
-A date or date-time variable is expected. This variable must be present in
-specified input dataset.
+A date or date-time object is expected.
 
 Refer to \code{derive_vars_dt()} to impute and derive a date from a date
-character vector to a date object.}
+character vector to a date object.
+
+Refer to \code{convert_dtc_to_dt()} to obtain a vector of imputed dates.}
 
 \item{end_date}{The end date
 
-A date or date-time variable is expected. This variable must be present in
-specified input dataset.
+A date or date-time object is expected.
 
 Refer to \code{derive_vars_dt()} to impute and derive a date from a date
-character vector to a date object.}
+character vector to a date object.
+
+Refer to \code{convert_dtc_to_dt()} to obtain a vector of imputed dates.}
 
 \item{in_unit}{Input unit
 
 See floor_in and add_one parameter for details.
 
-Default: 'days'
+Permitted Values (case-insensitive):
 
-Permitted Values: 'years', 'months', 'days', 'hours', 'minutes', 'min',
-'seconds', 'sec'}
+For years: \code{"year"}, \code{"years"}, \code{"yr"}, \code{"yrs"}, \code{"y"}
+
+For months: \code{"month"}, \code{"months"}, \code{"mo"}, \code{"mos"}
+
+For days: \code{"day"}, \code{"days"}, \code{"d"}
+
+For hours: \code{"hour"}, \code{"hours"}, \code{"hr"}, \code{"hrs"}, \code{"h"}
+
+For minutes: \code{"minute"}, \code{"minutes"}, \code{"min"}, \code{"mins"}
+
+For seconds: \code{"second"}, \code{"seconds"}, \code{"sec"}, \code{"secs"}, \code{"s"}}
 
 \item{out_unit}{Output unit
 
 The duration is derived in the specified unit
 
-Default: 'days'
+Permitted Values (case-insensitive):
 
-Permitted Values: 'years', 'months', 'days', 'hours', 'minutes', 'min',
-'seconds', 'sec'}
+For years: \code{"year"}, \code{"years"}, \code{"yr"}, \code{"yrs"}, \code{"y"}
+
+For months: \code{"month"}, \code{"months"}, \code{"mo"}, \code{"mos"}
+
+For weeks: \code{"week"}, \code{"weeks"}, \code{"wk"}, \code{"wks"}, \code{"w"}
+
+For days: \code{"day"}, \code{"days"}, \code{"d"}
+
+For hours: \code{"hour"}, \code{"hours"}, \code{"hr"}, \code{"hrs"}, \code{"h"}
+
+For minutes: \code{"minute"}, \code{"minutes"}, \code{"min"}, \code{"mins"}
+
+For seconds: \code{"second"}, \code{"seconds"}, \code{"sec"}, \code{"secs"}, \code{"s"}}
 
 \item{floor_in}{Round down input dates?
 
 The input dates are round down with respect to the input unit, e.g., if the
 input unit is 'days', the time of the input dates is ignored.
 
-Default: `TRUE``
+Default: \code{TRUE}
 
 Permitted Values: \code{TRUE}, \code{FALSE}}
 
 \item{add_one}{Add one input unit?
 
-If the duration is non-negative, one input unit is added. I.e., the
+If the duration is non-negative, one input unit is added. i.e., the
 duration can not be zero.
 
-Default: \code{TRUE} Permitted Values: \code{TRUE}, \code{FALSE}}
+Default: \code{TRUE}
+
+Permitted Values: \code{TRUE}, \code{FALSE}}
 
 \item{trunc_out}{Return integer part
 
@@ -91,6 +114,8 @@ Permitted Values: \code{TRUE}, \code{FALSE}}
 \item{type}{lubridate duration type.
 
 See below for details.
+
+Default: \code{"duration"}
 
 Permitted Values: \code{"duration"}, \code{"interval"}}
 }

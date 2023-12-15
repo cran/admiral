@@ -2,9 +2,8 @@
 #'
 #' Add a time-to-event parameter to the input dataset.
 #'
-#' @param dataset Input dataset
-#'
-#'   The `PARAMCD` variable is expected.
+#' @param dataset `r roxygen_param_dataset()`
+#'   `PARAMCD` is expected.
 #'
 #' @param dataset_adsl ADSL input dataset
 #'
@@ -26,6 +25,8 @@
 #'   variables.
 #'
 #'   The by variables are not included in the output dataset.
+#'
+#'   `r roxygen_param_by_vars()`
 #'
 #' @param start_date Time to event origin date
 #'
@@ -472,6 +473,8 @@ derive_param_tte <- function(dataset = NULL,
 #'   If the parameter is specified, for each by group the observations are
 #'   selected separately.
 #'
+#'   `r roxygen_param_by_vars()`
+#'
 #' @param create_datetime Create datetime variable?
 #'
 #'   If set to `TRUE`, variables `ADTM` is created. Otherwise, variables `ADT`
@@ -513,11 +516,7 @@ derive_param_tte <- function(dataset = NULL,
 #' @return A dataset with one observation per subject as described in the
 #'   "Details" section.
 #'
-#'
-#' @keywords other_advanced
-#' @family other_advanced
-#'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' library(tibble)
@@ -658,12 +657,10 @@ filter_date_sources <- function(sources,
 #'
 #' @param by_vars By variables
 #'
+#' `r roxygen_param_by_vars()`
+#'
 #'
 #' @return The list of extended source datasets
-#'
-#'
-#' @keywords other_advanced
-#' @family other_advanced
 #'
 #' @examples
 #' library(tibble)
@@ -689,7 +686,8 @@ filter_date_sources <- function(sources,
 #'   source_datasets = list(adsl = adsl, ae = ae),
 #'   by_vars = exprs(AEDECOD)
 #' )
-#' @export
+#'
+#' @noRd
 extend_source_datasets <- function(source_datasets,
                                    by_vars) {
   assert_list_of(source_datasets, "data.frame")

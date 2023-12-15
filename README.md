@@ -17,42 +17,53 @@ to develop ADaM datasets in R.
 
 ## Installation
 
-The package is available from CRAN and can be installed by running `install.packages("admiral")`.
-
-To install the latest development version of the package directly from GitHub use the following code:
+The package is available from CRAN and can be installed with:
 
 ```r
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
-
-remotes::install_github("pharmaverse/pharmaversesdtm") # This is a required dependency of {admiral}
-remotes::install_github("pharmaverse/admiraldev") # This is a required dependency of {admiral}
-remotes::install_github("pharmaverse/admiral")
+install.packages("admiral")
 ```
+
+To install the development version of the package from GitHub run:
+
+```r
+# install.packages("devtools")
+devtools::install_github("pharmaverse/admiral")
+```
+
+## Cheat Sheet
+
+<a href="https://github.com/pharmaverse/admiral/blob/main/inst/cheatsheet/admiral_cheatsheet.pdf"><img src="https://raw.githubusercontent.com/pharmaverse/admiral/main/inst/cheatsheet/cheatsheet_image.png" width="630" height="252"/></a>  
 
 ## Release Schedule
 
-[{admiral}](https://pharmaverse.github.io/admiral/cran-release/) releases are targeted for the first Monday of the last month of each quarter.  Pull Requests will be frozen the week before a release.
-The {admiral} family has several downstream and upstream dependencies and so this release shall be done in three
-Phases:
+The {admiral} family has several downstream and upstream dependencies and so releases are done in two Phases:
 
-* Phase 1 release is for [{admiraldev}](https://pharmaverse.github.io/admiraldev/main/), [{pharmaversesdtm}](https://pharmaverse.github.io/pharmaversesdtm/main/), and [{admiral}](https://pharmaverse.github.io/admiral/cran-release/) core
-* Phase 2 release is extension packages, e.g. [{admiralonco}](https://pharmaverse.github.io/admiralonco/main/), [{admiralophtha}](https://pharmaverse.github.io/admiralophtha/main/), [{admiralvaccine}](https://pharmaverse.github.io/admiralvaccine/main/)
+* Phase 1 release is for [{admiraldev}](https://pharmaverse.github.io/admiraldev/), [{pharmaversesdtm}](https://pharmaverse.github.io/pharmaversesdtm/), and [{admiral}](https://pharmaverse.github.io/admiral/) core
+* Phase 2 release is extension packages, e.g. [{admiralonco}](https://pharmaverse.github.io/admiralonco/), [{admiralophtha}](https://pharmaverse.github.io/admiralophtha/), [{admiralvaccine}](https://pharmaverse.github.io/admiralvaccine/)
 
 | Release Schedule | Phase 1- Date and Packages                                               | Phase 2- Date and Packages                                           |
 | ---------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
 | Q4-2023          | December 4th                                                             | December 11th                                                        |
-|                  | [{pharmaversesdtm}](https://pharmaverse.github.io/pharmaversesdtm/main/) | [{admiralonco}](https://pharmaverse.github.io/admiralonco/main/)     |
-|                  | [{admiraldev}](https://pharmaverse.github.io/admiraldev/main/)           | [{admiralophtha}](https://pharmaverse.github.io/admiralophtha/main/) |
-|                  | [{admiral}](https://pharmaverse.github.io/admiral/cran-release/)                 |                                                                      |
+|                  | [{pharmaversesdtm}](https://pharmaverse.github.io/pharmaversesdtm/main/) | [{admiralonco}](https://pharmaverse.github.io/admiralonco/)          |
+|                  | [{admiraldev}](https://pharmaverse.github.io/admiraldev/)                | [{admiralophtha}](https://pharmaverse.github.io/admiralophtha/)      |
+|                  | [{admiral}](https://pharmaverse.github.io/admiral/)                      |                                                                      |
+| Q1-2024          |                                                                          | January (Date TBC)                                                   |
+|                  |                                                                          | [{admiralvaccine}](https://pharmaverse.github.io/admiralvaccine/)    |
+| Q2-2024          | June 3rd                                                                 | June 8th                                                             |
+|                  | [{pharmaversesdtm}](https://pharmaverse.github.io/pharmaversesdtm/main/) | [{admiralonco}](https://pharmaverse.github.io/admiralonco/)          |
+|                  | [{admiraldev}](https://pharmaverse.github.io/admiraldev/)                | [{admiralophtha}](https://pharmaverse.github.io/admiralophtha/)      |
+|                  | [{admiral}](https://pharmaverse.github.io/admiral/)                      |                                                                      |
+| Q4-2024          | December 2nd                                                             | December 9th                                                         |
+|                  | [{pharmaversesdtm}](https://pharmaverse.github.io/pharmaversesdtm/main/) | [{admiralonco}](https://pharmaverse.github.io/admiralonco/)          |
+|                  | [{admiraldev}](https://pharmaverse.github.io/admiraldev/)                | [{admiralophtha}](https://pharmaverse.github.io/admiralophtha/)      |
+|                  | [{admiral}](https://pharmaverse.github.io/admiral/)                      |                                                                      |
 
 The `{admiral}` Q4-2023 release will officially be `{admiral}`'s version 1.0.0 release, where we commit to increased package maturity and pivot towards focusing on maintenance rather than new content. This does not mean that there will never be any new content in `{admiral}`, rather it means we will be more mindful about introducing new functionality and/or breaking changes. The release schedule in 2024 and onward will also shift to twice-yearly, rather than quarterly, so that our users have ample time to react to any new content and changes that do make it onto `{admiral}`.
 
 ## Main Goal
 
 Provide users with an open source, modularized toolbox with which to create ADaM datasets
-in R. _As opposed to a “run 1 line and an ADaM appears” black-box solution or an attempt to
+in R. _As opposed to a "run 1 line and an ADaM appears" black-box solution or an attempt to
 automate ADaM._
 
 One of the key aspects of `{admiral}` is its development by the users for the users.
@@ -70,30 +81,44 @@ achievable---ADaM is endless.
 We will provide:
 
 * A toolbox of re-usable functions and utilities to create ADaM datasets using R scripts in a
-  modular manner (an "opinionated" design strategy)
+  modular manner (an "opinionated" design strategy).
 * Pharmaceutical communities and companies are encouraged to contribute to `{admiral}` following
   the provided programming strategy and modular approach
 * Functions that are comprehensively documented and tested, including example calls---these are
-  all listed in the [Reference section](https://pharmaverse.github.io/admiral/cran-release/reference/index.html)
-* Vignettes on how to create ADSL, BDS and OCCDS datasets, including example scripts
-* Vignettes for ADaM dataset specific functionality (i.e. dictionary coding, date imputation, SMQs ...)
+  all listed in the [Reference section](https://pharmaverse.github.io/admiral/reference/index.html).
+* Vignettes on how to create ADSL, BDS and OCCDS datasets, including example scripts.
+* Vignettes for ADaM dataset specific functionality (i.e. dictionary coding, date imputation, SMQs ...).
 
-## Types of Packages
+## The {admiral} Family of Packages
 
-There will be 3 foreseeable types of `{admiral}` packages:
+There are three types of packages in the `{admiral}` family:
 
-* Core package---one package containing all core functions required to create ADaMs, usable by any company (i.e. general derivations, utility functions and checks for ADSL, OCCDS and BDS)
+* Core package---one package containing all core functions required to create ADaMs, usable by any company (i.e. general derivations, utility functions and checks for ADSL, OCCDS and BDS).
 * TA (Therapeutic Area) package extensions---one package per TA with functions that are
-  specific to algorithms and requirements for that particular TA (e.g. [`{admiralonco}`](https://pharmaverse.github.io/admiralonco/))
+  specific to algorithms and requirements for that particular TA (e.g. [`{admiralonco}`](https://pharmaverse.github.io/admiralonco/)).
 * Company package extensions---specific needs and plug-ins for the company, such as access to metadata
-  (e.g. `{admiralroche}` or `{admiralgsk}`)
+  (e.g. `{admiralroche}` or `{admiralgsk}`).
+  
+## Related Packages
+
+Related data packages include:
+
+* [{pharmaversesdtm}](https://pharmaverse.github.io/pharmaversesdtm/main/)---this contains test SDTM data sourced from the [CDISC pilot project](https://github.com/cdisc-org/sdtm-adam-pilot-project) or constructed ad-hoc by the `{admiral}` team. This is a prerequisite package for `{admiral}`.
+* [{pharmaverseadam}](https://pharmaverse.github.io/pharmaverseadam/main/)---this contains test ADaM data automatically generated by running the ADaM `{admiral}` and TA package extensions templates on the [{pharmaversesdtm}](https://pharmaverse.github.io/pharmaversesdtm/main/) data.
+
+Both these packages are developed by the `{admiral}` team, but can used across the pharmaverse as common, open-source test SDTM or ADaM data.
+
+The following packages are also useful when working with ADaM datasets:
+
+* [{metacore}](https://atorus-research.github.io/metacore/) and [{metatools}](https://pharmaverse.github.io/metatools/)---these enable users to manipulate and work with dataset metadata.
+* [{xportr}](https://atorus-research.github.io/xportr/)---this provides functionality to get xpt files ready for transport.
 
 ## Admiral Manifesto
 
 For `{admiral}` and all extension packages, we prioritize providing our users with a __simple to adopt__ toolkit
 that enables them to produce __readable__ and __easily constructible__ ADaM programs. The following explains
 our philosophy, which we try to adhere to across the `{admiral}` family of packages.
-There isn’t always a clear single, straightforward rule, but there are guiding principles we adhere to for `{admiral}`.
+There isn't always a clear single, straightforward rule, but there are guiding principles we adhere to for `{admiral}`.
 This manifesto helps show the considerations of our developers when making decisions.
 
 We have four design principles to achieve the main goal:
@@ -102,7 +127,7 @@ We have four design principles to achieve the main goal:
 
 All `{admiral}` functions should be easy to use.
 
-* Documentation is an absolute priority. Each function reference page should cover the purpose, descriptions of each argument with permitted values, the expected input and output, with clear real-life examples---so that users don’t need to dig through code to find answers.
+* Documentation is an absolute priority. Each function reference page should cover the purpose, descriptions of each argument with permitted values, the expected input and output, with clear real-life examples---so that users don't need to dig through code to find answers.
 * Vignettes that complement the functional documentation to help users see how best the functions can be applied to achieve ADaM requirements.
 * Functions should be written and structured in a way that users are able to read, re-use or extend them for study specific purposes if needed (see Readability below).
 
@@ -131,23 +156,23 @@ All `{admiral}` functions are easily findable.
 
 ### Readability
 
-All `{admiral}` functions follow the [Programming Strategy](https://pharmaverse.github.io/admiraldev/main/articles/programming_strategy.html)
+All `{admiral}` functions follow the [Programming Strategy](https://pharmaverse.github.io/admiraldev/articles/programming_strategy.html)
 that all our developers and contributors must follow, so that all our code has a high degree of consistency and readability.
 
-* We mandate use of tidyverse (e.g. dplyr) over similar functionality existing in base R.
+* We encourage use of tidyverse (e.g. dplyr) over similar functionality existing in base R.
 * For sections of code that perform the actual derivations (e.g. besides assertions or basic utilities), we try to limit nesting of too many dependencies or functions.
-* Modularity is a focus---we don’t try to achieve too many steps in one.
+* Modularity is a focus---we don't try to achieve too many steps in one.
 * All code has to be well commented.
 * We recognize that a user or a Health Authority reviewer may have the wish to delve into the code base (especially given this open source setting), or users may need to extend/adapt the code for their study specific needs. We therefore want any module to be understandable to all, not only the `{admiral}` developers.
 
 ## References and Documentation
 
-* Please go to [Get Started](https://pharmaverse.github.io/admiral/cran-release/articles/admiral.html) section to start using `{admiral}`
+* Please go to [Get Started](https://pharmaverse.github.io/admiral/articles/admiral.html) section to start using `{admiral}`.
 * Please see the [pharmaverse YouTube channel](https://www.youtube.com/channel/UCxQFEv8HNqM01DXzdQLCy6Q) for videos related to `{admiral}`.
-* Please see the [Programming Strategy](https://pharmaverse.github.io/admiraldev/main/articles/programming_strategy.html) to understand how functions are created
-* Please see the [FAQ](https://pharmaverse.github.io/admiral/cran-release/articles/faq.html) for the most frequent questions
-* Please see the [Contribution Model](https://pharmaverse.github.io/admiral/cran-release/articles/contribution_model.html) for how to get involved with making contributions
-* Please see [FAQ: R and Package Versions](https://pharmaverse.github.io/admiral/cran-release/articles/faq.html#why-do-we-use-a-certain-r-version-and-package-versions-for-development) for why we develop with certain R and package versions.
+* Please see the [Programming Strategy](https://pharmaverse.github.io/admiraldev/articles/programming_strategy.html) to understand how functions are created.
+* Please see the [FAQ](https://pharmaverse.github.io/admiral/articles/faq.html) for the most frequent questions.
+* Please see the [Contribution Model](https://pharmaverse.github.io/admiral/CONTRIBUTING.html) for how to get involved with making contributions.
+* Please see [FAQ: R and Package Versions](https://pharmaverse.github.io/admiral/articles/faq.html#why-do-we-use-a-certain-r-version-and-package-versions-for-development) for why we develop with certain R and package versions.
 
 ## Pharmaverse Blog
 
@@ -155,25 +180,18 @@ If you are interested in R and Clinical Reporting, then visit the [pharmaverse b
 
 We are also always looking for keen `{admiral}` users to publish their own blog posts about how they use the package. If this could be you, feel free make an issue in the [GitHub repo](https://github.com/pharmaverse/blog) and get started!
 
-## Conference Presentations
+## Recent Conference Presentations
 
-* [Cross Industry Package Development](https://www.youtube.com/watch?v=M4L1PPMu0pU) (recording from R in Pharma 2022)
-* [Paving the way for clinical submissions in R](https://phuse.s3.eu-central-1.amazonaws.com/Archive/2023/SDE/EU/London/PRE_London09.pdf) (slides from PHUSE SDE in London)
-* [An Overview of {admiral}](https://phuse.s3.eu-central-1.amazonaws.com/Archive/2023/SDE/US/Summit/PRE_Summit03.pdf) (slides from PHUSE SDE in Summit, NJ)
-* [{admiralonco}](https://phuse.s3.eu-central-1.amazonaws.com/Archive/2023/Connect/US/Florida/REC_OS12.mp4) (recording for talk at PHUSE US Connect 2023, slides also available [here](https://phuse.s3.eu-central-1.amazonaws.com/Archive/2023/Connect/US/Florida/PRE_OS12.pdf))
-* [Programming ADNCA using R and {admiral}](https://phuse.s3.eu-central-1.amazonaws.com/Archive/2023/Connect/US/Florida/REC_OS09.mp4) (recording of presentation from PHUSE US Connect 2023)
-* [Clinical Reporting in R](https://www.youtube.com/watch?v=9eod8MLF5ys\&list=PLMtxz1fUYA5AWYQHB5mZAs-yamNJ5Tm_8\&index=2) (recording of workshop at R in Pharma 2022)
-* [Introducing {admiral}](https://www.youtube.com/watch?v=N7Bw8c3D5fU) (recording of talk for R in Pharma 2021)
-* [Pharmaverse workshop](https://github.com/pharmaverse/pharmaverse.workshop.phuseUS2022) (slides and materials from PHUSE US Connect 2022---including `{admiral}` workshop slides from PHUSE EU Connect 2021)
+For a full collection of `{admiral}` conference presentations over the years, please travel to our [Presentation Archive](https://pharmaverse.github.io/admiraldiscovery/articles/presentation_archive.html).
 
 ## Contact
 
 We use the following for support and communications between user and developer community:
 
-* [Slack](https://app.slack.com/client/T028PB489D3/C02M8KN8269)---for informal discussions, Q\&A and building our user community. If you don't have access, use this [link](https://join.slack.com/t/pharmaverse/shared_invite/zt-yv5atkr4-Np2ytJ6W_QKz_4Olo7Jo9A) to join the pharmaverse Slack workspace
-* [GitHub Issues](https://github.com/pharmaverse/admiral/issues)---for direct feedback, enhancement requests or raising bugs
+* [Slack](https://app.slack.com/client/T028PB489D3/C02M8KN8269)---for informal discussions, Q\&A and building our user community. If you don't have access, use this [link](https://join.slack.com/t/pharmaverse/shared_invite/zt-yv5atkr4-Np2ytJ6W_QKz_4Olo7Jo9A) to join the pharmaverse Slack workspace.
+* [GitHub Issues](https://github.com/pharmaverse/admiral/issues)---for direct feedback, enhancement requests or raising bugs.
 
 ## Acknowledgments
 
 Along with the authors and contributors, thanks to the following people for their work on the package:
-Jaxon Abercrombie, Mahdi About, Teckla Akinyi, James Black, Claudia Carlucci, Bill Denney, Kamila Duniec, Alice Ehmann, Ania Golab, Alana Harris, Declan Hodges, Anthony Howard, Shimeng Huang, Samia Kabi, James Kim, John Kirkpatrick, Leena Khatri, Robin Koeger, Konstantina Koukourikou, Pavan Kumar, Pooja Kumari, Shan Lee, Wenyi Liu, Jack McGavigan, Jordanna Morrish, Syed Mubasheer, Yohann Omnes, Barbara O'Reilly, Hamza Rahal, Nick Ramirez, Tom Ratford, Tamara Senior, Sophie Shapcott, Ondrej Slama, Andrew Smith, Daniil Stefonishin, Vignesh Thanikachalam, Michael Thorpe, Annie Yang, Ojesh Upadhyay and Franciszek Walkowiak.
+Jaxon Abercrombie, Mahdi About, Teckla Akinyi, James Black, Claudia Carlucci, Asha Chakma, Bill Denney, Kamila Duniec, Alice Ehmann, Romain François, Ania Golab, Alana Harris, Declan Hodges, Anthony Howard, Shimeng Huang, Samia Kabi, James Kim, John Kirkpatrick, Leena Khatri, Robin Koeger, Konstantina Koukourikou, Pavan Kumar, Pooja Kumari, Shan Lee, Wenyi Liu, Jack McGavigan, Jordanna Morrish, Syed Mubasheer, Yohann Omnes, Barbara O'Reilly, Hamza Rahal, Nick Ramirez, Tom Ratford, Sukalpo Saha, Tamara Senior, Sophie Shapcott, Ondrej Slama, Andrew Smith, Daniil Stefonishin, Vignesh Thanikachalam, Michael Thorpe, Annie Yang, Ojesh Upadhyay and Franciszek Walkowiak.

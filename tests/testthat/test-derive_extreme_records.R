@@ -23,6 +23,7 @@ test_that("derive_extreme_records Test 1: add last observation for each group", 
 
   actual_output <- derive_extreme_records(
     input,
+    dataset_add = input,
     order = exprs(AVISITN, LBSEQ),
     by_vars = exprs(USUBJID),
     mode = "last",
@@ -89,9 +90,9 @@ test_that("derive_extreme_records Test 2: derive first PD date", {
     adrs,
     tibble::tribble(
       ~USUBJID, ~ADT,              ~AVALC,
-      "1",      ymd(""),           "N",
+      "1",      ymd(""),           NA_character_,
       "2",      ymd("2021-07-16"), "Y",
-      "3",      ymd(""),           "N"
+      "3",      ymd(""),           NA_character_
     ) %>%
       mutate(
         STUDYID = "XX1234",
@@ -299,86 +300,19 @@ test_that("derive_extreme_records Test 5: latest evaluable tumor assessment date
   )
 })
 
-## Test 6: warning if filter argument is used ----
-test_that("derive_extreme_records Test 6: warning if filter argument is used", {
-  adsl <- tibble::tribble(
-    ~USUBJID,
-    "1",
-    "2",
-    "3"
-  ) %>%
-    mutate(STUDYID = "XX1234")
-
-  adrs <- tibble::tribble(
-    ~USUBJID, ~ADTC,        ~AVALC, ~PARAMCD,
-    "1",      "2020-01-02", "PR",   "OVR",
-    "1",      "2020-02-01", "CR",   "OVR",
-    "1",      "2020-03-01", "NE",   "OVR",
-    "1",      "2020-04-01", "SD",   "OVR",
-    "2",      "2021-06-15", "SD",   "OVR",
-    "2",      "2021-07-16", "SD",   "OVR",
-    "2",      "2021-09-14", "NE",   "OVR",
-    "3",      "2021-08-03", "NE",   "OVR",
-  ) %>%
-    mutate(
-      STUDYID = "XX1234",
-      ADT = ymd(ADTC)
-    ) %>%
-    select(-ADTC)
-
-  actual <- derive_extreme_records(
-    adrs,
-    dataset_ref = adsl,
-    dataset_add = adrs,
-    by_vars = exprs(USUBJID),
-    filter_add = PARAMCD == "OVR" & AVALC == "PD",
-    exist_flag = AVALC,
-    order = exprs(ADT),
-    mode = "first",
-    set_values_to = exprs(
-      PARAMCD = "PD",
-      ANL01FL = "Y",
-      ADT = ADT
-    )
-  )
-
-  expect_error(
-    derive_extreme_records(
-      adrs,
-      dataset_ref = adsl,
-      dataset_add = adrs,
-      by_vars = exprs(USUBJID),
-      filter = PARAMCD == "OVR" & AVALC == "PD",
-      exist_flag = AVALC,
-      order = exprs(ADT),
-      mode = "first",
-      set_values_to = exprs(
-        PARAMCD = "PD",
-        ANL01FL = "Y",
-        ADT = ADT
-      )
-    ),
-    class = "lifecycle_error_deprecated"
-  )
-})
-
-## Test 7: error if no input data ----
-test_that("derive_extreme_records Test 7: error if no input data", {
+## Test 6: error if no dataset_add ----
+test_that("derive_extreme_records Test 6: error if no dataset_add", {
   expect_error(
     derive_extreme_records(
       set_values_to = exprs(PARAMCD = "HELLO")
     ),
-    regexp = paste(
-      "Neither `dataset` nor `dataset_add` is specified.",
-      "At least one of them must be specified.",
-      sep = "\n"
-    ),
+    regexp = "argument \"dataset_add\" is missing, with no default",
     fixed = TRUE
   )
 })
 
-## Test 8: keep vars in `keep_source_vars` in the new records ----
-test_that("derive_extreme_records Test 8: keep vars in `keep_source_vars` in the new records", {
+## Test 7: keep vars in `keep_source_vars` in the new records ----
+test_that("derive_extreme_records Test 7: keep vars in `keep_source_vars` in the new records", {
   input <- tibble::tribble(
     ~USUBJID, ~AVISITN, ~AVAL, ~LBSEQ,
     1, 1, 12, 1,
@@ -402,6 +336,7 @@ test_that("derive_extreme_records Test 8: keep vars in `keep_source_vars` in the
 
   actual_output <- derive_extreme_records(
     input,
+    dataset_add = input,
     order = exprs(AVISITN, LBSEQ),
     by_vars = exprs(USUBJID),
     mode = "last",
@@ -416,8 +351,8 @@ test_that("derive_extreme_records Test 8: keep vars in `keep_source_vars` in the
   )
 })
 
-## Test 9: keep all vars in the new records when `keep_source_vars` is 'exprs(everything())' ----
-test_that("derive_extreme_records Test 9: keep all vars in the new records when `keep_source_vars` is 'exprs(everything())'", { # nolint
+## Test 8: keep all vars in the new records when `keep_source_vars` is 'exprs(everything())' ----
+test_that("derive_extreme_records Test 8: keep all vars in the new records when `keep_source_vars` is 'exprs(everything())'", { # nolint
   input <- tibble::tribble(
     ~USUBJID, ~AVISITN, ~AVAL, ~LBSEQ,
     1, 1, 12, 1,
@@ -440,6 +375,7 @@ test_that("derive_extreme_records Test 9: keep all vars in the new records when 
 
   actual_output <- derive_extreme_records(
     input,
+    dataset_add = input,
     order = exprs(AVISITN, LBSEQ),
     by_vars = exprs(USUBJID),
     mode = "last",
@@ -454,8 +390,8 @@ test_that("derive_extreme_records Test 9: keep all vars in the new records when 
   )
 })
 
-## Test 10: order vars from dataset_add ----
-test_that("derive_extreme_records Test 10: order vars from dataset_add", {
+## Test 9: order vars from dataset_add ----
+test_that("derive_extreme_records Test 9: order vars from dataset_add", {
   bds <- tibble::tribble(
     ~USUBJID, ~PARAMCD, ~AVALC,
     "1",      "PARAM",  "1"

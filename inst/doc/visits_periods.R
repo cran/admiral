@@ -4,13 +4,13 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## ---- warning=FALSE, message=FALSE--------------------------------------------
+## ----warning=FALSE, message=FALSE---------------------------------------------
 library(admiral)
 library(tibble)
 library(dplyr, warn.conflicts = FALSE)
 library(lubridate)
 
-## ---- echo=FALSE, warning=FALSE, message=FALSE--------------------------------
+## ----echo=FALSE, warning=FALSE, message=FALSE---------------------------------
 library(admiraldev)
 
 ## -----------------------------------------------------------------------------
@@ -36,7 +36,8 @@ adbds <- tribble(
 derive_vars_joined(
   adbds,
   dataset_add = windows,
-  filter_join = AWLO <= ADY & ADY <= AWHI
+  filter_join = AWLO <= ADY & ADY <= AWHI,
+  join_type = "all",
 )
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -77,13 +78,18 @@ adae <- tribble(
   "1",      "2021-04-05",
   "2",      "2021-02-15",
 ) %>%
+  mutate(
+    STUDYID = "xyz",
+    .before = USUBJID
+  ) %>%
   mutate(ASTDT = ymd(ASTDT))
 
 derive_vars_joined(
   adae,
   dataset_add = phase_ref,
-  by_vars = exprs(USUBJID),
-  filter_join = PHSDT <= ASTDT & ASTDT <= PHEDT
+  by_vars = exprs(STUDYID, USUBJID),
+  filter_join = PHSDT <= ASTDT & ASTDT <= PHEDT,
+  join_type = "all"
 )
 
 ## -----------------------------------------------------------------------------
@@ -145,6 +151,7 @@ derive_vars_joined(
   by_vars = exprs(STUDYID, USUBJID),
   new_vars = exprs(APERIOD, TRTA),
   join_vars = exprs(APERSDT, APEREDT),
+  join_type = "all",
   filter_join = APERSDT <= ASTDT & ASTDT <= APEREDT
 )
 

@@ -13,18 +13,15 @@ derive_param_exist_flag(
   false_value = NA_character_,
   missing_value = NA_character_,
   filter_add = NULL,
-  aval_fun,
   by_vars = get_admiral_option("subject_keys"),
-  set_values_to,
-  dataset_adsl,
-  subject_keys
+  set_values_to
 )
 }
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified for \code{by_vars} and the \code{PARAMCD} variable are
-expected.}
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.
+\code{PARAMCD} is expected as well.}
 
 \item{dataset_ref}{Reference dataset, e.g., ADSL
 
@@ -91,24 +88,16 @@ considered.
 
 \emph{Permitted Values}: a condition}
 
-\item{aval_fun}{Function to map character analysis value (\code{AVALC}) to numeric
-analysis value (\code{AVAL})
+\item{by_vars}{Grouping variables
 
-\emph{Deprecated}, please use \code{set_values_to} instead.}
-
-\item{by_vars}{Variables to uniquely identify a group
-
-A list of symbols created using \code{exprs()} is expected.}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{set_values_to}{Variables to set
 
 A named list returned by \code{exprs()} defining the variables to be set for the
 new parameter, e.g. \code{exprs(PARAMCD = "MDIS", PARAM = "Measurable Disease at Baseline")} is expected. The values must be symbols, character strings,
 numeric values, \code{NA}, or expressions.}
-
-\item{dataset_adsl}{\emph{Deprecated}, please use \code{dataset_ref} instead.}
-
-\item{subject_keys}{\emph{Deprecated}, please use \code{by_vars} instead.}
 }
 \value{
 The input dataset with a new parameter indicating if an event
@@ -195,7 +184,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_computed}()},
 \code{\link{derive_param_doseint}()},
 \code{\link{derive_param_exposure}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 
 library(admiraldev)
 
-## ---- message=FALSE, warning=FALSE--------------------------------------------
+## ----message=FALSE, warning=FALSE---------------------------------------------
 library(admiral)
 library(dplyr, warn.conflicts = FALSE)
 library(pharmaversesdtm)
@@ -29,7 +29,7 @@ lb <- convert_blanks_to_na(lb)
 adsl <- dm %>%
   select(-DOMAIN)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, RFSTDTC, COUNTRY, AGE, SEX, RACE, ETHNIC, ARM, ACTARM)
@@ -83,7 +83,7 @@ adsl <- adsl %>%
 adsl <- adsl %>%
   derive_var_trtdurd()
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, RFSTDTC, TRTSDTM, TRTSDT, TRTEDTM, TRTEDT, TRTDURD)
@@ -105,14 +105,14 @@ adsl <- adsl %>%
     filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD != "SCREEN FAILURE"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   ds_ext,
   display_vars = exprs(USUBJID, DSCAT, DSDECOD, DSTERM, DSSTDT, DSSTDTC),
   filter = DSDECOD != "SCREEN FAILURE"
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adsl, display_vars = exprs(USUBJID, EOSDT))
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -134,7 +134,7 @@ adsl <- adsl %>%
     missing_values = exprs(EOSSTT = "ONGOING")
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adsl, display_vars = exprs(USUBJID, EOSDT, EOSSTT))
 
 ## -----------------------------------------------------------------------------
@@ -147,10 +147,10 @@ adsl <- adsl %>%
       !(DSDECOD %in% c("SCREEN FAILURE", "COMPLETED", NA))
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adsl, display_vars = exprs(USUBJID, EOSDT, EOSSTT, DCSREAS, DCSREASP))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adsl <- adsl %>%
   select(-DCSREAS, -DCSREASP)
 
@@ -170,7 +170,7 @@ adsl <- adsl %>%
     filter_add = DSCAT == "DISPOSITION EVENT" & DSDECOD %in% "OTHER"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adsl, display_vars = exprs(USUBJID, EOSDT, EOSSTT, DCSREAS, DCSREASP))
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -182,7 +182,7 @@ adsl <- adsl %>%
     new_vars = exprs(RANDDT = DSSTDT)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adsl, display_vars = exprs(USUBJID, RANDDT))
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -192,8 +192,8 @@ adsl <- adsl %>%
     dtc = DTHDTC
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(adsl, display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHFL))
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(adsl %>% filter(!is.na(DTHDT) | row_number() %% 50 == 0), display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHFL))
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  adsl <- adsl %>%
@@ -204,45 +204,29 @@ dataset_vignette(adsl, display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHF
 #    )
 
 ## ----eval=TRUE----------------------------------------------------------------
-src_ae <- dthcaus_source(
-  dataset_name = "ae",
-  filter = AEOUT == "FATAL",
-  date = convert_dtc_to_dtm(AESTDTC, highest_imputation = "M"),
-  mode = "first",
-  dthcaus = AEDECOD
-)
-
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(
-  ae,
-  display_vars = exprs(USUBJID, AESTDTC, AEENDTC, AEDECOD, AEOUT),
-  filter = AEOUT == "FATAL"
-)
-
-## ----eval=TRUE----------------------------------------------------------------
-src_ds <- dthcaus_source(
-  dataset_name = "ds",
-  filter = DSDECOD == "DEATH" & grepl("DEATH DUE TO", DSTERM),
-  date = DSSTDT,
-  mode = "first",
-  dthcaus = "Death in DS"
-)
-
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(
-  ds,
-  display_vars = exprs(USUBJID, DSDECOD, DSTERM, DSSTDTC),
-  filter = DSDECOD == "DEATH"
-)
-
-## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
-  derive_var_dthcaus(
-    src_ae, src_ds,
-    source_datasets = list(ae = ae, ds = ds_ext)
+  derive_vars_extreme_event(
+    by_vars = exprs(STUDYID, USUBJID),
+    events = list(
+      event(
+        dataset_name = "ae",
+        condition = AEOUT == "FATAL",
+        set_values_to = exprs(DTHCAUS = AEDECOD),
+      ),
+      event(
+        dataset_name = "ds",
+        condition = DSDECOD == "DEATH" & grepl("DEATH DUE TO", DSTERM),
+        set_values_to = exprs(DTHCAUS = DSTERM),
+      )
+    ),
+    source_datasets = list(ae = ae, ds = ds),
+    tmp_event_nr_var = event_nr,
+    order = exprs(event_nr),
+    mode = "first",
+    new_vars = exprs(DTHCAUS)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, EOSDT, DTHDTC, DTHDT, DTHCAUS),
@@ -250,36 +234,44 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-src_ae <- dthcaus_source(
-  dataset_name = "ae",
-  filter = AEOUT == "FATAL",
-  date = convert_dtc_to_dtm(AESTDTC, highest_imputation = "M"),
-  mode = "first",
-  dthcaus = AEDECOD,
-  set_values_to = exprs(DTHDOM = "AE", DTHSEQ = AESEQ)
-)
-
-src_ds <- dthcaus_source(
-  dataset_name = "ds",
-  filter = DSDECOD == "DEATH" & grepl("DEATH DUE TO", DSTERM),
-  date = DSSTDT,
-  mode = "first",
-  dthcaus = DSTERM,
-  set_values_to = exprs(DTHDOM = "DS", DTHSEQ = DSSEQ)
-)
 adsl <- adsl %>%
   select(-DTHCAUS) %>% # remove it before deriving it again
-  derive_var_dthcaus(
-    src_ae, src_ds,
-    source_datasets = list(ae = ae, ds = ds_ext)
+  derive_vars_extreme_event(
+    by_vars = exprs(STUDYID, USUBJID),
+    events = list(
+      event(
+        dataset_name = "ae",
+        condition = AEOUT == "FATAL",
+        set_values_to = exprs(DTHCAUS = AEDECOD, DTHDOM = "AE", DTHSEQ = AESEQ),
+      ),
+      event(
+        dataset_name = "ds",
+        condition = DSDECOD == "DEATH" & grepl("DEATH DUE TO", DSTERM),
+        set_values_to = exprs(DTHCAUS = DSTERM, DTHDOM = "DS", DTHSEQ = DSSEQ),
+      )
+    ),
+    source_datasets = list(ae = ae, ds = ds),
+    tmp_event_nr_var = event_nr,
+    order = exprs(event_nr),
+    mode = "first",
+    new_vars = exprs(DTHCAUS, DTHDOM, DTHSEQ)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHCAUS, DTHDOM, DTHSEQ),
   filter = DTHFL == "Y"
 )
+
+## ----eval=TRUE----------------------------------------------------------------
+adsl <- adsl %>%
+  mutate(DTHCGR1 = case_when(
+    is.na(DTHDOM) ~ NA_character_,
+    DTHDOM == "AE" ~ "ADVERSE EVENT",
+    str_detect(DTHCAUS, "(PROGRESSIVE DISEASE|DISEASE RELAPSE)") ~ "PROGRESSIVE DISEASE",
+    TRUE ~ "OTHER"
+  ))
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
@@ -298,7 +290,7 @@ adsl <- adsl %>%
     add_one = FALSE
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHCAUS, DTHADY, LDDTHELD),
@@ -306,33 +298,51 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-ae_start_date <- date_source(
-  dataset_name = "ae",
-  date = convert_dtc_to_dt(AESTDTC, highest_imputation = "M")
-)
-ae_end_date <- date_source(
-  dataset_name = "ae",
-  date = convert_dtc_to_dt(AEENDTC, highest_imputation = "M")
-)
-lb_date <- date_source(
-  dataset_name = "lb",
-  date = convert_dtc_to_dt(LBDTC, highest_imputation = "M")
-)
-trt_end_date <- date_source(
-  dataset_name = "adsl",
-  date = TRTEDT
-)
-
-## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
-  derive_var_extreme_dt(
-    new_var = LSTALVDT,
-    ae_start_date, ae_end_date, lb_date, trt_end_date,
-    source_datasets = list(ae = ae, adsl = adsl, lb = lb),
-    mode = "last"
+  derive_vars_extreme_event(
+    by_vars = exprs(STUDYID, USUBJID),
+    events = list(
+      event(
+        dataset_name = "ae",
+        order = exprs(AESTDTC, AESEQ),
+        condition = !is.na(AESTDTC),
+        set_values_to = exprs(
+          LSTALVDT = convert_dtc_to_dt(AESTDTC, highest_imputation = "M"),
+          seq = AESEQ
+        ),
+      ),
+      event(
+        dataset_name = "ae",
+        order = exprs(AEENDTC, AESEQ),
+        condition = !is.na(AEENDTC),
+        set_values_to = exprs(
+          LSTALVDT = convert_dtc_to_dt(AEENDTC, highest_imputation = "M"),
+          seq = AESEQ
+        ),
+      ),
+      event(
+        dataset_name = "lb",
+        order = exprs(LBDTC, LBSEQ),
+        condition = !is.na(LBDTC),
+        set_values_to = exprs(
+          LSTALVDT = convert_dtc_to_dt(LBDTC, highest_imputation = "M"),
+          seq = LBSEQ
+        ),
+      ),
+      event(
+        dataset_name = "adsl",
+        condition = !is.na(TRTEDT),
+        set_values_to = exprs(LSTALVDT = TRTEDT, seq = 0),
+      )
+    ),
+    source_datasets = list(ae = ae, lb = lb, adsl = adsl),
+    tmp_event_nr_var = event_nr,
+    order = exprs(LSTALVDT, seq, event_nr),
+    mode = "last",
+    new_vars = exprs(LSTALVDT)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, TRTEDT, DTHDTC, LSTALVDT),
@@ -340,37 +350,58 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-ae_start_date <- date_source(
-  dataset_name = "ae",
-  date = convert_dtc_to_dt(AESTDTC, highest_imputation = "M"),
-  set_values_to = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AESTDTC")
-)
-ae_end_date <- date_source(
-  dataset_name = "ae",
-  date = convert_dtc_to_dt(AEENDTC, highest_imputation = "M"),
-  set_values_to = exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR = "AEENDTC")
-)
-lb_date <- date_source(
-  dataset_name = "lb",
-  date = convert_dtc_to_dt(LBDTC, highest_imputation = "M"),
-  set_values_to = exprs(LALVDOM = "LB", LALVSEQ = LBSEQ, LALVVAR = "LBDTC")
-)
-trt_end_date <- date_source(
-  dataset_name = "adsl",
-  date = TRTEDTM,
-  set_values_to = exprs(LALVDOM = "ADSL", LALVSEQ = NA_integer_, LALVVAR = "TRTEDTM")
-)
-
 adsl <- adsl %>%
   select(-LSTALVDT) %>% # created in the previous call
-  derive_var_extreme_dt(
-    new_var = LSTALVDT,
-    ae_start_date, ae_end_date, lb_date, trt_end_date,
-    source_datasets = list(ae = ae, adsl = adsl, lb = lb),
-    mode = "last"
+  derive_vars_extreme_event(
+    by_vars = exprs(STUDYID, USUBJID),
+    events = list(
+      event(
+        dataset_name = "ae",
+        order = exprs(AESTDTC, AESEQ),
+        condition = !is.na(AESTDTC),
+        set_values_to = exprs(
+          LSTALVDT = convert_dtc_to_dt(AESTDTC, highest_imputation = "M"),
+          LALVSEQ = AESEQ,
+          LALVDOM = "AE",
+          LALVVAR = "AESTDTC"
+        ),
+      ),
+      event(
+        dataset_name = "ae",
+        order = exprs(AEENDTC, AESEQ),
+        condition = !is.na(AEENDTC),
+        set_values_to = exprs(
+          LSTALVDT = convert_dtc_to_dt(AEENDTC, highest_imputation = "M"),
+          LALVSEQ = AESEQ,
+          LALVDOM = "AE",
+          LALVVAR = "AEENDTC"
+        ),
+      ),
+      event(
+        dataset_name = "lb",
+        order = exprs(LBDTC, LBSEQ),
+        condition = !is.na(LBDTC),
+        set_values_to = exprs(
+          LSTALVDT = convert_dtc_to_dt(LBDTC, highest_imputation = "M"),
+          LALVSEQ = LBSEQ,
+          LALVDOM = "LB",
+          LALVVAR = "LBDTC"
+        ),
+      ),
+      event(
+        dataset_name = "adsl",
+        condition = !is.na(TRTEDT),
+        set_values_to = exprs(LSTALVDT = TRTEDT, LALVSEQ = NA_integer_, LALVDOM = "ADSL", LALVVAR = "TRTEDTM"),
+      )
+    ),
+    source_datasets = list(ae = ae, lb = lb, adsl = adsl),
+    tmp_event_nr_var = event_nr,
+    order = exprs(LSTALVDT, LALVSEQ, event_nr),
+    mode = "last",
+    new_vars = exprs(LSTALVDT, LALVSEQ, LALVDOM, LALVVAR)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, TRTEDT, DTHDTC, LSTALVDT, LALVDOM, LALVSEQ, LALVVAR),
@@ -402,7 +433,7 @@ adsl <- adsl %>%
     REGION1 = format_region1(COUNTRY)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, AGE, SEX, COUNTRY, AGEGR1, REGION1)
@@ -417,7 +448,7 @@ adsl <- adsl %>%
     condition = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO")))
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adsl,
   display_vars = exprs(USUBJID, TRTSDT, ARM, ACTARM, SAFFL)

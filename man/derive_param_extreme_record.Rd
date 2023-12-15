@@ -27,10 +27,13 @@ A named list of datasets is expected. The \code{dataset_name} field of
 \code{records_source()} refers to the dataset provided in the list. The variables
 specified by the \code{order} and the \code{by_vars} arguments are expected after applying \code{new_vars}.}
 
-\item{by_vars}{By variables
+\item{by_vars}{Grouping variables
 
 If the argument is specified, for each by group the observations are
-selected separately.}
+selected separately.
+
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{order}{Sort order
 
@@ -72,6 +75,9 @@ The input dataset with the first or last observation of each by group
 added as new observations.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} The \code{derive_param_extreme_record()}
+function has been superseded in favor of \code{derive_extreme_event()}.
+
 Generates parameter based on the first or last observation from multiple
 source datasets, based on user-defined filter, order and by group criteria.
 All variables of the selected observation are kept.
@@ -139,24 +145,13 @@ derive_param_extreme_record(
 )
 }
 \seealso{
-BDS-Findings Functions for adding Parameters/Records: 
-\code{\link{default_qtc_paramcd}()},
-\code{\link{derive_expected_records}()},
-\code{\link{derive_extreme_event}()},
-\code{\link{derive_extreme_records}()},
-\code{\link{derive_locf_records}()},
-\code{\link{derive_param_bmi}()},
-\code{\link{derive_param_bsa}()},
-\code{\link{derive_param_computed}()},
-\code{\link{derive_param_doseint}()},
-\code{\link{derive_param_exist_flag}()},
-\code{\link{derive_param_exposure}()},
-\code{\link{derive_param_framingham}()},
-\code{\link{derive_param_map}()},
-\code{\link{derive_param_qtc}()},
-\code{\link{derive_param_rr}()},
-\code{\link{derive_param_wbc_abs}()},
-\code{\link{derive_summary_records}()}
+Other superseded: 
+\code{\link{date_source}()},
+\code{\link{derive_var_dthcaus}()},
+\code{\link{derive_var_extreme_dtm}()},
+\code{\link{derive_var_extreme_dt}()},
+\code{\link{dthcaus_source}()},
+\code{\link{get_summary_records}()}
 }
-\concept{der_prm_bds_findings}
-\keyword{der_prm_bds_findings}
+\concept{superseded}
+\keyword{superseded}

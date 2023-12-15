@@ -20,7 +20,7 @@ derive_vars_merged_lookup(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} argument are expected.}
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
 
 \item{dataset_add}{Lookup table
 
@@ -29,12 +29,13 @@ The variables specified by the \code{by_vars} argument are expected.}
 \item{by_vars}{Grouping variables
 
 The input dataset and the selected observations from the additional dataset
-are merged by the specified by variables. The by variables must be a unique
-key of the selected observations. Variables from the additional dataset can
-be renamed by naming the element, i.e., \verb{by_vars = exprs(<name in input dataset> = <name in additional dataset>)}, similar to
-the dplyr joins.
+are merged by the specified variables.
 
-\emph{Permitted Values}: list of variables created by \code{exprs()}}
+Variables can be renamed by naming the element, i.e.
+\verb{by_vars = exprs(<name in input dataset> = <name in additional dataset>)}, similar to the \code{dplyr} joins.
+
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{order}{Sort order
 
@@ -43,6 +44,8 @@ last observation from the additional dataset is selected with respect to the
 specified order.
 
 Variables defined by the \code{new_vars} argument can be used in the sort order.
+
+For handling of \code{NA}s in sorting variables see \href{../articles/generic.html#sort_order}{Sort Order}.
 
 \emph{Permitted Values}: list of expressions created by \code{exprs()}, e.g.,
 \code{exprs(ADT, desc(AVAL))} or \code{NULL}}
@@ -176,14 +179,15 @@ derive_vars_merged_lookup(
 General Derivation Functions for all ADaMs that returns variable appended to dataset:
 \code{\link{derive_var_extreme_flag}()},
 \code{\link{derive_var_joined_exist_flag}()},
+\code{\link{derive_var_merged_ef_msrc}()},
 \code{\link{derive_var_merged_exist_flag}()},
 \code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
+\code{\link{derive_vars_computed}()},
 \code{\link{derive_vars_joined}()},
 \code{\link{derive_vars_merged}()},
-\code{\link{derive_vars_transposed}()},
-\code{\link{get_summary_records}()}
+\code{\link{derive_vars_transposed}()}
 }
 \concept{der_gen}
 \keyword{der_gen}

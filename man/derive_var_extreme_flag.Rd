@@ -10,6 +10,8 @@ derive_var_extreme_flag(
   order,
   new_var,
   mode,
+  true_value = "Y",
+  false_value = NA_character_,
   flag_all = FALSE,
   check_type = "warning"
 )
@@ -17,23 +19,26 @@ derive_var_extreme_flag(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} parameter are expected.}
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
 
 \item{by_vars}{Grouping variables
 
-Permitted Values: list of variables}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{order}{Sort order
 
 The first or last observation is determined with respect to the specified
 order.
 
+For handling of \code{NA}s in sorting variables see \href{../articles/generic.html#sort_order}{Sort Order}.
+
 Permitted Values: list of variables or functions of variables}
 
 \item{new_var}{Variable to add
 
-The specified variable is added to the output dataset. It is set to \code{"Y"}
-for the first or last observation (depending on the mode) of each by group.
+The specified variable is added to the output dataset. It is set to the value
+set in \code{true_value} for the first or last observation (depending on the mode) of each by group.
 
 Permitted Values: list of name-value pairs}
 
@@ -42,6 +47,20 @@ Permitted Values: list of name-value pairs}
 Determines of the first or last observation is flagged.
 
 Permitted Values: \code{"first"}, \code{"last"}}
+
+\item{true_value}{True value
+
+The value for the specified variable \code{new_var}, applicable to
+the first or last observation (depending on the mode) of each by group.
+
+Permitted Values: An atomic scalar}
+
+\item{false_value}{False value
+
+The value for the specified variable \code{new_var}, NOT applicable to
+the first or last observation (depending on the mode) of each by group.
+
+Permitted Values: An atomic scalar}
 
 \item{flag_all}{Flag setting
 
@@ -244,15 +263,16 @@ example_ae \%>\%
 \seealso{
 General Derivation Functions for all ADaMs that returns variable appended to dataset:
 \code{\link{derive_var_joined_exist_flag}()},
+\code{\link{derive_var_merged_ef_msrc}()},
 \code{\link{derive_var_merged_exist_flag}()},
 \code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
+\code{\link{derive_vars_computed}()},
 \code{\link{derive_vars_joined}()},
 \code{\link{derive_vars_merged_lookup}()},
 \code{\link{derive_vars_merged}()},
-\code{\link{derive_vars_transposed}()},
-\code{\link{get_summary_records}()}
+\code{\link{derive_vars_transposed}()}
 }
 \concept{der_gen}
 \keyword{der_gen}

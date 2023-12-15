@@ -5,22 +5,47 @@
 \title{Add New Records Within By Groups Using Aggregation Functions}
 \usage{
 derive_summary_records(
-  dataset,
+  dataset = NULL,
+  dataset_add,
+  dataset_ref = NULL,
   by_vars,
   filter = NULL,
+  filter_add = NULL,
   analysis_var,
   summary_fun,
-  set_values_to = NULL
+  set_values_to,
+  missing_values = NULL
 )
 }
 \arguments{
-\item{dataset}{A data frame.}
+\item{dataset}{Input dataset
 
-\item{by_vars}{Variables to consider for generation of groupwise summary
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
+
+\item{dataset_add}{Additional dataset
+
+The variables specified for \code{by_vars} are expected.
+Observations from the specified dataset are going to be used to calculate and added
+as new records to the input dataset (\code{dataset}).}
+
+\item{dataset_ref}{Reference dataset
+
+The variables specified for \code{by_vars} are expected. For each
+observation of the specified dataset a new observation is added to the
+input dataset.}
+
+\item{by_vars}{Grouping variables
+
+Variables to consider for generation of groupwise summary
 records. Providing the names of variables in \code{\link[=exprs]{exprs()}} will create a
-groupwise summary and generate summary records for the specified groups.}
+groupwise summary and generate summary records for the specified groups.
 
-\item{filter}{Filter condition as logical expression to apply during
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
+
+\item{filter}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{filter_add} instead.
+
+Filter condition as logical expression to apply during
 summary calculation. By default, filtering expressions are computed within
 \code{by_vars} as this will help when an aggregating, lagging, or ranking
 function is involved.
@@ -33,10 +58,28 @@ values greater than mean of \code{AVAL} with in \code{by_vars}.
 than 2.
 }}
 
-\item{analysis_var}{Analysis variable.}
+\item{filter_add}{Filter condition as logical expression to apply during
+summary calculation. By default, filtering expressions are computed within
+\code{by_vars} as this will help when an aggregating, lagging, or ranking
+function is involved.
+
+For example,
+\itemize{
+\item \code{filter_add = (AVAL > mean(AVAL, na.rm = TRUE))} will filter all \code{AVAL}
+values greater than mean of \code{AVAL} with in \code{by_vars}.
+\item \code{filter_add = (dplyr::n() > 2)} will filter n count of \code{by_vars} greater
+than 2.
+}}
+
+\item{analysis_var}{Analysis variable.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{set_values_to} instead.}
 
 \item{summary_fun}{Function that takes as an input the \code{analysis_var} and
 performs the calculation.
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{set_values_to} instead.
+
 This can include built-in functions as well as user defined functions,
 for example \code{mean} or \code{function(x) mean(x, na.rm = TRUE)}.}
 
@@ -45,12 +88,30 @@ for example \code{mean} or \code{function(x) mean(x, na.rm = TRUE)}.}
 The specified variables are set to the specified values for the new
 observations.
 
-A list of variable name-value pairs is expected.
+Set a list of variables to some specified value for the new records
 \itemize{
-\item LHS refers to a variable.
+\item LHS refer to a variable.
 \item RHS refers to the values to set to the variable. This can be a string, a
-symbol, a numeric value, an expression, or \code{NA}, e.g., \code{exprs(PARAMCD =   "TDOSE", PARCAT1 = "OVERALL")}.
-}}
+symbol, a numeric value, an expression or NA. If summary functions are
+used, the values are summarized by the variables specified for \code{by_vars}.
+}
+
+For example:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{  set_values_to = exprs(
+    AVAL = sum(AVAL),
+    DTYPE = "AVERAGE",
+  )
+}\if{html}{\out{</div>}}}
+
+\item{missing_values}{Values for missing summary values
+
+For observations of the reference dataset (\code{dataset_ref}) which do not have a
+complete mapping defined by the summarization defined in \code{set_values_to}.  Only variables
+specified for \code{set_values_to} can be specified for \code{missing_values}.
+
+\emph{Permitted Values}: named list of expressions, e.g.,
+\code{exprs(AVAL = -9999)}}
 }
 \value{
 A data frame with derived records appended to original dataset.
@@ -68,97 +129,94 @@ will be set to \code{NA}.
 }
 \examples{
 library(tibble)
-library(dplyr, warn.conflicts = TRUE)
+library(dplyr)
 
 adeg <- tribble(
-  ~USUBJID, ~EGSEQ, ~PARAM, ~AVISIT, ~EGDTC, ~AVAL, ~TRTA,
-  "XYZ-1001", 1, "QTcF Int. (msec)", "Baseline", "2016-02-24T07:50", 385, "",
-  "XYZ-1001", 2, "QTcF Int. (msec)", "Baseline", "2016-02-24T07:52", 399, "",
-  "XYZ-1001", 3, "QTcF Int. (msec)", "Baseline", "2016-02-24T07:56", 396, "",
-  "XYZ-1001", 4, "QTcF Int. (msec)", "Visit 2", "2016-03-08T09:45", 384, "Placebo",
-  "XYZ-1001", 5, "QTcF Int. (msec)", "Visit 2", "2016-03-08T09:48", 393, "Placebo",
-  "XYZ-1001", 6, "QTcF Int. (msec)", "Visit 2", "2016-03-08T09:51", 388, "Placebo",
-  "XYZ-1001", 7, "QTcF Int. (msec)", "Visit 3", "2016-03-22T10:45", 385, "Placebo",
-  "XYZ-1001", 8, "QTcF Int. (msec)", "Visit 3", "2016-03-22T10:48", 394, "Placebo",
-  "XYZ-1001", 9, "QTcF Int. (msec)", "Visit 3", "2016-03-22T10:51", 402, "Placebo",
-  "XYZ-1002", 1, "QTcF Int. (msec)", "Baseline", "2016-02-22T07:58", 399, "",
-  "XYZ-1002", 2, "QTcF Int. (msec)", "Baseline", "2016-02-22T07:58", 410, "",
-  "XYZ-1002", 3, "QTcF Int. (msec)", "Baseline", "2016-02-22T08:01", 392, "",
-  "XYZ-1002", 4, "QTcF Int. (msec)", "Visit 2", "2016-03-06T09:50", 401, "Active 20mg",
-  "XYZ-1002", 5, "QTcF Int. (msec)", "Visit 2", "2016-03-06T09:53", 407, "Active 20mg",
-  "XYZ-1002", 6, "QTcF Int. (msec)", "Visit 2", "2016-03-06T09:56", 400, "Active 20mg",
-  "XYZ-1002", 7, "QTcF Int. (msec)", "Visit 3", "2016-03-24T10:50", 412, "Active 20mg",
-  "XYZ-1002", 8, "QTcF Int. (msec)", "Visit 3", "2016-03-24T10:53", 414, "Active 20mg",
-  "XYZ-1002", 9, "QTcF Int. (msec)", "Visit 3", "2016-03-24T10:56", 402, "Active 20mg",
-)
+  ~USUBJID,   ~EGSEQ, ~PARAM,             ~AVISIT,    ~EGDTC,             ~AVAL, ~TRTA,
+  "XYZ-1001", 1,      "QTcF Int. (msec)", "Baseline", "2016-02-24T07:50", 385,   NA_character_,
+  "XYZ-1001", 2,      "QTcF Int. (msec)", "Baseline", "2016-02-24T07:52", 399,   NA_character_,
+  "XYZ-1001", 3,      "QTcF Int. (msec)", "Baseline", "2016-02-24T07:56", 396,   NA_character_,
+  "XYZ-1001", 4,      "QTcF Int. (msec)", "Visit 2",  "2016-03-08T09:45", 384,   "Placebo",
+  "XYZ-1001", 5,      "QTcF Int. (msec)", "Visit 2",  "2016-03-08T09:48", 393,   "Placebo",
+  "XYZ-1001", 6,      "QTcF Int. (msec)", "Visit 2",  "2016-03-08T09:51", 388,   "Placebo",
+  "XYZ-1001", 7,      "QTcF Int. (msec)", "Visit 3",  "2016-03-22T10:45", 385,   "Placebo",
+  "XYZ-1001", 8,      "QTcF Int. (msec)", "Visit 3",  "2016-03-22T10:48", 394,   "Placebo",
+  "XYZ-1001", 9,      "QTcF Int. (msec)", "Visit 3",  "2016-03-22T10:51", 402,   "Placebo",
+  "XYZ-1002", 1,      "QTcF Int. (msec)", "Baseline", "2016-02-22T07:58", 399,   NA_character_,
+  "XYZ-1002", 2,      "QTcF Int. (msec)", "Baseline", "2016-02-22T07:58", 410,   NA_character_,
+  "XYZ-1002", 3,      "QTcF Int. (msec)", "Baseline", "2016-02-22T08:01", 392,   NA_character_,
+  "XYZ-1002", 4,      "QTcF Int. (msec)", "Visit 2",  "2016-03-06T09:50", 401,   "Active 20mg",
+  "XYZ-1002", 5,      "QTcF Int. (msec)", "Visit 2",  "2016-03-06T09:53", 407,   "Active 20mg",
+  "XYZ-1002", 6,      "QTcF Int. (msec)", "Visit 2",  "2016-03-06T09:56", 400,   "Active 20mg",
+  "XYZ-1002", 7,      "QTcF Int. (msec)", "Visit 3",  "2016-03-24T10:50", 412,   "Active 20mg",
+  "XYZ-1002", 8,      "QTcF Int. (msec)", "Visit 3",  "2016-03-24T10:53", 414,   "Active 20mg",
+  "XYZ-1002", 9,      "QTcF Int. (msec)", "Visit 3",  "2016-03-24T10:56", 402,   "Active 20mg"
+) \%>\%
+  mutate(
+    ADTM = convert_dtc_to_dtm(EGDTC)
+  )
 
 # Summarize the average of the triplicate ECG interval values (AVAL)
 derive_summary_records(
   adeg,
+  dataset_add = adeg,
   by_vars = exprs(USUBJID, PARAM, AVISIT),
-  analysis_var = AVAL,
-  summary_fun = function(x) mean(x, na.rm = TRUE),
-  set_values_to = exprs(DTYPE = "AVERAGE")
-)
-
-advs <- tribble(
-  ~USUBJID, ~VSSEQ, ~PARAM, ~AVAL, ~VSSTRESU, ~VISIT, ~VSDTC,
-  "XYZ-001-001", 1164, "Weight", 99, "kg", "Screening", "2018-03-19",
-  "XYZ-001-001", 1165, "Weight", 101, "kg", "Run-In", "2018-03-26",
-  "XYZ-001-001", 1166, "Weight", 100, "kg", "Baseline", "2018-04-16",
-  "XYZ-001-001", 1167, "Weight", 94, "kg", "Week 24", "2018-09-30",
-  "XYZ-001-001", 1168, "Weight", 92, "kg", "Week 48", "2019-03-17",
-  "XYZ-001-001", 1169, "Weight", 95, "kg", "Week 52", "2019-04-14",
-)
-
-# Set new values to any variable. Here, `DTYPE = MAXIMUM` refers to `max()` records
-# and `DTYPE = AVERAGE` refers to `mean()` records.
-derive_summary_records(
-  advs,
-  by_vars = exprs(USUBJID, PARAM),
-  analysis_var = AVAL,
-  summary_fun = max,
-  set_values_to = exprs(DTYPE = "MAXIMUM")
-) \%>\%
-  derive_summary_records(
-    by_vars = exprs(USUBJID, PARAM),
-    analysis_var = AVAL,
-    summary_fun = mean,
-    set_values_to = exprs(DTYPE = "AVERAGE")
+  set_values_to = exprs(
+    AVAL = mean(AVAL, na.rm = TRUE),
+    DTYPE = "AVERAGE"
   )
+) \%>\%
+  arrange(USUBJID, AVISIT)
+
+# Derive more than one summary variable
+derive_summary_records(
+  adeg,
+  dataset_add = adeg,
+  by_vars = exprs(USUBJID, PARAM, AVISIT),
+  set_values_to = exprs(
+    AVAL = mean(AVAL),
+    ADTM = max(ADTM),
+    DTYPE = "AVERAGE"
+  )
+) \%>\%
+  arrange(USUBJID, AVISIT) \%>\%
+  select(-EGSEQ, -TRTA)
 
 # Sample ADEG dataset with triplicate record for only AVISIT = 'Baseline'
 adeg <- tribble(
-  ~USUBJID, ~EGSEQ, ~PARAM, ~AVISIT, ~EGDTC, ~AVAL, ~TRTA,
-  "XYZ-1001", 1, "QTcF Int. (msec)", "Baseline", "2016-02-24T07:50", 385, "",
-  "XYZ-1001", 2, "QTcF Int. (msec)", "Baseline", "2016-02-24T07:52", 399, "",
-  "XYZ-1001", 3, "QTcF Int. (msec)", "Baseline", "2016-02-24T07:56", 396, "",
-  "XYZ-1001", 4, "QTcF Int. (msec)", "Visit 2", "2016-03-08T09:48", 393, "Placebo",
-  "XYZ-1001", 5, "QTcF Int. (msec)", "Visit 2", "2016-03-08T09:51", 388, "Placebo",
-  "XYZ-1001", 6, "QTcF Int. (msec)", "Visit 3", "2016-03-22T10:48", 394, "Placebo",
-  "XYZ-1001", 7, "QTcF Int. (msec)", "Visit 3", "2016-03-22T10:51", 402, "Placebo",
-  "XYZ-1002", 1, "QTcF Int. (msec)", "Baseline", "2016-02-22T07:58", 399, "",
-  "XYZ-1002", 2, "QTcF Int. (msec)", "Baseline", "2016-02-22T07:58", 410, "",
-  "XYZ-1002", 3, "QTcF Int. (msec)", "Baseline", "2016-02-22T08:01", 392, "",
-  "XYZ-1002", 4, "QTcF Int. (msec)", "Visit 2", "2016-03-06T09:53", 407, "Active 20mg",
-  "XYZ-1002", 5, "QTcF Int. (msec)", "Visit 2", "2016-03-06T09:56", 400, "Active 20mg",
-  "XYZ-1002", 6, "QTcF Int. (msec)", "Visit 3", "2016-03-24T10:53", 414, "Active 20mg",
-  "XYZ-1002", 7, "QTcF Int. (msec)", "Visit 3", "2016-03-24T10:56", 402, "Active 20mg",
+  ~USUBJID,   ~EGSEQ, ~PARAM,             ~AVISIT,    ~EGDTC,             ~AVAL, ~TRTA,
+  "XYZ-1001", 1,      "QTcF Int. (msec)", "Baseline", "2016-02-24T07:50", 385,   NA_character_,
+  "XYZ-1001", 2,      "QTcF Int. (msec)", "Baseline", "2016-02-24T07:52", 399,   NA_character_,
+  "XYZ-1001", 3,      "QTcF Int. (msec)", "Baseline", "2016-02-24T07:56", 396,   NA_character_,
+  "XYZ-1001", 4,      "QTcF Int. (msec)", "Visit 2",  "2016-03-08T09:48", 393,   "Placebo",
+  "XYZ-1001", 5,      "QTcF Int. (msec)", "Visit 2",  "2016-03-08T09:51", 388,   "Placebo",
+  "XYZ-1001", 6,      "QTcF Int. (msec)", "Visit 3",  "2016-03-22T10:48", 394,   "Placebo",
+  "XYZ-1001", 7,      "QTcF Int. (msec)", "Visit 3",  "2016-03-22T10:51", 402,   "Placebo",
+  "XYZ-1002", 1,      "QTcF Int. (msec)", "Baseline", "2016-02-22T07:58", 399,   NA_character_,
+  "XYZ-1002", 2,      "QTcF Int. (msec)", "Baseline", "2016-02-22T07:58", 410,   NA_character_,
+  "XYZ-1002", 3,      "QTcF Int. (msec)", "Baseline", "2016-02-22T08:01", 392,   NA_character_,
+  "XYZ-1002", 4,      "QTcF Int. (msec)", "Visit 2",  "2016-03-06T09:53", 407,   "Active 20mg",
+  "XYZ-1002", 5,      "QTcF Int. (msec)", "Visit 2",  "2016-03-06T09:56", 400,   "Active 20mg",
+  "XYZ-1002", 6,      "QTcF Int. (msec)", "Visit 3",  "2016-03-24T10:53", 414,   "Active 20mg",
+  "XYZ-1002", 7,      "QTcF Int. (msec)", "Visit 3",  "2016-03-24T10:56", 402,   "Active 20mg"
 )
 
 # Compute the average of AVAL only if there are more than 2 records within the
 # by group
 derive_summary_records(
   adeg,
+  dataset_add = adeg,
   by_vars = exprs(USUBJID, PARAM, AVISIT),
-  filter = n() > 2,
-  analysis_var = AVAL,
-  summary_fun = function(x) mean(x, na.rm = TRUE),
-  set_values_to = exprs(DTYPE = "AVERAGE")
-)
+  filter_add = n() > 2,
+  set_values_to = exprs(
+    AVAL = mean(AVAL, na.rm = TRUE),
+    DTYPE = "AVERAGE"
+  )
+) \%>\%
+  arrange(USUBJID, AVISIT)
 }
 \seealso{
-\code{get_summary_records()}
+\code{\link[=get_summary_records]{get_summary_records()}}, \code{\link[=derive_var_merged_summary]{derive_var_merged_summary()}}
 
 BDS-Findings Functions for adding Parameters/Records: 
 \code{\link{default_qtc_paramcd}()},
@@ -172,7 +230,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_doseint}()},
 \code{\link{derive_param_exist_flag}()},
 \code{\link{derive_param_exposure}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

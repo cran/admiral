@@ -21,7 +21,7 @@ derive_vars_dtm(
 \arguments{
 \item{dataset}{Input dataset
 
-The date character vector (\code{dtc}) must be present.}
+The variables specified by the \code{dtc} argument are expected to be in the dataset.}
 
 \item{new_vars_prefix}{Prefix used for the output variable(s).
 
@@ -52,8 +52,6 @@ If \code{"Y"} is specified, \code{date_imputation} should be \code{"first"} or \
 and \code{min_dates} or \code{max_dates} should be specified respectively. Otherwise,
 \code{NA_character_} is returned if the year component is missing.
 
-\emph{Default}: \code{"h"}
-
 \emph{Permitted Values}: \code{"Y"} (year, highest level), \code{"M"} (month), \code{"D"}
 (day), \code{"h"} (hour), \code{"m"} (minute), \code{"s"} (second), \code{"n"} (none, lowest
 level)}
@@ -68,12 +66,16 @@ A character value is expected, either as a
 \code{"first"} or \code{"last"} together with \code{min_dates} or \code{max_dates} argument can
 be used (see examples).),
 \item or as a keyword: \code{"first"}, \code{"mid"}, \code{"last"} to impute to the first/mid/last
-day/month.
+day/month. If \code{"mid"} is specified, missing components are imputed as the
+middle of the possible range:
+\itemize{
+\item If both month and day are missing, they are imputed as \code{"06-30"}
+(middle of the year).
+\item If only day is missing, it is imputed as \code{"15"} (middle of the month).
+}
 }
 
-The argument is ignored if \code{highest_imputation} is less then \code{"D"}.
-
-\emph{Default}: \code{"first"}.}
+The argument is ignored if \code{highest_imputation} is less then \code{"D"}.}
 
 \item{time_imputation}{The value to impute the time when a timepart is
 missing.
@@ -85,17 +87,19 @@ for the start of the day,
 \item or as a keyword: \code{"first"},\code{"last"} to impute to the start/end of a day.
 }
 
-The argument is ignored if \code{highest_imputation = "n"}.
-
-\emph{Default}: \code{"first"}.}
+The argument is ignored if \code{highest_imputation = "n"}.}
 
 \item{flag_imputation}{Whether the date/time imputation flag(s) must also be derived.
 
-If \code{"auto"} is specified, the date imputation flag is derived if the
-\code{date_imputation} argument is not null and the time imputation flag is
-derived if the \code{time_imputation} argument is not null
+If \code{"both"} or \code{"date"} is specified, then date imputation flag is derived.
+If \code{"auto"} is specified and \code{highest_imputation} argument is greater than
+\code{"h"}, then date imputation flag is derived.
 
-\emph{Default}: \code{"auto"}
+If \code{"both"} or \code{"time"} is specified, then time imputation flag is derived.
+If \code{"auto"} is specified and \code{highest_imputation} argument is not \code{"n"},
+then time imputation flag is derived.
+
+If \code{"none"} is specified, then no date or time imputation flag is derived.
 
 \emph{Permitted Values}: \code{"auto"}, \code{"date"}, \code{"time"}, \code{"both"}, or \code{"none"}}
 
@@ -140,23 +144,21 @@ For date variables (not datetime) in the list the time is imputed to
 \code{"23:59:59"}. Specifying date variables makes sense only if the date is
 imputed. If only time is imputed, date variables do not affect the result.}
 
-\item{preserve}{Preserve day if month is missing and day is present
+\item{preserve}{Preserve lower level date/time part when higher order part
+is missing, e.g. preserve day if month is missing or
+preserve minute when hour is missing.
 
 For example \code{"2019---07"} would return \verb{"2019-06-07} if \code{preserve = TRUE}
 (and \code{date_imputation = "mid"}).
 
-Permitted Values: \code{TRUE}, \code{FALSE}
-
-\emph{Default}: \code{FALSE}}
+Permitted Values: \code{TRUE}, \code{FALSE}}
 
 \item{ignore_seconds_flag}{ADaM IG states that given SDTM (\code{'--DTC'}) variable,
 if only hours and minutes are ever collected, and seconds are imputed in
 (\code{'--DTM'}) as 00, then it is not necessary to set (\code{'--TMF'}) to \code{'S'}. A user can set this
 to \code{TRUE} so the \code{'S'} Flag is dropped from (\code{'--TMF'}).
 
-A logical value
-
-Default: \code{FALSE}}
+\emph{Permitted Values}: A logical value}
 }
 \value{
 The input dataset with the datetime \code{'--DTM'} (and the date/time imputation

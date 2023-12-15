@@ -5,22 +5,28 @@
 \title{Add an Aggregated Parameter and Derive the Associated Start and End Dates}
 \usage{
 derive_param_exposure(
-  dataset,
+  dataset = NULL,
+  dataset_add,
   by_vars,
   input_code,
   analysis_var,
   summary_fun,
   filter = NULL,
+  filter_add = NULL,
   set_values_to = NULL
 )
 }
 \arguments{
 \item{dataset}{Input dataset
-\itemize{
-\item The variables specified by the \code{by_vars},\code{analysis_var} parameters and \code{PARAMCD} are
-expected,
-\item Either \code{ASTDTM} and \code{AENDTM} or \code{ASTDT} and \code{AENDT} are also expected.
-}}
+
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
+
+\item{dataset_add}{Additional dataset
+
+The variables specified for \code{by_vars}, \code{analysis_var}, \code{PARAMCD},
+alongside either \code{ASTDTM} and \code{AENDTM} or \code{ASTDT} and \code{AENDT} are also expected.
+Observations from the specified dataset are going to be used to calculate and added
+as new records to the input dataset (\code{dataset}).}
 
 \item{by_vars}{Grouping variables
 
@@ -28,7 +34,8 @@ For each group defined by \code{by_vars} an observation is added to the output
 dataset. Only variables specified in \code{by_vars} will be populated
 in the newly created records.
 
-\emph{Permitted Values:} list of variables}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{input_code}{Required parameter code
 
@@ -44,13 +51,33 @@ performs the calculation.
 This can include built-in functions as well as user defined functions,
 for example \code{mean} or \code{function(x) mean(x, na.rm = TRUE)}.}
 
-\item{filter}{Filter condition
+\item{filter}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{filter_add} instead.
 
-The specified condition is applied to the input dataset before deriving the
-new parameter, i.e., only observations fulfilling the condition are taken
-into account.
+Filter condition as logical expression to apply during
+summary calculation. By default, filtering expressions are computed within
+\code{by_vars} as this will help when an aggregating, lagging, or ranking
+function is involved.
 
-\emph{Permitted Values:} a condition}
+For example,
+\itemize{
+\item \code{filter = (AVAL > mean(AVAL, na.rm = TRUE))} will filter all \code{AVAL}
+values greater than mean of \code{AVAL} with in \code{by_vars}.
+\item \code{filter = (dplyr::n() > 2)} will filter n count of \code{by_vars} greater
+than 2.
+}}
+
+\item{filter_add}{Filter condition as logical expression to apply during
+summary calculation. By default, filtering expressions are computed within
+\code{by_vars} as this will help when an aggregating, lagging, or ranking
+function is involved.
+
+For example,
+\itemize{
+\item \code{filter_add = (AVAL > mean(AVAL, na.rm = TRUE))} will filter all \code{AVAL}
+values greater than mean of \code{AVAL} with in \code{by_vars}.
+\item \code{filter_add = (dplyr::n() > 2)} will filter n count of \code{by_vars} greater
+than 2.
+}}
 
 \item{set_values_to}{Variable-value pairs
 
@@ -116,6 +143,7 @@ adex <- tribble(
 # Cumulative dose
 adex \%>\%
   derive_param_exposure(
+    dataset_add = adex,
     by_vars = exprs(USUBJID),
     set_values_to = exprs(PARAMCD = "TDOSE", PARCAT1 = "OVERALL"),
     input_code = "DOSE",
@@ -127,6 +155,7 @@ adex \%>\%
 # average dose in w2-24
 adex \%>\%
   derive_param_exposure(
+    dataset_add = adex,
     by_vars = exprs(USUBJID),
     filter = VISIT \%in\% c("WEEK 2", "WEEK 24"),
     set_values_to = exprs(PARAMCD = "AVDW224", PARCAT1 = "WEEK2-24"),
@@ -139,6 +168,7 @@ adex \%>\%
 # Any dose adjustment?
 adex \%>\%
   derive_param_exposure(
+    dataset_add = adex,
     by_vars = exprs(USUBJID),
     set_values_to = exprs(PARAMCD = "TADJ", PARCAT1 = "OVERALL"),
     input_code = "ADJ",
@@ -159,7 +189,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_computed}()},
 \code{\link{derive_param_doseint}()},
 \code{\link{derive_param_exist_flag}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

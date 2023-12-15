@@ -33,7 +33,7 @@ adex <- derive_vars_merged(
   by_vars = exprs(STUDYID, USUBJID)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(
@@ -66,7 +66,7 @@ count(adex, EXADJ)
 adex <- derive_vars_dt(adex, new_vars_prefix = "AST", dtc = EXSTDTC)
 adex <- derive_vars_dt(adex, new_vars_prefix = "AEN", dtc = EXENDTC)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(USUBJID, VISIT, EXSTDTC, EXENDTC, ASTDT, AENDT)
@@ -88,7 +88,7 @@ adex <- derive_vars_dtm(
   new_vars_prefix = "AEN"
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(USUBJID, VISIT, EXSTDTC, EXENDTC, ASTDTM, AENDTM)
@@ -101,7 +101,7 @@ adex <-
     source_vars = exprs(ASTDT, AENDT)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(
@@ -118,7 +118,7 @@ adex <- adex %>%
     end_date = AENDT
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(
@@ -136,7 +136,7 @@ adex <- adex %>%
     end_date = AENDT
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(
@@ -152,7 +152,7 @@ adex <- adex %>%
     PDOSEO = EXPLDOS * EXDURD
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(USUBJID, EXDOSE, EXPLDOS, EXDURD, DOSEO, PDOSEO)
@@ -163,7 +163,7 @@ single_dose <- adex %>%
   filter(USUBJID == "01-701-1015" & EXSTDY == 1) %>%
   create_single_dose_dataset(keep_source_vars = exprs(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   single_dose,
   display_vars = exprs(USUBJID, EXDOSE, EXPLDOS, EXDOSFRQ, ASTDT, AENDT)
@@ -211,7 +211,7 @@ adex <- bind_rows(
 
 count(adex, PARAMCD)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adex %>%
   arrange(USUBJID, VISIT, desc(PARAMCD), EXSTDTC, EXENDTC) %>%
   dataset_vignette(display_vars = exprs(USUBJID, VISIT, ASTDT, AENDT, PARAMCD, AVAL, AVALC))
@@ -219,6 +219,7 @@ adex %>%
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 adex <- derive_param_exposure(
   adex,
+  dataset_add = adex,
   by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars),
   input_code = "DOSE",
   analysis_var = AVAL,
@@ -226,7 +227,7 @@ adex <- derive_param_exposure(
   summary_fun = function(x) sum(x, na.rm = TRUE)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adex %>%
   arrange(USUBJID, PARAMCD, PARCAT1, VISIT, EXSTDTC, EXENDTC) %>%
   dataset_vignette(display_vars = exprs(
@@ -273,12 +274,13 @@ adex <- adex %>%
         summary_fun = function(x) if_else(sum(!is.na(x)) > 0, "Y", NA_character_)
       )
     ),
+    dataset_add = adex,
     by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars)
   )
 
 count(adex, PARAMCD, PARCAT1)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adex %>%
   arrange(USUBJID, PARAMCD, PARCAT1, VISIT, EXSTDTC, EXENDTC) %>%
   dataset_vignette(display_vars = exprs(
@@ -295,7 +297,7 @@ adex <- adex %>%
     tpadm_code = "TPDOSE"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(
@@ -342,7 +344,7 @@ adex <- adex %>%
     )
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adex %>%
   arrange(USUBJID, AVALCAT1, PARCAT1, VISIT, EXSTDTC, EXENDTC) %>%
   dataset_vignette(display_vars = exprs(USUBJID, VISIT, PARCAT1, PARAMCD, AVAL, AVALCAT1))
@@ -356,7 +358,7 @@ adex <- derive_var_obs_number(
   check_type = "error"
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adex,
   display_vars = exprs(USUBJID, VISIT, PARCAT1, PARAMCD, AVAL, ASTDT, ASEQ)

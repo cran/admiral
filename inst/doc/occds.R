@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 
 library(admiraldev)
 
-## ---- message=FALSE, warning=FALSE--------------------------------------------
+## ----message=FALSE, warning=FALSE---------------------------------------------
 library(admiral)
 library(dplyr, warn.conflicts = FALSE)
 library(pharmaversesdtm)
@@ -31,7 +31,7 @@ adae <- derive_vars_merged(
   by = exprs(STUDYID, USUBJID)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adae,
   display_vars = exprs(
@@ -62,7 +62,7 @@ adae <- adae %>%
     source_vars = exprs(ASTDT, AENDT)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adae,
   display_vars = exprs(
@@ -80,7 +80,7 @@ adae <- adae %>%
     end_date = AENDT
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adae,
   display_vars = exprs(
@@ -142,13 +142,14 @@ adae <- derive_vars_joined(
   by_vars = exprs(STUDYID, USUBJID),
   new_vars = exprs(LDOSEDTM = EXSTDTM),
   join_vars = exprs(EXSTDTM),
+  join_type = "all",
   order = exprs(EXSTDTM),
   filter_add = (EXDOSE > 0 | (EXDOSE == 0 & grepl("PLACEBO", EXTRT))) & !is.na(EXSTDTM),
   filter_join = EXSTDTM <= ASTDTM,
   mode = "last"
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adae,
   display_vars = exprs(
@@ -172,7 +173,7 @@ adae <- adae %>%
     end_window = 30
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adae,
   display_vars = exprs(
@@ -228,7 +229,7 @@ derive_var_ontrtfl(
   filter_pre_timepoint = TPT == "PRE"
 )
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  adae <- adae %>%
 #    restrict_derivation(
 #      derivation = derive_var_extreme_flag,
@@ -241,7 +242,7 @@ derive_var_ontrtfl(
 #      filter = TRTEMFL == "Y"
 #    )
 
-## ---- eval=TRUE---------------------------------------------------------------
+## ----eval=TRUE----------------------------------------------------------------
 adae <- adae %>%
   restrict_derivation(
     derivation = derive_var_extreme_flag,
@@ -260,7 +261,7 @@ adae <- adae %>%
     filter = TRTEMFL == "Y"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adae,
   display_vars = exprs(
@@ -268,13 +269,13 @@ dataset_vignette(
   )
 )
 
-## ---- eval=TRUE---------------------------------------------------------------
+## ----eval=TRUE----------------------------------------------------------------
 data("queries")
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(queries)
 
-## ---- eval=TRUE---------------------------------------------------------------
+## ----eval=TRUE----------------------------------------------------------------
 adae1 <- tibble::tribble(
   ~USUBJID, ~ASTDTM, ~AETERM, ~AESEQ, ~AEDECOD, ~AELLT, ~AELLTCD,
   "01", "2020-06-02 23:59:59", "ALANINE AMINOTRANSFERASE ABNORMAL",
@@ -289,17 +290,17 @@ adae1 <- tibble::tribble(
 
 adae_query <- derive_vars_query(dataset = adae1, dataset_queries = queries)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adae_query)
 
-## ---- eval=TRUE---------------------------------------------------------------
+## ----eval=TRUE----------------------------------------------------------------
 sdg <- tibble::tribble(
-  ~PREFIX,     ~GRPNAME,       ~GRPID,   ~SCOPE, ~SCOPEN,  ~SRCVAR,     ~TERMNAME,         ~TERMID,
-  "SDG01",     "Diuretics",        11,  "BROAD",       1,  "CMDECOD",   "Diuretic 1",           NA,
-  "SDG01",     "Diuretics",        11,  "BROAD",       1,  "CMDECOD",   "Diuretic 2",           NA,
-  "SDG02",     "Costicosteroids",  12,  "BROAD",       1,  "CMDECOD",   "Costicosteroid 1",     NA,
-  "SDG02",     "Costicosteroids",  12,  "BROAD",       1,  "CMDECOD",   "Costicosteroid 2",     NA,
-  "SDG02",     "Costicosteroids",  12,  "BROAD",       1,  "CMDECOD",   "Costicosteroid 3",     NA,
+  ~PREFIX, ~GRPNAME,          ~GRPID, ~SCOPE,  ~SCOPEN, ~SRCVAR,   ~TERMCHAR,          ~TERMNUM,
+  "SDG01", "Diuretics",           11, "BROAD", 1,       "CMDECOD", "Diuretic 1",       NA,
+  "SDG01", "Diuretics",           11, "BROAD", 1,       "CMDECOD", "Diuretic 2",       NA,
+  "SDG02", "Costicosteroids",     12, "BROAD", 1,       "CMDECOD", "Costicosteroid 1", NA,
+  "SDG02", "Costicosteroids",     12, "BROAD", 1,       "CMDECOD", "Costicosteroid 2", NA,
+  "SDG02", "Costicosteroids",     12, "BROAD", 1,       "CMDECOD", "Costicosteroid 3", NA,
 )
 adcm <- tibble::tribble(
   ~USUBJID, ~ASTDTM,               ~CMDECOD,
@@ -310,7 +311,7 @@ adcm <- tibble::tribble(
 )
 adcm_query <- derive_vars_query(adcm, sdg)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adcm_query)
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
@@ -320,7 +321,7 @@ adae <- adae %>%
     by_vars = exprs(STUDYID, USUBJID)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adae,
   display_vars = exprs(
@@ -347,6 +348,6 @@ adcm_aseq <- adcm %>%
     check_type = "error"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adcm_aseq)
 

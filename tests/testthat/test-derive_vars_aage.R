@@ -18,9 +18,10 @@ test_that("derive_vars_aage Test 2: Error is thrown when age_unit is not proper 
   )
   expect_error(
     derive_vars_aage(input, age_unit = "centuries"),
-    "`age_unit` must be one of 'years', 'months', 'weeks', 'days', 'hours', 'minutes' or 'seconds' but is 'centuries'" # nolint
+    "but is 'centuries'"
   )
 })
+
 
 # derive_var_age_years ----
 ## Test 3: derive_var_age_years works as expected when AGEU exists ----

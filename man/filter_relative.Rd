@@ -19,16 +19,18 @@ filter_relative(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{order} and the \code{by_vars} parameter are
-expected.}
+The variables specified by the \code{by_vars} and \code{order} arguments are expected to be in the dataset.}
 
 \item{by_vars}{Grouping variables
 
-\emph{Permitted Values:} list of variables created by \code{exprs()}}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{order}{Sort order
 
 Within each by group the observations are ordered by the specified order.
+
+For handling of \code{NA}s in sorting variables see \href{../articles/generic.html#sort_order}{Sort Order}.
 
 \emph{Permitted Values:} list of expressions created by \code{exprs()}, e.g.,
 \code{exprs(ADT, desc(AVAL))}}

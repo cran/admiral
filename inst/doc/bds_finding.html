@@ -3049,16 +3049,17 @@ valid observation before end of treatment. Set <code>AVISIT</code> to
 value.</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>advs_ex1 <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
 <span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
-<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
-<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADT, AVISITN, ATPTN, AVAL),</span>
-<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="dv">4</span> <span class="sc">&lt;</span> AVISITN <span class="sc">&amp;</span> AVISITN <span class="sc">&lt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> ANL01FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>),</span>
-<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>      <span class="at">AVISIT =</span> <span class="st">&quot;End of Treatment&quot;</span>,</span>
-<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>      <span class="at">AVISITN =</span> <span class="dv">99</span>,</span>
-<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;LOV&quot;</span></span>
-<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>    )</span>
-<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> advs,</span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADT, AVISITN, ATPTN, AVAL),</span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="dv">4</span> <span class="sc">&lt;</span> AVISITN <span class="sc">&amp;</span> AVISITN <span class="sc">&lt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> ANL01FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>),</span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>      <span class="at">AVISIT =</span> <span class="st">&quot;End of Treatment&quot;</span>,</span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>      <span class="at">AVISITN =</span> <span class="dv">99</span>,</span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;LOV&quot;</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>    )</span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="14%" />
@@ -3207,16 +3208,17 @@ to <code>&quot;Minimum on Treatment&quot;</code> and assign a unique
 <code>AVISITN</code> value.</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>advs_ex1 <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
 <span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
-<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
-<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(AVAL, ADT, AVISITN, ATPTN),</span>
-<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="dv">4</span> <span class="sc">&lt;</span> AVISITN <span class="sc">&amp;</span> AVISITN <span class="sc">&lt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> ANL01FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(AVAL)),</span>
-<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>      <span class="at">AVISIT =</span> <span class="st">&quot;Minimum on Treatment&quot;</span>,</span>
-<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>      <span class="at">AVISITN =</span> <span class="dv">98</span>,</span>
-<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;MINIMUM&quot;</span></span>
-<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>    )</span>
-<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> advs,</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(AVAL, ADT, AVISITN, ATPTN),</span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="dv">4</span> <span class="sc">&lt;</span> AVISITN <span class="sc">&amp;</span> AVISITN <span class="sc">&lt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> ANL01FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(AVAL)),</span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>      <span class="at">AVISIT =</span> <span class="st">&quot;Minimum on Treatment&quot;</span>,</span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>      <span class="at">AVISITN =</span> <span class="dv">98</span>,</span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;MINIMUM&quot;</span></span>
+<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>    )</span>
+<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="13%" />
@@ -3369,11 +3371,13 @@ holding the average value for observations on that date. Set
 <code>DTYPE</code> to <code>AVERAGE</code>.</p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>advs_ex2 <span class="ot">&lt;-</span> <span class="fu">derive_summary_records</span>(</span>
 <span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  advs,</span>
-<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, VISITNUM, ADT),</span>
-<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>  <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>  <span class="at">summary_fun =</span> mean,</span>
-<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">DTYPE =</span> <span class="st">&quot;AVERAGE&quot;</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>  <span class="at">dataset_add =</span> advs,</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, VISITNUM, ADT),</span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">mean</span>(AVAL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>    <span class="at">DTYPE =</span> <span class="st">&quot;AVERAGE&quot;</span></span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>  )</span>
+<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -3606,28 +3610,24 @@ example</a>.</p>
 <div id="example" class="section level1">
 <h1>Example Scripts</h1>
 <table>
-<colgroup>
-<col width="22%" />
-<col width="77%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th>ADaM</th>
-<th>Sample Code</th>
+<th>Sourcing Command</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>ADEG</td>
-<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adeg.R" target="_blank">ad_adeg.R</a></td>
+<td><code>use_ad_template(&quot;ADEG&quot;)</code></td>
 </tr>
 <tr class="even">
 <td>ADVS</td>
-<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_advs.R" target="_blank">ad_advs.R</a></td>
+<td><code>use_ad_template(&quot;ADVS&quot;)</code></td>
 </tr>
 <tr class="odd">
 <td>ADLB</td>
-<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adlb.R" target="_blank">ad_adlb.R</a></td>
+<td><code>use_ad_template(&quot;ADLB&quot;)</code></td>
 </tr>
 </tbody>
 </table>

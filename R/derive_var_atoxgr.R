@@ -3,9 +3,8 @@
 #' @description
 #' Derives a character lab grade based on severity/toxicity criteria.
 #'
-#' @param dataset Input data set
-#'
-#'   The columns specified by `tox_description_var` parameter is expected.
+#' @param dataset
+#'   `r roxygen_param_dataset(expected_vars = c("tox_description_var"))`
 #'
 #' @param new_var Name of the character grade variable to create, for example, `ATOXGRH`
 #' or `ATOXGRL`.
@@ -56,6 +55,8 @@
 #' value.
 #'
 #'   Significant digits used to avoid floating point discrepancies when comparing numeric values.
+#'   See blog: [How admiral handles floating
+#'   points](https://pharmaverse.github.io/blog/posts/2023-10-30_floating_point/floating_point.html)
 #'
 #' @details
 #' `new_var` is derived with values NA, "0", "1", "2", "3", "4", where "4" is the most
@@ -118,13 +119,16 @@ derive_var_atoxgr_dir <- function(dataset,
                                   meta_criteria,
                                   criteria_direction,
                                   get_unit_expr,
-                                  signif_dig = 15) {
+                                  signif_dig = get_admiral_option("signif_digits")) {
   new_var <- assert_symbol(enexpr(new_var))
   tox_description_var <- assert_symbol(enexpr(tox_description_var))
   get_unit_expr <- assert_expr(enexpr(get_unit_expr))
 
   # check input parameter has correct value
   assert_character_scalar(criteria_direction, values = c("L", "H"))
+
+  # check input parameter holding significant digits has correct value
+  assert_integer_scalar(signif_dig, subset = "positive")
 
   # Check Grade description variable exists on input data set
   assert_data_frame(dataset, required_vars = exprs(!!tox_description_var))
@@ -246,10 +250,9 @@ derive_var_atoxgr_dir <- function(dataset,
 #'
 #' Derives character lab grade based on high and low severity/toxicity grade(s).
 #'
-#' @param dataset Input data set
-#'
-#'   The columns `ATOXGRL`, `ATOXGRH` and specified by `lotox_description_var`,
-#'   and `hitox_description_var` parameters are expected.
+#' @param dataset
+#'   `r roxygen_param_dataset(expected_vars = c("lotox_description_var", "hitox_description_var"))`
+#'   `ATOXGRL`, and `ATOXGRH` are expected as well.
 #'
 #' @param lotox_description_var Variable containing the toxicity grade description
 #' for low values, eg. "Anemia"

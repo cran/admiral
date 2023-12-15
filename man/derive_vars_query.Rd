@@ -7,13 +7,11 @@
 derive_vars_query(dataset, dataset_queries)
 }
 \arguments{
-\item{dataset}{Input dataset.}
+\item{dataset}{Input dataset}
 
 \item{dataset_queries}{A dataset containing required columns \code{PREFIX},
-\code{GRPNAME}, \code{SRCVAR}, \code{TERMNAME}, \code{TERMID}, and optional columns
+\code{GRPNAME}, \code{SRCVAR}, \code{TERMCHAR} and/or \code{TERMNUM}, and optional columns
 \code{GRPID}, \code{SCOPE}, \code{SCOPEN}.
-
-The content of the dataset will be verified by \code{\link[=assert_valid_queries]{assert_valid_queries()}}.
 
 \code{create_query_data()} can be used to create the dataset.}
 }
@@ -42,9 +40,9 @@ be created; if \code{SCOPEN} is not "" or NA, then the corresponding
 "SCN" variable will be created.
 
 For each record in \code{dataset}, the "NAM" variable takes the value of
-\code{GRPNAME} if the value of \code{TERMNAME} or \code{TERMID} in \code{dataset_queries} matches
+\code{GRPNAME} if the value of \code{TERMCHAR} or \code{TERMNUM} in \code{dataset_queries} matches
 the value of the respective SRCVAR in \code{dataset}.
-Note that \code{TERMNAME} in \code{dataset_queries} dataset may be NA only when \code{TERMID}
+Note that \code{TERMCHAR} in \code{dataset_queries} dataset may be NA only when \code{TERMNUM}
 is non-NA and vice versa.
 The "CD", "SC", and "SCN" variables are derived accordingly based on
 \code{GRPID}, \code{SCOPE}, and \code{SCOPEN} respectively,
@@ -67,7 +65,7 @@ adae <- tribble(
 derive_vars_query(adae, queries)
 }
 \seealso{
-\code{\link[=create_query_data]{create_query_data()}} \code{\link[=assert_valid_queries]{assert_valid_queries()}}
+\code{\link[=create_query_data]{create_query_data()}}]
 
 OCCDS Functions: 
 \code{\link{derive_var_trtemfl}()},

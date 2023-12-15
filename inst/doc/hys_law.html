@@ -1530,10 +1530,11 @@ event.</p>
 <span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="at">dataset_add =</span> bili_records,</span>
 <span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
 <span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(ADY),</span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">filter_join =</span> <span class="dv">0</span> <span class="sc">&lt;=</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&amp;</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&lt;=</span> <span class="dv">14</span> <span class="sc">&amp;</span> CRIT1FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> CRIT1FL.join <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">BILI_DT =</span> ADT, <span class="at">BILI_CRITFL =</span> CRIT1FL),</span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">join_type =</span> <span class="st">&quot;all&quot;</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">filter_join =</span> <span class="dv">0</span> <span class="sc">&lt;=</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&amp;</span> ADT.join <span class="sc">-</span> ADT <span class="sc">&lt;=</span> <span class="dv">14</span> <span class="sc">&amp;</span> CRIT1FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> CRIT1FL.join <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">BILI_DT =</span> ADT, <span class="at">BILI_CRITFL =</span> CRIT1FL),</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="8%" />
@@ -2122,20 +2123,16 @@ topic. We welcome feedback and ideas to improve this guide!</p>
 <div id="example-script" class="section level1">
 <h1>Example Script</h1>
 <table>
-<colgroup>
-<col width="33%" />
-<col width="66%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th>ADaM</th>
-<th>Sample Code</th>
+<th>Sourcing Command</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>ADLBHY</td>
-<td><a href="https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adlbhy.R" target="_blank">ad_adlbhy.R</a></td>
+<td><code>use_ad_template(&quot;ADLBHY&quot;)</code></td>
 </tr>
 </tbody>
 </table>

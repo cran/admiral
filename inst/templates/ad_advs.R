@@ -23,7 +23,7 @@ adsl <- admiral_adsl
 # When SAS datasets are imported into R using haven::read_sas(), missing
 # character values from SAS appear as "" characters in R, instead of appearing
 # as NA values. Further details can be obtained via the following link:
-# https://pharmaverse.github.io/admiral/cran-release/articles/admiral.html#handling-of-missing-values # nolint
+# https://pharmaverse.github.io/admiral/articles/admiral.html#handling-of-missing-values # nolint
 
 vs <- convert_blanks_to_na(vs)
 
@@ -135,7 +135,7 @@ advs <- advs %>%
 
 ## Get visit info ----
 # See also the "Visit and Period Variables" vignette
-# (https://pharmaverse.github.io/admiral/cran-release/articles/visits_periods.html#visits)
+# (https://pharmaverse.github.io/admiral/articles/visits_periods.html#visits)
 advs <- advs %>%
   # Derive Timing
   mutate(
@@ -156,11 +156,13 @@ advs <- advs %>%
 ## Derive a new record as a summary record (e.g. mean of the triplicates at each time point) ----
 advs <- advs %>%
   derive_summary_records(
+    dataset_add = advs,
     by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars, PARAMCD, AVISITN, AVISIT, ADT, ADY),
-    filter = !is.na(AVAL),
-    analysis_var = AVAL,
-    summary_fun = mean,
-    set_values_to = exprs(DTYPE = "AVERAGE")
+    filter_add = !is.na(AVAL),
+    set_values_to = exprs(
+      AVAL = mean(AVAL),
+      DTYPE = "AVERAGE"
+    )
   )
 
 advs <- advs %>%
@@ -244,11 +246,12 @@ advs <- advs %>%
 
 ## Get treatment information ----
 # See also the "Visit and Period Variables" vignette
-# (https://pharmaverse.github.io/admiral/cran-release/articles/visits_periods.html#treatment_bds)
+# (https://pharmaverse.github.io/admiral/articles/visits_periods.html#treatment_bds)
 advs <- advs %>%
   # Assign TRTA, TRTP
   # Create End of Treatment Record
   derive_extreme_records(
+    dataset_add = advs,
     by_vars = exprs(STUDYID, USUBJID, PARAMCD, ATPTN),
     order = exprs(ADT, AVISITN, AVAL),
     mode = "last",
@@ -293,5 +296,10 @@ advs <- advs %>%
 
 # Save output ----
 
-dir <- tempdir() # Change to whichever directory you want to save the dataset in
-saveRDS(advs, file = file.path(dir, "advs.rds"), compress = "bzip2")
+# Change to whichever directory you want to save the dataset in
+dir <- tools::R_user_dir("admiral_templates_data", which = "cache")
+if (!file.exists(dir)) {
+  # Create the folder
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+}
+save(advs, file = file.path(dir, "advs.rda"), compress = "bzip2")

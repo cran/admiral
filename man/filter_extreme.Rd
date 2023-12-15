@@ -9,14 +9,14 @@ filter_extreme(dataset, by_vars = NULL, order, mode, check_type = "warning")
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{order} and the \code{by_vars} parameter are
-expected.}
+The variables specified by the \code{by_vars} and \code{order} arguments are expected to be in the dataset.}
 
 \item{by_vars}{Grouping variables
 
 \emph{Default}: \code{NULL}
 
-\emph{Permitted Values:} list of variables created by \code{exprs()}}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{order}{Sort order
 

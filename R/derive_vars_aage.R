@@ -6,10 +6,8 @@
 #'
 #' @inheritParams derive_vars_duration
 #'
-#' @param dataset Input dataset
-#'
-#'   The columns specified by the `start_date` and the `end_date` parameter are
-#'   expected.
+#' @param dataset
+#'   `r roxygen_param_dataset(expected_vars = c("start_date", "end_date"))`
 #'
 #' @param start_date The start date
 #'
@@ -33,11 +31,23 @@
 #'
 #'   The age is derived in the specified unit
 #'
-#'   Default: 'years'
+#'   Permitted Values (case-insensitive):
 #'
-#'   Permitted Values: 'years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'
+#'   For years: `"year"`, `"years"`, `"yr"`, `"yrs"`, `"y"`
 #'
-#' @param unit *Deprecated*, please use `age_unit` instead.
+#'   For months: `"month"`, `"months"`, `"mo"`, `"mos"`
+#'
+#'   For weeks: `"week"`, `"weeks"`, `"wk"`, `"wks"`, `"w"`
+#'
+#'   For days: `"day"`, `"days"`, `"d"`
+#'
+#'   For hours: `"hour"`, `"hours"`, `"hr"`, `"hrs"`, `"h"`
+#'
+#'   For minutes: `"minute"`, `"minutes"`, `"min"`, `"mins"`
+#'
+#'   For seconds: `"second"`, `"seconds"`, `"sec"`, `"secs"`, `"s"`
+#'
+#' @param unit `r lifecycle::badge("deprecated")` Please use `age_unit` instead.
 #'
 #' @details The duration is derived as time from start to end date in the
 #'   specified output unit. If the end date is before the start date, the duration
@@ -85,20 +95,26 @@ derive_vars_aage <- function(dataset,
                              start_date = BRTHDT,
                              end_date = RANDDT,
                              unit = "years",
-                             age_unit = "years",
+                             age_unit = "YEARS",
                              type = "interval") {
   if (!missing(unit)) {
-    deprecate_warn("0.12.0", "derive_vars_aage(unit = )", "derive_vars_aage(age_unit = )")
+    deprecate_stop("0.12.0", "derive_vars_aage(unit = )", "derive_vars_aage(age_unit = )")
     age_unit <- unit
   }
 
   start_date <- assert_symbol(enexpr(start_date))
   end_date <- assert_symbol(enexpr(end_date))
   assert_data_frame(dataset, required_vars = expr_c(start_date, end_date))
-  assert_character_scalar(
-    age_unit,
-    values = c("years", "months", "weeks", "days", "hours", "minutes", "seconds")
-  )
+
+  assert_character_scalar(age_unit, values = c(
+    c("year", "years", "yr", "yrs", "y"),
+    c("month", "months", "mo", "mos"),
+    c("week", "weeks", "wk", "wks", "w"),
+    c("day", "days", "d"),
+    c("hour", "hours", "hr", "hrs", "h"),
+    c("minute", "minutes", "min", "mins"),
+    c("second", "seconds", "sec", "secs", "s")
+  ), case_sensitive = FALSE)
 
   derive_vars_duration(
     dataset,
@@ -120,9 +136,8 @@ derive_vars_aage <- function(dataset,
 #' units given in the `age_var+U` variable or `age_unit` argument and stores
 #' in a new variable (`new_var`).
 #'
-#' @param dataset Input dataset.
-#'
-#'   The column specified by the `age_var` argument is expected.
+#' @param dataset
+#'   `r roxygen_param_dataset(expected_vars = c("age_var"))`
 #'
 #' @param age_var Age variable.
 #'

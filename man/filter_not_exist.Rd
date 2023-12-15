@@ -9,7 +9,7 @@ filter_not_exist(dataset, dataset_add, by_vars, filter_add = NULL)
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified in the \code{by_vars} parameter are expected in this dataset.}
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
 
 \item{dataset_add}{Source dataset
 
@@ -21,7 +21,8 @@ in this dataset.}
 
 \item{by_vars}{Grouping variables
 
-A list of variable names specified within \code{exprs()} is expected.}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{filter_add}{Filter for the source dataset
 

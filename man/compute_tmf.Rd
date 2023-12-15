@@ -20,9 +20,7 @@ if only hours and minutes are ever collected, and seconds are imputed in
 (\code{'--DTM'}) as 00, then it is not necessary to set (\code{'--TMF'}) to \code{'S'}. A user can set this
 to \code{TRUE} so the \code{'S'} Flag is dropped from (\code{'--TMF'}).
 
-A logical value
-
-Default: \code{FALSE}}
+\emph{Permitted Values}: A logical value}
 }
 \value{
 The time imputation flag (\code{'--TMF'}) (character value of \code{'H'}, \code{'M'} , \code{'S'} or \code{NA})
@@ -35,9 +33,15 @@ Derive the time imputation flag (\code{'--TMF'}) comparing a date character vect
 Usually this computation function can not be used with \verb{\%>\%}.
 }
 \examples{
-compute_tmf(dtc = "2019-07-18T15:25", dtm = as.POSIXct("2019-07-18T15:25:00"))
-compute_tmf(dtc = "2019-07-18T15", dtm = as.POSIXct("2019-07-18T15:25:00"))
-compute_tmf(dtc = "2019-07-18", dtm = as.POSIXct("2019-07-18"))
+library(lubridate)
+
+compute_tmf(dtc = "2019-07-18T15:25", dtm = ymd_hms("2019-07-18T15:25:00"))
+compute_tmf(dtc = "2019-07-18T15", dtm = ymd_hms("2019-07-18T15:25:00"))
+compute_tmf(dtc = "2019-07-18", dtm = ymd("2019-07-18"))
+compute_tmf(dtc = "2022-05--T00:00", dtm = ymd_hms("2022-05-15T23:59:59"))
+compute_tmf(dtc = "2022-05--T23:00", dtm = ymd_hms("2022-05-15T23:59:59"))
+compute_tmf(dtc = "2022-05--T23:59:00", dtm = ymd_hms("2022-05-15T23:59:59"))
+
 }
 \seealso{
 Date/Time Computation Functions that returns a vector: 

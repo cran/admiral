@@ -9,15 +9,14 @@ derive_vars_aage(
   start_date = BRTHDT,
   end_date = RANDDT,
   unit = "years",
-  age_unit = "years",
+  age_unit = "YEARS",
   type = "interval"
 )
 }
 \arguments{
 \item{dataset}{Input dataset
 
-The columns specified by the \code{start_date} and the \code{end_date} parameter are
-expected.}
+The variables specified by the \code{start_date} and \code{end_date} arguments are expected to be in the dataset.}
 
 \item{start_date}{The start date
 
@@ -37,19 +36,33 @@ vector to a date object.
 
 Default: \code{RANDDT}}
 
-\item{unit}{\emph{Deprecated}, please use \code{age_unit} instead.}
+\item{unit}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{age_unit} instead.}
 
 \item{age_unit}{Age unit
 
 The age is derived in the specified unit
 
-Default: 'years'
+Permitted Values (case-insensitive):
 
-Permitted Values: 'years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'}
+For years: \code{"year"}, \code{"years"}, \code{"yr"}, \code{"yrs"}, \code{"y"}
+
+For months: \code{"month"}, \code{"months"}, \code{"mo"}, \code{"mos"}
+
+For weeks: \code{"week"}, \code{"weeks"}, \code{"wk"}, \code{"wks"}, \code{"w"}
+
+For days: \code{"day"}, \code{"days"}, \code{"d"}
+
+For hours: \code{"hour"}, \code{"hours"}, \code{"hr"}, \code{"hrs"}, \code{"h"}
+
+For minutes: \code{"minute"}, \code{"minutes"}, \code{"min"}, \code{"mins"}
+
+For seconds: \code{"second"}, \code{"seconds"}, \code{"sec"}, \code{"secs"}, \code{"s"}}
 
 \item{type}{lubridate duration type.
 
 See below for details.
+
+Default: \code{"duration"}
 
 Permitted Values: \code{"duration"}, \code{"interval"}}
 }
@@ -101,9 +114,7 @@ derive_vars_aage(data)
 
 ADSL Functions that returns variable appended to dataset: 
 \code{\link{derive_var_age_years}()},
-\code{\link{derive_var_dthcaus}()},
-\code{\link{derive_var_extreme_dtm}()},
-\code{\link{derive_var_extreme_dt}()},
+\code{\link{derive_vars_extreme_event}()},
 \code{\link{derive_vars_period}()}
 }
 \concept{der_adsl}

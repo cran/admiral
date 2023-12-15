@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 
 library(admiraldev)
 
-## ---- warning=FALSE, message=FALSE--------------------------------------------
+## ----warning=FALSE, message=FALSE---------------------------------------------
 library(admiral)
 library(pharmaversesdtm)
 library(dplyr, warn.conflicts = FALSE)
@@ -48,7 +48,7 @@ vs_without <- vs %>%
     mode = "first"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 vs_without %>%
   arrange(USUBJID, VSTESTCD, VSDY, VSSEQ) %>%
   dataset_vignette(
@@ -68,7 +68,7 @@ vs_with <- vs %>%
     order = exprs(VSORRES, VSSEQ)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 vs_with %>%
   arrange(USUBJID, VSTESTCD, VSDY, VSSEQ) %>%
   dataset_vignette(
@@ -102,7 +102,7 @@ adaette <- call_derivation(
   censor_conditions = list(lastalive_censor)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adaette %>%
   select(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR) %>%
   arrange(USUBJID, PARAMCD) %>%
@@ -122,7 +122,7 @@ ae <- ae %>%
     filter = AESTDY >= 1
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 ae %>%
   arrange(USUBJID, AESTDY, AESEQ, desc(TEMP_AESEVN)) %>%
   dataset_vignette(
@@ -147,7 +147,7 @@ ae <- ae %>%
     )
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 ae %>%
   arrange(USUBJID, AESTDY, AESEQ, desc(TEMP_AESEVN)) %>%
   dataset_vignette(
@@ -176,7 +176,7 @@ ae <- ae %>%
     )
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 ae %>%
   arrange(USUBJID, AESTDY, AESEQ) %>%
   dataset_vignette(

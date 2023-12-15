@@ -3,12 +3,10 @@
 #' Add expected records as new observations for each 'by group' when the dataset
 #' contains missing observations.
 #'
-#' @param dataset Input dataset
+#' @param dataset
+#' `r roxygen_param_dataset(expected_vars = c("dataset_ref", "by_vars"))`
 #'
-#'   A data frame, the columns from `dataset_ref` and specified by the
-#'   `by_vars` parameter are expected.
-#'
-#' @param dataset_expected_obs *Deprecated*, please use `dataset_ref` instead.
+#' @param dataset_expected_obs `r lifecycle::badge("deprecated")` Please use `dataset_ref` instead.
 #'
 #' @param dataset_ref Expected observations dataset
 #'
@@ -20,6 +18,8 @@
 #'   For each group defined by `by_vars` those observations from `dataset_ref`
 #'   are added to the output dataset which do not have a corresponding observation
 #'   in the input dataset.
+#'
+#'   `r roxygen_param_by_vars()`
 #'
 #' @param set_values_to Variables to be set
 #'
@@ -91,7 +91,7 @@ derive_expected_records <- function(dataset,
                                     by_vars = NULL,
                                     set_values_to = NULL) {
   if (!missing(dataset_expected_obs)) {
-    deprecate_warn(
+    deprecate_stop(
       "0.12.0",
       "derive_expected_records(dataset_expected_obs = )",
       "derive_expected_records(dataset_ref = )"

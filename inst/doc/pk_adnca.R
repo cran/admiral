@@ -79,7 +79,7 @@ pc_dates <- pc %>%
     NFRLT = if_else(PCTPTNUM < 0, 0, PCTPTNUM), .after = USUBJID
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   pc_dates,
   display_vars = exprs(
@@ -126,7 +126,7 @@ ex_dates <- ex %>%
   derive_vars_dtm_to_dt(exprs(ASTDTM)) %>%
   derive_vars_dtm_to_dt(exprs(AENDTM))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   ex_dates,
   display_vars = exprs(
@@ -169,7 +169,7 @@ ex_exp <- ex_dates %>%
   derive_vars_dtm_to_tm(exprs(AENDTM)) %>%
   derive_vars_dy(reference_date = TRTSDT, source_vars = exprs(ADT))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   ex_exp,
   display_vars = exprs(
@@ -199,7 +199,7 @@ adpc_first_dose <- pc_dates %>%
     AVISIT = paste("Day", AVISITN)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adpc_first_dose,
   display_vars = exprs(
@@ -220,13 +220,14 @@ adpc_prev <- adpc_first_dose %>%
       AENDTM_prev = AENDTM
     ),
     join_vars = exprs(ADTM),
+    join_type = "all",
     filter_add = NULL,
     filter_join = ADTM > ADTM.join,
     mode = "last",
     check_type = "none"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adpc_prev,
   display_vars = exprs(
@@ -247,13 +248,14 @@ adpc_next <- adpc_prev %>%
       AENDTM_next = AENDTM
     ),
     join_vars = exprs(ADTM),
+    join_type = "all",
     filter_add = NULL,
     filter_join = ADTM <= ADTM.join,
     mode = "first",
     check_type = "none"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adpc_next,
   display_vars = exprs(
@@ -272,6 +274,7 @@ adpc_nom_prev <- adpc_next %>%
     order = exprs(NFRLT),
     new_vars = exprs(NFRLT_prev = NFRLT),
     join_vars = exprs(NFRLT),
+    join_type = "all",
     filter_add = NULL,
     filter_join = NFRLT > NFRLT.join,
     mode = "last",
@@ -287,13 +290,14 @@ adpc_nom_next <- adpc_nom_prev %>%
     order = exprs(NFRLT),
     new_vars = exprs(NFRLT_next = NFRLT),
     join_vars = exprs(NFRLT),
+    join_type = "all",
     filter_add = NULL,
     filter_join = NFRLT <= NFRLT.join,
     mode = "first",
     check_type = "none"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adpc_nom_next,
   display_vars = exprs(
@@ -362,7 +366,7 @@ adpc_arrlt <- bind_rows(adpc_nom_next, ex_exp) %>%
   derive_vars_dtm_to_dt(exprs(PCRFTDTM)) %>%
   derive_vars_dtm_to_tm(exprs(PCRFTDTM))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adpc_arrlt,
   display_vars = exprs(
@@ -385,7 +389,7 @@ adpc_nrrlt <- adpc_arrlt %>%
     )
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adpc_nrrlt,
   display_vars = exprs(
@@ -463,7 +467,7 @@ adpc_aval <- adpc_nrrlt %>%
     SRCSEQ = coalesce(PCSEQ, EXSEQ)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adpc_aval,
   display_vars = exprs(
@@ -494,7 +498,7 @@ dtype <- adpc_aval %>%
   derive_vars_dtm_to_dt(exprs(PCRFTDTM)) %>%
   derive_vars_dtm_to_tm(exprs(PCRFTDTM))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   dtype,
   display_vars = exprs(
@@ -514,7 +518,7 @@ adpc_dtype <- bind_rows(adpc_aval, dtype) %>%
     ANL02FL = if_else(is.na(DTYPE), "Y", NA_character_),
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adpc_dtype %>%
   dataset_vignette(display_vars = exprs(
     STUDYID, USUBJID, BASETYPE, ADTM, ATPT, NFRLT, NRRLT, ARRLT, MRRLT
@@ -555,7 +559,7 @@ adpc_aseq <- adpc_chg %>%
     dataset_add = select(param_lookup, -PCTESTCD), by_vars = exprs(PARAMCD)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adpc_aseq %>%
   dataset_vignette(display_vars = exprs(
     USUBJID, BASETYPE, DTYPE, AVISIT, ATPT, AVAL, NFRLT, NRRLT, AFRLT, ARRLT, BASE, CHG
@@ -581,7 +585,7 @@ adpc_baselines <- adpc_aseq %>%
     BMIBLU = "kg/m^2"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adpc_baselines %>%
   dataset_vignette(display_vars = exprs(
     USUBJID, HTBL, HTBLU, WTBL, WTBLU, BMIBL, BMIBLU, BASETYPE, ATPT, AVAL
@@ -617,7 +621,7 @@ adppk_first_dose <- pc_dates %>%
     AVISIT = paste("Day", AVISITN),
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adppk_first_dose,
   display_vars = exprs(
@@ -638,6 +642,7 @@ adppk_prev <- adppk_first_dose %>%
       AENDTM_prev = AENDTM
     ),
     join_vars = exprs(ADTM),
+    join_type = "all",
     filter_add = NULL,
     filter_join = ADTM > ADTM.join,
     mode = "last",
@@ -653,13 +658,14 @@ adppk_nom_prev <- adppk_prev %>%
     order = exprs(NFRLT),
     new_vars = exprs(NFRLT_prev = NFRLT),
     join_vars = exprs(NFRLT),
+    join_type = "all",
     filter_add = NULL,
     filter_join = NFRLT > NFRLT.join,
     mode = "last",
     check_type = "none"
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adppk_nom_prev,
   display_vars = exprs(
@@ -713,7 +719,7 @@ adppk_aprlt <- bind_rows(adppk_nom_prev, ex_exp) %>%
     )
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adppk_aprlt,
   display_vars = exprs(
@@ -786,7 +792,7 @@ adppk_aval <- adppk_aprlt %>%
     SS = if_else(EVID == 1, 1, 0)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adppk_aval,
   display_vars = exprs(
@@ -820,7 +826,7 @@ adppk_aseq <- adppk_aval %>%
     -ends_with("TMF"), -starts_with("TRT"), -starts_with("ATPT"), -DRUG
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adppk_aseq,
   display_vars = exprs(
@@ -894,7 +900,7 @@ covar <- adsl %>%
     REGION1, REGION1N
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   covar,
   display_vars = exprs(
@@ -948,7 +954,7 @@ covar_vslb <- covar %>%
   ) %>%
   rename(TBILBL = BILIBL)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   covar_vslb,
   display_vars = exprs(
@@ -967,7 +973,7 @@ adppk <- adppk_aseq %>%
   arrange(STUDYIDN, USUBJIDN, AFRLT, EVID) %>%
   mutate(RECSEQ = row_number())
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   adppk,
   display_vars = exprs(

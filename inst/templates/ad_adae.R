@@ -24,7 +24,7 @@ adsl <- admiral_adsl
 # When SAS datasets are imported into R using haven::read_sas(), missing
 # character values from SAS appear as "" characters in R, instead of appearing
 # as NA values. Further details can be obtained via the following link:
-# https://pharmaverse.github.io/admiral/cran-release/articles/admiral.html#handling-of-missing-values # nolint
+# https://pharmaverse.github.io/admiral/articles/admiral.html#handling-of-missing-values # nolint
 
 ae <- convert_blanks_to_na(ae)
 ex <- convert_blanks_to_na(ex_single)
@@ -91,6 +91,7 @@ adae <- adae %>%
     by_vars = exprs(STUDYID, USUBJID),
     new_vars = exprs(LDOSEDTM = EXSTDTM),
     join_vars = exprs(EXSTDTM),
+    join_type = "all",
     order = exprs(EXSTDTM),
     filter_add = (EXDOSE > 0 | (EXDOSE == 0 & grepl("PLACEBO", EXTRT))) & !is.na(EXSTDTM),
     filter_join = EXSTDTM <= ASTDTM,
@@ -133,5 +134,10 @@ adae <- adae %>%
 
 # Save output ----
 
-dir <- tempdir() # Change to whichever directory you want to save the dataset in
-saveRDS(adae, file = file.path(dir, "adae.rds"), compress = "bzip2")
+# Change to whichever directory you want to save the dataset in
+dir <- tools::R_user_dir("admiral_templates_data", which = "cache")
+if (!file.exists(dir)) {
+  # Create the folder
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+}
+save(adae, file = file.path(dir, "adae.rda"), compress = "bzip2")

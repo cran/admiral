@@ -16,14 +16,19 @@ derive_vars_transposed(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} parameter are required}
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
 
 \item{dataset_merge}{Dataset to transpose and merge
 
 The variables specified by the \code{by_vars}, \code{key_var} and \code{value_var} parameters
 are expected}
 
-\item{by_vars}{Keys used to merge \code{dataset_merge} with \code{dataset}}
+\item{by_vars}{Grouping variables
+
+Keys used to merge \code{dataset_merge} with \code{dataset}.
+
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{key_var}{The variable of \code{dataset_merge} containing the names of the
 transposed variables}
@@ -91,14 +96,15 @@ cm \%>\%
 General Derivation Functions for all ADaMs that returns variable appended to dataset:
 \code{\link{derive_var_extreme_flag}()},
 \code{\link{derive_var_joined_exist_flag}()},
+\code{\link{derive_var_merged_ef_msrc}()},
 \code{\link{derive_var_merged_exist_flag}()},
 \code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
+\code{\link{derive_vars_computed}()},
 \code{\link{derive_vars_joined}()},
 \code{\link{derive_vars_merged_lookup}()},
-\code{\link{derive_vars_merged}()},
-\code{\link{get_summary_records}()}
+\code{\link{derive_vars_merged}()}
 }
 \concept{der_gen}
 \keyword{der_gen}

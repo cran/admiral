@@ -18,15 +18,16 @@ derive_param_wbc_abs(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} argument, \code{PARAMCD}, and \code{AVAL}
-are expected to be present.
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.
+\code{PARAMCD}, and \code{AVAL} are expected as well.
 
 The variable specified by \code{by_vars} and \code{PARAMCD} must be a unique key of
 the input dataset, and to the parameters specified by \code{wbc_code} and \code{diff_code}.}
 
 \item{by_vars}{Grouping variables
 
-Permitted Values: list of variables}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{set_values_to}{Variables to set
 
@@ -126,7 +127,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_doseint}()},
 \code{\link{derive_param_exist_flag}()},
 \code{\link{derive_param_exposure}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

@@ -18,8 +18,8 @@ derive_param_bmi(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} parameter, \code{PARAMCD}, and
-\code{AVAL} are expected.
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.
+\code{PARAMCD}, and \code{AVAL} are expected as well.
 
 The variable specified by \code{by_vars} and \code{PARAMCD} must be a unique key of
 the input dataset after restricting it by the filter condition (\code{filter}
@@ -31,7 +31,8 @@ For each group defined by \code{by_vars} an observation is added to the output
 dataset. Only variables specified in \code{by_vars} will be populated
 in the newly created records.
 
-\emph{Permitted Values:} list of variables}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{set_values_to}{Variables to be set
 
@@ -81,7 +82,8 @@ use \code{constant_by_vars} to select the subject-level variable to merge on (e.
 This will produce BMI at all visits where weight is measured.  Otherwise
 it will only be calculated at visits with both height and weight collected.
 
-\emph{Permitted Values:} list of variables}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 }
 \value{
 The input dataset with the new parameter added. Note, a variable will only
@@ -178,7 +180,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_doseint}()},
 \code{\link{derive_param_exist_flag}()},
 \code{\link{derive_param_exposure}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

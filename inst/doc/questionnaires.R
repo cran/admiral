@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 
 library(admiraldev)
 
-## ---- warning=FALSE, message=FALSE--------------------------------------------
+## ----warning=FALSE, message=FALSE---------------------------------------------
 library(dplyr)
 library(tidyr)
 library(tibble)
@@ -64,12 +64,13 @@ adgad7 <- adqs %>%
   # Select records to keep in the GAD-7 ADaM
   filter(PARCAT1 == "GAD-7 V2") %>%
   derive_summary_records(
+    dataset = .,
+    dataset_add = .,
     by_vars = exprs(STUDYID, USUBJID, AVISIT, ADT, ADY, TRTSDT, DTHCAUS),
-    analysis_var = AVAL,
-    summary_fun = function(x) sum(x, na.rm = TRUE),
     # Select records contributing to total score
-    filter = str_detect(PARAMCD, "GAD020[1-7]"),
+    filter_add = str_detect(PARAMCD, "GAD020[1-7]"),
     set_values_to = exprs(
+      AVAL = sum(AVAL, na.rm = TRUE),
       PARAMCD = "GAD02TS",
       PARAM = "GAD02-Total Score - Analysis"
     )
@@ -86,20 +87,19 @@ adgdssf <- adqs %>%
   # Select records to keep in the GDS-SF ADaM
   filter(PARCAT1 == "GDS SHORT FORM") %>%
   derive_summary_records(
+    dataset = .,
+    dataset_add = .,
     by_vars = exprs(STUDYID, USUBJID, AVISIT, ADT, ADY, TRTSDT, DTHCAUS),
-    analysis_var = AVAL,
-    summary_fun = function(x) {
-      compute_scale(
-        x,
+    # Select records contributing to total score
+    filter_add = str_detect(PARAMCD, "GDS02[01][0-9]"),
+    set_values_to = exprs(
+      AVAL = compute_scale(
+        AVAL,
         source_range = c(0, 1),
         target_range = c(0, 15),
         min_n = 10
       ) %>%
-        ceiling()
-    },
-    # Select records contributing to total score
-    filter = str_detect(PARAMCD, "GDS02[01][0-9]"),
-    set_values_to = exprs(
+        ceiling(),
       PARAMCD = "GDS02TS",
       PARAM = "GDS02- Total Score - Analysis"
     )
@@ -255,12 +255,13 @@ dataset_vignette(
 ## -----------------------------------------------------------------------------
 adgdssf <- adgdssf %>%
   derive_var_joined_exist_flag(
+    dataset_add = adgdssf,
     by_vars = exprs(USUBJID, PARAMCD),
     order = exprs(ADT),
     new_var = CDETFL,
     join_vars = exprs(CHGCAT1, ADY),
     join_type = "after",
-    filter = CHGCAT1 == "WORSENED" &
+    filter_join = CHGCAT1 == "WORSENED" &
       CHGCAT1.join == "WORSENED" &
       ADY.join >= ADY + 7
   )
@@ -275,13 +276,14 @@ dataset_vignette(
 # Flagging deterioration at two consecutive assessments
 adgdssf <- adgdssf %>%
   derive_var_joined_exist_flag(
+    dataset_add = adgdssf,
     by_vars = exprs(USUBJID, PARAMCD),
     order = exprs(ADT),
     new_var = CONDETFL,
     join_vars = exprs(CHGCAT1),
     join_type = "after",
     tmp_obs_nr_var = tmp_obs_nr,
-    filter = CHGCAT1 == "WORSENED" &
+    filter_join = CHGCAT1 == "WORSENED" &
       CHGCAT1.join == "WORSENED" &
       tmp_obs_nr.join == tmp_obs_nr + 1
   ) %>%
@@ -289,13 +291,15 @@ adgdssf <- adgdssf %>%
   # - a second deterioration at least 7 days later or
   # - deterioration at the last assessment and death due to progression
   derive_var_joined_exist_flag(
+    .,
+    dataset_add = .,
     by_vars = exprs(USUBJID, PARAMCD),
     order = exprs(ADT),
     new_var = CDTDTHFL,
     join_vars = exprs(CHGCAT1, ADY),
     join_type = "all",
     tmp_obs_nr_var = tmp_obs_nr,
-    filter = CHGCAT1 == "WORSENED" & (
+    filter_join = CHGCAT1 == "WORSENED" & (
       CHGCAT1.join == "WORSENED" & ADY.join >= ADY + 7 |
         tmp_obs_nr == max(tmp_obs_nr.join) & DTHCAUS == "PROGRESSIVE DISEASE")
   )
@@ -309,12 +313,13 @@ dataset_vignette(
 ## -----------------------------------------------------------------------------
 adgdssf <- adgdssf %>%
   derive_var_joined_exist_flag(
+    dataset_add = adgdssf,
     by_vars = exprs(USUBJID, PARAMCD),
     order = exprs(ADT),
     new_var = DEFDETFL,
     join_vars = exprs(CHGCAT1),
     join_type = "after",
-    filter = CHGCAT1 == "WORSENED" & all(CHGCAT1.join == "WORSENED")
+    filter_join = CHGCAT1 == "WORSENED" & all(CHGCAT1.join == "WORSENED")
   )
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -328,7 +333,8 @@ adsp <- adqs %>%
   filter(PARCAT1 == "SLEEPING PROBLEMS") %>%
   derive_extreme_event(
     by_vars = exprs(USUBJID, AVISIT),
-    order = exprs(ADY, QSSEQ),
+    tmp_event_nr_var = event_nr,
+    order = exprs(event_nr, ADY, QSSEQ),
     mode = "first",
     events = list(
       event(
@@ -382,11 +388,11 @@ dataset_vignette(
 ## -----------------------------------------------------------------------------
 adgdssf <- adgdssf %>%
   derive_summary_records(
-    filter = str_detect(PARAMCD, "GDS02[01][0-9]"),
+    dataset_add = adgdssf,
+    filter_add = str_detect(PARAMCD, "GDS02[01][0-9]"),
     by_vars = exprs(USUBJID, AVISIT),
-    analysis_var = AVAL,
-    summary_fun = function(x) sum(!is.na(x)) / 15 >= 0.9,
     set_values_to = exprs(
+      AVAL = sum(!is.na(AVAL)) / 15 >= 0.9,
       PARAMCD = "COMPL90P",
       PARAM = "Completed at least 90% of questions?",
       AVALC = if_else(AVAL == 1, "YES", "NO")
@@ -415,18 +421,19 @@ parm_visit_ref <- crossing(
 
 adgdssf <- adgdssf %>%
   derive_expected_records(
-    dataset_expected_obs = parm_visit_ref,
+    dataset_ref = parm_visit_ref,
     by_vars = exprs(USUBJID),
     set_values_to = exprs(
       filled_in = 1
     )
   ) %>%
   derive_summary_records(
-    filter = str_detect(PARAMCD, "GDS02[01][0-9]"),
+    dataset = .,
+    dataset_add = .,
+    filter_add = str_detect(PARAMCD, "GDS02[01][0-9]"),
     by_vars = exprs(USUBJID, AVISIT),
-    analysis_var = AVAL,
-    summary_fun = function(x) all(!is.na(x)),
     set_values_to = exprs(
+      AVAL = all(!is.na(AVAL)),
       PARAMCD = "COMPLALL",
       PARAM = "Completed all questions?",
       AVALC = if_else(AVAL == 1, "YES", "NO")

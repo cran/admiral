@@ -17,10 +17,9 @@ derive_locf_records(
 \arguments{
 \item{dataset}{Input dataset
 
-The columns specified by the \code{by_vars}, \code{analysis_var}, \code{order},
-\code{keep_vars} parameters are expected.}
+The variables specified by the \code{by_vars}, \code{analysis_var}, \code{order} and \code{keep_vars} arguments are expected to be in the dataset.}
 
-\item{dataset_expected_obs}{\emph{Deprecated}, please use \code{dataset_ref} instead.}
+\item{dataset_expected_obs}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{dataset_ref} instead.}
 
 \item{dataset_ref}{Expected observations dataset
 
@@ -32,7 +31,10 @@ Data frame with all the combinations of \code{PARAMCD}, \code{PARAM}, \code{AVIS
 For each group defined by \code{by_vars} those observations from \code{dataset_ref}
 are added to the output dataset which do not have a corresponding observation
 in the input dataset or for which \code{analysis_var} is \code{NA} for the corresponding observation
-in the input dataset.}
+in the input dataset.
+
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{analysis_var}{Analysis variable.
 
@@ -43,7 +45,9 @@ in the input dataset.}
 \item{order}{Sort order
 
 The dataset is sorted by \code{order} before carrying the last observation
-forward (e.g. \code{AVAL}) within each \code{by_vars}.}
+forward (e.g. \code{AVAL}) within each \code{by_vars}.
+
+For handling of \code{NA}s in sorting variables see \href{../articles/generic.html#sort_order}{Sort Order}.}
 
 \item{keep_vars}{Variables that need carrying the last observation forward
 
@@ -136,7 +140,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_doseint}()},
 \code{\link{derive_param_exist_flag}()},
 \code{\link{derive_param_exposure}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

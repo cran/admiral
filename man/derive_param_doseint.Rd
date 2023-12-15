@@ -17,8 +17,8 @@ derive_param_doseint(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} parameter, \code{PARAMCD}, and
-\code{AVAL} are expected.
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.
+\code{PARAMCD}, and \code{AVAL} are expected as well.
 
 The variable specified by \code{by_vars} and \code{PARAMCD} must be a unique key of
 the input dataset after restricting it by the filter condition (\code{filter}
@@ -29,7 +29,8 @@ parameter) and to the parameters specified by \code{tadm_code} and \code{padm_co
 Only variables specified in \code{by_vars} will be populated
 in the newly created records.
 
-Permitted Values: list of variables}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{set_values_to}{Variables to be set
 
@@ -148,7 +149,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_computed}()},
 \code{\link{derive_param_exist_flag}()},
 \code{\link{derive_param_exposure}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

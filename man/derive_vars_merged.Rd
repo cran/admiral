@@ -13,7 +13,10 @@ derive_vars_merged(
   new_vars = NULL,
   filter_add = NULL,
   mode = NULL,
-  match_flag = NULL,
+  match_flag,
+  exist_flag = NULL,
+  true_value = "Y",
+  false_value = NA_character_,
   missing_values = NULL,
   check_type = "warning",
   duplicate_msg = NULL
@@ -22,7 +25,7 @@ derive_vars_merged(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} argument are expected.}
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
 
 \item{dataset_add}{Additional dataset
 
@@ -32,12 +35,13 @@ argument are expected.}
 \item{by_vars}{Grouping variables
 
 The input dataset and the selected observations from the additional dataset
-are merged by the specified by variables. The by variables must be a unique
-key of the selected observations. Variables from the additional dataset can
-be renamed by naming the element, i.e., \verb{by_vars = exprs(<name in input dataset> = <name in additional dataset>)}, similar to
-the dplyr joins.
+are merged by the specified variables.
 
-\emph{Permitted Values}: list of variables created by \code{exprs()}}
+Variables can be renamed by naming the element, i.e.
+\verb{by_vars = exprs(<name in input dataset> = <name in additional dataset>)}, similar to the \code{dplyr} joins.
+
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{order}{Sort order
 
@@ -46,6 +50,8 @@ last observation from the additional dataset is selected with respect to the
 specified order.
 
 Variables defined by the \code{new_vars} argument can be used in the sort order.
+
+For handling of \code{NA}s in sorting variables see \href{../articles/generic.html#sort_order}{Sort Order}.
 
 \emph{Permitted Values}: list of expressions created by \code{exprs()}, e.g.,
 \code{exprs(ADT, desc(AVAL))} or \code{NULL}}
@@ -94,12 +100,37 @@ If the \code{order} argument is not specified, the \code{mode} argument is ignor
 
 \item{match_flag}{Match flag
 
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{exist_flag} instead.
+
 If the argument is specified (e.g., \code{match_flag = FLAG}), the specified
 variable (e.g., \code{FLAG}) is added to the input dataset. This variable will
 be \code{TRUE} for all selected records from \code{dataset_add} which are merged into
 the input dataset, and \code{NA} otherwise.
 
 \emph{Permitted Values}: Variable name}
+
+\item{exist_flag}{Exist flag
+
+If the argument is specified (e.g., \code{exist_flag = FLAG}), the specified
+variable (e.g., \code{FLAG}) is added to the input dataset. This variable will
+be the value provided in \code{true_value} for all selected records from \code{dataset_add}
+which are merged into the input dataset, and the value provided in \code{false_value} otherwise.
+
+\emph{Permitted Values}: Variable name}
+
+\item{true_value}{True value
+
+The value for the specified variable \code{exist_flag}, applicable to
+the first or last observation (depending on the mode) of each by group.
+
+Permitted Values: An atomic scalar}
+
+\item{false_value}{False value
+
+The value for the specified variable \code{exist_flag}, NOT applicable to
+the first or last observation (depending on the mode) of each by group.
+
+Permitted Values: An atomic scalar}
 
 \item{missing_values}{Values for non-matching observations
 
@@ -210,7 +241,7 @@ derive_vars_merged(
   mode = "last",
   new_vars = exprs(LASTWGT = VSSTRESN, LASTWGTU = VSSTRESU),
   filter_add = VSTESTCD == "WEIGHT",
-  match_flag = vsdatafl
+  exist_flag = vsdatafl
 ) \%>\%
   select(STUDYID, USUBJID, AGE, AGEU, LASTWGT, LASTWGTU, vsdatafl)
 
@@ -292,14 +323,15 @@ derive_vars_merged(
 General Derivation Functions for all ADaMs that returns variable appended to dataset:
 \code{\link{derive_var_extreme_flag}()},
 \code{\link{derive_var_joined_exist_flag}()},
+\code{\link{derive_var_merged_ef_msrc}()},
 \code{\link{derive_var_merged_exist_flag}()},
 \code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
+\code{\link{derive_vars_computed}()},
 \code{\link{derive_vars_joined}()},
 \code{\link{derive_vars_merged_lookup}()},
-\code{\link{derive_vars_transposed}()},
-\code{\link{get_summary_records}()}
+\code{\link{derive_vars_transposed}()}
 }
 \concept{der_gen}
 \keyword{der_gen}

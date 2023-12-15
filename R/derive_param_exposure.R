@@ -3,19 +3,44 @@
 #' Add a record computed from the aggregated analysis value of another parameter and compute the
 #' start (`ASTDT(M)`)and end date (`AENDT(M)`) as the minimum and maximum date by `by_vars`.
 #'
-#' @param dataset Input dataset
+#' @param dataset
+#'   `r roxygen_param_dataset(expected_vars = c("by_vars"))`
 #'
-#'   + The variables specified by the `by_vars`,`analysis_var` parameters and `PARAMCD` are
-#'   expected,
-#'   + Either `ASTDTM` and `AENDTM` or `ASTDT` and `AENDT` are also expected.
+#' @param dataset_add Additional dataset
 #'
-#' @param filter Filter condition
+#'   The variables specified for `by_vars`, `analysis_var`, `PARAMCD`,
+#'   alongside either `ASTDTM` and `AENDTM` or `ASTDT` and `AENDT` are also expected.
+#'   Observations from the specified dataset are going to be used to calculate and added
+#'   as new records to the input dataset (`dataset`).
 #'
-#'   The specified condition is applied to the input dataset before deriving the
-#'   new parameter, i.e., only observations fulfilling the condition are taken
-#'   into account.
 #'
-#'   *Permitted Values:* a condition
+#' @param filter
+#'
+#'  `r lifecycle::badge("deprecated")` Please use `filter_add` instead.
+#'
+#'   Filter condition as logical expression to apply during
+#'   summary calculation. By default, filtering expressions are computed within
+#'   `by_vars` as this will help when an aggregating, lagging, or ranking
+#'   function is involved.
+#'
+#'   For example,
+#'
+#'   + `filter = (AVAL > mean(AVAL, na.rm = TRUE))` will filter all `AVAL`
+#'   values greater than mean of `AVAL` with in `by_vars`.
+#'   + `filter = (dplyr::n() > 2)` will filter n count of `by_vars` greater
+#'   than 2.
+#'
+#' @param filter_add Filter condition as logical expression to apply during
+#'   summary calculation. By default, filtering expressions are computed within
+#'   `by_vars` as this will help when an aggregating, lagging, or ranking
+#'   function is involved.
+#'
+#'   For example,
+#'
+#'   + `filter_add = (AVAL > mean(AVAL, na.rm = TRUE))` will filter all `AVAL`
+#'   values greater than mean of `AVAL` with in `by_vars`.
+#'   + `filter_add = (dplyr::n() > 2)` will filter n count of `by_vars` greater
+#'   than 2.
 #'
 #' @param input_code Required parameter code
 #'
@@ -37,7 +62,7 @@
 #'   dataset. Only variables specified in `by_vars` will be populated
 #'   in the newly created records.
 #'
-#'   *Permitted Values:* list of variables
+#'   `r roxygen_param_by_vars()`
 #'
 #' @param set_values_to Variable-value pairs
 #'
@@ -96,6 +121,7 @@
 #' # Cumulative dose
 #' adex %>%
 #'   derive_param_exposure(
+#'     dataset_add = adex,
 #'     by_vars = exprs(USUBJID),
 #'     set_values_to = exprs(PARAMCD = "TDOSE", PARCAT1 = "OVERALL"),
 #'     input_code = "DOSE",
@@ -107,6 +133,7 @@
 #' # average dose in w2-24
 #' adex %>%
 #'   derive_param_exposure(
+#'     dataset_add = adex,
 #'     by_vars = exprs(USUBJID),
 #'     filter = VISIT %in% c("WEEK 2", "WEEK 24"),
 #'     set_values_to = exprs(PARAMCD = "AVDW224", PARCAT1 = "WEEK2-24"),
@@ -119,6 +146,7 @@
 #' # Any dose adjustment?
 #' adex %>%
 #'   derive_param_exposure(
+#'     dataset_add = adex,
 #'     by_vars = exprs(USUBJID),
 #'     set_values_to = exprs(PARAMCD = "TADJ", PARCAT1 = "OVERALL"),
 #'     input_code = "ADJ",
@@ -126,28 +154,52 @@
 #'     summary_fun = function(x) if_else(sum(!is.na(x)) > 0, "Y", NA_character_)
 #'   ) %>%
 #'   select(-ASTDTM, -AENDTM)
-derive_param_exposure <- function(dataset,
+derive_param_exposure <- function(dataset = NULL,
+                                  dataset_add,
                                   by_vars,
                                   input_code,
                                   analysis_var,
                                   summary_fun,
                                   filter = NULL,
+                                  filter_add = NULL,
                                   set_values_to = NULL) {
   by_vars <- assert_vars(by_vars)
   analysis_var <- assert_symbol(enexpr(analysis_var))
 
   dtm <- c("ASTDTM", "AENDTM") %in% colnames(dataset)
   dt <- c("ASTDT", "AENDT") %in% colnames(dataset)
+  set_dtm <- NULL
+  set_dt <- NULL
   if (all(dtm)) {
     dates <- exprs(ASTDTM, AENDTM)
+    set_dtm <- exprs(
+      ASTDTM = min(ASTDTM, na.rm = TRUE),
+      AENDTM = max(coalesce(AENDTM, ASTDTM), na.rm = TRUE)
+    )
   } else {
     dates <- exprs(ASTDT, AENDT)
   }
+  if (all(dt)) {
+    set_dt <- exprs(
+      ASTDT = min(ASTDT, na.rm = TRUE),
+      AENDT = max(coalesce(AENDT, ASTDT), na.rm = TRUE)
+    )
+  }
 
-  assert_data_frame(dataset,
+  assert_data_frame(dataset, required_vars = by_vars, optional = TRUE)
+  assert_data_frame(dataset_add,
     required_vars = expr_c(by_vars, analysis_var, exprs(PARAMCD), dates)
   )
-  filter <- assert_filter_cond(enexpr(filter), optional = TRUE)
+
+  if (!missing(filter)) {
+    deprecate_warn(
+      "1.0.0",
+      I("derive_param_exposure(filter = )"),
+      "derive_param_exposure(filter_add = )"
+    )
+    filter_add <- assert_filter_cond(enexpr(filter), optional = TRUE)
+  }
+  filter_add <- assert_filter_cond(enexpr(filter_add), optional = TRUE)
   assert_varval_list(set_values_to, required_elements = "PARAMCD")
   assert_param_does_not_exist(dataset, set_values_to$PARAMCD)
   assert_character_scalar(input_code)
@@ -155,57 +207,20 @@ derive_param_exposure <- function(dataset,
   assert_character_vector(input_code, values = params_available)
   assert_s3_class(summary_fun, "function")
 
-  subset_ds <- dataset %>%
-    filter_if(filter)
-
-  add_data <- subset_ds %>%
-    get_summary_records(
-      by_vars = by_vars,
-      filter = PARAMCD == !!input_code,
-      analysis_var = !!analysis_var,
-      summary_fun = summary_fun,
-      set_values_to = set_values_to
-    )
-
-  # add the dates for the derived parameters
-  tmp_start <- get_new_tmp_var(dataset)
-  tmp_end <- get_new_tmp_var(dataset)
-  if (all(dtm)) {
-    dates <- subset_ds %>%
-      group_by(!!!by_vars) %>%
-      summarise(
-        !!tmp_start := min(ASTDTM, na.rm = TRUE),
-        !!tmp_end := max(coalesce(AENDTM, ASTDTM), na.rm = TRUE)
-      ) %>%
-      ungroup()
-    expo_data <- add_data %>%
-      derive_vars_merged(dataset_add = dates, by_vars = by_vars) %>%
-      mutate(
-        ASTDTM = !!tmp_start,
-        AENDTM = !!tmp_end
-      ) %>%
-      remove_tmp_vars()
-
-    if (all(dt)) {
-      expo_data <- expo_data %>%
-        mutate(ASTDT = date(ASTDTM), AENDT = date(AENDTM))
-    }
-  } else {
-    dates <- subset_ds %>%
-      group_by(!!!by_vars) %>%
-      summarise(
-        !!tmp_start := min(ASTDT, na.rm = TRUE),
-        !!tmp_end := max(coalesce(AENDT, ASTDT), na.rm = TRUE)
-      ) %>%
-      ungroup()
-    expo_data <- add_data %>%
-      derive_vars_merged(dataset_add = dates, by_vars = by_vars) %>%
-      mutate(
-        ASTDT = !!tmp_start,
-        AENDT = !!tmp_end
-      ) %>%
-      remove_tmp_vars()
+  if (is.null(filter_add)) {
+    filter_add <- TRUE
   }
 
-  bind_rows(dataset, expo_data)
+  derive_summary_records(
+    dataset,
+    dataset_add,
+    by_vars = by_vars,
+    filter_add = PARAMCD == !!input_code & !!filter_add,
+    set_values_to = exprs(
+      !!analysis_var := {{ summary_fun }}(!!analysis_var),
+      !!!set_dtm,
+      !!!set_dt,
+      !!!set_values_to
+    )
+  )
 }

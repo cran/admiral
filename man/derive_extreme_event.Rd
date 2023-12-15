@@ -5,29 +5,30 @@
 \title{Add the Worst or Best Observation for Each By Group as New Records}
 \usage{
 derive_extreme_event(
-  dataset,
-  by_vars = NULL,
+  dataset = NULL,
+  by_vars,
   events,
+  tmp_event_nr_var = NULL,
   order,
   mode,
   source_datasets = NULL,
-  ignore_event_order = FALSE,
+  ignore_event_order = NULL,
   check_type = "warning",
-  set_values_to,
+  set_values_to = NULL,
   keep_source_vars = exprs(everything())
 )
 }
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{order} and the \code{by_vars} parameter are
-expected.}
+The variables specified by the \code{by_vars} and \code{order} arguments are expected to be in the dataset.}
 
 \item{by_vars}{Grouping variables
 
 \emph{Default}: \code{NULL}
 
-\emph{Permitted Values:} list of variables created by \code{exprs()}}
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{events}{Conditions and new values defining events
 
@@ -38,12 +39,24 @@ record sorted by \code{order}. The data is grouped by \code{by_vars}, i.e., summ
 functions like \code{all()} or \code{any()} can be used in \code{condition}.
 
 For \code{event_joined()} events the observations are selected by calling
-\code{filter_joined}. The \code{condition} field is passed to the \code{filter} argument.}
+\code{filter_joined()}. The \code{condition} field is passed to the \code{filter_join} argument.}
+
+\item{tmp_event_nr_var}{Temporary event number variable
+
+The specified variable is added to all source datasets and is set to the
+number of the event before selecting the records of the event.
+
+It can be used in \code{order} to determine which record should be used if
+records from more than one event are selected.
+
+The variable is not included in the output dataset.}
 
 \item{order}{Sort order
 
 If a particular event from \code{events} has more than one observation, within
 the event and by group, the records are ordered by the specified order.
+
+For handling of \code{NA}s in sorting variables see \href{../articles/generic.html#sort_order}{Sort Order}.
 
 \emph{Permitted Values:} list of expressions created by \code{exprs()}, e.g.,
 \code{exprs(ADT, desc(AVAL))}}
@@ -51,8 +64,8 @@ the event and by group, the records are ordered by the specified order.
 \item{mode}{Selection mode (first or last)
 
 If a particular event from \code{events} has more than one observation,
-"first"/"last" is to select the first/last record of this type of events
-sorting by \code{order}.
+\code{"first"}/\code{"last"} is used to select the first/last record of this type of
+event sorting by \code{order}.
 
 \emph{Permitted Values:} \code{"first"}, \code{"last"}}
 
@@ -62,6 +75,13 @@ A named list of datasets is expected. The \code{dataset_name} field of \code{eve
 and \code{event_joined()} refers to the dataset provided in the list.}
 
 \item{ignore_event_order}{Ignore event order
+
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+This argument is \emph{deprecated}. If event order should be ignored, please
+specify neither \code{ignore_event_order} nor \code{tmp_event_nr_var}. If the event
+order should be considered, don't specify \code{ignore_event_order} but specify
+\code{tmp_event_nr_var} and and the specified variable to \code{order}.
 
 If the argument is set to \code{TRUE}, all events defined by \code{events} are
 considered equivalent. If there is more than one observation per by group
@@ -85,12 +105,21 @@ by variables and the order.
 The specified variables are set to the specified values for the new
 observations.
 
-A list of variable name-value pairs is expected.
+Set a list of variables to some specified value for the new records
 \itemize{
-\item LHS refers to a variable.
+\item LHS refer to a variable.
 \item RHS refers to the values to set to the variable. This can be a string, a
-symbol, a numeric value, an expression, or \code{NA}, e.g., \code{exprs(PARAMCD =   "TDOSE", PARCAT1 = "OVERALL")}.
-}}
+symbol, a numeric value, an expression or NA. If summary functions are
+used, the values are summarized by the variables specified for \code{by_vars}.
+}
+
+For example:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{  set_values_to = exprs(
+    AVAL = sum(AVAL),
+    DTYPE = "AVERAGE",
+  )
+}\if{html}{\out{</div>}}}
 
 \item{keep_source_vars}{Variables to keep from the source dataset
 
@@ -125,13 +154,15 @@ If the event is of class \code{event_joined}, \code{filter_joined()} is called t
 select the observations.
 \item The variables specified by the \code{set_values_to} field of the event
 are added to the selected observations.
+\item The variable specified for \code{tmp_event_nr_var} is added and set to
+the number of the event.
 \item Only the variables specified for the \code{keep_source_vars} field of the
 event, and the by variables (\code{by_vars}) and the variables created by
 \code{set_values_to} are kept.
 }
+\item All selected observations are bound together.
 \item For each group (with respect to the variables specified for the
-\code{by_vars} parameter) the first event is selected. If there is more than one
-observation per event the first or last observation (with respect to the
+\code{by_vars} parameter) the first or last observation (with respect to the
 order specified for the \code{order} parameter and the mode specified for the
 \code{mode} parameter) is selected.
 \item The variables specified by the \code{set_values_to} parameter are added to
@@ -184,8 +215,9 @@ derive_extreme_event(
       set_values_to = exprs(AVALC = "Missing", AVAL = 99)
     )
   ),
-  order = exprs(ADY),
-  mode = "last",
+  tmp_event_nr_var = event_nr,
+  order = exprs(event_nr, desc(ADY)),
+  mode = "first",
   set_values_to = exprs(
     PARAMCD = "WSP",
     PARAM = "Worst Sleeping Problems"
@@ -221,7 +253,8 @@ derive_extreme_event(
       set_values_to = exprs(AVALC = "Y")
     )
   ),
-  order = exprs(AVISITN),
+  tmp_event_nr_var = event_nr,
+  order = exprs(event_nr, AVISITN),
   mode = "first",
   keep_source_vars = exprs(AVISITN),
   set_values_to = exprs(
@@ -286,7 +319,8 @@ adrs <- tribble(
 derive_extreme_event(
   adrs,
   by_vars = exprs(USUBJID),
-  order = exprs(ADT),
+  tmp_event_nr_var = event_nr,
+  order = exprs(event_nr, ADT),
   mode = "first",
   source_datasets = list(adsl = adsl),
   events = list(
@@ -297,7 +331,7 @@ derive_extreme_event(
       ),
       join_vars = exprs(AVALC, ADT),
       join_type = "after",
-      first_cond = AVALC.join == "CR" &
+      first_cond_upper = AVALC.join == "CR" &
         ADT.join >= ADT + 28,
       condition = AVALC == "CR" &
         all(AVALC.join \%in\% c("CR", "NE")) &
@@ -313,7 +347,7 @@ derive_extreme_event(
       ),
       join_vars = exprs(AVALC, ADT),
       join_type = "after",
-      first_cond = AVALC.join \%in\% c("CR", "PR") &
+      first_cond_upper = AVALC.join \%in\% c("CR", "PR") &
         ADT.join >= ADT + 28,
       condition = AVALC == "PR" &
         all(AVALC.join \%in\% c("CR", "PR", "NE")) &
@@ -363,7 +397,7 @@ derive_extreme_event(
 
 }
 \seealso{
-\code{\link[=event]{event()}}, \code{\link[=event_joined]{event_joined()}}
+\code{\link[=event]{event()}}, \code{\link[=event_joined]{event_joined()}}, \code{\link[=derive_vars_extreme_event]{derive_vars_extreme_event()}}
 
 BDS-Findings Functions for adding Parameters/Records: 
 \code{\link{default_qtc_paramcd}()},
@@ -376,7 +410,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_doseint}()},
 \code{\link{derive_param_exist_flag}()},
 \code{\link{derive_param_exposure}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

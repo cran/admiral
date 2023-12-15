@@ -5,174 +5,313 @@ knitr::opts_chunk$set(
 )
 library(admiraldev)
 
-## ---- warning=FALSE, message=FALSE--------------------------------------------
+## ----warning=FALSE, message=FALSE---------------------------------------------
 library(admiral)
-library(pharmaversesdtm)
-library(dplyr, warn.conflicts = FALSE)
-library(stringr)
 library(tibble)
 
-data("dm")
-data("ds")
-data("ex")
-data("ae")
-dm <- convert_blanks_to_na(dm)
-ds <- convert_blanks_to_na(ds)
-ex <- convert_blanks_to_na(ex)
-ae <- convert_blanks_to_na(ae)
+## ----echo=FALSE---------------------------------------------------------------
+library(reactable)
+
+generic_derivations <- tibble::tribble(
+  ~Derivation,                      ~Method,       ~What,       ~Source,
+  "derive_var_extreme_flag()",      "selection",   "variables", "single",
+  "derive_var_joined_exist_flag()", "selection",   "variables", "single",
+  "derive_var_merged_ef_msrc()",    "selection",   "variables", "multiple",
+  "derive_var_merged_exist_flag()", "selection",   "variables", "single",
+  "derive_vars_merged_summary()",   "summary",     "variables", "single",
+  "derive_vars_joined()",           "selection",   "variables", "single",
+  "derive_vars_merged()",           "selection",   "variables", "single",
+  "derive_vars_extreme_event()",    "selection",   "variables", "multiple",
+  "derive_vars_computed()",         "computation", "variables", "single",
+  "derive_extreme_event()",         "selection",   "records",   "multiple",
+  "derive_extreme_records()",       "selection",   "records",   "single",
+  "derive_param_computed()",        "computation", "records",   "single",
+  "derive_param_exist_flag()",      "selection",   "records",   "single",
+  "derive_summary_records()",       "summary",     "records",   "single"
+) %>% dplyr::select(Derivation, What, Source, Method)
+
+reactable(
+  generic_derivations,
+  columns = list(
+    Derivation = colDef(
+      minWidth = 200,
+      cell = function(value, index) {
+        # Render as a link
+        url <- paste0(
+          "../reference/",
+          substr(value, 1, nchar(value) - 2),
+          ".html"
+        )
+        htmltools::tags$a(href = url, as.character(value))
+      }
+    )
+  ),
+  defaultSorted = list("What" = "desc", "Source" = "desc", "Method" = "asc"),
+  filterable = TRUE,
+  resizable = TRUE,
+  defaultPageSize = 20
+)
+
+## -----------------------------------------------------------------------------
+adsl <- tribble(
+  ~USUBJID,
+  "1",
+  "2",
+  "3"
+)
+
+advs <- tribble(
+  ~USUBJID, ~PARAMCD, ~AVISIT,    ~ABLFL, ~AVAL, ~AVALU,
+  "1",      "WEIGHT", "BASELINE", "Y",     58.7, "kg",
+  "1",      "HEIGHT", "BASELINE", "Y",    169.2, "cm",
+  "1",      "WEIGHT", "WEEK 3",   NA,      59.3, "kg",
+  "2",      "WEIGHT", "BASELINE", "Y",     72.5, "kg",
+  "2",      "WEIGHT", "WEKK 3",   NA,      71.9, "kg",
+)
+
+derive_vars_merged(
+  adsl,
+  dataset_add = advs,
+  by_vars = exprs(USUBJID),
+  filter_add = PARAMCD == "WEIGHT" & ABLFL == "Y",
+  new_vars = exprs(WGTBL = AVAL)
+)
+
+## -----------------------------------------------------------------------------
+adsl <- tribble(
+  ~USUBJID,
+  "1",
+  "2",
+  "3"
+)
+
+ex <- tribble(
+  ~USUBJID, ~EXSTDY, ~EXDOSE,
+  "1",            1,      50,
+  "1",            7,      70,
+  "1",           14,       0,
+  "2",            1,      75,
+  "2",            9,      70
+)
+
+derive_vars_merged(
+  adsl,
+  dataset_add = ex,
+  by_vars = exprs(USUBJID),
+  filter_add = EXDOSE > 0,
+  order = exprs(EXSTDY),
+  mode = "last",
+  new_vars = exprs(TRTEDY = EXSTDY)
+)
+
+## -----------------------------------------------------------------------------
+adae <- tribble(
+  ~USUBJID, ~ASTDY, ~AESEQ,
+  "1",           3,      1,
+  "1",           3,      2,
+  "1",          15,      3
+)
+
+ex <- tribble(
+  ~USUBJID, ~EXSTDY, ~EXDOSE,
+  "1",            1,      50,
+  "1",            7,      70,
+  "1",           14,       0,
+  "2",            1,      75,
+  "2",            9,      70
+)
+
+derive_vars_joined(
+  adae,
+  dataset_add = ex,
+  by_vars = exprs(USUBJID),
+  filter_add = EXDOSE > 0,
+  filter_join = EXSTDY <= ASTDY,
+  join_type = "all",
+  order = exprs(EXSTDY),
+  mode = "last",
+  new_vars = exprs(LSTDOSDY = EXSTDY, LASTDOS = EXDOSE)
+)
 
 ## ----echo=FALSE---------------------------------------------------------------
-# Filter test patients and make more realistic and interesting for the examples
-dm <- filter(dm, USUBJID %in% c("01-701-1111", "01-701-1047", "01-701-1057"))
-ds <- filter(ds, USUBJID %in% c("01-701-1111", "01-701-1047", "01-701-1057")) %>%
-  mutate(DSSTDTC = case_when(
-    USUBJID == "01-701-1111" & DSDECOD == "RANDOMIZED" ~ "2012-08-01",
-    TRUE ~ DSSTDTC
-  ))
-ex <- filter(ex, USUBJID %in% c("01-701-1111", "01-701-1047", "01-701-1057"))
-ae <- filter(ae, USUBJID %in% c("01-701-1111", "01-701-1047")) %>%
-  mutate(AESTDTC = case_when(
-    USUBJID == "01-701-1111" & AESTDY == "-61" ~ "2012-09-14",
-    TRUE ~ AESTDTC
-  )) %>%
-  mutate(AESTDY = case_when(
-    USUBJID == "01-701-1111" & AESTDY == "-61" ~ 8,
-    TRUE ~ AESTDY
-  ))
-
-## ----eval=TRUE----------------------------------------------------------------
-# Use DM domain as basis to build ADSL
-adsl_01 <- dm %>%
-  select(-DOMAIN)
-
-# Convert disposition character date to numeric date and
-# join as randomization date to ADSL
-adsl_02 <- adsl_01 %>%
-  derive_vars_merged(
-    dataset_add = ds,
-    filter_add = DSDECOD == "RANDOMIZED",
-    by_vars = exprs(STUDYID, USUBJID),
-    new_vars = exprs(RANDDT = convert_dtc_to_dt(DSSTDTC))
-  )
-
-## ----eval=TRUE----------------------------------------------------------------
-# Convert exposure start date to numeric date without imputation,
-# determine first exposure datetime and add to ADSL
-adsl_03 <- adsl_02 %>%
-  derive_vars_merged(
-    dataset_add = ex,
-    filter_add = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))) &
-      !is.na(TRTSDT),
-    new_vars = exprs(TRTSDT = convert_dtc_to_dt(EXSTDTC)),
-    order = exprs(TRTSDT, EXSEQ),
-    mode = "first",
-    by_vars = exprs(STUDYID, USUBJID)
-  )
-
-## ----eval=TRUE----------------------------------------------------------------
-# Add safety population flag to ADSL
-adsl_04 <- adsl_03 %>%
-  derive_var_merged_exist_flag(
-    dataset_add = ex,
-    by_vars = exprs(STUDYID, USUBJID),
-    new_var = SAFFL,
-    condition = (EXDOSE > 0 | (EXDOSE == 0 & str_detect(EXTRT, "PLACEBO"))),
-    false_value = "N",
-    missing_value = "N"
-  )
-
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(
-  dataset = adsl_04,
-  display_vars = exprs(USUBJID, RANDDT, TRTSDT, SAFFL)
+admiral:::get_joined_data(
+  adae,
+  dataset_add = ex,
+  by_vars = exprs(USUBJID),
+  filter_add = EXDOSE > 0,
+  join_vars = exprs(EXDOSE),
+  join_type = "all",
+  order = exprs(EXSTDY)
 )
 
-## ----eval=TRUE----------------------------------------------------------------
-# Convert disposition character date to numeric date without imputation
-ds_ext <- derive_vars_dt(
-  dataset = ds,
-  dtc = DSSTDTC,
-  new_vars_prefix = "DSST"
+## -----------------------------------------------------------------------------
+adlb <- tribble(
+  ~USUBJID, ~PARAMCD, ~ADY, ~ANRIND,
+  "1",      "AST",       1, "HIGH",
+  "1",      "AST",       7, "HIGH",
+  "1",      "AST",      14, "NORMAL",
+  "1",      "ALT",       1, "HIGH",
+  "1",      "ALT",       7, "NORMAL",
+  "1",      "ALT",      14, "HIGH",
+  "2",      "AST",       1, "HIGH",
+  "2",      "AST",      15, "HIGH",
+  "2",      "AST",      22, "NORMAL",
+  "2",      "ALT",       1, "HIGH"
 )
 
-# Join randomization date to ADSL only for safety population patients
-adsl_05 <- adsl_04 %>%
-  derive_vars_joined(
-    dataset_add = ds_ext,
-    filter_add = DSDECOD == "RANDOMIZED",
-    by_vars = exprs(STUDYID, USUBJID),
-    new_vars = exprs(RAND30DT = DSSTDT),
-    filter_join = DSSTDT >= TRTSDT - 30
-  )
-
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-dataset_vignette(
-  dataset = adsl_05,
-  display_vars = exprs(USUBJID, RANDDT, TRTSDT, RAND30DT)
+derive_var_joined_exist_flag(
+  adlb,
+  dataset_add = adlb,
+  by_vars = exprs(USUBJID, PARAMCD),
+  order = exprs(ADY),
+  join_vars = exprs(ADY, ANRIND),
+  join_type = "after",
+  filter_join = ANRIND == "HIGH" & ANRIND.join == "HIGH" & ADY.join > ADY + 10,
+  new_var = HICONFFL
 )
 
-## ----eval=TRUE----------------------------------------------------------------
-# Create a unique datacut day for each patient
-datacut <- tribble(
-  ~USUBJID,      ~DCUTDY, ~DCUTFL,
-  "01-701-1047",      25, "Y",
-  "01-701-1111",       5, "Y"
+## ----echo=FALSE---------------------------------------------------------------
+admiral:::get_joined_data(
+  adlb,
+  dataset_add = adlb,
+  by_vars = exprs(USUBJID, PARAMCD),
+  order = exprs(ADY),
+  join_vars = exprs(ADY, ANRIND),
+  join_type = "after"
 )
 
-# Join datacut flag to AE only for events up to and including this date
-ae_01 <- ae %>%
-  derive_vars_joined(
-    dataset_add = datacut,
-    by_vars = exprs(USUBJID),
-    new_vars = exprs(DCUTFL),
-    join_vars = exprs(DCUTDY),
-    filter_join = AESTDY <= DCUTDY
+## -----------------------------------------------------------------------------
+derive_var_joined_exist_flag(
+  adlb,
+  dataset_add = adlb,
+  by_vars = exprs(USUBJID, PARAMCD),
+  order = exprs(ADY),
+  join_vars = exprs(ADY, ANRIND),
+  join_type = "after",
+  first_cond_upper = ANRIND.join == "HIGH" & ADY.join > ADY + 10,
+  filter_join = ANRIND == "HIGH" & all(ANRIND.join == "HIGH"),
+  new_var = HICONFFL
+)
+
+## ----echo=FALSE---------------------------------------------------------------
+admiral:::get_joined_data(
+  adlb,
+  dataset_add = adlb,
+  by_vars = exprs(USUBJID, PARAMCD),
+  order = exprs(ADY),
+  join_vars = exprs(ADY, ANRIND),
+  join_type = "after",
+  first_cond_upper = ANRIND.join == "HIGH" & ADY.join > ADY + 10
+)
+
+## -----------------------------------------------------------------------------
+advs <- tribble(
+  ~USUBJID, ~PARAMCD, ~AVISITN, ~AVAL,
+  "1",      "WEIGHT",       NA,  62.1,
+  "1",      "WEIGHT",        1,  62.3,
+  "1",      "WEIGHT",        2,  62.5,
+  "1",      "WEIGHT",        3,  62.4
+)
+
+derive_var_extreme_flag(
+  advs,
+  by_vars = exprs(USUBJID, PARAMCD),
+  order = exprs(AVISITN),
+  mode = "last",
+  new_var = LSTVISFL
+)
+
+## -----------------------------------------------------------------------------
+derive_var_extreme_flag(
+  advs,
+  by_vars = exprs(USUBJID, PARAMCD),
+  order = exprs(if_else(is.na(AVISITN), -Inf, AVISITN)),
+  mode = "last",
+  new_var = LSTVISFL
+)
+
+## -----------------------------------------------------------------------------
+derive_var_extreme_flag(
+  advs,
+  by_vars = exprs(USUBJID, PARAMCD),
+  order = exprs(!is.na(AVISITN), AVISITN),
+  mode = "last",
+  new_var = LSTVISFL
+)
+
+## -----------------------------------------------------------------------------
+adex <- tribble(
+  ~USUBJID, ~ASTDY, ~AVAL, ~PARAMCD,
+  "1",           1,    50, "DOSE",
+  "1",           7,    70, "DOSE",
+  "1",          14,     0, "DOSE",
+  "2",           1,    75, "DOSE",
+  "2",           9,    70, "DOSE"
+)
+
+derive_summary_records(
+  adex,
+  dataset_add = adex,
+  filter_add = AVAL > 0,
+  by_vars = exprs(USUBJID),
+  set_values_to = exprs(
+    AVAL = mean(AVAL),
+    PARAMCD = "AVERAGE DOSE"
   )
+)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-ae_01 %>%
-  select(USUBJID, AEDECOD, AESTDY, DCUTFL) %>%
-  arrange(USUBJID, AESTDY) %>%
-  dataset_vignette(display_vars = exprs(USUBJID, AEDECOD, AESTDY, DCUTFL))
+## -----------------------------------------------------------------------------
+adsl <- tribble(
+  ~USUBJID,
+  "1",
+  "2",
+  "3"
+)
 
-## ----eval=TRUE----------------------------------------------------------------
-# Derive nadir severity (AENADSEV)
-# Use a numeric version of severity for sorting with severe=1, moderate=2, mild=3
-ae_02 <- ae_01 %>%
-  derive_vars_joined(
-    dataset_add = ae_01,
-    filter_add = AESTDY > 0,
-    by_vars = exprs(USUBJID),
-    order = exprs(as.integer(factor(AESEV, levels = c("SEVERE", "MODERATE", "MILD")))),
-    new_vars = exprs(AENADSEV = AESEV),
-    join_vars = exprs(AESTDY),
-    filter_join = AESTDY.join < AESTDY,
-    mode = "first",
-    check_type = "none"
+derive_var_merged_summary(
+  adsl,
+  dataset_add = adex,
+  filter_add = AVAL > 0,
+  by_vars = exprs(USUBJID),
+  new_vars = exprs(
+    AVERDOSE = mean(AVAL)
+  ),
+  missing_values = exprs(AVERDOSE = 0)
+)
+
+## -----------------------------------------------------------------------------
+advs <- tribble(
+  ~USUBJID, ~AVISIT,    ~PARAMCD, ~AVAL, ~AVALU,
+  "1",      "BASELINE", "WEIGHT",  32.6, "kg",
+  "1",      "BASELINE", "HEIGHT", 155.4, "cm",
+  "1",      "MONTH 6",  "WEIGHT",  33.2, "kg",
+  "1",      "MONTH 6",  "HEIGHT", 155.8, "cm",
+  "2",      "BASELINE", "WEIGHT",  44.2, "kg",
+  "2",      "BASELINE", "HEIGHT", 145.3, "cm",
+  "2",      "MONTH 6",  "WEIGHT",  42.0, "kg",
+  "2",      "MONTH 6",  "HEIGHT", 146.4, "cm"
+)
+
+derive_param_computed(
+  advs,
+  by_vars = exprs(USUBJID, AVISIT),
+  parameters = c("WEIGHT", "HEIGHT"),
+  set_values_to = exprs(
+    AVAL = AVAL.WEIGHT / (AVAL.HEIGHT / 100)^2,
+    PARAMCD = "BMI",
+    AVALU = "kg/m^2"
   )
+)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-ae_02 %>%
-  select(USUBJID, AEDECOD, AESTDY, AESEV, AENADSEV) %>%
-  arrange(USUBJID, AESTDY) %>%
-  dataset_vignette(display_vars = exprs(USUBJID, AEDECOD, AESTDY, AESEV, AENADSEV))
-
-## ----eval=TRUE----------------------------------------------------------------
-# Highest severity flag (AEHSEVFL)
-ae_03 <- ae_02 %>%
-  derive_var_extreme_flag(
-    new_var = AEHSEVFL,
-    by_vars = exprs(USUBJID),
-    order = exprs(
-      as.integer(factor(AESEV, levels = c("SEVERE", "MODERATE", "MILD"))),
-      AESTDY, AESEQ
-    ),
-    mode = "first"
+## -----------------------------------------------------------------------------
+derive_param_computed(
+  advs,
+  by_vars = exprs(USUBJID, AVISIT),
+  parameters = c("WEIGHT", "HEIGHT"),
+  set_values_to = exprs(
+    AVAL = compute_bmi(weight = AVAL.WEIGHT, height = AVAL.HEIGHT),
+    PARAMCD = "BMI",
+    AVALU = "kg/m^2"
   )
-
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
-ae_03 %>%
-  select(USUBJID, AESTDY, AESEQ, AESEV, AEHSEVFL) %>%
-  arrange(USUBJID, AESTDY, AESEQ) %>%
-  dataset_vignette(display_vars = exprs(USUBJID, AESTDY, AESEQ, AESEV, AEHSEVFL))
+)
 

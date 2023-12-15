@@ -2,16 +2,14 @@
 #'
 #' Filters the first or last observation for each by group.
 #'
-#' @param dataset Input dataset
-#'
-#'   The variables specified by the `order` and the `by_vars` parameter are
-#'   expected.
+#' @param dataset `r roxygen_param_dataset(expected_vars = c("by_vars", "order"))`
 #'
 #' @param by_vars Grouping variables
 #'
 #'   *Default*: `NULL`
 #'
-#'   *Permitted Values:* list of variables created by `exprs()`
+#'   `r roxygen_param_by_vars()`
+#'
 #'
 #' @param order Sort order
 #'

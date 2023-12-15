@@ -7,9 +7,9 @@
 #' blood pressure (DIABP) with the formula
 #' \deqn{MAP = \frac{SYSBP + 2 DIABP}{3}}{MAP = (SYSBP + 2 DIABP) / 3}
 #'
-#' @param dataset Input dataset
-#'
-#'   The variables specified by the `by_vars` parameter are expected.
+#' @param dataset
+#' `r roxygen_param_dataset(expected_vars = c("by_vars"))`
+#'  `PARAMCD` is expected as well.
 #'
 #'   The variable specified by `by_vars` and `PARAMCD` must be a unique key of
 #'   the input dataset after restricting it by the filter condition (`filter`
@@ -72,7 +72,7 @@
 #'   dataset. Only variables specified in `by_vars` will be populated
 #'   in the newly created records.
 #'
-#'   *Permitted Values:* list of variables
+#'   `r roxygen_param_by_vars()`
 #'
 #' @param constant_parameters Required constant parameter codes
 #'
@@ -103,7 +103,7 @@
 #'   The constant parameters (parameters that are measured only once) are merged
 #'   to the other parameters using the specified variables. (Refer to Example 2)
 #'
-#'   *Permitted Values:* list of variables
+#'   `r roxygen_param_by_vars()`
 #'
 #' @param analysis_value Definition of the analysis value
 #'
@@ -304,7 +304,7 @@ derive_param_computed <- function(dataset = NULL,
   assert_logical_scalar(keep_nas)
   ### BEGIN DEPRECATION
   if (!missing(analysis_var)) {
-    deprecate_warn(
+    deprecate_stop(
       "0.12.0",
       "derive_param_computed(analysis_var = )",
       "derive_param_computed(set_values_to = )"
@@ -313,7 +313,7 @@ derive_param_computed <- function(dataset = NULL,
   analysis_var <- assert_symbol(enexpr(analysis_var))
 
   if (!missing(analysis_value)) {
-    deprecate_warn(
+    deprecate_stop(
       "0.12.0",
       "derive_param_computed(analysis_value = )",
       "derive_param_computed(set_values_to = )"
@@ -428,9 +428,12 @@ assert_parameters_argument <- function(parameters, optional = TRUE) {
 #' The function creates temporary parameters and variables of the form
 #' `<variable>.<parameter>`, e.g., `AVAL.WEIGHT`.
 #'
-#' @param dataset Input dataset
+#' @param dataset
+#' `r roxygen_param_dataset(expected_vars = c("by_vars"))`
 #'
-#' @param by_vars By variables
+#' @param by_vars Grouping variables
+#'
+#' `r roxygen_param_by_vars()`
 #'
 #' @param parameters List of parameter codes
 #'

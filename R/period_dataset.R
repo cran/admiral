@@ -6,11 +6,10 @@
 #' `APERIOD`, `APERSDT`, `APEREDT`, `TRTA`, `APHASEN`, `PHSDTM`, `PHEDTM`, ...
 #' in OCCDS and BDS datasets.
 #'
-#' @param dataset ADSL dataset
-#'
-#'   The variables specified by `new_vars` and `subject_keys` are expected. For
-#'   each element of `new_vars` at least one variable of the form of the right
-#'   hand side value must be available in the dataset.
+#' @param dataset
+#' `r roxygen_param_dataset(expected_vars = c("new_vars", "subject_keys"))`
+#' For each element of `new_vars` at least one variable of the form of the right
+#' hand side value must be available in the dataset.
 #'
 #' @param new_vars New variables
 #'
@@ -232,9 +231,7 @@ create_period_dataset <- function(dataset,
 #' reference dataset which has one observations per patient and subperiod,
 #' period, or phase.
 #'
-#' @param dataset ADSL dataset
-#'
-#'   The variables specified by `subject_keys` are expected.
+#' @param dataset `r roxygen_param_dataset(expected_vars = c("subject_keys"))`
 #'
 #' @param dataset_ref Period reference dataset
 #'
@@ -359,7 +356,6 @@ derive_vars_period <- function(dataset,
   assert_vars(new_vars, expect_names = TRUE)
   assert_vars(subject_keys)
   assert_data_frame(dataset, required_vars = subject_keys)
-  assert_data_frame(dataset_ref, required_vars = subject_keys)
 
   new_vars_names <- names(new_vars)
   new_vars_chr <- vars2chr(new_vars)
@@ -411,10 +407,15 @@ derive_vars_period <- function(dataset,
   } else {
     id_vars <- exprs(APHASEN)
   }
+
   assert_data_frame(dataset_ref, required_vars = expr_c(subject_keys, new_vars, id_vars))
 
+  # Strip period reference dataset of any variables not required for later derivations
+  ref_cols <- names(dataset_ref) %in% c(subject_keys, new_vars_chr, id_vars)
+  ref_stripped <- dataset_ref[, ref_cols]
+
   ref_wide <- pivot_wider(
-    dataset_ref,
+    ref_stripped,
     names_from = vars2chr(id_vars),
     values_from = unname(new_vars_chr)
   )

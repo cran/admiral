@@ -33,7 +33,7 @@ advs <- derive_vars_merged(
   by_vars = exprs(STUDYID, USUBJID)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, VSTESTCD, VSDTC, VISIT, TRTSDT, TRTEDT, TRT01A, TRT01P),
@@ -43,7 +43,7 @@ dataset_vignette(
 ## ----eval=TRUE----------------------------------------------------------------
 advs <- derive_vars_dt(advs, new_vars_prefix = "A", dtc = VSDTC)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, VISIT, VSDTC, ADT),
@@ -71,7 +71,7 @@ advs <- derive_vars_dt(
   highest_imputation = "M"
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, VISIT, VSDTC, ADT, ADTF),
@@ -95,7 +95,7 @@ advs <- advs_old
 advs <-
   derive_vars_dy(advs, reference_date = TRTSDT, source_vars = exprs(ADT))
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, VISIT, ADT, ADY, TRTSDT),
@@ -124,7 +124,7 @@ advs <- derive_vars_merged_lookup(
   by_vars = exprs(VSTESTCD)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 advs_param <- distinct(advs, USUBJID, PARAMCD, VSTESTCD)
 
 dataset_vignette(advs_param, display_vars = exprs(USUBJID, VSTESTCD, PARAMCD))
@@ -136,7 +136,7 @@ advs <- mutate(
   AVALC = VSSTRESC
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(VSTESTCD, PARAMCD, VSSTRESN, VSSTRESC, AVAL, AVALC),
@@ -152,7 +152,7 @@ advs <- derive_param_map(
   filter = VSSTAT != "NOT DONE" | is.na(VSSTAT)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   arrange(advs, USUBJID, VISITNUM, VSTPTNUM, ADT, PARAMCD),
   display_vars = exprs(VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL, AVALC),
@@ -179,7 +179,7 @@ advs <- derive_param_bmi(
   constant_by_vars = exprs(USUBJID)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   arrange(advs, USUBJID, VISITNUM, VSTPTNUM, ADT, PARAMCD),
   display_vars = exprs(USUBJID, VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL, AVALC),
@@ -234,7 +234,7 @@ advs <- derive_vars_merged(
   by_vars = exprs(PARAMCD)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(VSTESTCD, PARAMCD, PARAM, PARAMN, PARCAT1, PARCAT1N),
@@ -271,7 +271,7 @@ advs <- derive_var_ontrtfl(
   ref_end_date = TRTEDT
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, PARAMCD, ADT, TRTSDT, TRTEDT, ONTRTFL),
@@ -323,7 +323,7 @@ advs <- derive_var_ontrtfl(
   span_period = TRUE
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, ASTDT, AENDT, AP01SDT, AP01EDT, ONTR01FL)
@@ -347,7 +347,7 @@ advs <- derive_vars_merged(
 ## ----eval=TRUE----------------------------------------------------------------
 advs <- derive_var_anrind(advs)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, PARAMCD, AVAL, ANRLO, ANRHI, A1LO, A1HI, ANRIND),
@@ -380,7 +380,7 @@ advs <- restrict_derivation(
   filter = (!is.na(AVAL) & ADT <= TRTSDT & !is.na(BASETYPE))
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, BASETYPE, PARAMCD, ADT, TRTSDT, ATPTN, TRTSDT, ABLFL),
@@ -409,7 +409,7 @@ advs <- derive_var_base(
   new_var = BNRIND
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, BASETYPE, PARAMCD, ABLFL, BASE, BASEC, ANRIND, BNRIND),
@@ -421,7 +421,7 @@ advs <- derive_var_chg(advs)
 
 advs <- derive_var_pchg(advs)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, VISIT, BASE, AVAL, CHG, PCHG),
@@ -447,7 +447,7 @@ advs <- derive_var_analysis_ratio(advs,
   new_var = R01ANRLO
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, VISIT, BASE, AVAL, ANRLO, R2BASE, R01ANRLO),
@@ -467,7 +467,7 @@ advs <- restrict_derivation(
   filter = !is.na(AVISITN)
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, PARAMCD, AVISIT, ATPTN, ADT, AVAL, ANL01FL),
@@ -494,7 +494,7 @@ advs <- slice_derivation(
 ) %>%
   arrange(STUDYID, USUBJID, BASETYPE, PARAMCD, AVISIT)
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, PARAMCD, AVISIT, AVAL, ADT, ATPTN, WORSTFL),
@@ -515,7 +515,7 @@ advs <- derive_var_obs_number(
   check_type = "error"
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, PARAMCD, ADT, AVISITN, ATPTN, VISIT, ADT, ASEQ),
@@ -543,7 +543,7 @@ advs <- advs %>%
     by = exprs(PARAMCD, AVALCA1N)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, PARAMCD, AVAL, AVALCA1N, AVALCAT1),
@@ -557,7 +557,7 @@ advs <- advs %>%
     by_vars = exprs(STUDYID, USUBJID)
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, RFSTDTC, RFENDTC, DTHDTC, DTHFL, AGE, AGEU),
@@ -567,6 +567,7 @@ dataset_vignette(
 ## ----eval=TRUE----------------------------------------------------------------
 advs_ex1 <- advs %>%
   derive_extreme_records(
+    dataset_add = advs,
     by_vars = exprs(STUDYID, USUBJID, PARAMCD),
     order = exprs(ADT, AVISITN, ATPTN, AVAL),
     mode = "last",
@@ -578,7 +579,7 @@ advs_ex1 <- advs %>%
     )
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   arrange(advs_ex1, USUBJID, PARAMCD, desc(AVISITN), ATPTN),
   display_vars = exprs(USUBJID, PARAMCD, ADT, AVISITN, AVISIT, ATPTN, AVAL, DTYPE, ANL01FL),
@@ -588,6 +589,7 @@ dataset_vignette(
 ## ----eval=TRUE----------------------------------------------------------------
 advs_ex1 <- advs %>%
   derive_extreme_records(
+    dataset_add = advs,
     by_vars = exprs(STUDYID, USUBJID, PARAMCD),
     order = exprs(AVAL, ADT, AVISITN, ATPTN),
     mode = "first",
@@ -599,7 +601,7 @@ advs_ex1 <- advs %>%
     )
   )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   arrange(advs_ex1, USUBJID, PARAMCD, desc(AVISITN), ATPTN),
   display_vars = exprs(USUBJID, PARAMCD, ADT, AVISITN, AVISIT, ATPTN, AVAL, DTYPE, ANL01FL),
@@ -609,13 +611,15 @@ dataset_vignette(
 ## ----eval=TRUE----------------------------------------------------------------
 advs_ex2 <- derive_summary_records(
   advs,
+  dataset_add = advs,
   by_vars = exprs(STUDYID, USUBJID, PARAMCD, VISITNUM, ADT),
-  analysis_var = AVAL,
-  summary_fun = mean,
-  set_values_to = exprs(DTYPE = "AVERAGE")
+  set_values_to = exprs(
+    AVAL = mean(AVAL, na.rm = TRUE),
+    DTYPE = "AVERAGE"
+  )
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   arrange(advs_ex2, USUBJID, PARAMCD, VISITNUM, ADT, DTYPE),
   display_vars = exprs(USUBJID, PARAMCD, VISITNUM, ADT, AVAL, DTYPE),
@@ -634,7 +638,7 @@ advs_ex3 <- derive_param_computed(
   )
 )
 
-## ---- eval=TRUE, echo=FALSE---------------------------------------------------
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   arrange(advs_ex3, USUBJID, VISIT, ATPT, PARAMCD),
   display_vars = exprs(USUBJID, PARAMCD, VISIT, ATPT, AVAL),

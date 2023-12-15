@@ -15,10 +15,9 @@ derive_expected_records(
 \arguments{
 \item{dataset}{Input dataset
 
-A data frame, the columns from \code{dataset_ref} and specified by the
-\code{by_vars} parameter are expected.}
+The variables specified by the \code{dataset_ref} and \code{by_vars} arguments are expected to be in the dataset.}
 
-\item{dataset_expected_obs}{\emph{Deprecated}, please use \code{dataset_ref} instead.}
+\item{dataset_expected_obs}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{dataset_ref} instead.}
 
 \item{dataset_ref}{Expected observations dataset
 
@@ -29,7 +28,10 @@ combinations of \code{PARAMCD}, \code{PARAM}, \code{AVISIT}, \code{AVISITN}, ...
 
 For each group defined by \code{by_vars} those observations from \code{dataset_ref}
 are added to the output dataset which do not have a corresponding observation
-in the input dataset.}
+in the input dataset.
+
+\emph{Permitted Values}: list of variables created by \code{exprs()}
+e.g. \code{exprs(USUBJID, VISIT)}}
 
 \item{set_values_to}{Variables to be set
 
@@ -110,7 +112,6 @@ BDS-Findings Functions for adding Parameters/Records:
 \code{\link{derive_param_doseint}()},
 \code{\link{derive_param_exist_flag}()},
 \code{\link{derive_param_exposure}()},
-\code{\link{derive_param_extreme_record}()},
 \code{\link{derive_param_framingham}()},
 \code{\link{derive_param_map}()},
 \code{\link{derive_param_qtc}()},

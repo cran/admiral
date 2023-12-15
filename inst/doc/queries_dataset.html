@@ -296,19 +296,19 @@ dataset passed to the <code>dataset_queries</code> argument in the
 <tr class="odd">
 <td><strong>SRCVAR</strong></td>
 <td>The variable used to define the grouping. Used in conjunction with
-TERMNAME</td>
+TERMCHAR</td>
 <td>Character</td>
 <td><code>&quot;AEDECOD&quot;</code></td>
 </tr>
 <tr class="even">
-<td><strong>TERMNAME</strong></td>
+<td><strong>TERMCHAR</strong></td>
 <td>A term used to define the grouping. Used in conjunction with
 SRCVAR</td>
 <td>Character</td>
 <td><code>&quot;GUILLAIN-BARRE SYNDROME&quot;</code></td>
 </tr>
 <tr class="odd">
-<td><strong>TERMID</strong></td>
+<td><strong>TERMNUM</strong></td>
 <td>A code used to define the grouping. Used in conjunction with
 SRCVAR</td>
 <td>Integer</td>
@@ -342,7 +342,12 @@ SRCVAR</td>
 </table>
 <p><strong>Bold variables</strong> are required in
 <code>dataset_queries</code>: an error is issued if any of these
-variables is missing. Other variables are optional.</p>
+variables is missing. <code>TERMCHAR</code> is only REQUIRED if there is
+character variable named in <code>SRCVAR</code>. <code>TERMNUM</code> is
+only REQUIRED if there is numeric variable named in <code>SRCVAR</code>.
+When <code>SRCVAR</code> contains both character and numeric variables,
+then both <code>TERMCHAR</code> and <code>TERMNUM</code> are required.
+Other variables are optional.</p>
 <p>The <code>VERSION</code> variable is not used by
 <code>derive_vars_query()</code> but can be used to check if the
 dictionary version of the queries dataset and the analysis dataset are
@@ -352,8 +357,8 @@ in line.</p>
 <h2>Required Content</h2>
 <p>Each row must be unique within the dataset.</p>
 <p>As described above, the variables <code>PREFIX</code>,
-<code>GRPNAME</code>, <code>SRCVAR</code>, <code>TERMNAME</code> and
-<code>TERMID</code> are required. The combination of these variables
+<code>GRPNAME</code>, <code>SRCVAR</code>, <code>TERMCHAR</code> and
+<code>TERMNUM</code> are required. The combination of these variables
 will allow the creation of the grouping variable.</p>
 <div id="input" class="section level3">
 <h3>Input</h3>
@@ -374,11 +379,11 @@ the input <code>dataset</code> and issue an error otherwise.</p></li>
 <li><p>Different <code>SRCVAR</code> variables may be specified within a
 <code>PREFIX</code>.</p></li>
 </ul></li>
-<li><p><code>TERMNAME</code> must be a character string. This
-<strong>must</strong> be populated if <code>TERMID</code> is
+<li><p><code>TERMCHAR</code> must be a character string. This
+<strong>must</strong> be populated if <code>TERMNUM</code> is
 missing.</p></li>
-<li><p><code>TERMID</code> must be an integer. This
-<strong>must</strong> be populated if <code>TERMNAME</code> is
+<li><p><code>TERMNUM</code> must be an integer. This
+<strong>must</strong> be populated if <code>TERMCHAR</code> is
 missing.</p></li>
 </ul>
 </div>
@@ -400,23 +405,23 @@ populate the corresponding <code>ABCzzNAM</code> variable.</p></li>
 <code>dataset</code> used to perform the grouping
 (e.g. <code>AEDECOD</code>,<code>AEBODSYS</code>,
 <code>AELLTCD</code>).</p></li>
-<li><p><code>TERMNAME</code> (for character variables),
-<code>TERMID</code> (for numeric variables) will be used to identify the
-records meeting the criteria in <code>dataset</code> based on the
+<li><p><code>TERMCHAR</code> (for character variables),
+<code>TERMNUM</code> (for numeric variables) will be used to identify
+the records meeting the criteria in <code>dataset</code> based on the
 variable defined in <code>SRCVAR</code>.</p></li>
 <li><p><strong>Result:</strong></p>
 <ul>
 <li><p>For each record in <code>dataset</code>, where the variable
 defined by <code>SRCVAR</code> match a term from the
-<code>TERMNAME</code> (for character variables) or <code>TERMID</code>
+<code>TERMCHAR</code> (for character variables) or <code>TERMNUM</code>
 (for numeric variables) in the <code>datasets_queries</code>,
 <code>ABCzzNAM</code> is populated with <code>GRPNAME</code>.</p></li>
 <li><p>Note: The type (numeric or character) of the variable defined in
 <code>SRCVAR</code> is checked in <code>dataset</code>. If the variable
 is a character variable (e.g. <code>AEDECOD</code>), it is expected that
-<code>TERMNAME</code> is populated, if it is a numeric variable
-(e.g. <code>AEBDSYCD</code>), it is expected that <code>TERMID</code> is
-populated, otherwise an error is issued.</p></li>
+<code>TERMCHAR</code> is populated, if it is a numeric variable
+(e.g. <code>AEBDSYCD</code>), it is expected that <code>TERMNUM</code>
+is populated, otherwise an error is issued.</p></li>
 </ul></li>
 </ul>
 </div>
@@ -431,13 +436,13 @@ events.</p>
 [<code>PREFIX</code>] will be populated with “Standard Query 1”
 [<code>GRPNAME</code>] if any preferred term (<code>AEDECOD</code>)
 [<code>SRCVAR</code>] in <code>dataset</code> is equal to “AE1” or “AE2”
-[<code>TERMNAME</code>]</p></li>
+[<code>TERMCHAR</code>]</p></li>
 <li><p>The customized query (<code>CQ02NAM</code>) [<code>PREFIX</code>]
 will be populated with “Query 2” [<code>GRPNAME</code>] if any Low Level
 Term Code (<code>AELLTCD</code>) [<code>SRCVAR</code>] in
-<code>dataset</code> is equal to 10 [<code>TERMID</code>] or any
+<code>dataset</code> is equal to 10 [<code>TERMNUM</code>] or any
 preferred term (<code>AEDECOD</code>) [<code>SRCVAR</code>] in
-<code>dataset</code> is equal to “AE4” [<code>TERMNAME</code>].</p></li>
+<code>dataset</code> is equal to “AE4” [<code>TERMCHAR</code>].</p></li>
 </ul>
 <div id="query-dataset-ds_query" class="section level4">
 <h4>Query Dataset (<code>ds_query</code>)</h4>
@@ -447,8 +452,8 @@ preferred term (<code>AEDECOD</code>) [<code>SRCVAR</code>] in
 <th>PREFIX</th>
 <th>GRPNAME</th>
 <th>SRCVAR</th>
-<th>TERMNAME</th>
-<th>TERMID</th>
+<th>TERMCHAR</th>
+<th>TERMNUM</th>
 <th></th>
 </tr>
 </thead>

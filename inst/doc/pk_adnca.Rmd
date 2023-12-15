@@ -388,6 +388,7 @@ adpc_prev <- adpc_first_dose %>%
       AENDTM_prev = AENDTM
     ),
     join_vars = exprs(ADTM),
+    join_type = "all",
     filter_add = NULL,
     filter_join = ADTM > ADTM.join,
     mode = "last",
@@ -422,6 +423,7 @@ adpc_next <- adpc_prev %>%
       AENDTM_next = AENDTM
     ),
     join_vars = exprs(ADTM),
+    join_type = "all",
     filter_add = NULL,
     filter_join = ADTM <= ADTM.join,
     mode = "first",
@@ -457,6 +459,7 @@ adpc_nom_prev <- adpc_next %>%
     order = exprs(NFRLT),
     new_vars = exprs(NFRLT_prev = NFRLT),
     join_vars = exprs(NFRLT),
+    join_type = "all",
     filter_add = NULL,
     filter_join = NFRLT > NFRLT.join,
     mode = "last",
@@ -472,6 +475,7 @@ adpc_nom_next <- adpc_nom_prev %>%
     order = exprs(NFRLT),
     new_vars = exprs(NFRLT_next = NFRLT),
     join_vars = exprs(NFRLT),
+    join_type = "all",
     filter_add = NULL,
     filter_join = NFRLT <= NFRLT.join,
     mode = "first",
@@ -914,10 +918,8 @@ Adding attributes to the `ADPC` file will be discussed
 
 # Programming Population PK (ADPPK) Analysis Data
 
-The Population PK Analysis Data (ADPPK) follows the forthcoming CDISC
-Implementation Guide
-(<https://www.cdisc.org/adam-poppk-implementation-guide-v1-0>). The
-programming workflow for Population PK (ADPPK) Analysis Data is similar
+The Population PK Analysis Data (ADPPK) follows the CDISC Implementation Guide
+(<https://www.cdisc.org/standards/foundational/adam/basic-data-structure-adam-poppk-implementation-guide-v1-0>). The programming workflow for Population PK (ADPPK) Analysis Data is similar
 to the NCA Programming flow with a few key differences. Population PK
 models generally make use of nonlinear mixed effects models that require
 numeric variables. The data used in the models will include both dosing
@@ -1027,6 +1029,7 @@ adppk_prev <- adppk_first_dose %>%
       AENDTM_prev = AENDTM
     ),
     join_vars = exprs(ADTM),
+    join_type = "all",
     filter_add = NULL,
     filter_join = ADTM > ADTM.join,
     mode = "last",
@@ -1042,6 +1045,7 @@ adppk_nom_prev <- adppk_prev %>%
     order = exprs(NFRLT),
     new_vars = exprs(NFRLT_prev = NFRLT),
     join_vars = exprs(NFRLT),
+    join_type = "all",
     filter_add = NULL,
     filter_join = NFRLT > NFRLT.join,
     mode = "last",
@@ -1450,7 +1454,7 @@ example](https://examples.pharmaverse.org/data/adsl/).
 
 # Example Scripts {#example}
 
-| ADaM  | Sample Code                                                                                               |
-|------------|------------------------------------------------------------|
-| ADPC  | [ad_adpc.R](https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adpc.R){target="_blank"}   |
-| ADPPK | [ad_adppk.R](https://github.com/pharmaverse/admiral/blob/main/inst/templates/ad_adppk.R){target="_blank"} |
+ADaM  | Sourcing Command
+----- | --------------
+ADPC  | `use_ad_template("ADPC")`
+ADPPK | `use_ad_template("ADPPK")`

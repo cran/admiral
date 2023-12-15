@@ -26,7 +26,7 @@ eg <- eg
 # When SAS datasets are imported into R using haven::read_sas(), missing
 # character values from SAS appear as "" characters in R, instead of appearing
 # as NA values. Further details can be obtained via the following link:
-# https://pharmaverse.github.io/admiral/cran-release/articles/admiral.html#handling-of-missing-values # nolint
+# https://pharmaverse.github.io/admiral/articles/admiral.html#handling-of-missing-values # nolint
 
 eg <- convert_blanks_to_na(eg)
 
@@ -172,7 +172,7 @@ adeg <- adeg %>%
 
 ## Get visit info ----
 # See also the "Visit and Period Variables" vignette
-# (https://pharmaverse.github.io/admiral/cran-release/articles/visits_periods.html#visits)
+# (https://pharmaverse.github.io/admiral/articles/visits_periods.html#visits)
 adeg <- adeg %>%
   # Derive Timing
   mutate(
@@ -197,11 +197,13 @@ adeg <- adeg %>%
 # (if least 2 records available) for all parameter except EGINTP
 adeg <- adeg %>%
   derive_summary_records(
+    dataset_add = adeg,
     by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars, PARAMCD, AVISITN, AVISIT, ADT),
-    analysis_var = AVAL,
-    summary_fun = function(x) mean(x, na.rm = TRUE),
-    filter = dplyr::n() >= 2 & PARAMCD != "EGINTP",
-    set_values_to = exprs(DTYPE = "AVERAGE")
+    filter_add = dplyr::n() >= 2 & PARAMCD != "EGINTP",
+    set_values_to = exprs(
+      AVAL = mean(AVAL, na.rm = TRUE),
+      DTYPE = "AVERAGE"
+    )
   )
 
 adeg <- adeg %>%
@@ -290,7 +292,7 @@ adeg <- adeg %>%
 
 ## Get treatment information ----
 # See also the "Visit and Period Variables" vignette
-# (https://pharmaverse.github.io/admiral/cran-release/articles/visits_periods.html#treatment_bds)
+# (https://pharmaverse.github.io/admiral/articles/visits_periods.html#treatment_bds)
 adeg <- adeg %>%
   # Assign TRTA, TRTP
   mutate(TRTP = TRT01P, TRTA = TRT01A)
@@ -329,5 +331,10 @@ adeg <- adeg %>%
 
 # Save output ----
 
-dir <- tempdir() # Change to whichever directory you want to save the dataset in
-saveRDS(adeg, file = file.path(dir, "adeg.rds"), compress = "bzip2")
+# Change to whichever directory you want to save the dataset in
+dir <- tools::R_user_dir("admiral_templates_data", which = "cache")
+if (!file.exists(dir)) {
+  # Create the folder
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+}
+save(adeg, file = file.path(dir, "adeg.rda"), compress = "bzip2")

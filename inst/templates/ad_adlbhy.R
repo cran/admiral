@@ -56,8 +56,9 @@ bili_records <- adlb_annotated %>%
 hylaw_records <- derive_vars_joined(
   dataset = altast_records,
   dataset_add = bili_records,
-  by_vars = exprs(STUDYID, USUBJID, ADY),
+  by_vars = exprs(STUDYID, USUBJID),
   order = exprs(ADY),
+  join_type = "all",
   filter_join = ADT.join - ADT <= 14 & CRIT1FL == "Y" & CRIT1FL.join == "Y",
   new_vars = exprs(BILI_LBSEQ = LBSEQ, BILI_DT = ADT, BILI_CRITFL = CRIT1FL),
   mode = "first"
@@ -88,3 +89,11 @@ hylaw_params <- derive_param_exist_flag(
 # Row bind back to relevant adlb-like dataset
 adlbhy <- adlb_annotated %>%
   bind_rows(hylaw_params)
+
+# Change to whichever directory you want to save the dataset in
+dir <- tools::R_user_dir("admiral_templates_data", which = "cache")
+if (!file.exists(dir)) {
+  # Create the folder
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+}
+save(adlbhy, file = file.path(dir, "adlbhy.rda"), compress = "bzip2")

@@ -6,16 +6,16 @@ knitr::opts_chunk$set(
 
 library(admiraldev)
 
-## ---- warning=FALSE, message=FALSE--------------------------------------------
+## ----warning=FALSE, message=FALSE---------------------------------------------
 library(admiral)
 library(dplyr, warn.conflicts = FALSE)
 
-## ---- eval = TRUE-------------------------------------------------------------
+## ----eval = TRUE--------------------------------------------------------------
 data(admiral_adlb)
 adlb <- admiral_adlb %>%
   filter(PARAMCD %in% c("AST", "ALT", "BILI") & is.na(DTYPE))
 
-## ---- echo = FALSE------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 head(adlb) %>%
   dataset_vignette()
 
@@ -36,10 +36,10 @@ adlb_annotated <- adlb %>%
   ) %>%
   select(STUDYID, USUBJID, TRT01A, PARAMCD, LBSEQ, ADT, AVISIT, ADY, AVAL, ANRHI, CRIT1, CRIT1FL)
 
-## ---- echo = FALSE------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 dataset_vignette(adlb_annotated)
 
-## ---- warning = FALSE---------------------------------------------------------
+## ----warning = FALSE----------------------------------------------------------
 altast_records <- adlb_annotated %>%
   filter(PARAMCD %in% c("AST", "ALT"))
 
@@ -51,12 +51,13 @@ hylaw_records <- derive_vars_joined(
   dataset_add = bili_records,
   by_vars = exprs(STUDYID, USUBJID),
   order = exprs(ADY),
+  join_type = "all",
   filter_join = 0 <= ADT.join - ADT & ADT.join - ADT <= 14 & CRIT1FL == "Y" & CRIT1FL.join == "Y",
   new_vars = exprs(BILI_DT = ADT, BILI_CRITFL = CRIT1FL),
   mode = "first"
 )
 
-## ---- echo = FALSE------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 hylaw_records %>%
   arrange(desc(BILI_CRITFL), desc(CRIT1FL)) %>%
   dataset_vignette()
@@ -84,7 +85,7 @@ hylaw_params <- derive_param_exist_flag(
   )
 )
 
-## ---- echo = FALSE------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 hylaw_params %>%
   arrange(desc(AVAL)) %>%
   dataset_vignette()
@@ -93,6 +94,6 @@ hylaw_params %>%
 adlbhy <- adlb_annotated %>%
   bind_rows(hylaw_params)
 
-## ---- echo = FALSE------------------------------------------------------------
+## ----echo = FALSE-------------------------------------------------------------
 dataset_vignette(adlbhy)
 
