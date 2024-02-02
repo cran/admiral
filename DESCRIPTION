@@ -1,7 +1,7 @@
 Type: Package
 Package: admiral
 Title: ADaM in R Asset Library
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(
     person("Ben", "Straub", , "ben.x.straub@gsk.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut"),
@@ -50,9 +50,9 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 NeedsCompilation: no
-Packaged: 2023-12-14 18:36:25 UTC; r590548
+Packaged: 2024-02-01 19:28:34 UTC; r590548
 Author: Ben Straub [aut, cre],
   Stefan Bundfuss [aut],
   Jeffrey Dickinson [aut],
@@ -75,4 +75,4 @@ Author: Ben Straub [aut, cre],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Ben Straub <ben.x.straub@gsk.com>
 Repository: CRAN
-Date/Publication: 2023-12-15 23:10:22 UTC
+Date/Publication: 2024-02-02 00:00:16 UTC
