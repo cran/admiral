@@ -1,6 +1,6 @@
-52b5bf27b2ebfcf6ff7ecf7b80f39bd9 *DESCRIPTION
+929a231d9ac802af26b020e07f87d39d *DESCRIPTION
 db73eed650f14a9209d43adb7a84c476 *NAMESPACE
-fb36e2b889e70aa1bcac916d674c2d98 *NEWS.md
+62d748b67c4510a68d1d4a06bcf85222 *NEWS.md
 42f2a79488dff618b3a2bf249398e83d *R/admiral-package.R
 4a1b8c7c5d3287240ae5ccdbb6acc57d *R/admiral_environment.R
 5892c7c4125fa568b457d26d2e38acb9 *R/admiral_options.R
@@ -32,7 +32,7 @@ cc29e31b75176df0d6fb41ed5ca2bef4 *R/derive_joined.R
 7668f98e9378e4f0199f5a2ccb4abdd2 *R/derive_param_exposure.R
 e615678daa1ec69928548465e0584563 *R/derive_param_extreme_record.R
 1fbfe212b6b4afefbeb805ba2567e256 *R/derive_param_framingham.R
-ea69bde1a00269a8cab3e1640d22d9c4 *R/derive_param_tte.R
+102dc0a0ee4aa1b06b4ea4490cf70d32 *R/derive_param_tte.R
 f701113cf1760d098a7506495b5fe1ec *R/derive_param_wbc_abs.R
 304d9f748803d8e12e458b16f8013dab *R/derive_summary_records.R
 36e02bc42f2603d5b524565c056d064f *R/derive_var_analysis_ratio.R
@@ -77,7 +77,7 @@ cc11d2d67db6ddc29f9789b85f7f6a93 *R/roxygen2.R
 2a375f247daf560ff9e2cd5ae301edf5 *R/tte_sources.R
 6f4f018286c6d370c6b1219d0141471d *R/user_helpers.R
 0e1a6503eee2c4f4a8493fab7a8e1d5a *R/user_utils.R
-bd72fa9e21de15bec84fbbc9b5e5b1e4 *README.md
+b38b73edd183597060beee0bbfb1e5a5 *README.md
 f018db3f11133aab19fe3e1b731b9911 *build/vignette.rds
 70082097fb3b4ec04d6a09176c33032b *data/admiral_adlb.rda
 2c2fc1b37990073e35814b669864a4f7 *data/admiral_adsl.rda
@@ -106,7 +106,7 @@ e808bfa8f163161fa682e1c2809508ef *inst/doc/bds_tte.R
 b42de64ad2d47fa0efa9157201f8192b *inst/doc/bds_tte.html
 ba94e7bffb02abaa8d4e38cbd98088b6 *inst/doc/generic.R
 077b1d35f0a4b904ec4e82a347fd3720 *inst/doc/generic.Rmd
-41504f63a7cbb4c968f2c7cee8293229 *inst/doc/generic.html
+412acaff732ca1fcd69dbdec49ca01e2 *inst/doc/generic.html
 8194b2be1c4ce481d063b082d4fe1a84 *inst/doc/higher_order.R
 e836560a046b82df7fa9111dabb37627 *inst/doc/higher_order.Rmd
 9d268e3e13a7ca56608c3022bbe6f838 *inst/doc/higher_order.html
@@ -139,7 +139,7 @@ cfa63740391d5b3b3308be2fe77600c1 *inst/doc/visits_periods.html
 0120ab581c2ca527feccf59a510f8a1f *inst/example_scripts/example_query_source.R
 a04c5ca770b935ca66c92d8e26c320bd *inst/templates/ad_adae.R
 3cc3febaaa844ea4da971c97dcd8e539 *inst/templates/ad_adcm.R
-7c273f8b468ce177f225e08bce551e40 *inst/templates/ad_adeg.R
+2a8d0972a4f57062d2dc2383649a5c63 *inst/templates/ad_adeg.R
 3e3a2ccc7838286a859bf53334eaca79 *inst/templates/ad_adex.R
 4f4a2c263693df9d3609ac5b0942ffa2 *inst/templates/ad_adlb.R
 3f94f1a490b29337f6646388b7e5e7e8 *inst/templates/ad_adlbhy.R
@@ -348,7 +348,7 @@ fec13614b65058a092d931d62157de57 *tests/testthat/test-derive_param_extreme_recor
 527b5b1c41d337893b70298149facf31 *tests/testthat/test-derive_param_framingham.R
 0413526522774a063d2a3695379cdb9e *tests/testthat/test-derive_param_qtc.R
 0cb517987ab4da4df068a6e3e910beb3 *tests/testthat/test-derive_param_rr.R
-ecdc3c3865ce22dd74ad9ce35cf2d126 *tests/testthat/test-derive_param_tte.R
+07dbaa5f5a92cc8bff8b5a0fa299a24a *tests/testthat/test-derive_param_tte.R
 3f048ab65c9b3a20e516a362be740077 *tests/testthat/test-derive_param_wbc_abs.R
 a07ad57b78e0c321aedb0f6315dfd348 *tests/testthat/test-derive_summary_records.R
 b64af2ece0d811260c3169d917a01b1e *tests/testthat/test-derive_var_analysis_ratio.R
