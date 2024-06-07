@@ -51,7 +51,9 @@ param_lookup <- tibble::tribble(
   "TCEND", "TCEND", "Time of CEND", 17, # non Cdisc Term
   "TLST", "TLST", "Time of Last Nonzero Conc", 18,
   "TMAX", "TMAX", "Time of CMAX", 19,
-  "VSSO", "VSSO", "Vol Dist Steady State Obs", 20
+  "VSSO", "VSSO", "Vol Dist Steady State Obs", 20,
+  "RCAMINT", "RCAMINT", "Ae", 21,
+  "RENALCL", "RENALCL", "CLR", 22
 )
 
 # ASSIGN AVALCAT1
@@ -100,10 +102,11 @@ adpp_aval <- adpp_pp %>%
     select(param_lookup, PPTESTCD, PARAMCD),
     by = "PPTESTCD"
   ) %>%
-  ## Calculate AVAL and AVALC ----
+  ## Calculate PARCAT1, AVAL and AVALC ----
   mutate(
+    PARCAT1 = PPCAT,
     AVAL = PPSTRESN,
-    AVALC = PPSTRESC
+    AVALU = PPSTRESU,
   ) %>%
   # Remove variables
   select(-PPSTRESN, -PPSTRESC) %>%
@@ -121,14 +124,10 @@ adpp_aval <- adpp_pp %>%
 adpp_avisit <- adpp_aval %>%
   # Derive Timing
   mutate(
-    VISIT = "", # /!\ To remove
-    VISITNUM = NA, # /!\ To remove
-    AVISIT = case_when(
-      str_detect(VISIT, "SCREEN|UNSCHED|RETRIEVAL|AMBUL") ~ NA_character_,
-      !is.na(VISIT) ~ str_to_title(VISIT),
-      TRUE ~ NA_character_
-    ),
-    AVISITN = VISITNUM
+    AVISITN = ADY,
+    AVISIT = paste("Day", ADY),
+    VISITNUM = AVISITN,
+    VISIT = AVISIT
   ) %>%
   ## Assign TRTA, TRTP ----
   # See also the "Visit and Period Variables" vignette

@@ -1526,10 +1526,12 @@ treatment,</p>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">dataset_add =</span> adex,</span>
 <span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars),</span>
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">input_code =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">sum</span>(AVAL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  )</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
 <col width="17%" />
@@ -1661,54 +1663,64 @@ populated in the new records.</p>
 <span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>    <span class="at">derivation =</span> derive_param_exposure,</span>
 <span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>    <span class="at">variable_params =</span> <span class="fu">list</span>(</span>
 <span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>      ),</span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TPDOSE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;PLDOSE&quot;</span>,</span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>      ),</span>
-<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TDURD&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;DURD&quot;</span>,</span>
-<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVAL,</span>
-<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a>      ),</span>
-<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TADJ&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;ADJ&quot;</span>,</span>
-<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVALC,</span>
-<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">if_else</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>          <span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>          <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>          <span class="at">AVAL =</span> <span class="fu">sum</span>(AVAL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>        ),</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;DOSE&quot;</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>      ),</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>      <span class="fu">params</span>(</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>          <span class="at">PARAMCD =</span> <span class="st">&quot;TPDOSE&quot;</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>          <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>,</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>          <span class="at">AVAL =</span> <span class="fu">sum</span>(AVAL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a>        ),</span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;PLDOSE&quot;</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>      ),</span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>      <span class="fu">params</span>(</span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a>          <span class="at">PARAMCD =</span> <span class="st">&quot;TDURD&quot;</span>,</span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a>          <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>,</span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a>          <span class="at">AVAL =</span> <span class="fu">sum</span>(AVAL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a>        ),</span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;DURD&quot;</span></span>
 <span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a>      ),</span>
 <span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a>      <span class="fu">params</span>(</span>
-<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TADJAE&quot;</span>, <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>),</span>
-<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;ADJAE&quot;</span>,</span>
-<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a>        <span class="at">analysis_var =</span> AVALC,</span>
-<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a>        <span class="at">summary_fun =</span> <span class="cf">function</span>(x) <span class="fu">if_else</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
-<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a>      )</span>
-<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a>    ),</span>
-<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a>    <span class="at">dataset_add =</span> adex,</span>
-<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars)</span>
-<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a>  )</span>
-<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a></span>
-<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD, PARCAT1)</span>
-<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 3</span></span>
-<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a><span class="co">#&gt;    PARAMCD PARCAT1        n</span></span>
-<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt;</span></span>
-<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a><span class="co">#&gt;  1 ADJ     INDIVIDUAL    13</span></span>
-<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a><span class="co">#&gt;  2 ADJAE   INDIVIDUAL    13</span></span>
-<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a><span class="co">#&gt;  3 DOSE    INDIVIDUAL    13</span></span>
-<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a><span class="co">#&gt;  4 DURD    INDIVIDUAL    13</span></span>
-<span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a><span class="co">#&gt;  5 PLDOSE  INDIVIDUAL    13</span></span>
-<span id="cb13-49"><a href="#cb13-49" tabindex="-1"></a><span class="co">#&gt;  6 TADJ    OVERALL        6</span></span>
-<span id="cb13-50"><a href="#cb13-50" tabindex="-1"></a><span class="co">#&gt;  7 TADJAE  OVERALL        6</span></span>
-<span id="cb13-51"><a href="#cb13-51" tabindex="-1"></a><span class="co">#&gt;  8 TDOSE   OVERALL        6</span></span>
-<span id="cb13-52"><a href="#cb13-52" tabindex="-1"></a><span class="co">#&gt;  9 TDURD   OVERALL        6</span></span>
-<span id="cb13-53"><a href="#cb13-53" tabindex="-1"></a><span class="co">#&gt; 10 TPDOSE  OVERALL        6</span></span></code></pre></div>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a>          <span class="at">PARAMCD =</span> <span class="st">&quot;TADJ&quot;</span>,</span>
+<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a>          <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>,</span>
+<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a>          <span class="at">AVALC =</span> <span class="fu">if_else</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(AVALC)) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
+<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a>        ),</span>
+<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;ADJ&quot;</span></span>
+<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a>      ),</span>
+<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a>      <span class="fu">params</span>(</span>
+<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a>        <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a>          <span class="at">PARAMCD =</span> <span class="st">&quot;TADJAE&quot;</span>,</span>
+<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a>          <span class="at">PARCAT1 =</span> <span class="st">&quot;OVERALL&quot;</span>,</span>
+<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a>          <span class="at">AVALC =</span> <span class="fu">if_else</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(AVALC)) <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
+<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a>        ),</span>
+<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a>        <span class="at">input_code =</span> <span class="st">&quot;ADJAE&quot;</span></span>
+<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a>      )</span>
+<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a>    ),</span>
+<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a>    <span class="at">dataset_add =</span> adex,</span>
+<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars)</span>
+<span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a>  )</span>
+<span id="cb13-49"><a href="#cb13-49" tabindex="-1"></a></span>
+<span id="cb13-50"><a href="#cb13-50" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD, PARCAT1)</span>
+<span id="cb13-51"><a href="#cb13-51" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 3</span></span>
+<span id="cb13-52"><a href="#cb13-52" tabindex="-1"></a><span class="co">#&gt;    PARAMCD PARCAT1        n</span></span>
+<span id="cb13-53"><a href="#cb13-53" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt;</span></span>
+<span id="cb13-54"><a href="#cb13-54" tabindex="-1"></a><span class="co">#&gt;  1 ADJ     INDIVIDUAL    13</span></span>
+<span id="cb13-55"><a href="#cb13-55" tabindex="-1"></a><span class="co">#&gt;  2 ADJAE   INDIVIDUAL    13</span></span>
+<span id="cb13-56"><a href="#cb13-56" tabindex="-1"></a><span class="co">#&gt;  3 DOSE    INDIVIDUAL    13</span></span>
+<span id="cb13-57"><a href="#cb13-57" tabindex="-1"></a><span class="co">#&gt;  4 DURD    INDIVIDUAL    13</span></span>
+<span id="cb13-58"><a href="#cb13-58" tabindex="-1"></a><span class="co">#&gt;  5 PLDOSE  INDIVIDUAL    13</span></span>
+<span id="cb13-59"><a href="#cb13-59" tabindex="-1"></a><span class="co">#&gt;  6 TADJ    OVERALL        6</span></span>
+<span id="cb13-60"><a href="#cb13-60" tabindex="-1"></a><span class="co">#&gt;  7 TADJAE  OVERALL        6</span></span>
+<span id="cb13-61"><a href="#cb13-61" tabindex="-1"></a><span class="co">#&gt;  8 TDOSE   OVERALL        6</span></span>
+<span id="cb13-62"><a href="#cb13-62" tabindex="-1"></a><span class="co">#&gt;  9 TDURD   OVERALL        6</span></span>
+<span id="cb13-63"><a href="#cb13-63" tabindex="-1"></a><span class="co">#&gt; 10 TPDOSE  OVERALL        6</span></span></code></pre></div>
 <table>
 <colgroup>
 <col width="16%" />

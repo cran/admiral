@@ -885,14 +885,20 @@ added.</p>
 <span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>)</span>
 <span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a></span>
 <span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="fu">derive_vars_atc</span>(cm, facm)</span>
-<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 8</span></span>
-<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt;   USUBJID      CMGRPID CMREFID CMDECOD        ATC1CD ATC2CD ATC3CD ATC4CD</span></span>
-<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; </span></span>
-<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; 1 BP40257-1001 14      1192056 PARACETAMOL    N      N02    N02B   N02BE </span></span>
-<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; 2 BP40257-1001 18      2007001 SOLUMEDROL     D      D10    D10A   D10AA </span></span>
-<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt; 3 BP40257-1001 18      2007001 SOLUMEDROL     D      D07    D07A   D07AA </span></span>
-<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="co">#&gt; 4 BP40257-1001 18      2007001 SOLUMEDROL     H      H02    H02A   H02AB </span></span>
-<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="co">#&gt; 5 BP40257-1002 19      2791596 SPIRONOLACTONE C      C03    C03D   C03DA</span></span></code></pre></div>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; Warning: Values from `FASTRESC` are not uniquely identified; output will contain</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt; list-cols.</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt; • Use `values_fn = list` to suppress this warning.</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; • Use `values_fn = {summary_fun}` to summarise duplicates.</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; • Use the following dplyr code to identify duplicates.</span></span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt;   {data} |&gt;</span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="co">#&gt;   dplyr::summarise(n = dplyr::n(), .by = c(USUBJID, FAREFID, FATESTCD)) |&gt;</span></span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="co">#&gt;   dplyr::filter(n &gt; 1L)</span></span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 8</span></span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a><span class="co">#&gt;   USUBJID      CMGRPID CMREFID CMDECOD        ATC1CD    ATC2CD    ATC3CD ATC4CD</span></span>
+<span id="cb5-42"><a href="#cb5-42" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;list&gt;    &lt;list&gt;    &lt;list&gt; &lt;list&gt;</span></span>
+<span id="cb5-43"><a href="#cb5-43" tabindex="-1"></a><span class="co">#&gt; 1 BP40257-1001 14      1192056 PARACETAMOL    &lt;chr [1]&gt; &lt;chr [1]&gt; &lt;chr&gt;  &lt;chr&gt; </span></span>
+<span id="cb5-44"><a href="#cb5-44" tabindex="-1"></a><span class="co">#&gt; 2 BP40257-1001 18      2007001 SOLUMEDROL     &lt;chr [3]&gt; &lt;chr [3]&gt; &lt;chr&gt;  &lt;chr&gt; </span></span>
+<span id="cb5-45"><a href="#cb5-45" tabindex="-1"></a><span class="co">#&gt; 3 BP40257-1002 19      2791596 SPIRONOLACTONE &lt;chr [1]&gt; &lt;chr [1]&gt; &lt;chr&gt;  &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <div id="trtpa" class="section level2">
 <h2>Derive Planned and Actual Treatment</h2>

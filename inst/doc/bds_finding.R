@@ -132,14 +132,13 @@ dataset_vignette(advs_param, display_vars = exprs(USUBJID, VSTESTCD, PARAMCD))
 ## ----eval=TRUE----------------------------------------------------------------
 advs <- mutate(
   advs,
-  AVAL = VSSTRESN,
-  AVALC = VSSTRESC
+  AVAL = VSSTRESN
 )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = exprs(VSTESTCD, PARAMCD, VSSTRESN, VSSTRESC, AVAL, AVALC),
+  display_vars = exprs(VSTESTCD, PARAMCD, VSSTRESN, VSSTRESC, AVAL),
   filter = USUBJID == "01-716-1024"
 )
 
@@ -155,7 +154,7 @@ advs <- derive_param_map(
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   arrange(advs, USUBJID, VISITNUM, VSTPTNUM, ADT, PARAMCD),
-  display_vars = exprs(VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL, AVALC),
+  display_vars = exprs(VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL),
   filter = USUBJID == "01-701-1015" & PARAMCD %in% c("MAP", "DIABP", "SYSBP")
 )
 
@@ -182,7 +181,7 @@ advs <- derive_param_bmi(
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   arrange(advs, USUBJID, VISITNUM, VSTPTNUM, ADT, PARAMCD),
-  display_vars = exprs(USUBJID, VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL, AVALC),
+  display_vars = exprs(USUBJID, VSTESTCD, PARAMCD, VISIT, VSTPT, AVAL),
   filter = PARAMCD %in% c("BSA", "BMI")
 )
 
@@ -398,13 +397,6 @@ advs <- derive_var_base(
 advs <- derive_var_base(
   advs,
   by_vars = exprs(STUDYID, USUBJID, PARAMCD, BASETYPE),
-  source_var = AVALC,
-  new_var = BASEC
-)
-
-advs <- derive_var_base(
-  advs,
-  by_vars = exprs(STUDYID, USUBJID, PARAMCD, BASETYPE),
   source_var = ANRIND,
   new_var = BNRIND
 )
@@ -412,7 +404,7 @@ advs <- derive_var_base(
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   advs,
-  display_vars = exprs(USUBJID, BASETYPE, PARAMCD, ABLFL, BASE, BASEC, ANRIND, BNRIND),
+  display_vars = exprs(USUBJID, BASETYPE, PARAMCD, ABLFL, BASE, ANRIND, BNRIND),
   filter = PARAMCD == "DIABP" & VISIT %in% c("WEEK 2", "BASELINE")
 )
 

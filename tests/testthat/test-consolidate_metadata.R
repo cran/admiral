@@ -74,19 +74,16 @@ test_that("consolidate_metadata Test 3: check_keys deprecation test", {
     3,   "stud_val_3"
   )
 
-  expect_warning(
-    try(
-      consolidate_metadata(
-        datasets = list(
-          global = glob,
-          study = stud
-        ),
-        key_vars = exprs(id),
-        check_keys = "error"
+  expect_error(
+    consolidate_metadata(
+      datasets = list(
+        global = glob,
+        study = stud
       ),
-      silent = TRUE
+      key_vars = exprs(id),
+      check_keys = "error"
     ),
-    class = "lifecycle_warning_deprecated"
+    class = "lifecycle_error_deprecated"
   )
 })
 
@@ -102,18 +99,13 @@ test_that("consolidate_metadata Test 4: warn if variables differ", {
     "abc",  3, "stud_val_3"
   )
 
-  expect_warning(
+  expect_snapshot(
     consolidate_metadata(
       datasets = list(
         global = glob,
         study = stud
       ),
       key_vars = exprs(id)
-    ),
-    paste(
-      "The variable names differ across the input datasets.",
-      "This message can be suppressed by setting `check_vars = \"none\"`.",
-      sep = "\n"
     )
   )
 })

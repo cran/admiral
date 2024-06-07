@@ -6,8 +6,6 @@
 #' @param dataset
 #' `r roxygen_param_dataset(expected_vars = c("by_vars", "analysis_var", "order", "keep_vars"))`
 #'
-#' @param dataset_expected_obs `r lifecycle::badge("deprecated")` Please use `dataset_ref` instead.
-#'
 #' @param dataset_ref Expected observations dataset
 #'
 #'   Data frame with all the combinations of `PARAMCD`, `PARAM`, `AVISIT`,
@@ -71,7 +69,7 @@
 #' advs <- tribble(
 #'   ~STUDYID,  ~USUBJID,      ~PARAMCD, ~PARAMN, ~AVAL, ~AVISITN, ~AVISIT,
 #'   "CDISC01", "01-701-1015", "PULSE",        1,    61,        0, "BASELINE",
-#'   "CDISC01", "01-701-1015", "PULSE",        1,    60,        2, "WEEK 6",
+#'   "CDISC01", "01-701-1015", "PULSE",        1,    60,        6, "WEEK 6",
 #'   "CDISC01", "01-701-1015", "DIABP",        2,    51,        0, "BASELINE",
 #'   "CDISC01", "01-701-1015", "DIABP",        2,    50,        2, "WEEK 2",
 #'   "CDISC01", "01-701-1015", "DIABP",        2,    51,        4, "WEEK 4",
@@ -114,22 +112,11 @@
 #' )
 #'
 derive_locf_records <- function(dataset,
-                                dataset_expected_obs,
                                 dataset_ref,
                                 by_vars,
                                 analysis_var = AVAL,
                                 order,
                                 keep_vars = NULL) {
-  if (!missing(dataset_expected_obs)) {
-    deprecate_stop(
-      "0.12.0",
-      "derive_locf_records(dataset_expected_obs = )",
-      "derive_locf_records(dataset_ref = )"
-    )
-    assert_data_frame(dataset_expected_obs)
-    dataset_ref <- dataset_expected_obs
-  }
-
   #### Input Checking ####
   analysis_var <- assert_symbol(enexpr(analysis_var))
 

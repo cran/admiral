@@ -996,9 +996,12 @@ into a single lookup table.</p>
 the ADaM programmer. An example mapping may be:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">mutate</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  advs,</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">AVAL =</span> VSSTRESN,</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">AVALC =</span> VSSTRESC</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="at">AVAL =</span> VSSTRESN</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>In this example, as is often the case for ADVS, all <code>AVAL</code>
+values are numeric without any corresponding non-redundant text value
+for <code>AVALC</code>. Per recommendation in ADaMIG v1.3 we do not map
+<code>AVALC</code>.</p>
 <table>
 <thead>
 <tr class="header">
@@ -1007,7 +1010,6 @@ the ADaM programmer. An example mapping may be:</p>
 <th align="right">VSSTRESN</th>
 <th align="left">VSSTRESC</th>
 <th align="right">AVAL</th>
-<th align="left">AVALC</th>
 </tr>
 </thead>
 <tbody>
@@ -1017,7 +1019,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">74</td>
 <td align="left">74</td>
 <td align="right">74</td>
-<td align="left">74</td>
 </tr>
 <tr class="even">
 <td align="left">DIABP</td>
@@ -1025,7 +1026,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">74</td>
 <td align="left">74</td>
 <td align="right">74</td>
-<td align="left">74</td>
 </tr>
 <tr class="odd">
 <td align="left">DIABP</td>
@@ -1033,7 +1033,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">72</td>
 <td align="left">72</td>
 <td align="right">72</td>
-<td align="left">72</td>
 </tr>
 <tr class="even">
 <td align="left">DIABP</td>
@@ -1041,7 +1040,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">78</td>
 <td align="left">78</td>
 <td align="right">78</td>
-<td align="left">78</td>
 </tr>
 <tr class="odd">
 <td align="left">DIABP</td>
@@ -1049,7 +1047,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">84</td>
 <td align="left">84</td>
 <td align="right">84</td>
-<td align="left">84</td>
 </tr>
 <tr class="even">
 <td align="left">DIABP</td>
@@ -1057,7 +1054,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">78</td>
 <td align="left">78</td>
 <td align="right">78</td>
-<td align="left">78</td>
 </tr>
 <tr class="odd">
 <td align="left">DIABP</td>
@@ -1065,7 +1061,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">80</td>
 <td align="left">80</td>
 <td align="right">80</td>
-<td align="left">80</td>
 </tr>
 <tr class="even">
 <td align="left">DIABP</td>
@@ -1073,7 +1068,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">80</td>
 <td align="left">80</td>
 <td align="right">80</td>
-<td align="left">80</td>
 </tr>
 <tr class="odd">
 <td align="left">DIABP</td>
@@ -1081,7 +1075,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">84</td>
 <td align="left">84</td>
 <td align="right">84</td>
-<td align="left">84</td>
 </tr>
 <tr class="even">
 <td align="left">DIABP</td>
@@ -1089,7 +1082,6 @@ the ADaM programmer. An example mapping may be:</p>
 <td align="right">90</td>
 <td align="left">90</td>
 <td align="right">90</td>
-<td align="left">90</td>
 </tr>
 </tbody>
 </table>
@@ -1115,12 +1107,11 @@ new parameters.</p>
 <span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
+<col width="12%" />
 <col width="11%" />
-<col width="10%" />
-<col width="15%" />
-<col width="40%" />
-<col width="13%" />
-<col width="7%" />
+<col width="17%" />
+<col width="44%" />
+<col width="14%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1129,7 +1120,6 @@ new parameters.</p>
 <th align="left">VISIT</th>
 <th align="left">VSTPT</th>
 <th align="right">AVAL</th>
-<th align="left">AVALC</th>
 </tr>
 </thead>
 <tbody>
@@ -1139,7 +1129,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER LYING DOWN FOR 5 MINUTES</td>
 <td align="right">64.00000</td>
-<td align="left">64</td>
 </tr>
 <tr class="even">
 <td align="left">NA</td>
@@ -1147,7 +1136,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER LYING DOWN FOR 5 MINUTES</td>
 <td align="right">86.33333</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">SYSBP</td>
@@ -1155,7 +1143,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER LYING DOWN FOR 5 MINUTES</td>
 <td align="right">131.00000</td>
-<td align="left">131</td>
 </tr>
 <tr class="even">
 <td align="left">DIABP</td>
@@ -1163,7 +1150,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER STANDING FOR 1 MINUTE</td>
 <td align="right">83.00000</td>
-<td align="left">83</td>
 </tr>
 <tr class="odd">
 <td align="left">NA</td>
@@ -1171,7 +1157,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER STANDING FOR 1 MINUTE</td>
 <td align="right">98.33333</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">SYSBP</td>
@@ -1179,7 +1164,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER STANDING FOR 1 MINUTE</td>
 <td align="right">129.00000</td>
-<td align="left">129</td>
 </tr>
 <tr class="odd">
 <td align="left">DIABP</td>
@@ -1187,7 +1171,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER STANDING FOR 3 MINUTES</td>
 <td align="right">57.00000</td>
-<td align="left">57</td>
 </tr>
 <tr class="even">
 <td align="left">NA</td>
@@ -1195,7 +1178,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER STANDING FOR 3 MINUTES</td>
 <td align="right">87.00000</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">SYSBP</td>
@@ -1203,7 +1185,6 @@ new parameters.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">AFTER STANDING FOR 3 MINUTES</td>
 <td align="right">147.00000</td>
-<td align="left">147</td>
 </tr>
 <tr class="even">
 <td align="left">DIABP</td>
@@ -1211,7 +1192,6 @@ new parameters.</p>
 <td align="left">SCREENING 2</td>
 <td align="left">AFTER LYING DOWN FOR 5 MINUTES</td>
 <td align="right">68.00000</td>
-<td align="left">68</td>
 </tr>
 </tbody>
 </table>
@@ -1248,7 +1228,6 @@ visits where both are collected.</p>
 <th align="left">VISIT</th>
 <th align="left">VSTPT</th>
 <th align="right">AVAL</th>
-<th align="left">AVALC</th>
 </tr>
 </thead>
 <tbody>
@@ -1259,7 +1238,6 @@ visits where both are collected.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">NA</td>
 <td align="right">24.871928</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -1268,7 +1246,6 @@ visits where both are collected.</p>
 <td align="left">SCREENING 1</td>
 <td align="left">NA</td>
 <td align="right">1.486264</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1015</td>
@@ -1277,7 +1254,6 @@ visits where both are collected.</p>
 <td align="left">BASELINE</td>
 <td align="left">NA</td>
 <td align="right">25.079271</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -1286,7 +1262,6 @@ visits where both are collected.</p>
 <td align="left">BASELINE</td>
 <td align="left">NA</td>
 <td align="right">1.492447</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1015</td>
@@ -1295,7 +1270,6 @@ visits where both are collected.</p>
 <td align="left">WEEK 2</td>
 <td align="left">NA</td>
 <td align="right">24.452635</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -1304,7 +1278,6 @@ visits where both are collected.</p>
 <td align="left">WEEK 2</td>
 <td align="left">NA</td>
 <td align="right">1.473683</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1015</td>
@@ -1313,7 +1286,6 @@ visits where both are collected.</p>
 <td align="left">WEEK 4</td>
 <td align="left">NA</td>
 <td align="right">24.871928</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -1322,7 +1294,6 @@ visits where both are collected.</p>
 <td align="left">WEEK 4</td>
 <td align="left">NA</td>
 <td align="right">1.486264</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1015</td>
@@ -1331,7 +1302,6 @@ visits where both are collected.</p>
 <td align="left">WEEK 6</td>
 <td align="left">NA</td>
 <td align="right">24.452635</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -1340,7 +1310,6 @@ visits where both are collected.</p>
 <td align="left">WEEK 6</td>
 <td align="left">NA</td>
 <td align="right">1.473683</td>
-<td align="left">NA</td>
 </tr>
 </tbody>
 </table>
@@ -1870,7 +1839,7 @@ accommodates the additional boundaries <code>A1LO</code> and
 </div>
 <div id="baseline" class="section level2">
 <h2>Derive Baseline (<code>BASETYPE</code>, <code>ABLFL</code>,
-<code>BASE</code>, <code>BASEC</code>, <code>BNRIND</code>)</h2>
+<code>BASE</code>, <code>BNRIND</code>)</h2>
 <p>The <code>BASETYPE</code> should be derived using the function
 <code>derive_basetype_records()</code>. The parameter
 <code>basetypes</code> of this function requires a named list of
@@ -2031,10 +2000,9 @@ be:</p>
 </table>
 <p>Note: Additional examples of the
 <code>derive_var_extreme_flag()</code> function can be found <a href="#analysisrec">above.</a></p>
-<p>Lastly, the <code>BASE</code>, <code>BASEC</code> and
-<code>BNRIND</code> columns can be derived using the
-<code>{admiral}</code> function <code>derive_var_base()</code>. Example
-calls are:</p>
+<p>Lastly, the <code>BASE</code>, and <code>BNRIND</code> columns can be
+derived using the <code>{admiral}</code> function
+<code>derive_var_base()</code>. Example calls are:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_base</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  advs,</span>
 <span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, BASETYPE),</span>
@@ -2045,26 +2013,18 @@ calls are:</p>
 <span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_base</span>(</span>
 <span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>  advs,</span>
 <span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, BASETYPE),</span>
-<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  <span class="at">source_var =</span> AVALC,</span>
-<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>  <span class="at">new_var =</span> BASEC</span>
-<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>)</span>
-<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a></span>
-<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_base</span>(</span>
-<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>  advs,</span>
-<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, BASETYPE),</span>
-<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a>  <span class="at">source_var =</span> ANRIND,</span>
-<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a>  <span class="at">new_var =</span> BNRIND</span>
-<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  <span class="at">source_var =</span> ANRIND,</span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>  <span class="at">new_var =</span> BNRIND</span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>)</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
-<col width="13%" />
-<col width="42%" />
+<col width="14%" />
+<col width="45%" />
 <col width="9%" />
-<col width="6%" />
-<col width="5%" />
-<col width="6%" />
 <col width="7%" />
-<col width="7%" />
+<col width="6%" />
+<col width="8%" />
+<col width="8%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -2073,7 +2033,6 @@ calls are:</p>
 <th align="left">PARAMCD</th>
 <th align="left">ABLFL</th>
 <th align="right">BASE</th>
-<th align="left">BASEC</th>
 <th align="left">ANRIND</th>
 <th align="left">BNRIND</th>
 </tr>
@@ -2085,7 +2044,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">56</td>
-<td align="left">56</td>
 <td align="left">LOW</td>
 <td align="left">LOW</td>
 </tr>
@@ -2095,7 +2053,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">51</td>
-<td align="left">51</td>
 <td align="left">LOW</td>
 <td align="left">LOW</td>
 </tr>
@@ -2105,7 +2062,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">61</td>
-<td align="left">61</td>
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 </tr>
@@ -2115,7 +2071,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">84</td>
-<td align="left">84</td>
 <td align="left">HIGH</td>
 <td align="left">HIGH</td>
 </tr>
@@ -2125,7 +2080,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">86</td>
-<td align="left">86</td>
 <td align="left">HIGH</td>
 <td align="left">HIGH</td>
 </tr>
@@ -2135,7 +2089,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">88</td>
-<td align="left">88</td>
 <td align="left">HIGH</td>
 <td align="left">HIGH</td>
 </tr>
@@ -2145,7 +2098,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">80</td>
-<td align="left">80</td>
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 </tr>
@@ -2155,7 +2107,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">82</td>
-<td align="left">82</td>
 <td align="left">HIGH</td>
 <td align="left">HIGH</td>
 </tr>
@@ -2165,7 +2116,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">72</td>
-<td align="left">72</td>
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 </tr>
@@ -2175,7 +2125,6 @@ calls are:</p>
 <td align="left">DIABP</td>
 <td align="left">Y</td>
 <td align="right">70</td>
-<td align="left">70</td>
 <td align="left">NORMAL</td>
 <td align="left">NORMAL</td>
 </tr>
@@ -3363,9 +3312,8 @@ to <code>&quot;Minimum on Treatment&quot;</code> and assign a unique
 <h3>Example 2 (Deriving a Summary Record)</h3>
 <p>For adding new records based on aggregating records
 <code>derive_summary_records()</code> can be used. For the new records
-only the variables specified by <code>by_vars</code>,
-<code>analysis_var</code>, and <code>set_values_to</code> are
-populated.</p>
+only the variables specified by <code>by_vars</code> and
+<code>set_values_to</code> are populated.</p>
 <p>For each subject, Vital Signs parameter, visit, and date add a record
 holding the average value for observations on that date. Set
 <code>DTYPE</code> to <code>AVERAGE</code>.</p>

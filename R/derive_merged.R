@@ -127,6 +127,10 @@
 #'   if the observations of the (restricted) additional dataset are not unique
 #'   with respect to the by variables and the order.
 #'
+#'   If the `order` argument is not specified, the `check_type` argument is ignored:
+#'    if the observations of the (restricted) additional dataset are not unique with respect
+#'    to the by variables, an error is issued.
+#'
 #'   *Permitted Values*: `"none"`, `"warning"`, `"error"`
 #'
 #' @param duplicate_msg Message of unique check
@@ -136,9 +140,21 @@
 #'   *Default*:
 #'
 #'   ```{r echo=TRUE, eval=FALSE}
-#'   paste("Dataset `dataset_add` contains duplicate records with respect to",
-#'         enumerate(vars2chr(by_vars)))
+#'   paste(
+#'     "Dataset {.arg dataset_add} contains duplicate records with respect to",
+#'     "{.var {vars2chr(by_vars)}}."
+#'   )
 #'   ```
+#'
+#' @param relationship Expected merge-relationship between the `by_vars`
+#'   variable(s) in `dataset` (input dataset) and the `dataset_add` (additional dataset)
+#'    containing the additional `new_vars`.
+#'
+#'   This argument is passed to the `dplyr::left_join()` function. See
+#'   <https://dplyr.tidyverse.org/reference/mutate-joins.html#arguments> for
+#'   more details.
+#'
+#'   **Permitted Values:** `"one-to-one"`, `"many-to-one"`, `NULL`.
 #'
 #' @return The output dataset contains all observations and variables of the
 #'   input dataset and additionally the variables specified for `new_vars` from
@@ -311,7 +327,8 @@ derive_vars_merged <- function(dataset,
                                false_value = NA_character_,
                                missing_values = NULL,
                                check_type = "warning",
-                               duplicate_msg = NULL) {
+                               duplicate_msg = NULL,
+                               relationship = NULL) {
   filter_add <- assert_filter_cond(enexpr(filter_add), optional = TRUE)
   assert_vars(by_vars)
   by_vars_left <- replace_values_by_names(by_vars)
@@ -328,8 +345,8 @@ derive_vars_merged <- function(dataset,
     )
   )
   if (!is_missing(enexpr(match_flag))) {
-    deprecate_warn(
-      "1.0.0",
+    deprecate_stop(
+      "1.1.0",
       "derive_vars_merged(match_flag =)",
       "derive_vars_merged(exist_flag =)"
     )
@@ -345,13 +362,19 @@ derive_vars_merged <- function(dataset,
       vars2chr(replace_values_by_names(new_vars))
     )
     if (length(invalid_vars) > 0) {
-      abort(paste(
-        "The variables",
-        enumerate(invalid_vars),
-        "were specified for `missing_values` but not for `new_vars`."
+      cli_abort(paste(
+        "The variable{?s} {.var {invalid_vars}} w{?as/ere} specified for {.arg missing_values}",
+        "but not for {.arg new_vars}."
       ))
     }
   }
+  relationship <- assert_character_scalar(
+    relationship,
+    values = c("one-to-one", "many-to-one"),
+    case_sensitive = TRUE,
+    optional = TRUE
+  )
+
 
   add_data <- dataset_add %>%
     mutate(!!!new_vars) %>%
@@ -368,8 +391,8 @@ derive_vars_merged <- function(dataset,
   } else {
     if (is.null(duplicate_msg)) {
       duplicate_msg <- paste(
-        "Dataset `dataset_add` contains duplicate records with respect to",
-        enumerate(vars2chr(by_vars))
+        "Dataset {.arg dataset_add} contains duplicate records with respect to",
+        "{.var {vars2chr(by_vars)}}."
       )
     }
     signal_duplicate_records(
@@ -400,23 +423,56 @@ derive_vars_merged <- function(dataset,
   common_vars <-
     setdiff(intersect(names(dataset), names(add_data)), vars2chr(by_vars))
   if (length(common_vars) > 0L) {
-    abort(if_else(
-      length(common_vars) == 1L,
-      paste0(
-        "The variable ",
-        common_vars[[1]],
-        " is contained in both datasets.\n",
-        "Please add it to `by_vars` or remove or rename it in one of the datasets."
-      ),
-      paste0(
-        "The variables ",
-        enumerate(common_vars),
-        " are contained in both datasets.\n",
-        "Please add them to `by_vars` or remove or rename them in one of the datasets."
+    cli_abort(
+      c(
+        "The variable{?s} {.var {common_vars}} {?is/are} contained in both datasets.",
+        i = "Please add them to {.arg by_vars} or remove or rename them in one of the datasets."
       )
-    ))
+    )
   }
-  dataset <- left_join(dataset, add_data, by = vars2chr(by_vars))
+
+  tryCatch(
+    dataset <- left_join(
+      dataset,
+      add_data,
+      by = vars2chr(by_vars),
+      relationship = relationship
+    ),
+    "dplyr_error_join_relationship_one_to_one" = function(cnd) {
+      cli_abort(
+        message = c(
+          str_replace(
+            str_replace(
+              cnd$message, "`x`", "`dataset`"
+            ), "`y`", "`dataset_add`"
+          ),
+          i = str_replace(
+            str_replace(
+              cnd$body, "`x`", "`dataset`"
+            ), "`y`", "`dataset_add`"
+          )
+        ),
+        call = parent.frame(n = 4)
+      )
+    },
+    "dplyr_error_join_relationship_many_to_one" = function(cnd) {
+      cli_abort(
+        message = c(
+          str_replace(
+            str_replace(
+              cnd$message, "`x`", "`dataset`"
+            ), "`y`", "`dataset_add`"
+          ),
+          i = str_replace(
+            str_replace(
+              cnd$body, "`x`", "`dataset`"
+            ), "`y`", "`dataset_add`"
+          )
+        ),
+        call = parent.frame(n = 4)
+      )
+    }
+  )
 
   if (!is.null(match_flag_var)) {
     update_missings <- map2(
@@ -437,6 +493,7 @@ derive_vars_merged <- function(dataset,
   dataset %>%
     remove_tmp_vars()
 }
+
 
 #' Merge an Existence Flag
 #'
@@ -576,13 +633,14 @@ derive_var_merged_exist_flag <- function(dataset,
                                          false_value = NA_character_,
                                          missing_value = NA_character_,
                                          filter_add = NULL) {
-  new_var <- assert_symbol(enexpr(new_var))
   condition <- assert_filter_cond(enexpr(condition))
-  filter_add <-
-    assert_filter_cond(enexpr(filter_add), optional = TRUE)
-
-  add_data <- filter_if(dataset_add, filter_add) %>%
-    mutate(!!new_var := if_else(!!condition, 1, 0, 0))
+  new_var <- assert_symbol(enexpr(new_var))
+  filter_add <- assert_filter_cond(enexpr(filter_add), optional = TRUE)
+  add_data <- get_flagged_records(dataset_add,
+    new_var = !!new_var,
+    condition = !!condition,
+    !!filter_add
+  )
 
   derive_vars_merged(
     dataset,
@@ -708,20 +766,23 @@ derive_vars_merged_lookup <- function(dataset,
       distinct(!!!by_vars_left)
 
     if (nrow(temp_not_mapped) > 0) {
+      # nolint start: undesirable_function_linter
       admiral_environment$nmap <- structure(
         temp_not_mapped,
         class = union("nmap", class(temp_not_mapped)),
         by_vars = vars2chr(by_vars_left)
       )
+      # nolint end
 
-      message(
-        "List of ", enumerate(vars2chr(by_vars_left)), " not mapped: ", "\n",
-        paste0(capture.output(temp_not_mapped), collapse = "\n"),
-        "\nRun `get_not_mapped()` to access the full list"
+      cli_inform(
+        c("List of {.var {vars2chr(by_vars_left)}} not mapped:",
+          capture.output(temp_not_mapped),
+          i = "Run {.run admiral::get_not_mapped()} to access the full list."
+        )
       )
     } else if (nrow(temp_not_mapped) == 0) {
-      message(
-        "All ", enumerate(vars2chr(by_vars_left)), " are mapped."
+      cli_inform(
+        "All {.var {vars2chr(by_vars_left)}} are mapped."
       )
     }
   }
@@ -920,8 +981,8 @@ derive_var_merged_summary <- function(dataset,
   )
 
   if (!missing(new_var) || !missing(analysis_var) || !missing(summary_fun)) {
-    deprecate_warn(
-      "1.0.0",
+    deprecate_stop(
+      "1.1.0",
       I("derive_var_merged_summary(new_var = , anaylsis_var = , summary_fun = )"),
       "derive_var_merged_summary(new_vars = )"
     )

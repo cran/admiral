@@ -1,3 +1,98 @@
+# admiral 1.1.0
+
+## New Features
+- Added helper functions to `derive_vars_merged()` (`get_flagged_records()`) and `derive_vars_query()` (`get_vars_query()`) so that those can be called independently as per user's request. `derive_vars_merged()` function call results are not impacted by the change (#2441).
+
+- Error Messaging has been made more "user-friendly". (#2372)
+
+- New `country_code_lookup()` metadata added to decode countries based on [ISO 3166 codes](https://www.iso.org/iso-3166-country-codes.html). (#2388)
+
+## Updates of Existing Functions
+
+- `group_var` (optional) parameter is added to `derive_var_trtemfl()` to derive `TRTEMFL` for AE data if the data are collected as one episode of AE with multiple lines. (#2302)
+
+- Templates for ADPC, ADPPK and ADPP are updated to handle urine records. (#2392)
+
+- `create_single_dose_dataset()` has been updated to error if the `lookup_table` contains duplicates. (#2247)
+
+- `derive_vars_merged()` and `derive_vars_transposed()` have a `relationship` argument added (the same as found in `dplyr::*_join()` functions) for users to specify what type of join (one-to-one, one-to-many, etc.) should take place. (#2247)
+
+- `basket_select()` function updated to add `...` argument to allow other qualifiers to be passed to user-defined function specified in `get_terms_fun()` argument for function `create_query_data()`. (#2265)
+- Messaging updated for `derive_extreme_event()` to improve clarity around duplicates. #2405
+
+- The `id_vars` argument was added to `derive_vars_transposed()` and `derive_vars_atc()` to allow additional variables, beyond those in `by_vars`, to uniquely identify records in the `dataset_merge` argument. (#2325)
+
+- Update PK Programming vignette and templates for ADPC and ADPPK for the nominal time formula `NFRLT` to reduce duplicate records in dose expansion with `create_single_dose_dataset()`. (#2426)
+
+- Template for ADSL updated so that `EOSSTT ` is assigned as  `"ONGOING" ` when no study completion rows exist yet in DS. (#2436)
+
+- The `slice_derivation()` function was updated such that it works now when
+called in a function where objects from the function environment are used.
+(#2244)
+
+## Breaking Changes
+  
+- The following function arguments are entering the next phase of the deprecation process: (#2299)
+  
+  - `compute_egfr(wt)`
+  - `consolidate_metadata(check_keys)`
+  - `derive_expected_records(dataset_expected_obs)` 
+  - `derive_locf_records(dataset_expected_obs)`
+  - `derive_extreme_event(ignore_event_order)`
+  - `derive_vars_merged(match_flag, new_var, analysis_var, summary_fun)`
+  - `derive_param_computed(analysis_value, analysis_var)`
+  - `derive_param_exposure(filter, analysis_var, summary_fun)`
+  - `derive_summary_records(filter)`
+  - `derive_extreme_records(filter)`
+  - `derive_var_joined_exist_flag(first_cond, filter)`
+  - `event_joined(first_cond)`
+  - `filter_joined(first_cond, filter)`
+  
+- The following function arguments have reached the end of the deprecation process and been removed: (#2299)
+
+  - `dthcaus_source(traceability_vars)`
+  - `date_source(traceability_vars)`
+  - `derive_var_ontrtfl(span_period)` 
+  - `derive_var_shift(na_val)`
+  - `derive_vars_aage(unit)`
+
+## Documentation
+
+- Documentation for `derive_extreme_event()` has been updated to include a description for the value of `derive_extreme_event()` when `keep_source_vars = NULL`. (#2398)
+
+- The "Visit and Period Variables" vignette was updated and refactored to include example code to create a period reference dataset. (#2321)
+
+- The documentation of `derive_vars_merged()` function is updated to describe that the `check_type` argument is ignored (an error is issued) if `order` is not specified. (#2326)
+
+- The "User Guides" section has been reorganized. A new "Programming Concepts and Conventions" vignette was also added to provide more context and information around common `{admiral}` behaviors and ways of working. (#2395)
+
+- The "Get Started" section has been revamped, placing greater focus on material that may help users familiarize themselves with `{admiral}`. There are now new sections showcasing the various types of `{admiral}` 
+functions and some of the more advanced topics have been moved to the new "Programming Concepts and Conventions" vignette. (#2395)
+
+- The Examples section of `derive_param_computed()` now contains a new item showcasing how to create a derived parameter in the case that a variable contributing to the derived parameter has some/all of its values missing. (#2338)
+ 
+## Various
+
+- Templates and vignettes do not add or populate `AVALC` for BDS-findings datasets where the information contained in `AVALC` would be redundant with `AVAL`. (#2442)
+
+- The function `dplyr::transmute()` is superseded in favor of `dplyr::mutate(.keep = "none")`. Consequently, all the admiral functions that utilized the former have been updated accordingly. (#2274)
+
+- The templates for ADPP and ADPC are updated for missing variables (#2308) and to make `ATPT` and `ATPTN` consistent. (#2328)
+
+- ADLB template updated to make `PARAM` consistent for `PARAMCD` values `"BASO"` and `"LYMPH"`. (#2327)
+
+<details>
+<summary>Developer Notes</summary>
+
+- In the previous version, `renv` was the default framework used to manage package dependencies. Now, we use `devtools` as our main package manager (some changes also occurred for  [admiralci workflows](https://github.com/pharmaverse/admiralci)).
+There is a possibility to get package dependency versions used for the workflows to ensure local reproducibility. For this, you need to go under the latest action summary in your current PR. You can see a deps artifact. For each version of R used for `R CMD CHECKS` jobs, there is an associated renv.lock file (under the deps artifact).
+- Splitting out `R` and `test` files for date/time functions for cyclomatic complexity refactor (#2340)(#2339)
+- Created three unit tests for `get_summary_records()`. (#2304)
+- Created unit tests for developer internal function `get_imputation_target_date()` (#2378)
+- Modified date/time unit tests to use unified example (#2424)
+
+</details>
+
 # admiral 1.0.2
 
 - Fix bug in `derive_param_tte()` where argument `dataset` populated and `PARAMCD` in `set_values_to` argument is an expression. Previously, there was a check early in function to see if `PARAMCD` defined in `set_values_to` argument, already existed in the dataset passed into `dataset` argument. If `PARAMCD` was not an expression i.e. `PARAMCD = "XYZ"` then check worked. However, if `PARAMCD` to be created was an expression, and wasn't resolved yet, this caused an ERROR. The check has been moved to near the end of the function, where `PARAMCD` is resolved in the dataset holding the new parameters. (#2336)
@@ -219,6 +314,8 @@ the imputation functions, e.g. `derive_vars_dtm()`. (#2222)
 
 - Handling of `NA` values was added to the documentation of the `order` argument
 for all functions. (#2230, #2257)
+
+
 
 ## Various
 

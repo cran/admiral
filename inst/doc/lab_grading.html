@@ -746,12 +746,16 @@ these would also need to be created before running
 <span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb2-65"><a href="#cb2-65" tabindex="-1"></a>    <span class="at">PARCAT1 =</span> LBCAT,</span>
 <span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>    <span class="at">AVAL =</span> LBSTRESN,</span>
-<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a>    <span class="at">AVALC =</span> LBSTRESC,</span>
-<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>    <span class="at">ANRLO =</span> LBSTNRLO,</span>
-<span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a>    <span class="at">ANRHI =</span> LBSTNRHI,</span>
-<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>    <span class="at">BASE =</span> AVAL <span class="sc">-</span> <span class="dv">10</span></span>
-<span id="cb2-71"><a href="#cb2-71" tabindex="-1"></a>  )</span>
-<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a><span class="co">#&gt; All `LBTESTCD` are mapped.</span></span></code></pre></div>
+<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a>    <span class="at">AVALC =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>      <span class="fu">is.na</span>(LBSTRESN) <span class="sc">|</span> <span class="fu">as.character</span>(LBSTRESN) <span class="sc">!=</span> LBSTRESC,</span>
+<span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a>      LBSTRESC,</span>
+<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>      <span class="cn">NA</span></span>
+<span id="cb2-71"><a href="#cb2-71" tabindex="-1"></a>    ),</span>
+<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a>    <span class="at">ANRLO =</span> LBSTNRLO,</span>
+<span id="cb2-73"><a href="#cb2-73" tabindex="-1"></a>    <span class="at">ANRHI =</span> LBSTNRHI,</span>
+<span id="cb2-74"><a href="#cb2-74" tabindex="-1"></a>    <span class="at">BASE =</span> AVAL <span class="sc">-</span> <span class="dv">10</span></span>
+<span id="cb2-75"><a href="#cb2-75" tabindex="-1"></a>  )</span>
+<span id="cb2-76"><a href="#cb2-76" tabindex="-1"></a><span class="co">#&gt; All `LBTESTCD` are mapped.</span></span></code></pre></div>
 <p>Another look-up table is used to add on <code>ATOXDSCL</code> and
 <code>ATOXDSCH</code> using <code>PARAMCD</code>. <code>ATOXDSCL</code>
 holds the terms for grading low lab values, and <code>ATOXDSCH</code>

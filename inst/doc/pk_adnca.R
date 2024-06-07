@@ -115,7 +115,10 @@ ex_dates <- ex %>%
   # Derive event ID and nominal relative time from first dose (NFRLT)
   mutate(
     EVID = 1,
-    NFRLT = 24 * (VISITDY - 1), .after = USUBJID
+    NFRLT = case_when(
+      VISITDY == 1 ~ 0,
+      TRUE ~ 24 * VISITDY
+    )
   ) %>%
   # Set missing end dates to start date
   mutate(AENDTM = case_when(
@@ -406,6 +409,7 @@ dataset_vignette(
 
 adpc_aval <- adpc_nrrlt %>%
   mutate(
+    PARCAT1 = PCSPEC,
     ATPTN = case_when(
       EVID == 1 ~ 0,
       TRUE ~ PCTPTNUM
@@ -491,7 +495,7 @@ dtype <- adpc_aval %>%
     DOSEA = EXDOSE_next,
     BASETYPE = paste(AVISIT_next, "Baseline"),
     ATPT = "Pre-dose",
-    ATPTN = NFRLT,
+    ATPTN = -0.5,
     ABLFL = "Y",
     DTYPE = "COPY"
   ) %>%
@@ -530,7 +534,7 @@ adpc_dtype %>%
 adpc_base <- adpc_dtype %>%
   # Derive BASE
   derive_var_base(
-    by_vars = exprs(STUDYID, USUBJID, PARAMCD, BASETYPE),
+    by_vars = exprs(STUDYID, USUBJID, PARAMCD, PARCAT1, BASETYPE),
     source_var = AVAL,
     new_var = BASE,
     filter = ABLFL == "Y"
@@ -545,7 +549,7 @@ adpc_aseq <- adpc_chg %>%
   derive_var_obs_number(
     new_var = ASEQ,
     by_vars = exprs(STUDYID, USUBJID),
-    order = exprs(ADTM, BASETYPE, EVID, AVISITN, ATPTN, DTYPE),
+    order = exprs(ADTM, BASETYPE, EVID, AVISITN, ATPTN, PARCAT1, DTYPE),
     check_type = "error"
   ) %>%
   # Remove temporary variables
@@ -755,7 +759,8 @@ adppk_aval <- adppk_aprlt %>%
     # Derive CMT
     CMT = case_when(
       EVID == 1 ~ 1,
-      TRUE ~ 2
+      PCSPEC == "PLASMA" ~ 2,
+      TRUE ~ 3
     ),
     # Derive BLQFL/BLQFN
     BLQFL = case_when(
@@ -808,7 +813,7 @@ adppk_aseq <- adppk_aval %>%
   derive_var_obs_number(
     new_var = ASEQ,
     by_vars = exprs(STUDYID, USUBJID),
-    order = exprs(AFRLT, EVID),
+    order = exprs(AFRLT, EVID, CMT),
     check_type = "error"
   ) %>%
   # Derive PARAM and PARAMN
@@ -822,8 +827,8 @@ adppk_aseq <- adppk_aval %>%
     -DOMAIN, -starts_with("min"), -starts_with("max"), -starts_with("EX"),
     -starts_with("PC"), -ends_with("first"), -ends_with("prev"),
     -ends_with("DTM"), -ends_with("DT"), -ends_with("TM"), -starts_with("VISIT"),
-    -starts_with("AVISIT"), -starts_with("PARAM"),
-    -ends_with("TMF"), -starts_with("TRT"), -starts_with("ATPT"), -DRUG
+    -starts_with("AVISIT"), -ends_with("TMF"), -starts_with("TRT"),
+    -starts_with("ATPT"), -DRUG
   )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
@@ -839,6 +844,11 @@ dataset_vignette(
 # Include numeric values for STUDYIDN, USUBJIDN, SEXN, RACEN etc.
 
 covar <- adsl %>%
+  derive_vars_merged(
+    dataset_add = country_code_lookup,
+    new_vars = exprs(COUNTRYN = country_number, COUNTRYL = country_name),
+    by_vars = exprs(COUNTRY = country_code),
+  ) %>%
   mutate(
     STUDYIDN = as.numeric(word(USUBJID, 1, sep = fixed("-"))),
     SITEIDN = as.numeric(word(USUBJID, 2, sep = fixed("-"))),
@@ -885,26 +895,19 @@ covar <- adsl %>%
     FORMN = case_when(
       FORM == "PATCH" ~ 3,
       TRUE ~ 4
-    ),
-    COUNTRYN = case_when(
-      COUNTRY == "USA" ~ 1,
-      COUNTRY == "CAN" ~ 2,
-      COUNTRY == "GBR" ~ 3
-    ),
-    REGION1N = COUNTRYN,
+    )
   ) %>%
   select(
     STUDYID, STUDYIDN, SITEID, SITEIDN, USUBJID, USUBJIDN,
     SUBJID, SUBJIDN, AGE, SEX, SEXN, COHORT, COHORTC, ROUTE, ROUTEN,
-    RACE, RACEN, ETHNIC, ETHNICN, FORM, FORMN, COUNTRY, COUNTRYN,
-    REGION1, REGION1N
+    RACE, RACEN, ETHNIC, ETHNICN, FORM, FORMN, COUNTRY, COUNTRYN, COUNTRYL
   )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(
   covar,
   display_vars = exprs(
-    STUDYIDN, USUBJIDN, SITEIDN, AGE, SEXN, RACEN, COHORT, ROUTEN
+    STUDYIDN, USUBJIDN, SITEIDN, COUNTRY, COUNTRYN, AGE, SEXN, RACEN, COHORT, ROUTEN
   )
 )
 

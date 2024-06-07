@@ -56,7 +56,7 @@ test_that("derive_extreme_event Test 1: `mode` = first", {
     set_values_to = exprs(
       PARAMCD = "WSP"
     ),
-    check_type = "none"
+    check_type = "warning"
   )
 
   expect_dfs_equal(
@@ -123,7 +123,7 @@ test_that("derive_extreme_event Test 2: `mode` = last", {
     set_values_to = exprs(
       PARAMCD = "WSP"
     ),
-    check_type = "none"
+    check_type = "warning"
   )
 
   expect_dfs_equal(
@@ -601,8 +601,54 @@ test_that("derive_extreme_event Test 7: mode and condition used in event()", {
   )
 })
 
-## Test 8: deprecation of ignore_event_order ----
-test_that("derive_extreme_event Test 8: deprecation of ignore_event_order", {
+## Test 8: error if source dataset not available ----
+test_that("derive_extreme_event Test 8: error if source dataset not available", {
+  adhy <- tibble::tribble(
+    ~USUBJID, ~AVISITN, ~CRIT1FL,
+    "1",             1, "Y",
+    "1",             2, "Y",
+    "2",             1, "Y",
+    "2",             2, NA_character_,
+    "2",             3, "Y",
+    "2",             4, NA_character_
+  ) %>%
+    mutate(
+      PARAMCD = "ALKPH",
+      PARAM = "Alkaline Phosphatase (U/L)"
+    )
+
+  expect_snapshot(
+    derive_extreme_event(
+      adhy,
+      by_vars = exprs(USUBJID),
+      events = list(
+        event(
+          dataset_name = "adyh",
+          condition = is.na(CRIT1FL),
+          set_values_to = exprs(AVALC = "N")
+        ),
+        event(
+          condition = CRIT1FL == "Y",
+          mode = "last",
+          set_values_to = exprs(AVALC = "Y")
+        )
+      ),
+      source_datasets = list(adhy = adhy),
+      tmp_event_nr_var = event_nr,
+      order = exprs(event_nr, AVISITN),
+      mode = "first",
+      keep_source_vars = exprs(AVISITN),
+      set_values_to = exprs(
+        PARAMCD = "ALK2",
+        PARAM = "ALKPH <= 2 times ULN"
+      )
+    ),
+    error = TRUE
+  )
+})
+
+## Test 9: deprecation of ignore_event_order ----
+test_that("derive_extreme_event Test 9: deprecation of ignore_event_order", {
   adrs <- tibble::tribble(
     ~USUBJID, ~AVISITN, ~AVALC,
     "1",             1, "PR",
@@ -611,8 +657,8 @@ test_that("derive_extreme_event Test 8: deprecation of ignore_event_order", {
   ) %>%
     mutate(PARAMCD = "OVR")
 
-  expect_warning(
-    actual <- derive_extreme_event(
+  expect_error(
+    derive_extreme_event(
       adrs,
       by_vars = exprs(USUBJID),
       order = exprs(AVISITN),
@@ -638,25 +684,12 @@ test_that("derive_extreme_event Test 8: deprecation of ignore_event_order", {
         PARAMCD = "CRSP"
       )
     ),
-    class = "lifecycle_warning_deprecated"
-  )
-  expected <- bind_rows(
-    adrs,
-    tibble::tribble(
-      ~USUBJID, ~AVISITN, ~AVALC, ~PARAMCD,
-      "1",             1, "Y",    "CRSP"
-    )
-  )
-
-  expect_dfs_equal(
-    base = expected,
-    compare = actual,
-    keys = c("USUBJID", "PARAMCD", "AVISITN")
+    class = "lifecycle_error_deprecated"
   )
 })
 
-## Test 9: deprecation of ignore_event_order ----
-test_that("derive_extreme_event Test 9: deprecation of ignore_event_order", {
+## Test 10: deprecation of ignore_event_order ----
+test_that("derive_extreme_event Test 10: deprecation of ignore_event_order", {
   adrs <- tibble::tribble(
     ~USUBJID, ~AVISITN, ~AVALC,
     "1",             1, "PR",
@@ -665,8 +698,8 @@ test_that("derive_extreme_event Test 9: deprecation of ignore_event_order", {
   ) %>%
     mutate(PARAMCD = "OVR")
 
-  expect_warning(
-    actual <- derive_extreme_event(
+  expect_error(
+    derive_extreme_event(
       adrs,
       by_vars = exprs(USUBJID),
       order = exprs(AVISITN),
@@ -692,19 +725,126 @@ test_that("derive_extreme_event Test 9: deprecation of ignore_event_order", {
         PARAMCD = "CRSP"
       )
     ),
-    class = "lifecycle_warning_deprecated"
+    class = "lifecycle_error_deprecated"
   )
-  expected <- bind_rows(
-    adrs,
-    tibble::tribble(
-      ~USUBJID, ~AVISITN, ~AVALC, ~PARAMCD,
-      "1",             1, "Y",    "CRSP"
-    )
+})
+
+## Test 11: test for duplicates: one warning ----
+test_that("derive_extreme_event Test 11: test for duplicates: one warning", {
+  ad1 <- tribble(
+    ~USUBJID, ~AVALC, ~ADY, ~ASEQ,
+    "1",      "Y",       3,     1,
+    "2",      "Y",       5,     1,
+    "3",      "N",       2,     1,
+    "4",      "N",       4,     1
   )
 
-  expect_dfs_equal(
-    base = expected,
-    compare = actual,
-    keys = c("USUBJID", "PARAMCD", "AVISITN")
+  ad2 <- tribble(
+    ~USUBJID, ~AVALC, ~ADY, ~ASEQ,
+    "1",      "Y",       3,     1,
+    "2",      "Y",       3,     1,
+    "3",      "Y",       2,     1
+  )
+
+
+  expect_warning(
+    derive_extreme_event(
+      by_vars = exprs(USUBJID),
+      source_datasets = list(ad1 = ad1, ad2 = ad2),
+      order = exprs(event_nr, ADY),
+      mode = "first",
+      check_type = "warning",
+      tmp_event_nr_var = event_nr,
+      events = list(
+        event(
+          dataset_name = "ad1",
+          condition = AVALC == "Y",
+          mode = "first",
+          set_values_to = exprs(
+            event_nr = 1,
+            AVALC = "Y"
+          )
+        ),
+        event(
+          dataset_name = "ad2",
+          condition = AVALC == "Y",
+          mode = "first",
+          set_values_to = exprs(
+            event_nr = 1,
+            AVALC = "Y"
+          )
+        ),
+        event(
+          dataset_name = "ad1",
+          mode = "last",
+          set_values_to = exprs(
+            event_nr = 2,
+            AVALC = "N"
+          )
+        )
+      )
+    ),
+    "Check duplicates*"
+  )
+})
+
+
+## Test 12: test for duplicates: with error ----
+test_that("derive_extreme_event Test 12: test for duplicates: with error", {
+  ad1 <- tribble(
+    ~USUBJID, ~AVALC, ~ADY, ~ASEQ,
+    "1",      "Y",       3,     1,
+    "1",      "Y",       3,     2,
+    "2",      "Y",       5,     1,
+    "3",      "N",       2,     1,
+    "4",      "N",       4,     1
+  )
+
+  ad2 <- tribble(
+    ~USUBJID, ~AVALC, ~ADY, ~ASEQ,
+    "1",      "Y",       3,     1,
+    "2",      "Y",       3,     1,
+    "3",      "Y",       2,     1
+  )
+
+
+  expect_error(
+    derive_extreme_event(
+      by_vars = exprs(USUBJID),
+      source_datasets = list(ad1 = ad1, ad2 = ad2),
+      order = exprs(event_nr, ADY),
+      mode = "first",
+      check_type = "error",
+      tmp_event_nr_var = event_nr,
+      events = list(
+        event(
+          dataset_name = "ad1",
+          condition = AVALC == "Y",
+          mode = "first",
+          set_values_to = exprs(
+            event_nr = 1,
+            AVALC = "Y"
+          )
+        ),
+        event(
+          dataset_name = "ad2",
+          condition = AVALC == "Y",
+          mode = "first",
+          set_values_to = exprs(
+            event_nr = 1,
+            AVALC = "Y"
+          )
+        ),
+        event(
+          dataset_name = "ad1",
+          mode = "last",
+          set_values_to = exprs(
+            event_nr = 2,
+            AVALC = "N"
+          )
+        )
+      )
+    ),
+    NULL
   )
 })

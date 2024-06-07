@@ -91,7 +91,7 @@ consolidate_metadata <- function(datasets,
                                  check_vars = "warning",
                                  check_keys,
                                  check_type = "error") {
-  assert_list_of(datasets, class = "data.frame", named = TRUE)
+  assert_list_of(datasets, cls = "data.frame", named = TRUE)
   assert_vars(key_vars)
   source_var <- assert_symbol(enexpr(source_var))
   check_vars <-
@@ -101,8 +101,8 @@ consolidate_metadata <- function(datasets,
       case_sensitive = FALSE
     )
   if (!is_missing(check_keys)) {
-    deprecate_warn(
-      "1.0.0",
+    deprecate_stop(
+      "1.1.0",
       "consolidate_metadata(check_keys = )",
       "consolidate_metadata(check_type = )"
     )
@@ -123,11 +123,10 @@ consolidate_metadata <- function(datasets,
 
   if (check_vars != "none") {
     if (length(unique(map(datasets, function(x) sort(names(x))))) > 1) {
-      msg_funs <- list(message = inform, warning = warn, error = abort)
-      msg_funs[[check_vars]](paste(
+      msg_funs <- list(message = cli_inform, warning = cli_warn, error = cli_abort)
+      msg_funs[[check_vars]](c(
         "The variable names differ across the input datasets.",
-        "This message can be suppressed by setting `check_vars = \"none\"`.",
-        sep = "\n"
+        i = "This message can be suppressed by setting {.code check_vars = \"none\"}."
       ))
     }
   }

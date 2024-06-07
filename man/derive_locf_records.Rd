@@ -6,7 +6,6 @@
 \usage{
 derive_locf_records(
   dataset,
-  dataset_expected_obs,
   dataset_ref,
   by_vars,
   analysis_var = AVAL,
@@ -17,9 +16,7 @@ derive_locf_records(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars}, \code{analysis_var}, \code{order} and \code{keep_vars} arguments are expected to be in the dataset.}
-
-\item{dataset_expected_obs}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{dataset_ref} instead.}
+The variables specified by the \code{by_vars}, \code{analysis_var}, \code{order}, and \code{keep_vars} arguments are expected to be in the dataset.}
 
 \item{dataset_ref}{Expected observations dataset
 
@@ -85,7 +82,7 @@ library(tibble)
 advs <- tribble(
   ~STUDYID,  ~USUBJID,      ~PARAMCD, ~PARAMN, ~AVAL, ~AVISITN, ~AVISIT,
   "CDISC01", "01-701-1015", "PULSE",        1,    61,        0, "BASELINE",
-  "CDISC01", "01-701-1015", "PULSE",        1,    60,        2, "WEEK 6",
+  "CDISC01", "01-701-1015", "PULSE",        1,    60,        6, "WEEK 6",
   "CDISC01", "01-701-1015", "DIABP",        2,    51,        0, "BASELINE",
   "CDISC01", "01-701-1015", "DIABP",        2,    50,        2, "WEEK 2",
   "CDISC01", "01-701-1015", "DIABP",        2,    51,        4, "WEEK 4",

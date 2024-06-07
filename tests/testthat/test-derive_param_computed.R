@@ -399,69 +399,18 @@ test_that("derive_param_computed Test 9: compute multiple variables, keep_nas", 
   )
 })
 
-## Test 10: deprecation warning if analysis_value is used ----
-test_that("derive_param_computed Test 10: deprecation warning if analysis_value is used", {
-  input <- tibble::tribble(
-    ~USUBJID, ~PARAMCD, ~PARAM, ~AVAL, ~AVALU, ~VISIT,
-    "01-701-1015", "DIABP", "Diastolic Blood Pressure (mmHg)", 51, "mmHg", "BASELINE",
-    "01-701-1015", "DIABP", "Diastolic Blood Pressure (mmHg)", 50, "mmHg", "WEEK 2",
-    "01-701-1015", "SYSBP", "Systolic Blood Pressure (mmHg)", 121, "mmHg", "BASELINE",
-    "01-701-1015", "SYSBP", "Systolic Blood Pressure (mmHg)", 121, "mmHg", "WEEK 2",
-    "01-701-1028", "DIABP", "Diastolic Blood Pressure (mmHg)", 79, "mmHg", "BASELINE",
-    "01-701-1028", "DIABP", "Diastolic Blood Pressure (mmHg)", 80, "mmHg", "WEEK 2",
-    "01-701-1028", "SYSBP", "Systolic Blood Pressure (mmHg)", 130, "mmHg", "BASELINE",
-    "01-701-1028", "SYSBP", "Systolic Blood Pressure (mmHg)", 132, "mmHg", "WEEK 2"
-  )
-
-  new_obs <-
-    inner_join(
-      input %>% filter(PARAMCD == "DIABP") %>% select(USUBJID, VISIT, AVAL),
-      input %>% filter(PARAMCD == "SYSBP") %>% select(USUBJID, VISIT, AVAL),
-      by = c("USUBJID", "VISIT"),
-      suffix = c(".DIABP", ".SYSBP")
-    ) %>%
-    mutate(
-      AVAL = (2 * AVAL.DIABP + AVAL.SYSBP) / 3,
-      PARAMCD = "MAP",
-      PARAM = "Mean arterial pressure (mmHg)",
-      AVALU = "mmHg"
-    ) %>%
-    select(-AVAL.DIABP, -AVAL.SYSBP)
-  expected_output <- bind_rows(input, new_obs)
-
-  expect_error(
-    derive_param_computed(
-      input,
-      parameters = exprs(SYSBP, DIABP),
-      by_vars = exprs(USUBJID, VISIT),
-      analysis_value = (AVAL.SYSBP + 2 * AVAL.DIABP) / 3,
-      set_values_to = exprs(
-        PARAMCD = "MAP",
-        PARAM = "Mean arterial pressure (mmHg)",
-        AVALU = "mmHg"
-      )
-    ),
-    class = "lifecycle_error_deprecated"
-  )
-})
-
-
 # assert_parameters_argument ----
-## Test 11: error if argument is of wrong type ----
-test_that("assert_parameters_argument Test 11: error if argument is of wrong type", {
-  expect_error(
+## Test 10: error if argument is of wrong type ----
+test_that("assert_parameters_argument Test 10: error if argument is of wrong type", {
+  expect_snapshot(
     assert_parameters_argument(myparameters <- c(1, 2, 3)),
-    regexp = paste(
-      "`myparameters` must be a character vector or a list of expressions",
-      "but it is a double vector."
-    ),
-    fixed = TRUE
+    error = TRUE
   )
 })
 
 # get_hori_data ----
-## Test 12: error if variables with more than one dot ----
-test_that("get_hori_data Test 12: error if variables with more than one dot", {
+## Test 11: error if variables with more than one dot ----
+test_that("get_hori_data Test 11: error if variables with more than one dot", {
   input <- tibble::tribble(
     ~USUBJID, ~PARAMCD, ~PARAM, ~AVAL, ~AVALU, ~VISIT,
     "01-701-1015", "DIABP", "Diastolic Blood Pressure (mmHg)", 51, "mmHg", "BASELINE",
@@ -474,7 +423,7 @@ test_that("get_hori_data Test 12: error if variables with more than one dot", {
     "01-701-1028", "SYSBP", "Systolic Blood Pressure (mmHg)", 132, "mmHg", "WEEK 2"
   )
 
-  expect_error(
+  expect_snapshot(
     get_hori_data(
       input,
       parameters = exprs(SYSBP, DIABP),
@@ -482,11 +431,6 @@ test_that("get_hori_data Test 12: error if variables with more than one dot", {
       set_values_to = exprs(AVAL = (AVAL.SYSBP + 2 * AVAL.DIA.BP) / 3),
       filter = NULL
     ),
-    regexp = paste(
-      "The `set_values_to` argument contains variable names with more than on dot:",
-      "`AVAL.DIA.BP`",
-      sep = "\n"
-    ),
-    fixed = TRUE
+    error = TRUE
   )
 })

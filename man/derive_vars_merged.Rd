@@ -19,7 +19,8 @@ derive_vars_merged(
   false_value = NA_character_,
   missing_values = NULL,
   check_type = "warning",
-  duplicate_msg = NULL
+  duplicate_msg = NULL,
+  relationship = NULL
 )
 }
 \arguments{
@@ -148,6 +149,10 @@ If \code{"warning"} or \code{"error"} is specified, the specified message is iss
 if the observations of the (restricted) additional dataset are not unique
 with respect to the by variables and the order.
 
+If the \code{order} argument is not specified, the \code{check_type} argument is ignored:
+if the observations of the (restricted) additional dataset are not unique with respect
+to the by variables, an error is issued.
+
 \emph{Permitted Values}: \code{"none"}, \code{"warning"}, \code{"error"}}
 
 \item{duplicate_msg}{Message of unique check
@@ -156,9 +161,21 @@ If the uniqueness check fails, the specified message is displayed.
 
 \emph{Default}:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{paste("Dataset `dataset_add` contains duplicate records with respect to",
-      enumerate(vars2chr(by_vars)))
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{paste(
+  "Dataset \{.arg dataset_add\} contains duplicate records with respect to",
+  "\{.var \{vars2chr(by_vars)\}\}."
+)
 }\if{html}{\out{</div>}}}
+
+\item{relationship}{Expected merge-relationship between the \code{by_vars}
+variable(s) in \code{dataset} (input dataset) and the \code{dataset_add} (additional dataset)
+containing the additional \code{new_vars}.
+
+This argument is passed to the \code{dplyr::left_join()} function. See
+\url{https://dplyr.tidyverse.org/reference/mutate-joins.html#arguments} for
+more details.
+
+\strong{Permitted Values:} \code{"one-to-one"}, \code{"many-to-one"}, \code{NULL}.}
 }
 \value{
 The output dataset contains all observations and variables of the

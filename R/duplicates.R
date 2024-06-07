@@ -62,7 +62,9 @@ extract_duplicate_records <- function(dataset, by_vars) {
   data_by <- dataset %>%
     ungroup() %>%
     # evaluate expressions in by_vars
-    transmute(!!!by_vars)
+    mutate(!!!by_vars,
+      .keep = "none"
+    )
 
   is_duplicate <- duplicated(data_by) | duplicated(data_by, fromLast = TRUE)
 
@@ -106,23 +108,32 @@ extract_duplicate_records <- function(dataset, by_vars) {
 #' signal_duplicate_records(adsl, exprs(USUBJID), cnd_type = "message")
 signal_duplicate_records <- function(dataset,
                                      by_vars,
-                                     msg = paste("Dataset contains duplicate records with respect to", enumerate(replace_values_by_names(by_vars))), # nolint
+                                     msg = paste(
+                                       "Dataset contains duplicate records",
+                                       "with respect to",
+                                       "{.var {replace_values_by_names(by_vars)}}"
+                                     ),
                                      cnd_type = "error") {
   assert_expr_list(by_vars)
   assert_data_frame(dataset, required_vars = extract_vars(by_vars), check_is_grouped = FALSE)
-  assert_character_scalar(msg)
+  assert_character_vector(msg)
   assert_character_scalar(cnd_type, values = c("message", "warning", "error"))
 
-  cnd_funs <- list(message = inform, warning = warn, error = abort)
+  cnd_funs <- list(message = cli_inform, warning = cli_warn, error = cli_abort)
 
   duplicate_records <- extract_duplicate_records(dataset, by_vars)
   if (nrow(duplicate_records) >= 1L) {
+    # nolint start: undesirable_function_linter
     admiral_environment$duplicates <- structure(
       duplicate_records,
       class = union("duplicates", class(duplicate_records)),
       by_vars = replace_values_by_names(by_vars)
     )
-    full_msg <- paste0(msg, "\nRun `get_duplicates_dataset()` to access the duplicate records")
+    # nolint end
+    full_msg <- c(
+      msg,
+      i = "Run {.run admiral::get_duplicates_dataset()} to access the duplicate records"
+    )
     cnd_funs[[cnd_type]](full_msg)
   }
 }
@@ -140,11 +151,8 @@ signal_duplicate_records <- function(dataset,
 #'
 #' @export
 print.duplicates <- function(x, ...) {
-  cat(
-    "Duplicate records with respect to ",
-    enumerate(attr(x, "by_vars")),
-    ".\n",
-    sep = ""
+  cli_text(
+    "Duplicate records with respect to {.var {attr(x, \"by_vars\")}}."
   )
   NextMethod()
 }

@@ -174,8 +174,8 @@ derive_var_merged_ef_msrc <- function(dataset,
                                       false_value = NA_character_,
                                       missing_value = NA_character_) {
   new_var <- assert_symbol(enexpr(new_var))
-  assert_list_of(source_datasets, class = "data.frame", named = TRUE)
-  assert_list_of(flag_events, "flag_event")
+  assert_list_of(source_datasets, cls = "data.frame", named = TRUE)
+  assert_list_of(flag_events, cls = "flag_event")
 
   source_names <- names(source_datasets)
   assert_list_element(
@@ -183,11 +183,15 @@ derive_var_merged_ef_msrc <- function(dataset,
     element = "dataset_name",
     condition = dataset_name %in% source_names,
     source_names = source_names,
-    message_text = paste0(
-      "The dataset names must be included in the list specified for the ",
-      "`source_datasets` parameter.\n",
-      "Following names were provided by `source_datasets`:\n",
-      enumerate(source_names, quote_fun = squote)
+    message_text = c(
+      paste0(
+        "The dataset names must be included in the list specified for the ",
+        "{.arg source_datasets} argument."
+      ),
+      i = paste(
+        "Following names were provided by {.arg source_datasets}:",
+        ansi_collapse(source_names)
+      )
     )
   )
 

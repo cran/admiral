@@ -98,6 +98,10 @@ If \code{"warning"} or \code{"error"} is specified, the specified message is iss
 if the observations of the (restricted) additional dataset are not unique
 with respect to the by variables and the order.
 
+If the \code{order} argument is not specified, the \code{check_type} argument is ignored:
+if the observations of the (restricted) additional dataset are not unique with respect
+to the by variables, an error is issued.
+
 \emph{Permitted Values}: \code{"none"}, \code{"warning"}, \code{"error"}}
 
 \item{duplicate_msg}{Message of unique check
@@ -106,8 +110,10 @@ If the uniqueness check fails, the specified message is displayed.
 
 \emph{Default}:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{paste("Dataset `dataset_add` contains duplicate records with respect to",
-      enumerate(vars2chr(by_vars)))
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{paste(
+  "Dataset \{.arg dataset_add\} contains duplicate records with respect to",
+  "\{.var \{vars2chr(by_vars)\}\}."
+)
 }\if{html}{\out{</div>}}}
 
 \item{print_not_mapped}{Print a list of unique \code{by_vars} values that do not

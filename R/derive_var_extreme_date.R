@@ -252,11 +252,15 @@ derive_var_extreme_dtm <- function(dataset,
     element = "dataset_name",
     condition = dataset_name %in% source_names,
     source_names = source_names,
-    message_text = paste0(
-      "The dataset names must be included in the list specified for the ",
-      "`source_datasets` parameter.\n",
-      "Following names were provided by `source_datasets`:\n",
-      enumerate(source_names, quote_fun = squote)
+    message_text = c(
+      paste0(
+        "The dataset names must be included in the list specified for the ",
+        "{.arg source_datasets} argument."
+      ),
+      i = paste(
+        "Following names were provided by {.arg source_datasets}:",
+        ansi_collapse(source_names)
+      )
     )
   )
 
@@ -310,11 +314,12 @@ derive_var_extreme_dtm <- function(dataset,
         check_type = "none"
       )
 
-    add_data[[i]] <- transmute(
+    add_data[[i]] <- mutate(
       add_data[[i]],
       !!!subject_keys,
       !!!sources[[i]]$set_values_to,
-      !!new_var := convert_date_to_dtm(!!date_var)
+      !!new_var := convert_date_to_dtm(!!date_var),
+      .keep = "none"
     )
   }
 
@@ -584,13 +589,6 @@ derive_var_extreme_dt <- function(dataset,
 #' @param date A variable or an expression providing a date. A date or a
 #'   datetime can be specified. An unquoted symbol or expression is expected.
 #'
-#' @param traceability_vars A named list returned by `exprs()` defining the
-#'   traceability variables, e.g. `exprs(LALVDOM = "AE", LALVSEQ = AESEQ, LALVVAR
-#'   = "AESTDTC")`. The values must be a symbol, a character string, a numeric,
-#'   an expression, or `NA`.
-#'
-#'    `r lifecycle::badge("deprecated")` Please use `set_values_to` instead.
-#'
 #' @param set_values_to Variables to be set
 #'
 #' @seealso [derive_var_extreme_dtm()], [derive_var_extreme_dt()]
@@ -629,17 +627,7 @@ derive_var_extreme_dt <- function(dataset,
 date_source <- function(dataset_name,
                         filter = NULL,
                         date,
-                        traceability_vars = NULL,
                         set_values_to = NULL) {
-  if (!is.null(traceability_vars)) {
-    deprecate_stop(
-      "0.12.0",
-      "date_source(traceability_vars = )",
-      "date_source(set_values_to = )"
-    )
-    set_values_to <- traceability_vars
-  }
-
   out <- list(
     dataset_name = assert_character_scalar(dataset_name),
     filter = assert_filter_cond(enexpr(filter), optional = TRUE),

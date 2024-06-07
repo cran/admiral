@@ -57,15 +57,6 @@
 #'
 #'   *Permitted Values:* A character vector of `PARAMCD` values or a list of expressions
 #'
-#' @param analysis_var Analysis variable
-#'
-#'   `r lifecycle::badge("deprecated")` Please use `set_values_to` instead.
-#'
-#'   The specified variable is set to the value of `analysis_value` for the new
-#'   observations.
-#'
-#'   *Permitted Values*: An unquoted symbol
-#'
 #' @param by_vars Grouping variables
 #'
 #'   For each group defined by `by_vars` an observation is added to the output
@@ -104,19 +95,6 @@
 #'   to the other parameters using the specified variables. (Refer to Example 2)
 #'
 #'   `r roxygen_param_by_vars()`
-#'
-#' @param analysis_value Definition of the analysis value
-#'
-#'  `r lifecycle::badge("deprecated")` Please use `set_values_to` instead.
-#'
-#'   An expression defining the analysis value (`AVAL`) of the new parameter is
-#'   expected. The values of variables of the parameters specified by
-#'   `parameters` can be accessed using `<variable name>.<parameter code>`,
-#'   e.g., `AVAL.SYSBP`.
-#'
-#'   Variable names in the expression must not contain more than one dot.
-#'
-#'   *Permitted Values:* An unquoted expression
 #'
 #' @param set_values_to Variables to be set
 #'
@@ -165,18 +143,25 @@
 #' library(dplyr)
 #' library(lubridate)
 #'
-#' # Example 1: Derive MAP
+#' # Example 1a: Derive MAP
 #' advs <- tribble(
-#'   ~USUBJID,      ~PARAMCD, ~PARAM,                            ~AVAL, ~AVALU, ~VISIT,
-#'   "01-701-1015", "DIABP",  "Diastolic Blood Pressure (mmHg)",    51, "mmHg", "BASELINE",
-#'   "01-701-1015", "DIABP",  "Diastolic Blood Pressure (mmHg)",    50, "mmHg", "WEEK 2",
-#'   "01-701-1015", "SYSBP",  "Systolic Blood Pressure (mmHg)",    121, "mmHg", "BASELINE",
-#'   "01-701-1015", "SYSBP",  "Systolic Blood Pressure (mmHg)",    121, "mmHg", "WEEK 2",
-#'   "01-701-1028", "DIABP",  "Diastolic Blood Pressure (mmHg)",    79, "mmHg", "BASELINE",
-#'   "01-701-1028", "DIABP",  "Diastolic Blood Pressure (mmHg)",    80, "mmHg", "WEEK 2",
-#'   "01-701-1028", "SYSBP",  "Systolic Blood Pressure (mmHg)",    130, "mmHg", "BASELINE",
-#'   "01-701-1028", "SYSBP",  "Systolic Blood Pressure (mmHg)",    132, "mmHg", "WEEK 2"
-#' )
+#'   ~USUBJID, ~PARAMCD, ~PARAM, ~AVAL, ~AVALU, ~VISIT,
+#'   "01-701-1015", "DIABP", "Diastolic Blood Pressure (mmHg)", 51, "mmHg", "BASELINE",
+#'   "01-701-1015", "DIABP", "Diastolic Blood Pressure (mmHg)", 50, "mmHg", "WEEK 2",
+#'   "01-701-1015", "SYSBP", "Systolic Blood Pressure (mmHg)", 121, "mmHg", "BASELINE",
+#'   "01-701-1015", "SYSBP", "Systolic Blood Pressure (mmHg)", 121, "mmHg", "WEEK 2",
+#'   "01-701-1028", "DIABP", "Diastolic Blood Pressure (mmHg)", 79, "mmHg", "BASELINE",
+#'   "01-701-1028", "DIABP", "Diastolic Blood Pressure (mmHg)", 80, "mmHg", "WEEK 2",
+#'   "01-701-1028", "SYSBP", "Systolic Blood Pressure (mmHg)", 130, "mmHg", "BASELINE",
+#'   "01-701-1028", "SYSBP", "Systolic Blood Pressure (mmHg)", 132, "mmHg", "WEEK 2"
+#' ) %>%
+#'   mutate(
+#'     ADT = case_when(
+#'       VISIT == "BASELINE" ~ as.Date("2024-01-10"),
+#'       VISIT == "WEEK 2" ~ as.Date("2024-01-24")
+#'     ),
+#'     ADTF = NA_character_
+#'   )
 #'
 #' derive_param_computed(
 #'   advs,
@@ -186,8 +171,27 @@
 #'     AVAL = (AVAL.SYSBP + 2 * AVAL.DIABP) / 3,
 #'     PARAMCD = "MAP",
 #'     PARAM = "Mean Arterial Pressure (mmHg)",
-#'     AVALU = "mmHg"
+#'     AVALU = "mmHg",
+#'     ADT = ADT.SYSBP
 #'   )
+#' )
+#'
+#' # Example 1b: Using option `keep_nas = TRUE` to derive MAP in the case where some/all values
+#' # of a variable used in the computation are missing
+#'
+#' derive_param_computed(
+#'   advs,
+#'   by_vars = exprs(USUBJID, VISIT),
+#'   parameters = c("SYSBP", "DIABP"),
+#'   set_values_to = exprs(
+#'     AVAL = (AVAL.SYSBP + 2 * AVAL.DIABP) / 3,
+#'     PARAMCD = "MAP",
+#'     PARAM = "Mean Arterial Pressure (mmHg)",
+#'     AVALU = "mmHg",
+#'     ADT = ADT.SYSBP,
+#'     ADTF = ADTF.SYSBP
+#'   ),
+#'   keep_nas = TRUE
 #' )
 #'
 #' # Example 2: Derive BMI where height is measured only once
@@ -285,8 +289,6 @@ derive_param_computed <- function(dataset = NULL,
                                   dataset_add = NULL,
                                   by_vars,
                                   parameters,
-                                  analysis_var = AVAL,
-                                  analysis_value,
                                   set_values_to,
                                   filter = NULL,
                                   constant_by_vars = NULL,
@@ -302,25 +304,6 @@ derive_param_computed <- function(dataset = NULL,
     assert_param_does_not_exist(dataset, set_values_to$PARAMCD)
   }
   assert_logical_scalar(keep_nas)
-  ### BEGIN DEPRECATION
-  if (!missing(analysis_var)) {
-    deprecate_stop(
-      "0.12.0",
-      "derive_param_computed(analysis_var = )",
-      "derive_param_computed(set_values_to = )"
-    )
-  }
-  analysis_var <- assert_symbol(enexpr(analysis_var))
-
-  if (!missing(analysis_value)) {
-    deprecate_stop(
-      "0.12.0",
-      "derive_param_computed(analysis_value = )",
-      "derive_param_computed(set_values_to = )"
-    )
-    set_values_to <- exprs(!!analysis_var := !!enexpr(analysis_value), !!!set_values_to)
-  }
-  ### END DEPRECATION
 
   parameters <- assert_parameters_argument(parameters)
   constant_parameters <- assert_parameters_argument(constant_parameters, optional = TRUE)
@@ -409,13 +392,10 @@ assert_parameters_argument <- function(parameters, optional = TRUE) {
       parameters,
       ~ is_call(.x) || is_expression(.x)
     ))) {
-      abort(
-        paste0(
-          "`",
-          arg_name(substitute(parameters)),
-          "` must be a character vector or a list of expressions but it is ",
-          what_is_it(parameters),
-          "."
+      cli_abort(
+        paste(
+          "{.arg {rlang::caller_arg(parameters)}} must be a character vector",
+          "or a list of expressions but it is {.obj_type_friendly {parameters}}."
         )
       )
     }
@@ -462,7 +442,7 @@ assert_parameters_argument <- function(parameters, optional = TRUE) {
 #'
 #' @return A dataset with one observation per by group. It contains the
 #'   variables specified for `by_vars` and all variables of the form
-#'   `<variable>.<parameter>` occurring in `analysis_value`.
+#'   `<variable>.<parameter>` occurring in `set_values_to`.
 #'
 #' @keywords internal
 get_hori_data <- function(dataset,
@@ -501,14 +481,14 @@ get_hori_data <- function(dataset,
     filter(PARAMCD %in% param_values)
 
   if (nrow(data_parameters) == 0L) {
-    warn(
-      paste0(
+    cli_warn(
+      c(paste0(
         "The input dataset does not contain any observations fullfiling the filter condition (",
-        expr_label(filter),
+        "{.code {expr_label(filter)}}}",
         ") for the parameter codes (PARAMCD) ",
-        enumerate(param_values),
-        "\nNo new observations were added."
-      )
+        "{.val {param_values}}",
+        i = "No new observations were added."
+      ))
     )
     return(list(hori_data = NULL))
   }
@@ -516,13 +496,13 @@ get_hori_data <- function(dataset,
   params_available <- unique(data_parameters$PARAMCD)
   params_missing <- setdiff(param_values, params_available)
   if (length(params_missing) > 0) {
-    warn(
+    cli_warn(
       paste0(
         "The input dataset does not contain any observations fullfiling the filter condition (",
-        expr_label(filter),
+        "{.code {expr_label(filter)}}",
         ") for the parameter codes (PARAMCD) ",
-        enumerate(params_missing),
-        "\nNo new observations were added."
+        "{.val {params_missing}}",
+        i = "No new observations were added."
       )
     )
     return(list(hori_data = NULL))
@@ -531,12 +511,14 @@ get_hori_data <- function(dataset,
   signal_duplicate_records(
     data_parameters,
     by_vars = exprs(!!!by_vars, PARAMCD),
-    msg = paste(
-      "The filtered input dataset contains duplicate records with respect to",
-      enumerate(c(vars2chr(by_vars), "PARAMCD")),
-      "\nPlease ensure that the variables specified for `by_vars` and `PARAMCD`",
+    msg = c(
+      paste(
+        "The filtered input dataset contains duplicate records with respect to",
+        "{.var {c(vars2chr(by_vars), \"PARAMCD\")}}"
+      ),
+      i = "Please ensure that the variables specified for {.arg by_vars} and {.var PARAMCD}",
       "are a unique key of the input data set restricted by the condition",
-      "specified for `filter` and to the parameters specified for `parameters`."
+      "specified for {.arg filter} and to the parameters specified for {.arg parameters}."
     )
   )
 
@@ -545,11 +527,10 @@ get_hori_data <- function(dataset,
   analysis_vars_chr <- vars2chr(analysis_vars)
   multi_dot_names <- str_count(analysis_vars_chr, "\\.") > 1
   if (any(multi_dot_names)) {
-    abort(
-      paste(
-        "The `set_values_to` argument contains variable names with more than on dot:",
-        enumerate(analysis_vars_chr[multi_dot_names]),
-        sep = "\n"
+    cli_abort(
+      c(
+        "The `set_values_to` argument contains variable names with more than one dot:",
+        "{.var {analysis_vars_chr[multi_dot_names]}}"
       )
     )
   }
