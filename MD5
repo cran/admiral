@@ -1,6 +1,6 @@
-7baac7c16b75ea9d43ab565758f91758 *DESCRIPTION
+ea0dd4fc578bec8a9c4c41e95b21f741 *DESCRIPTION
 3070b615e3047a7f186333f31b51a79e *NAMESPACE
-e1d92b9d96228be9203edd80a3ccf6eb *NEWS.md
+7924a50228431346701ff0f8741445ab *NEWS.md
 20b458d0ee6ca89433dec32f66e9a5ca *R/admiral-package.R
 4a1b8c7c5d3287240ae5ccdbb6acc57d *R/admiral_environment.R
 fe1cb25eb161855b17f2c12a30cb506f *R/admiral_options.R
@@ -21,7 +21,7 @@ e3174d5a1e7097217722c7104d2da2ec *R/data.R
 2768f0f5fc83e4ab5320eac0ad4998f6 *R/derive_advs_params.R
 017ab9f4ff8e0708ef3e6dd8a5e52f35 *R/derive_basetype_records.R
 b8a97fcf9679807eaf077be6be04f4a9 *R/derive_expected_records.R
-ab8ab4849e6a870e11ec2c058dedc778 *R/derive_extreme_event.R
+bff3a04e2c0ae20c622dd3e1a2c4208a *R/derive_extreme_event.R
 fcb0cf41410aa2605f0a75f6eed8b0f1 *R/derive_extreme_records.R
 2eb197555f4657528d05c16bba808ae3 *R/derive_joined.R
 d4101b234ba455e22f2df041206d19ac *R/derive_locf_records.R
@@ -113,7 +113,7 @@ f426016becb0bd993a51baf872a8b30c *inst/doc/concepts_conventions.Rmd
 660b0547db70143c797f0f99341eff4f *inst/doc/concepts_conventions.html
 ba94e7bffb02abaa8d4e38cbd98088b6 *inst/doc/generic.R
 077b1d35f0a4b904ec4e82a347fd3720 *inst/doc/generic.Rmd
-40cc7fbd2ccb55c1dcc6f6b489b4b0d1 *inst/doc/generic.html
+63cc0eeacdfe40517f5daf4a36ae8723 *inst/doc/generic.html
 8194b2be1c4ce481d063b082d4fe1a84 *inst/doc/higher_order.R
 e836560a046b82df7fa9111dabb37627 *inst/doc/higher_order.Rmd
 9d268e3e13a7ca56608c3022bbe6f838 *inst/doc/higher_order.html
@@ -373,7 +373,7 @@ d0ce751d455292fa10342f597ca91eb2 *tests/testthat/test-create_country_codes.R
 935ec317570063c11ac697b5783a1ef9 *tests/testthat/test-derive_advs_params.R
 2713822e06ab262e0468ad0f0c3a28bf *tests/testthat/test-derive_basetype_records.R
 3e9b9b2a30c91653e775bac046b8e452 *tests/testthat/test-derive_expected_records.R
-86308ef934b93ada97b90b983a5c0622 *tests/testthat/test-derive_extreme_event.R
+d80d949380aa1b4cfbff44742b1e94ca *tests/testthat/test-derive_extreme_event.R
 7e3aefc5edbc9b66d97538c211c03d82 *tests/testthat/test-derive_extreme_records.R
 952b0c41d472dba93e8381d61def8be5 *tests/testthat/test-derive_joined.R
 1d5aaec5aaa2cce5f520b15797e457a4 *tests/testthat/test-derive_locf_records.R
