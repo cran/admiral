@@ -285,6 +285,11 @@ observation in the joined dataset the new variables are set as specified by
 Observations in the additional dataset which have no matching observation in
 the input dataset are ignored.
 }
+
+\strong{Note:} This function creates temporary datasets which may be much bigger
+than the input datasets. If this causes memory issues, please try setting
+the admiral option \code{save_memory} to \code{TRUE} (see \code{set_admiral_options()}).
+This reduces the memory consumption but increases the run-time.
 }
 \examples{
 library(tibble)
@@ -504,6 +509,7 @@ General Derivation Functions for all ADaMs that returns variable appended to dat
 \code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
+\code{\link{derive_vars_cat}()},
 \code{\link{derive_vars_computed}()},
 \code{\link{derive_vars_merged}()},
 \code{\link{derive_vars_merged_lookup}()},

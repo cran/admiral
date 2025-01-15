@@ -49,13 +49,13 @@ missing value is replaced by \code{missing_value} (e.g. "NORMAL to NULL").
 library(tibble)
 
 data <- tribble(
-  ~USUBJID, ~PARAMCD, ~AVAL, ~ABLFL, ~BNRIND, ~ANRIND,
-  "P01", "ALB", 33, "Y", "LOW", "LOW",
-  "P01", "ALB", 38, NA, "LOW", "NORMAL",
-  "P01", "ALB", NA, NA, "LOW", NA,
-  "P02", "ALB", 37, "Y", "NORMAL", "NORMAL",
-  "P02", "ALB", 49, NA, "NORMAL", "HIGH",
-  "P02", "SODIUM", 147, "Y", "HIGH", "HIGH"
+  ~USUBJID, ~PARAMCD, ~AVAL, ~ABLFL, ~BNRIND,  ~ANRIND,
+  "P01",    "ALB",       33, "Y",    "LOW",    "LOW",
+  "P01",    "ALB",       38, NA,     "LOW",    "NORMAL",
+  "P01",    "ALB",       NA, NA,     "LOW",    NA,
+  "P02",    "ALB",       37, "Y",    "NORMAL", "NORMAL",
+  "P02",    "ALB",       49, NA,     "NORMAL", "HIGH",
+  "P02",    "SODIUM",   147, "Y",    "HIGH",   "HIGH"
 )
 
 data \%>\%
@@ -89,7 +89,8 @@ BDS-Findings Functions that returns variable appended to dataset:
 \code{\link{derive_var_base}()},
 \code{\link{derive_var_chg}()},
 \code{\link{derive_var_ontrtfl}()},
-\code{\link{derive_var_pchg}()}
+\code{\link{derive_var_pchg}()},
+\code{\link{derive_vars_crit_flag}()}
 }
 \concept{der_bds_findings}
 \keyword{der_bds_findings}

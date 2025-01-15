@@ -1,26 +1,28 @@
 Type: Package
 Package: admiral
 Title: ADaM in R Asset Library
-Version: 1.1.1
+Version: 1.2.0
 Authors@R: c(
     person("Ben", "Straub", , "ben.x.straub@gsk.com", role = c("aut", "cre")),
-    person("Stefan", "Bundfuss", role = "aut"),
+    person("Stefan", "Bundfuss", role = "aut",
+           comment = c(ORCID = "0009-0005-0027-1198")),
     person("Jeffrey", "Dickinson", role = "aut"),
     person("Ross", "Farrugia", role = "aut"),
     person("Fanny", "Gautier", role = "aut"),
-    person("G", "Gayatri", role = "aut"),
-    person("Asha", "Chakma", role = "aut"),
     person("Dinakar", "Kulkarni", role = "aut"),
-    person("Edoardo", "Mancini", role = "aut"),
+    person("Edoardo", "Mancini", role = "aut",
+           comment = c(ORCID = "0009-0006-4899-8641")),
     person("Sadchla", "Mascary", role = "aut"),
     person("Gordon", "Miller", role = "aut"),
-    person("Lina", "Patil", role = "aut"),
+    person("Jim", "Rothstein", role = "aut",
+           comment = c(ORCID = "0009-0009-8659-6071")),
     person("Sophie", "Shapcott", role = "aut"),
     person("Eric", "Simms", role = "aut"),
-    person("Daniel", "Sjoberg", role = "aut"),
-    person("Stefan", "Thoma", role = "aut"),
+    person("Daniel", "Sjoberg", role = "aut",
+           comment = c(ORCID = "0000-0003-0862-2018")),
+    person("Stefan", "Thoma", role = "aut",
+           comment = c(ORCID = "0000-0002-5553-9252")),
     person("Phillip", "Webster", role = "aut"),
-    person("Kangjie", "Zhang", role = "aut"),
     person("Zelos", "Zhu", role = "aut"),
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd")),
     person("GlaxoSmithKline LLC", role = c("cph", "fnd"))
@@ -37,44 +39,41 @@ License: Apache License (>= 2)
 URL: https://pharmaverse.github.io/admiral/,
         https://github.com/pharmaverse/admiral
 BugReports: https://github.com/pharmaverse/admiral/issues
-Depends: R (>= 4.0)
-Imports: admiraldev (>= 1.1.0), cli (>= 3.6.2), dplyr (>= 1.0.5), hms
+Depends: R (>= 4.1)
+Imports: admiraldev (>= 1.2.0), cli (>= 3.6.2), dplyr (>= 1.0.5), hms
         (>= 0.5.3), lifecycle (>= 0.1.0), lubridate (>= 1.7.4),
         magrittr (>= 1.5), purrr (>= 0.3.3), rlang (>= 0.4.4), stringr
         (>= 1.4.0), tidyr (>= 1.0.2), tidyselect (>= 1.1.0)
 Suggests: diffdf, DT, htmltools, knitr, methods, pharmaversesdtm (>=
         1.0.0), reactable, readxl, rmarkdown, testthat (>= 3.0.0),
-        tibble
+        tibble, withr
 VignetteBuilder: knitr
 Config/Needs/website: gert
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2024-06-17 11:19:37 UTC; r590548
+Packaged: 2025-01-15 16:34:58 UTC; r590548
 Author: Ben Straub [aut, cre],
-  Stefan Bundfuss [aut],
+  Stefan Bundfuss [aut] (<https://orcid.org/0009-0005-0027-1198>),
   Jeffrey Dickinson [aut],
   Ross Farrugia [aut],
   Fanny Gautier [aut],
-  G Gayatri [aut],
-  Asha Chakma [aut],
   Dinakar Kulkarni [aut],
-  Edoardo Mancini [aut],
+  Edoardo Mancini [aut] (<https://orcid.org/0009-0006-4899-8641>),
   Sadchla Mascary [aut],
   Gordon Miller [aut],
-  Lina Patil [aut],
+  Jim Rothstein [aut] (<https://orcid.org/0009-0009-8659-6071>),
   Sophie Shapcott [aut],
   Eric Simms [aut],
-  Daniel Sjoberg [aut],
-  Stefan Thoma [aut],
+  Daniel Sjoberg [aut] (<https://orcid.org/0000-0003-0862-2018>),
+  Stefan Thoma [aut] (<https://orcid.org/0000-0002-5553-9252>),
   Phillip Webster [aut],
-  Kangjie Zhang [aut],
   Zelos Zhu [aut],
   F. Hoffmann-La Roche AG [cph, fnd],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Ben Straub <ben.x.straub@gsk.com>
 Repository: CRAN
-Date/Publication: 2024-06-17 13:10:08 UTC
+Date/Publication: 2025-01-15 19:50:02 UTC

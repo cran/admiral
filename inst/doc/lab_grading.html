@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -530,19 +530,19 @@ more details and the blog post <a href="https://pharmaverse.github.io/blog/posts
 admiral handles floating points</a> for more context.</p>
 </div>
 <div id="creating-the-lab-grade" class="section level1">
-<h1>Creating the lab grade</h1>
-<div id="mapping-adlb-vad-to-the-term-variable-in-the-admiral-metadata-data-set" class="section level2">
-<h2>Mapping ADLB VAD to the TERM variable in the <code>{admiral}</code>
-metadata data set</h2>
+<h1>Creating the Lab Grade</h1>
+<div id="mapping-adlb-to-the-term-variable-in-the-admiral-metadata-data-set" class="section level2">
+<h2>Mapping <code>ADLB</code> to the <code>TERM</code> variable in the
+<code>{admiral}</code> metadata data set</h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(admiral)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(pharmaversesdtm)</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;lb&quot;</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>lb <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>lb</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral<span class="sc">::</span>admiral_adsl</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>lb <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(lb)</span></code></pre></div>
 <p><br> Each company needs to map their lab test to a term that
 describes the criteria being applied. The list of terms defined in the
@@ -973,10 +973,10 @@ high values.</p>
 <h2>Terms graded</h2>
 <p>Grading is implemented for those lab tests where a lab value is
 included in the grading definition, <code>{admiral}</code> does NOT try
-to read any other data to determine the grade, and only the ADLB VAD is
-used. The following CTCAE v4.0 SOC values were identified for grading,
-these are “Investigations”, “Metabolism and nutrition disorders” and
-“Blood and lymphatic system disorders”.</p>
+to read any other data to determine the grade, and only the
+<code>ADLB</code> dataset is used. The following CTCAE v4.0 SOC values
+were identified for grading, these are “Investigations”, “Metabolism and
+nutrition disorders” and “Blood and lymphatic system disorders”.</p>
 <p>From these SOC values the following terms criteria is implemented in
 <code>{admiral}</code></p>
 <p>From SOC = “Investigations” there are 21 CTCAE v4.0 Terms:</p>
@@ -1219,10 +1219,10 @@ indicated”</td>
 <h2>Terms graded</h2>
 <p>Grading is implemented for those lab tests where a lab value is
 included in the grading definition, <code>{admiral}</code> does NOT try
-to read any other data to determine the grade, and only the ADLB VAD is
-used. The following CTCAE v5.0 SOC values were identified for grading,
-these are “Investigations”, “Metabolism and nutrition disorders” and
-“Blood and lymphatic system disorders”.</p>
+to read any other data to determine the grade, and only the
+<code>ADLB</code> dataset is used. The following CTCAE v5.0 SOC values
+were identified for grading, these are “Investigations”, “Metabolism and
+nutrition disorders” and “Blood and lymphatic system disorders”.</p>
 <p>From these SOC values the following terms criteria is implemented in
 <code>{admiral}</code></p>
 <p>From SOC = “Investigations” there are 21 CTCAE v5.0 Terms:</p>
@@ -1324,17 +1324,23 @@ separate terms.</td>
 <p>For terms “Alanine aminotransferase increased”, “Alkaline phosphatase
 increased”, “Aspartate aminotransferase increased”, “Blood bilirubin
 increased” and “GGT increased” the criteria is dependent on the Baseline
-Value <code>BASE</code> being normal or abnormal. For <code>BASE</code>
-to be abnormal we compare it with the Upper Limit of Normal (ULN)
-<code>ANRHI</code>, i.e. <code>BASE &gt; ANRHI</code>. This means if
-<code>BASE</code> is abnormal then the grade is always zero for the
-baseline observation.</p>
+Value being normal or abnormal. We use the variable <code>BNRIND</code>
+to determine this, and users can pass in the value(s) of
+<code>BNRIND</code> that indicate the baseline is abnormal via the
+argument <code>abnormal_indicator</code> in the function
+<code>derive_var_atoxgr_dir()</code>. For example, setting
+<code>abnormal_indicator = &quot;HIGH&quot;</code> would mean any observations
+with <code>BNRIND = &quot;HIGH&quot;</code> would be deemed to have an abnormal
+Baseline Value. Note: you can pass in multiple values,
+<code>abnormal_indicator = c(&quot;H&quot;, &quot;HIGH&quot;)</code></p>
+<p>For these 5 terms, this means if <code>BNRIND</code> is abnormal then
+the grade is always zero for the baseline observation.</p>
 <p>For term “INR Increased” there is the following criteria:</p>
 <p><br></p>
 <table>
 <colgroup>
-<col width="13%" />
-<col width="86%" />
+<col width="14%" />
+<col width="85%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1345,7 +1351,7 @@ baseline observation.</p>
 <tbody>
 <tr class="odd">
 <td align="left">INR increased</td>
-<td align="left">&gt;1.2 - 1.5 x ULN; &gt;1 - 1.5 x baseline if on
+<td align="left">&gt;1.2 - 1.5; &gt;1 - 1.5 x baseline if on
 anticoagulation; monitoring only indicated</td>
 </tr>
 </tbody>
@@ -1516,9 +1522,9 @@ of symptoms</td>
 <h2>Terms graded</h2>
 <p>Grading is implemented for those lab tests where a lab value is
 included in the grading definition, <code>{admiral}</code> does NOT try
-to read any other data to determine the grade, and only the ADLB VAD is
-used. The following DAIDS SOC values were identified for grading, these
-are “Chemistries” and “Hematology”.</p>
+to read any other data to determine the grade, and only the
+<code>ADLB</code> dataset is used. The following DAIDS SOC values were
+identified for grading, these are “Chemistries” and “Hematology”.</p>
 <p>From these SOC values the following terms criteria is implemented in
 <code>{admiral}</code></p>
 <p>From SOC = “Chemistries” there are 31 DAIDS Terms:</p>

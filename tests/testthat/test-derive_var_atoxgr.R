@@ -346,34 +346,34 @@ test_that("derive_var_atoxgr Test 11: CTCAEv4 Alanine aminotransferase increased
 test_that("derive_var_atoxgr Test 12: CTCAEv5 Alanine aminotransferase increased", {
   # V5 and V4 criteria identical when BASELINE normal
   expected_alt_ctcv5_norm <- expected_alt_ctcv4 %>%
-    # set BASE to be normal and create FLAG
+    # set BASE to be normal (not HIGH) and create FLAG
     mutate(
       BASE = ANRHI,
-      FLAG = "NORMAL"
+      BNRIND = "NORMAL"
     )
 
   # create records with baseline abnormal and apply criteria
   expected_alt_ctcv5_abn <- tibble::tribble(
-    ~ATOXDSCH, ~AVAL, ~BASE, ~AVALU, ~ATOXGRH,
-    "Not a term", 80, 40, NA_character_, NA,
-    NA_character_, 60, 40, NA_character_, NA,
-    "Alanine aminotransferase Increased", 801, 40, NA_character_, "4",
-    "Alanine aminotransferase Increased", 800, 40, NA_character_, "3",
-    "Alanine aminotransferase Increased", 201, 40, NA_character_, "3",
-    "Alanine aminotransferase Increased", 200, 40, NA_character_, "2",
-    "Alanine aminotransferase Increased", 121, 40, NA_character_, "2",
-    "Alanine aminotransferase Increased", 120, 40, NA_character_, "1",
-    "Alanine aminotransferase Increased", 60, 40, NA_character_, "1",
-    "Alanine aminotransferase Increased", 59, 40, NA_character_, "0",
+    ~ATOXDSCH,                            ~AVAL, ~BASE,        ~AVALU, ~ATOXGRH,
+    "Not a term",                            80,    40, NA_character_,       NA,
+    NA_character_,                           60,    40, NA_character_,       NA,
+    "Alanine aminotransferase Increased",   801,    40, NA_character_,      "4",
+    "Alanine aminotransferase Increased",   800,    40, NA_character_,      "3",
+    "Alanine aminotransferase Increased",   201,    40, NA_character_,      "3",
+    "Alanine aminotransferase Increased",   200,    40, NA_character_,      "2",
+    "Alanine aminotransferase Increased",   121,    40, NA_character_,      "2",
+    "Alanine aminotransferase Increased",   120,    40, NA_character_,      "1",
+    "Alanine aminotransferase Increased",    60,    40, NA_character_,      "1",
+    "Alanine aminotransferase Increased",    59,    40, NA_character_,      "0",
     # ANRHI missing - cannot grade
-    "Alanine aminotransferase Increased", 100, NA, NA_character_, NA,
+    "Alanine aminotransferase Increased",   100,    NA, NA_character_,       NA,
     # AVAL missing cannot grade
-    "Alanine aminotransferase Increased", NA, 40, NA_character_, NA,
+    "Alanine aminotransferase Increased",    NA,    40, NA_character_,       NA,
   ) %>%
-    # set BASE to be abnormal and create FLAG
+    # set BASE to be HIGH (not normal)
     mutate(
       ANRHI = BASE - 1,
-      FLAG = "ABNORMAL"
+      BNRIND = "HIGH"
     )
 
   # combine records with baseline normal and abnormal
@@ -390,13 +390,14 @@ test_that("derive_var_atoxgr Test 12: CTCAEv5 Alanine aminotransferase increased
     meta_criteria = atoxgr_criteria_ctcv5,
     tox_description_var = ATOXDSCH,
     criteria_direction = "H",
+    abnormal_indicator = "HIGH",
     get_unit_expr = AVALU
   )
 
   expect_dfs_equal(
     base = expected_alt_ctcv5,
     compare = actual_alt,
-    keys = c("ATOXDSCH", "AVAL", "ANRHI", "FLAG", "AVALU")
+    keys = c("ATOXDSCH", "AVAL", "ANRHI", "BNRIND", "AVALU")
   )
 })
 
@@ -461,7 +462,7 @@ test_that("derive_var_atoxgr Test 14: CTCAEv5 Alkaline phosphatase increased", {
     # set BASE to be normal and create FLAG
     mutate(
       BASE = ANRHI,
-      FLAG = "NORMAL"
+      BNRIND = "NORMAL"
     )
 
   # create records with baseline abnormal and apply criteria
@@ -483,10 +484,10 @@ test_that("derive_var_atoxgr Test 14: CTCAEv5 Alkaline phosphatase increased", {
     # AVAL missing cannot grade
     "Alkaline phosphatase increased",  NA,     40,     NA_character_,  NA,
   ) %>%
-    # set BASE to be abnormal and create FLAG
+    # set BASE to be abnormal (HIGH) and create FLAG
     mutate(
       ANRHI = BASE - 1,
-      FLAG = "ABNORMAL"
+      BNRIND = "HIGH"
     )
 
   # combine records with baseline normal and abnormal
@@ -502,13 +503,14 @@ test_that("derive_var_atoxgr Test 14: CTCAEv5 Alkaline phosphatase increased", {
     meta_criteria = atoxgr_criteria_ctcv5,
     tox_description_var = ATOXDSCH,
     criteria_direction = "H",
+    abnormal_indicator = "HIGH",
     get_unit_expr = AVALU
   )
 
   expect_dfs_equal(
     base = expected_alkph_ctcv5,
     compare = actual_alkph,
-    keys = c("ATOXDSCH", "AVAL", "ANRHI", "FLAG", "AVALU")
+    keys = c("ATOXDSCH", "AVAL", "ANRHI", "BNRIND", "AVALU")
   )
 })
 
@@ -572,7 +574,7 @@ test_that("derive_var_atoxgr Test 16: CTCAEv5 Aspartate aminotransferase increas
     # set BASE to be normal and create FLAG
     mutate(
       BASE = ANRHI,
-      FLAG = "NORMAL"
+      BNRIND = "NORMAL"
     )
 
   # create records with baseline abnormal and apply criteria
@@ -593,10 +595,10 @@ test_that("derive_var_atoxgr Test 16: CTCAEv5 Aspartate aminotransferase increas
     # AVAL missing cannot grade
     "Aspartate aminotransferase Increased", NA,     40,     NA_character_,  NA,
   ) %>%
-    # set BASE to be abnormal and create FLAG
+    # set BASE to be abnormal (HIGH or H)  and create FLAG
     mutate(
       ANRHI = BASE - 1,
-      FLAG = "ABNORMAL"
+      BNRIND = if_else(ATOXGRH %in% c("3", "4"), "H", "HIGH")
     )
 
   # combine records with baseline normal and abnormal
@@ -612,13 +614,14 @@ test_that("derive_var_atoxgr Test 16: CTCAEv5 Aspartate aminotransferase increas
     meta_criteria = atoxgr_criteria_ctcv5,
     tox_description_var = ATOXDSCH,
     criteria_direction = "H",
+    abnormal_indicator = c("HIGH", "H"),
     get_unit_expr = AVALU
   )
 
   expect_dfs_equal(
     base = expected_ast_ctcv5,
     compare = actual_ast,
-    keys = c("ATOXDSCH", "AVAL", "ANRHI", "FLAG", "AVALU")
+    keys = c("ATOXDSCH", "AVAL", "ANRHI", "BNRIND", "AVALU")
   )
 })
 
@@ -684,10 +687,10 @@ test_that("derive_var_atoxgr Test 17: CTCAEv4 Blood bilirubin increased", {
 test_that("derive_var_atoxgr Test 18: CTCAEv5  Blood bilirubin increased", {
   # V5 and V4 criteria identical when BASELINE normal
   expected_bili_ctcv5_norm <- expected_bili_ctcv4 %>%
-    # set BASE to be normal and create FLAG
+    # set BASE to be normal (not HIGH) and create FLAG
     mutate(
       BASE = ANRHI,
-      FLAG = "NORMAL"
+      BNRIND = "NORMAL"
     )
 
   # create records with abnormal BASE then add records with normal BASE
@@ -696,7 +699,7 @@ test_that("derive_var_atoxgr Test 18: CTCAEv5  Blood bilirubin increased", {
     mutate(
       BASE = ANRHI,
       ANRHI = ANRHI - 1,
-      FLAG = "ABNORMAL"
+      BNRIND = "HIGH"
     ) %>%
     bind_rows(expected_bili_ctcv5_norm)
 
@@ -709,13 +712,14 @@ test_that("derive_var_atoxgr Test 18: CTCAEv5  Blood bilirubin increased", {
     meta_criteria = atoxgr_criteria_ctcv5,
     tox_description_var = ATOXDSCH,
     criteria_direction = "H",
+    abnormal_indicator = "HIGH",
     get_unit_expr = AVALU
   )
 
   expect_dfs_equal(
     base = expected_bili_ctcv5,
     compare = actual_bili,
-    keys = c("ATOXDSCH", "AVAL", "ANRHI", "FLAG", "AVALU")
+    keys = c("ATOXDSCH", "AVAL", "ANRHI", "BNRIND", "AVALU")
   )
 })
 
@@ -1241,10 +1245,10 @@ test_that("derive_var_atoxgr Test 29: CTCAEv4 GGT increased", {
 test_that("derive_var_atoxgr Test 30: CTCAEv5 GGT increased", {
   # V5 and V4 criteria identical when BASELINE normal
   expected_ggt_ctcv5_norm <- expected_ggt_ctcv4 %>%
-    # set BASE to be normal and create FLAG
+    # set BASE to be normal (not HIGH) and create FLAG
     mutate(
       BASE = ANRHI,
-      FLAG = "NORMAL"
+      BNRIND = "NORMAL"
     )
 
   # create records with baseline abnormal and apply criteria
@@ -1265,10 +1269,11 @@ test_that("derive_var_atoxgr Test 30: CTCAEv5 GGT increased", {
     # AVAL missing cannot grade
     "GGT increased", NA,    0,      NA,     NA_character_, NA,
   ) %>%
-    # set BASE to be abnormal and create FLAG
+    # set BASE to be abnormal (HIGH HIGH) and create FLAG
+    # set abnormal_indicator to "HIGH HIGH" also in function call
     mutate(
       ANRHI = BASE - 1,
-      FLAG = "ABNORMAL"
+      BNRIND = "HIGH HIGH"
     )
 
   # combine records with baseline normal and abnormal
@@ -1284,13 +1289,14 @@ test_that("derive_var_atoxgr Test 30: CTCAEv5 GGT increased", {
     meta_criteria = atoxgr_criteria_ctcv5,
     tox_description_var = ATOXDSCH,
     criteria_direction = "H",
+    abnormal_indicator = "HIGH HIGH",
     get_unit_expr = AVALU
   )
 
   expect_dfs_equal(
     base = expected_ggt_ctcv5,
     compare = actual_ggt,
-    keys = c("ATOXDSCH", "AVAL", "ANRLO", "ANRHI", "FLAG", "AVALU")
+    keys = c("ATOXDSCH", "AVAL", "ANRLO", "ANRHI", "BNRIND", "AVALU")
   )
 })
 
@@ -1490,38 +1496,36 @@ test_that("derive_var_atoxgr Test 35: CTCAEv4 INR increased", {
   )
 })
 
-### INR increased (NCICTCV4)
-### NCICTCV5 different for grade 1
-### Grade 3: >2.5 x ULN; >2.5 times above baseline if on anticoagulation
-### Grade 2: >1.5 - 2.5 x ULN; >1.5 - 2.5 times above baseline if on anticoagulation
-### Grade 1: >1.2 - 1.5 x ULN; >1 - 1.5 times above baseline if on anticoagulation
+### INR increased (NCICTCV5)
+### NCICTCV5 different to NCICTCv4 (do not use x ULN)
+### Grade 3: >2.5; >2.5 times above baseline if on anticoagulation
+### Grade 2: >1.5 - 2.5; >1.5 - 2.5 times above baseline if on anticoagulation
+### Grade 1: >1.2 - 1.5; >1 - 1.5 times above baseline if on anticoagulation
 
 ## Test 36: CTCAEv5 INR increased ----
 test_that("derive_var_atoxgr Test 36: CTCAEv5 INR increased", {
   expected_inri <- tibble::tribble(
-    ~ATOXDSCH,       ~AVAL, ~BASE, ~ANRHI, ~AVALU,        ~ATOXGRH, ~TESTNUM,
-    "Not a term",    80,    120,   200,    NA_character_, NA,       1,
-    NA_character_,   60,    50,    100,    NA_character_, NA,       2,
-    # GRADE derived from AVAL against ANRHI
-    "INR IncreaSed", 251,   200,   100,    NA_character_, "3",      3,
-    "INR Increased", 250,   199,   100,    NA_character_, "2",      4,
-    "INR Increased", 151,   150,   100,    NA_character_, "2",      5,
-    "INR Increased", 150,   150,   100,    NA_character_, "1",      6,
-    "INR Increased", 121,   150,   100,    NA_character_, "1",      7,
-    "INR Increased", 120,   120,   100,    NA_character_, "0",      8,
+    ~ATOXDSCH,       ~AVAL, ~BASE, ~AVALU,        ~ATOXGRH, ~TESTNUM,
+    "Not a term",    80,    120,   NA_character_, NA,       1,
+    NA_character_,   60,    50,    NA_character_, NA,       2,
+    # GRADE derived from AVAL against first half of criteria
+    "INR IncreaSed", 2.51,  2.6,   NA_character_, "3",      3,
+    "INR Increased", 2.5,   1,     NA_character_, "2",      4,
+    "INR Increased", 1.51,  1,     NA_character_, "2",      5,
+    "INR Increased", 1.5,   1,     NA_character_, "1",      6,
+    "INR Increased", 1.2,   1,     NA_character_, "1",      7,
+    "INR Increased", 1.19,  1.19,  NA_character_, "0",      8,
     # GRADE derived from AVAL against BASE
-    "INR IncreaSed", 251,   100,   200,    NA_character_, "3",      9,
-    "INR Increased", 250,   100,   199,    NA_character_, "2",      10,
-    "INR Increased", 151,   100,   150,    NA_character_, "2",      11,
-    "INR Increased", 150,   100,   150,    NA_character_, "1",      12,
-    "INR Increased", 101,   100,   150,    NA_character_, "1",      13,
-    "INR Increased", 100,   100,   100,    NA_character_, "0",      14,
-    # BASE missing - AVAL <= ANRLO cannot grade as NORMAL
-    "INR Increased", 100,   NA,    100,    NA_character_, NA,       15,
-    # ANRHI missing - AVAL <= BASE cannot grade as NORMAL
-    "INR Increased", 100,   100,   NA,     NA_character_, NA,       16,
+    "INR IncreaSed", 2.5,   0.99,  NA_character_, "3",      9,
+    "INR Increased", 1.5,   0.6,   NA_character_, "2",      10,
+    "INR Increased", 1.5,   0.99,  NA_character_, "2",      11,
+    "INR Increased", 1.2,   0.8,   NA_character_, "1",      12,
+    "INR Increased", 1.2,   1.19,  NA_character_, "1",      13,
+    "INR Increased", 1.2,   1.2,   NA_character_, "0",      14,
+    # BASE missing - AVAL <= 1.2 cannot grade as NORMAL
+    "INR Increased", 1.2,   NA,    NA_character_, NA,       15,
     # AVAL missing cannot grade
-    "INR Increased", NA,    100,   100,    NA_character_, NA,       17,
+    "INR Increased", NA,    100,   NA_character_, NA,       16,
   )
   input_inri <- expected_inri %>%
     select(-ATOXGRH)

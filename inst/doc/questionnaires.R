@@ -13,8 +13,7 @@ library(tibble)
 library(admiral)
 
 ## -----------------------------------------------------------------------------
-data("example_qs")
-qs <- example_qs
+qs <- admiral::example_qs
 
 ## ----echo=FALSE---------------------------------------------------------------
 dataset_vignette(qs)
@@ -130,8 +129,18 @@ adgdssf <- adgdssf %>%
     source_var = AVAL,
     new_var = BASE
   ) %>%
-  derive_var_chg() %>%
-  derive_var_pchg() %>%
+  # Calculate CHG for post-baseline records
+  # The decision on how to populate pre-baseline and baseline values of CHG is left to producer choice
+  restrict_derivation(
+    derivation = derive_var_chg,
+    filter = AVISITN > 0
+  ) %>%
+  # Calculate PCHG for post-baseline records
+  # The decision on how to populate pre-baseline and baseline values of PCHG is left to producer choice
+  restrict_derivation(
+    derivation = derive_var_pchg,
+    filter = AVISITN > 0
+  ) %>%
   # Derive sequence number
   derive_var_obs_number(
     by_vars = exprs(STUDYID, USUBJID),
@@ -146,26 +155,25 @@ dataset_vignette(
 )
 
 ## -----------------------------------------------------------------------------
+# Create AVALCATx lookup table
+avalcat_lookup <- exprs(
+  ~PARAMCD, ~condition, ~AVALCAT1, ~AVALCAT1N,
+  "GDS02TS", AVAL <= 5, "Normal", 0L,
+  "GDS02TS", AVAL <= 10 & AVAL > 5, "Possible Depression", 1L,
+  "GDS02TS", AVAL > 10, "Likely Depression", 2L
+)
+# Create CHGCAT1 lookup table
+chgcat_lookup <- exprs(
+  ~condition, ~CHGCAT1,
+  AVALCAT1N > BASECA1N, "WORSENED",
+  AVALCAT1N == BASECA1N, "NO CHANGE",
+  AVALCAT1N < BASECA1N, "IMPROVED"
+)
+
 adgdssf <- adgdssf %>%
-  mutate(
-    AVALCAT1 = if_else(
-      PARAMCD == "GDS02TS",
-      case_when(
-        AVAL <= 5 ~ "Normal",
-        AVAL <= 10 ~ "Possible Depression",
-        AVAL > 10 ~ "Likely Depression"
-      ),
-      NA_character_
-    ),
-    AVALCAT1N = if_else(
-      PARAMCD == "GDS02TS",
-      case_when(
-        AVAL <= 5 ~ 0L,
-        AVAL <= 10 ~ 1L,
-        AVAL > 10 ~ 2L
-      ),
-      NA_integer_
-    )
+  derive_vars_cat(
+    definition = avalcat_lookup,
+    by_vars = exprs(PARAMCD)
   ) %>%
   derive_var_base(
     by_vars = exprs(STUDYID, USUBJID, PARAMCD),
@@ -177,12 +185,8 @@ adgdssf <- adgdssf %>%
     source_var = AVALCAT1N,
     new_var = BASECA1N
   ) %>%
-  mutate(
-    CHGCAT1 = case_when(
-      AVALCAT1N > BASECA1N ~ "WORSENED",
-      AVALCAT1N == BASECA1N ~ "NO CHANGE",
-      AVALCAT1N < BASECA1N ~ "IMPROVED",
-    )
+  derive_vars_cat(
+    definition = chgcat_lookup
   )
 
 ## ----echo=FALSE---------------------------------------------------------------

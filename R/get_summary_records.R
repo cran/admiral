@@ -2,10 +2,9 @@
 #'
 #' @description
 #'
-#' `r lifecycle::badge("superseded")`
-#'
-#' Development on `get_summary_records()` is complete, and for new code we recommend
-#' switching to using the `dataset_add` argument in `derive_summary_records()`.
+#' `r lifecycle::badge("deprecated")` The `get_summary_records()` has been
+#' deprecated in favor of `derive_summary_records()` (call it with the `dataset_add`
+#' argument and without the `dataset` argument).
 #'
 #' It is not uncommon to have an analysis need whereby one needs to derive an
 #' analysis value (`AVAL`) from multiple records. The ADaM basic dataset
@@ -18,7 +17,7 @@
 #' see the `derive_summary_records()` function.
 #'
 #' @param dataset
-#' `r roxygen_param_dataset(expected_vars = c("by_vars", "analysis_var"))`
+#' `r roxygen_param_dataset(expected_vars = c("by_vars"))`
 #'
 #' @param by_vars Grouping variables
 #'
@@ -37,18 +36,6 @@
 #'   values greater than mean of AVAL with in `by_vars`.
 #'   + `filter_rows = (dplyr::n() > 2)` will filter n count of `by_vars` greater
 #'   than 2.
-#'
-#' @param analysis_var Analysis variable.
-#'
-#'  `r lifecycle::badge("deprecated")` Please use `set_values_to` instead.
-#'
-#' @param summary_fun Function that takes as an input the `analysis_var` and
-#'   performs the calculation.
-#'
-#'  `r lifecycle::badge("deprecated")` Please use `set_values_to` instead.
-#'
-#'   This can include built-in functions as well as user defined functions,
-#'   for example `mean` or `function(x) mean(x, na.rm = TRUE)`.
 #'
 #' @param set_values_to Variables to be set
 #'
@@ -72,9 +59,8 @@
 #'
 #' @return A data frame of derived records.
 #'
-#' @family superseded
-#'
-#' @keywords superseded
+#' @family deprecated
+#' @keywords deprecated
 #'
 #' @seealso [derive_summary_records()], [derive_var_merged_summary()]
 #'
@@ -160,9 +146,18 @@
 get_summary_records <- function(dataset,
                                 by_vars,
                                 filter = NULL,
-                                analysis_var,
-                                summary_fun,
                                 set_values_to = NULL) {
+  deprecate_inform(
+    when = "1.2.0",
+    what = "get_summary_records()",
+    with = "derive_summary_records()",
+    details = c(
+      x = "This message will turn into a warning at the beginning of 2026.",
+      i = "See admiral's deprecation guidance:
+      https://pharmaverse.github.io/admiraldev/dev/articles/programming_strategy.html#deprecation"
+    )
+  )
+
   assert_vars(by_vars)
   filter <- assert_filter_cond(enexpr(filter), optional = TRUE)
   assert_data_frame(
@@ -171,16 +166,6 @@ get_summary_records <- function(dataset,
     check_is_grouped = FALSE
   )
   assert_varval_list(set_values_to)
-  if (!missing(analysis_var) || !missing(summary_fun)) {
-    deprecate_stop(
-      "1.1.0",
-      I("get_summary_records(anaylsis_var = , summary_fun = )"),
-      "get_summary_records(set_values_to = )"
-    )
-    analysis_var <- assert_symbol(enexpr(analysis_var))
-    assert_s3_class(summary_fun, "function")
-    set_values_to <- exprs(!!analysis_var := {{ summary_fun }}(!!analysis_var), !!!set_values_to)
-  }
 
   # Summarise the analysis value
   dataset %>%

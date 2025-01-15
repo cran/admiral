@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -371,10 +371,10 @@ on the slice.</li>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(pharmaversesdtm)</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(dplyr, <span class="at">warn.conflicts =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ae&quot;</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;vs&quot;</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>ae <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>ae</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>vs <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>vs</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral<span class="sc">::</span>admiral_adsl</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ae)</span>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(vs)</span></code></pre></div>
 <p>The following code creates a minimally viable ADAE dataset to be used
@@ -624,7 +624,10 @@ pre-defined <code>tte_source</code> objects, as explained at <a href="bds_tte.ht
 <span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
 <span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(<span class="at">adsl =</span> adsl, <span class="at">adae =</span> adae),</span>
 <span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(lastalive_censor)</span>
-<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>)</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; Warning: Dataset &quot;adae&quot; contains duplicate records with respect to `STUDYID`, `USUBJID`,</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt; and `ASTDT`</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt; ℹ Run `admiral::get_duplicates_dataset()` to access the duplicate records</span></span></code></pre></div>
 <table>
 <colgroup>
 <col width="14%" />

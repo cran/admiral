@@ -14,10 +14,9 @@ library(lubridate)
 library(stringr)
 library(tibble)
 
-data("admiral_adsl")
-data("vs")
+vs <- pharmaversesdtm::vs
+adsl <- admiral::admiral_adsl
 
-adsl <- admiral_adsl
 vs <- convert_blanks_to_na(vs)
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -103,16 +102,16 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE, include=FALSE-------------------------------------------------
-param_lookup <- tribble(
-  ~VSTESTCD, ~PARAMCD, ~PARAM, ~PARAMN, ~PARCAT1, ~PARCAT1N,
-  "HEIGHT", "HEIGHT", "Height (cm)", 1, "Subject Characteristic", 1,
-  "WEIGHT", "WEIGHT", "Weight (kg)", 2, "Subject Characteristic", 1,
-  "DIABP", "DIABP", "Diastolic Blood Pressure (mmHg)", 3, "Vital Sign", 2,
-  "MAP", "MAP", "Mean Arterial Pressure (mmHg)", 4, "Vital Sign", 2,
-  "BSA", "BSA", "Body Surface Area (m^2)", 5, "Vital Sign", 2,
-  "PULSE", "PULSE", "Pulse Rate (beats/min)", 6, "Vital Sign", 2,
-  "SYSBP", "SYSBP", "Systolic Blood Pressure (mmHg)", 7, "Vital Sign", 2,
-  "TEMP", "TEMP", "Temperature (C)", 8, "Vital Sign", 2
+param_lookup <- tibble::tribble(
+  ~VSTESTCD, ~PARAMCD,                            ~PARAM, ~PARAMN,                 ~PARCAT1, ~PARCAT1N,
+  "HEIGHT",  "HEIGHT",                     "Height (cm)",       1, "Subject Characteristic",         1,
+  "WEIGHT",  "WEIGHT",                     "Weight (kg)",       2, "Subject Characteristic",         1,
+  "DIABP",    "DIABP", "Diastolic Blood Pressure (mmHg)",       3,             "Vital Sign",         2,
+  "MAP",        "MAP",   "Mean Arterial Pressure (mmHg)",       4,             "Vital Sign",         2,
+  "BSA",        "BSA",         "Body Surface Area (m^2)",       5,             "Vital Sign",         2,
+  "PULSE",    "PULSE",          "Pulse Rate (beats/min)",       6,             "Vital Sign",         2,
+  "SYSBP",    "SYSBP",  "Systolic Blood Pressure (mmHg)",       7,             "Vital Sign",         2,
+  "TEMP",      "TEMP",                 "Temperature (C)",       8,             "Vital Sign",         2
 )
 attr(param_lookup$VSTESTCD, "label") <- "Vital Signs Test Short Name"
 
@@ -187,11 +186,11 @@ dataset_vignette(
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  adeg <- tibble::tribble(
-#    ~USUBJID, ~EGSTRESU, ~PARAMCD, ~AVAL, ~VISIT,
-#    "P01", "msec", "QT", 350, "CYCLE 1 DAY 1",
-#    "P01", "msec", "QT", 370, "CYCLE 2 DAY 1",
-#    "P01", "msec", "RR", 842, "CYCLE 1 DAY 1",
-#    "P01", "msec", "RR", 710, "CYCLE 2 DAY 1"
+#    ~USUBJID, ~EGSTRESU, ~PARAMCD, ~AVAL,          ~VISIT,
+#    "P01",       "msec",     "QT",   350, "CYCLE 1 DAY 1",
+#    "P01",       "msec",     "QT",   370, "CYCLE 2 DAY 1",
+#    "P01",       "msec",     "RR",   842, "CYCLE 1 DAY 1",
+#    "P01",       "msec",     "RR",   710, "CYCLE 2 DAY 1"
 #  )
 #  
 #  adeg <- derive_param_qtc(
@@ -204,11 +203,11 @@ dataset_vignette(
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  adlb <- tibble::tribble(
-#    ~USUBJID, ~PARAMCD, ~AVAL, ~PARAM, ~VISIT,
-#    "P01", "WBC", 33, "Leukocyte Count (10^9/L)", "CYCLE 1 DAY 1",
-#    "P01", "WBC", 38, "Leukocyte Count (10^9/L)", "CYCLE 2 DAY 1",
-#    "P01", "LYMLE", 0.90, "Lymphocytes (fraction of 1)", "CYCLE 1 DAY 1",
-#    "P01", "LYMLE", 0.70, "Lymphocytes (fraction of 1)", "CYCLE 2 DAY 1"
+#    ~USUBJID, ~PARAMCD, ~AVAL,                        ~PARAM,          ~VISIT,
+#    "P01",       "WBC",    33,    "Leukocyte Count (10^9/L)", "CYCLE 1 DAY 1",
+#    "P01",       "WBC",    38,    "Leukocyte Count (10^9/L)", "CYCLE 2 DAY 1",
+#    "P01",     "LYMLE",  0.90, "Lymphocytes (fraction of 1)", "CYCLE 1 DAY 1",
+#    "P01",     "LYMLE",  0.70, "Lymphocytes (fraction of 1)", "CYCLE 2 DAY 1"
 #  )
 #  
 #  derive_param_wbc_abs(
@@ -305,10 +304,10 @@ advs <- derive_var_ontrtfl(
 advs_pre <- select(advs, -ONTRTFL)
 
 advs <- tibble::tribble(
-  ~USUBJID, ~ASTDT, ~AP01SDT, ~AP01EDT, ~AENDT,
+  ~USUBJID,         ~ASTDT,          ~AP01SDT,          ~AP01EDT,            ~AENDT,
   "P01", ymd("2020-03-15"), ymd("2020-01-01"), ymd("2020-03-01"), ymd("2020-12-01"),
   "P02", ymd("2019-04-30"), ymd("2020-01-01"), ymd("2020-03-01"), ymd("2020-03-15"),
-  "P03", ymd("2019-04-30"), ymd("2020-01-01"), ymd("2020-03-01"), NA,
+  "P03", ymd("2019-04-30"), ymd("2020-01-01"), ymd("2020-03-01"),                NA,
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -427,6 +426,13 @@ advs <- derive_var_shift(advs,
   to_var = ANRIND
 )
 
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(
+  advs,
+  display_vars = exprs(USUBJID, SHIFT1, BNRIND, ANRIND, VISIT),
+  filter = PARAMCD == "DIABP" & VISIT %in% c("WEEK 2", "WEEK 8")
+)
+
 ## ----eval=TRUE----------------------------------------------------------------
 advs <- derive_var_analysis_ratio(advs,
   numer_var = AVAL,
@@ -515,24 +521,15 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-avalcat_lookup <- tibble::tribble(
-  ~PARAMCD, ~AVALCA1N, ~AVALCAT1,
-  "HEIGHT",         1, ">140 cm",
-  "HEIGHT",         2, "<= 140 cm"
+avalcat_lookup <- exprs(
+  ~PARAMCD,  ~condition,   ~AVALCAT1, ~AVALCA1N,
+  "HEIGHT",  AVAL > 140,   ">140 cm",         1,
+  "HEIGHT", AVAL <= 140, "<= 140 cm",         2
 )
-
-format_avalcat1n <- function(param, aval) {
-  case_when(
-    param == "HEIGHT" & aval > 140 ~ 1,
-    param == "HEIGHT" & aval <= 140 ~ 2
-  )
-}
-
 advs <- advs %>%
-  mutate(AVALCA1N = format_avalcat1n(param = PARAMCD, aval = AVAL)) %>%
-  derive_vars_merged(
-    avalcat_lookup,
-    by = exprs(PARAMCD, AVALCA1N)
+  derive_vars_cat(
+    definition = avalcat_lookup,
+    by_vars = exprs(PARAMCD)
   )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
@@ -540,6 +537,58 @@ dataset_vignette(
   advs,
   display_vars = exprs(USUBJID, PARAMCD, AVAL, AVALCA1N, AVALCAT1),
   filter = PARAMCD == "HEIGHT"
+)
+
+## ----eval=TRUE----------------------------------------------------------------
+advs <- advs %>%
+  slice_derivation(
+    derivation = derive_vars_crit_flag,
+    args = params(
+      values_yn = TRUE,
+      create_numeric_flag = TRUE
+    ),
+    derivation_slice(
+      filter = PARAMCD == "SYSBP",
+      args = params(
+        condition = AVAL > 160,
+        description = "Systolic Pressure > 160"
+      )
+    ),
+    derivation_slice(
+      filter = PARAMCD == "DIABP",
+      args = params(
+        condition = AVAL > 95,
+        description = "Diastolic Pressure > 95"
+      )
+    )
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(
+  arrange(advs, USUBJID, AVISITN, ATPTN, PARAMCD),
+  display_vars = exprs(USUBJID, PARAMCD, AVAL, CHG, CRIT1, CRIT1FL, CRIT1FN),
+  filter = PARAMCD %in% c("DIABP", "SYSBP")
+)
+
+## ----eval=TRUE----------------------------------------------------------------
+advs <- advs %>%
+  restrict_derivation(
+    derivation = derive_vars_crit_flag,
+    args = params(
+      condition = AVAL > 160 & CHG > 10,
+      description = "Systolic Pressure > 160 and Change from Baseline in Systolic Pressure > 10",
+      crit_nr = 2,
+      values_yn = TRUE,
+      create_numeric_flag = TRUE
+    ),
+    filter = PARAMCD == "SYSBP"
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(
+  arrange(advs, USUBJID, AVISITN, ATPTN),
+  display_vars = exprs(USUBJID, PARAMCD, AVAL, CHG, CRIT2, CRIT2FL, CRIT2FN),
+  filter = PARAMCD == "SYSBP"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------

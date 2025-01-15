@@ -4,6 +4,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+library(admiral)
 library(admiraldev)
 
 ## ----warning=FALSE, message=FALSE---------------------------------------------
@@ -11,8 +12,7 @@ library(admiral)
 library(dplyr, warn.conflicts = FALSE)
 
 ## ----eval = TRUE--------------------------------------------------------------
-data(admiral_adlb)
-adlb <- admiral_adlb %>%
+adlb <- admiral::admiral_adlb %>%
   filter(PARAMCD %in% c("AST", "ALT", "BILI") & is.na(DTYPE))
 
 ## ----echo = FALSE-------------------------------------------------------------
@@ -21,23 +21,33 @@ head(adlb) %>%
 
 ## -----------------------------------------------------------------------------
 adlb_annotated <- adlb %>%
-  mutate(
-    CRIT1 = case_when(
-      PARAMCD == "AST" ~ "AST >=3xULN",
-      PARAMCD == "ALT" ~ "ALT >=3xULN",
-      PARAMCD == "BILI" ~ "BILI >=2xULN"
+  slice_derivation(
+    derive_vars_crit_flag,
+    args = params(
+      values_yn = TRUE
     ),
-    CRIT1FL = if_else(
-      (AVAL / ANRHI >= 3 & PARAMCD %in% c("AST", "ALT")) |
-        (AVAL / ANRHI >= 2 & PARAMCD == "BILI"),
-      "Y",
-      NA_character_
+    derivation_slice(
+      filter = PARAMCD %in% c("AST", "ALT"),
+      args = params(
+        condition = AVAL / ANRHI >= 3,
+        description = paste(PARAMCD, ">=3xULN")
+      )
+    ),
+    derivation_slice(
+      filter = PARAMCD == "BILI",
+      args = params(
+        condition = AVAL / ANRHI >= 2,
+        description = "BILI >= 2xULN"
+      )
     )
   ) %>%
   select(STUDYID, USUBJID, TRT01A, PARAMCD, LBSEQ, ADT, AVISIT, ADY, AVAL, ANRHI, CRIT1, CRIT1FL)
 
 ## ----echo = FALSE-------------------------------------------------------------
-dataset_vignette(adlb_annotated)
+dataset_vignette(
+  adlb_annotated,
+  display_vars = exprs(USUBJID, PARAMCD, AVISIT, AVAL, ANRHI, CRIT1, CRIT1FL)
+)
 
 ## ----warning = FALSE----------------------------------------------------------
 altast_records <- adlb_annotated %>%
@@ -60,7 +70,7 @@ hylaw_records <- derive_vars_joined(
 ## ----echo = FALSE-------------------------------------------------------------
 hylaw_records %>%
   arrange(desc(BILI_CRITFL), desc(CRIT1FL)) %>%
-  dataset_vignette()
+  dataset_vignette(display_vars = exprs(USUBJID, PARAMCD, AVISIT, ADT, CRIT1FL, BILI_DT, BILI_CRITFL))
 
 ## -----------------------------------------------------------------------------
 hylaw_records_pts_visits <- hylaw_records %>%
@@ -88,12 +98,16 @@ hylaw_params <- derive_param_exist_flag(
 ## ----echo = FALSE-------------------------------------------------------------
 hylaw_params %>%
   arrange(desc(AVAL)) %>%
-  dataset_vignette()
+  relocate(AVALC, .before = AVAL) %>%
+  dataset_vignette(display_vars = exprs(USUBJID, PARAMCD, PARAM, AVALC, AVAL))
 
 ## -----------------------------------------------------------------------------
 adlbhy <- adlb_annotated %>%
   bind_rows(hylaw_params)
 
 ## ----echo = FALSE-------------------------------------------------------------
-dataset_vignette(adlbhy)
+dataset_vignette(
+  adlbhy %>% relocate(AVALC, .before = AVAL),
+  display_vars = exprs(USUBJID, PARAMCD, AVISIT, AVALC, AVAL, CRIT1, CRIT1FL)
+)
 

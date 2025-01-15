@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -371,8 +371,7 @@ format as input unless otherwise specified.</em></p>
 Supplements (<a href="https://www.cdisc.org/standards/foundational/qrs/generalized-anxiety-disorder-7-item-version-2-0">Generalized
 Anxiety Disorder 7-Item Version 2 (GAD-7)</a>, <a href="https://www.cdisc.org/standards/foundational/qrs/geriatric-depression-scale-short-form-0">Geriatric
 Depression Scale Short Form (GDS-SF)</a>)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;example_qs&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>qs <span class="ot">&lt;-</span> example_qs</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>qs <span class="ot">&lt;-</span> admiral<span class="sc">::</span>example_qs</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="5%" />
@@ -537,8 +536,8 @@ Depression Scale Short Form (GDS-SF)</a>)<a href="#fn1" class="footnote-ref" id=
 </table>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="sc">~</span>STUDYID, <span class="sc">~</span>USUBJID, <span class="sc">~</span>SITEID, <span class="sc">~</span>ITTFL, <span class="sc">~</span>TRTSDT,                      <span class="sc">~</span>DTHCAUS,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="st">&quot;STUDYX&quot;</span>,  <span class="st">&quot;P0001&quot;</span>,     13L,    <span class="st">&quot;Y&quot;</span>, lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="st">&quot;2012-11-16&quot;</span>), <span class="cn">NA_character_</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="st">&quot;STUDYX&quot;</span>,  <span class="st">&quot;P0002&quot;</span>,     11L,    <span class="st">&quot;Y&quot;</span>, lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="st">&quot;2012-11-16&quot;</span>), <span class="st">&quot;PROGRESSIVE DISEASE&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="st">&quot;STUDYX&quot;</span>,  <span class="st">&quot;P0001&quot;</span>,     <span class="dv">13</span><span class="dt">L</span>,    <span class="st">&quot;Y&quot;</span>, lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="st">&quot;2012-11-16&quot;</span>), <span class="cn">NA_character_</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="st">&quot;STUDYX&quot;</span>,  <span class="st">&quot;P0002&quot;</span>,     <span class="dv">11</span><span class="dt">L</span>,    <span class="st">&quot;Y&quot;</span>, lubridate<span class="sc">::</span><span class="fu">ymd</span>(<span class="st">&quot;2012-11-16&quot;</span>), <span class="st">&quot;PROGRESSIVE DISEASE&quot;</span></span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
@@ -729,6 +728,9 @@ finding ADaM</a>. For example:</p>
 based on time-windows, see <a href="visits_periods.html#visits">Visit
 and Period Variables</a>. And for flagging values to be used for
 analysis, see <code>derive_var_extreme_flag()</code>.</p>
+</div>
+<div id="transformed-items" class="section level1">
+<h1>Transformed Items</h1>
 <p>Please note that in the example data, the numeric values of the
 answers are mapped in SDTM (<code>QSSTRESN</code>) such that they can be
 used for deriving scores. Depending on the question,
@@ -738,6 +740,12 @@ ready to be used for deriving scores and require transformation, it is
 recommended that <code>QSSTRESN</code> is kept in the ADaM dataset for
 traceability, and the transformed value is stored in <code>AVAL</code>,
 since that’s what will be used for the score calculation.</p>
+<p>It may also be necessary to transform the range of the numeric values
+of the original items. For example if a scale should be derived as the
+average but the range of the contributing items varies. In this case the
+values could be linearly transformed to a unified range like
+<code>[0, 100]</code>. The computation function
+<code>transform_range()</code> can be used for the transformation.</p>
 </div>
 <div id="scales-and-scores" class="section level1">
 <h1>Scales and Scores</h1>
@@ -1016,14 +1024,24 @@ baseline variables can be derived:</p>
 <span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>    <span class="at">source_var =</span> AVAL,</span>
 <span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>    <span class="at">new_var =</span> BASE</span>
 <span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="fu">derive_var_chg</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  <span class="fu">derive_var_pchg</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>  <span class="co"># Derive sequence number</span></span>
-<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
-<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(PARAMCD, ADT),</span>
-<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
-<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="co"># Calculate CHG for post-baseline records</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  <span class="co"># The decision on how to populate pre-baseline and baseline values of CHG is left to producer choice</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_chg,</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>    <span class="at">filter =</span> AVISITN <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>  <span class="co"># Calculate PCHG for post-baseline records</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>  <span class="co"># The decision on how to populate pre-baseline and baseline values of PCHG is left to producer choice</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>    <span class="at">derivation =</span> derive_var_pchg,</span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>    <span class="at">filter =</span> AVISITN <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>  <span class="co"># Derive sequence number</span></span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(PARAMCD, ADT),</span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="8%" />
@@ -1055,7 +1073,7 @@ baseline variables can be derived:</p>
 <td align="left">BASELINE</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="right">0</td>
+<td align="right">NA</td>
 <td align="right">NA</td>
 </tr>
 <tr class="even">
@@ -1105,8 +1123,8 @@ baseline variables can be derived:</p>
 <td align="left">BASELINE</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">P0001</td>
@@ -1158,44 +1176,39 @@ baseline variables can be derived:</p>
 makes sense to create a separate time to event dataset for them.
 However, it might be useful to create flags or categorization variables
 in <code>ADQS</code>. For example:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>adgdssf <span class="ot">&lt;-</span> adgdssf <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="at">AVALCAT1 =</span> <span class="fu">if_else</span>(</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;GDS02TS&quot;</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>      <span class="fu">case_when</span>(</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>        AVAL <span class="sc">&lt;=</span> <span class="dv">5</span> <span class="sc">~</span> <span class="st">&quot;Normal&quot;</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>        AVAL <span class="sc">&lt;=</span> <span class="dv">10</span> <span class="sc">~</span> <span class="st">&quot;Possible Depression&quot;</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>        AVAL <span class="sc">&gt;</span> <span class="dv">10</span> <span class="sc">~</span> <span class="st">&quot;Likely Depression&quot;</span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>      ),</span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>      <span class="cn">NA_character_</span></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>    ),</span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>    <span class="at">AVALCAT1N =</span> <span class="fu">if_else</span>(</span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;GDS02TS&quot;</span>,</span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>      <span class="fu">case_when</span>(</span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>        AVAL <span class="sc">&lt;=</span> <span class="dv">5</span> <span class="sc">~</span> 0L,</span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>        AVAL <span class="sc">&lt;=</span> <span class="dv">10</span> <span class="sc">~</span> 1L,</span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>        AVAL <span class="sc">&gt;</span> <span class="dv">10</span> <span class="sc">~</span> 2L</span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>      ),</span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>      <span class="cn">NA_integer_</span></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>    )</span>
-<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>  <span class="fu">derive_var_base</span>(</span>
-<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
-<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>    <span class="at">source_var =</span> AVALCAT1,</span>
-<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>    <span class="at">new_var =</span> BASECAT1</span>
-<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>  <span class="fu">derive_var_base</span>(</span>
-<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
-<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>    <span class="at">source_var =</span> AVALCAT1N,</span>
-<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>    <span class="at">new_var =</span> BASECA1N</span>
-<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a>    <span class="at">CHGCAT1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a>      AVALCAT1N <span class="sc">&gt;</span> BASECA1N <span class="sc">~</span> <span class="st">&quot;WORSENED&quot;</span>,</span>
-<span id="cb8-35"><a href="#cb8-35" tabindex="-1"></a>      AVALCAT1N <span class="sc">==</span> BASECA1N <span class="sc">~</span> <span class="st">&quot;NO CHANGE&quot;</span>,</span>
-<span id="cb8-36"><a href="#cb8-36" tabindex="-1"></a>      AVALCAT1N <span class="sc">&lt;</span> BASECA1N <span class="sc">~</span> <span class="st">&quot;IMPROVED&quot;</span>,</span>
-<span id="cb8-37"><a href="#cb8-37" tabindex="-1"></a>    )</span>
-<span id="cb8-38"><a href="#cb8-38" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Create AVALCATx lookup table</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>avalcat_lookup <span class="ot">&lt;-</span> <span class="fu">exprs</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="sc">~</span>PARAMCD, <span class="sc">~</span>condition, <span class="sc">~</span>AVALCAT1, <span class="sc">~</span>AVALCAT1N,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="st">&quot;GDS02TS&quot;</span>, AVAL <span class="sc">&lt;=</span> <span class="dv">5</span>, <span class="st">&quot;Normal&quot;</span>, <span class="dv">0</span><span class="dt">L</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="st">&quot;GDS02TS&quot;</span>, AVAL <span class="sc">&lt;=</span> <span class="dv">10</span> <span class="sc">&amp;</span> AVAL <span class="sc">&gt;</span> <span class="dv">5</span>, <span class="st">&quot;Possible Depression&quot;</span>, <span class="dv">1</span><span class="dt">L</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="st">&quot;GDS02TS&quot;</span>, AVAL <span class="sc">&gt;</span> <span class="dv">10</span>, <span class="st">&quot;Likely Depression&quot;</span>, <span class="dv">2</span><span class="dt">L</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co"># Create CHGCAT1 lookup table</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>chgcat_lookup <span class="ot">&lt;-</span> <span class="fu">exprs</span>(</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="sc">~</span>condition, <span class="sc">~</span>CHGCAT1,</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>  AVALCAT1N <span class="sc">&gt;</span> BASECA1N, <span class="st">&quot;WORSENED&quot;</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>  AVALCAT1N <span class="sc">==</span> BASECA1N, <span class="st">&quot;NO CHANGE&quot;</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>  AVALCAT1N <span class="sc">&lt;</span> BASECA1N, <span class="st">&quot;IMPROVED&quot;</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>)</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>adgdssf <span class="ot">&lt;-</span> adgdssf <span class="sc">%&gt;%</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>  <span class="fu">derive_vars_cat</span>(</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>    <span class="at">definition =</span> avalcat_lookup,</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>  <span class="fu">derive_var_base</span>(</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>    <span class="at">source_var =</span> AVALCAT1,</span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>    <span class="at">new_var =</span> BASECAT1</span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>  <span class="fu">derive_var_base</span>(</span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>    <span class="at">source_var =</span> AVALCAT1N,</span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>    <span class="at">new_var =</span> BASECA1N</span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>  <span class="fu">derive_vars_cat</span>(</span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>    <span class="at">definition =</span> chgcat_lookup</span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="7%" />

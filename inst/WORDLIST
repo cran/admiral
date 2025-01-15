@@ -4,7 +4,6 @@ ADEG
 ADEX
 ADJAE
 ADLB
-ADLBHY
 ADMH
 ADNCA
 ADPC
@@ -50,6 +49,7 @@ Bazett's
 Biologics
 CDISC
 CKD
+CMD
 COVID
 CPK
 CQ
@@ -96,7 +96,6 @@ Fibrinogen
 Findability
 Framingham
 Franciszek
-Francois
 Fridericia
 Fridericia's
 Fujimoto
@@ -106,6 +105,7 @@ GRPID
 GRPNAME
 GSK
 Gault
+Gayatri
 Gehan
 GlaxoSmithKline
 Glomerular
@@ -135,6 +135,7 @@ Jaxon
 Jordanna
 Kabi
 Kamila
+Kangjie
 Khatri
 Koeger
 Konstantina
@@ -174,6 +175,7 @@ Nom
 Nonfasting
 O'Reilly
 OCCDS
+ORCID
 Ojesh
 Omnes
 Ondrej
@@ -183,6 +185,7 @@ PARAMN
 PLDOSE
 PTT
 Param
+Patil
 Pavan
 Pharma
 Pharmacokinetic
@@ -191,6 +194,7 @@ Pharmaverse
 Phosphatase
 Pooja
 Pre
+Premarketing
 QD
 QID
 README
@@ -215,6 +219,7 @@ Saha
 Samia
 Shan
 Shimeng
+Shuliar
 Slama
 Stefonishin
 Subperiod
@@ -240,16 +245,17 @@ ULN
 USUBJID
 USUBJIDs
 Upadhyay
-VAD
 Vignesh
+Vladyslav
 WBC
 Walkowiak
 Wenyi
 XXXXXXXX
 Yohann
-acknowledgements
+Zhang
 admiralci
 admiraldev
+admiraldiscovery
 admiralonco
 admiralophtha
 admiralvaccine
@@ -267,6 +273,7 @@ bds
 censorings
 chk
 codebase
+codespace
 constructible
 creatinine
 cyclomatic
@@ -302,7 +309,6 @@ mmHg
 mmol
 modularized
 msec
-nd
 occds
 onwards
 parttime

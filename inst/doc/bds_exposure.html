@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -370,7 +370,7 @@ format as input unless otherwise specified.</em></p>
 <li><a href="#paramcd">Assign <code>PARAMCD</code>, <code>PARAMN</code>,
 etc. from Reference Tables</a></li>
 <li><a href="#cat">Derive Categorization Variables
-(<code>AVALCATx</code>)</a></li>
+(<code>AVALCATy</code>)</a></li>
 <li><a href="#aseq">Assign <code>ASEQ</code></a></li>
 <li><a href="#adsl_vars">Add ADSL variables <code>ASEQ</code></a></li>
 <li><a href="#attributes">Add Labels and Attributes</a></li>
@@ -390,11 +390,10 @@ included in <code>{pharmaversesdtm}</code>—are used.</p>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ex&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>ex <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>ex</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral<span class="sc">::</span>admiral_adsl</span>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ex)</span></code></pre></div>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ex)</span></code></pre></div>
 <p>At this step, it may be useful to join <code>ADSL</code> to your
 <code>EX</code> domain as well. Only the <code>ADSL</code> variables
 used for derivations are selected at this step. The rest of the relevant
@@ -405,7 +404,7 @@ used for derivations are selected at this step. The rest of the relevant
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  ex,</span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">dataset_add =</span> adsl,</span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="at">new_vars =</span> adsl_vars,</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">get_admiral_option</span>(<span class="st">&quot;subject_keys&quot;</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <colgroup>
@@ -1524,7 +1523,7 @@ treatment,</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_param_exposure</span>(</span>
 <span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  adex,</span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">dataset_add =</span> adex,</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars),</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">c</span>(<span class="fu">get_admiral_option</span>(<span class="st">&quot;subject_keys&quot;</span>), adsl_vars),</span>
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">input_code =</span> <span class="st">&quot;DOSE&quot;</span>,</span>
 <span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;TDOSE&quot;</span>,</span>
@@ -1704,7 +1703,7 @@ populated in the new records.</p>
 <span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a>      )</span>
 <span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a>    ),</span>
 <span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a>    <span class="at">dataset_add =</span> adex,</span>
-<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars)</span>
+<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">c</span>(<span class="fu">get_admiral_option</span>(<span class="st">&quot;subject_keys&quot;</span>), adsl_vars)</span>
 <span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a>  )</span>
 <span id="cb13-49"><a href="#cb13-49" tabindex="-1"></a></span>
 <span id="cb13-50"><a href="#cb13-50" tabindex="-1"></a><span class="fu">count</span>(adex, PARAMCD, PARCAT1)</span>
@@ -1854,7 +1853,7 @@ dose intensity calculation. Again, only those variables specified in the
 <code>by_vars</code> argument will be populated in this new record.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">derive_param_doseint</span>(</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, <span class="sc">!!!</span>adsl_vars),</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">c</span>(<span class="fu">get_admiral_option</span>(<span class="st">&quot;subject_keys&quot;</span>), adsl_vars),</span>
 <span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TNDOSINT&quot;</span>),</span>
 <span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="at">tadm_code =</span> <span class="st">&quot;TDOSE&quot;</span>,</span>
 <span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">tpadm_code =</span> <span class="st">&quot;TPDOSE&quot;</span></span>
@@ -2101,22 +2100,25 @@ ADaM <code>PARAMCD</code> value may be created:</p>
 needed for the join depending on your lookup/metadata table.</p>
 </div>
 <div id="cat" class="section level2">
-<h2>Derive Categorization Variables (<code>AVALCATx</code>)</h2>
-<p><code>{admiral}</code> does not currently have a generic function to
-aid in assigning <code>AVALCATx</code>/ <code>AVALCAxN</code> values.
-Below is a simple example of how these values may be assigned using the
-<code>dplyr::mutate</code> function:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>    <span class="at">AVALCAT1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">&quot;&lt; 30 days&quot;</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">30</span> <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">90</span> <span class="sc">~</span> <span class="st">&quot;&gt;= 30 and &lt; 90 days&quot;</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDURD&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">90</span> <span class="sc">~</span> <span class="st">&quot;&gt;=90 days&quot;</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDOSE&quot;</span>, <span class="st">&quot;TPDOSE&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">1000</span> <span class="sc">~</span> <span class="st">&quot;&lt; 1000 mg&quot;</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>      PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;TDOSE&quot;</span>, <span class="st">&quot;TPDOSE&quot;</span>) <span class="sc">&amp;</span> AVAL <span class="sc">&gt;=</span> <span class="dv">1000</span> <span class="sc">~</span> <span class="st">&quot;&gt;= 1000 mg&quot;</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>    )</span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>  )</span></code></pre></div>
+<h2>Derive Categorization Variables (<code>AVALCATy</code>)</h2>
+<p>We can use the <code>derive_vars_cat()</code> function to derive the
+categorization variables.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>avalcax_lookup <span class="ot">&lt;-</span> <span class="fu">exprs</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="sc">~</span>PARAMCD,            <span class="sc">~</span>condition,             <span class="sc">~</span>AVALCAT1,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="st">&quot;TDURD&quot;</span>,             AVAL <span class="sc">&gt;=</span> <span class="dv">90</span>,          <span class="st">&quot;&gt;= 90 days&quot;</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="st">&quot;TDURD&quot;</span>, AVAL <span class="sc">&gt;=</span> <span class="dv">30</span> <span class="sc">&amp;</span> AVAL <span class="sc">&lt;</span> <span class="dv">90</span>, <span class="st">&quot;&gt;= 30 and &lt; 90 days&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="st">&quot;TDURD&quot;</span>,              AVAL <span class="sc">&lt;</span> <span class="dv">30</span>,           <span class="st">&quot;&lt; 30 days&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="st">&quot;TDOSE&quot;</span>,            AVAL <span class="sc">&lt;</span> <span class="dv">1000</span>,           <span class="st">&quot;&lt; 1000 mg&quot;</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>  <span class="st">&quot;TDOSE&quot;</span>,           AVAL <span class="sc">&gt;=</span> <span class="dv">1000</span>,          <span class="st">&quot;&gt;= 1000 mg&quot;</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>  <span class="st">&quot;TPDOSE&quot;</span>,           AVAL <span class="sc">&lt;</span> <span class="dv">1000</span>,           <span class="st">&quot;&lt; 1000 mg&quot;</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>  <span class="st">&quot;TPDOSE&quot;</span>,          AVAL <span class="sc">&gt;=</span> <span class="dv">1000</span>,          <span class="st">&quot;&gt;= 1000 mg&quot;</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>)</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>  <span class="fu">derive_vars_cat</span>(</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>    <span class="at">definition =</span> avalcax_lookup,</span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -2151,7 +2153,7 @@ Below is a simple example of how these values may be assigned using the
 <td align="left">OVERALL</td>
 <td align="left">TDURD</td>
 <td align="right">182</td>
-<td align="left">&gt;=90 days</td>
+<td align="left">&gt;= 90 days</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -2220,7 +2222,7 @@ Below is a simple example of how these values may be assigned using the
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> <span class="fu">derive_var_obs_number</span>(</span>
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  adex,</span>
 <span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="at">new_var =</span> ASEQ,</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">get_admiral_option</span>(<span class="st">&quot;subject_keys&quot;</span>),</span>
 <span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(PARCAT1, ASTDT, VISIT, VISITNUM, EXSEQ, PARAMN),</span>
 <span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
 <span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>)</span></code></pre></div>
@@ -2337,7 +2339,7 @@ added:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>adex <span class="ot">&lt;-</span> adex <span class="sc">%&gt;%</span></span>
 <span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
 <span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">get_admiral_option</span>(<span class="st">&quot;subject_keys&quot;</span>)</span>
 <span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  )</span></code></pre></div>
 </div>
 <div id="attributes" class="section level2">

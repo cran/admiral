@@ -14,10 +14,9 @@ library(lubridate)
 library(stringr)
 library(tibble)
 
-data("admiral_adsl")
-data("ex")
+ex <- pharmaversesdtm::ex
+adsl <- admiral::admiral_adsl
 
-adsl <- admiral_adsl
 ex <- convert_blanks_to_na(ex)
 
 ## ----echo=FALSE---------------------------------------------------------------
@@ -30,7 +29,7 @@ adex <- derive_vars_merged(
   ex,
   dataset_add = adsl,
   new_vars = adsl_vars,
-  by_vars = exprs(STUDYID, USUBJID)
+  by_vars = get_admiral_option("subject_keys")
 )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
@@ -220,7 +219,7 @@ adex %>%
 adex <- derive_param_exposure(
   adex,
   dataset_add = adex,
-  by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars),
+  by_vars = c(get_admiral_option("subject_keys"), adsl_vars),
   input_code = "DOSE",
   set_values_to = exprs(
     PARAMCD = "TDOSE",
@@ -287,7 +286,7 @@ adex <- adex %>%
       )
     ),
     dataset_add = adex,
-    by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars)
+    by_vars = c(get_admiral_option("subject_keys"), adsl_vars)
   )
 
 count(adex, PARAMCD, PARCAT1)
@@ -303,7 +302,7 @@ adex %>%
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 adex <- adex %>%
   derive_param_doseint(
-    by_vars = exprs(STUDYID, USUBJID, !!!adsl_vars),
+    by_vars = c(get_admiral_option("subject_keys"), adsl_vars),
     set_values_to = exprs(PARAMCD = "TNDOSINT"),
     tadm_code = "TDOSE",
     tpadm_code = "TPDOSE"
@@ -320,18 +319,18 @@ dataset_vignette(
 
 ## ----eval=TRUE, include=FALSE, echo=FALSE-------------------------------------
 param_lookup <- tribble(
-  ~PARAMCD, ~PARAM, ~PARAMN,
-  "DURD", "Study drug duration during constant dosing interval (days)", 1,
-  "DOSE", "Dose administered during constant dosing interval (mg)", 2,
-  "PLDOSE", "Planned dose during constant dosing interval (mg)", 3,
-  "ADJ", "Dose adjusted during constant dosing interval", 4,
-  "ADJAE", "Dose adjusted  due to AE during constant dosing interval", 5,
-  "TDURD", "Overall duration (days)", 6,
-  "TDOSE", "Total dose administered (mg)", 7,
-  "TPDOSE", "Total planned dose (mg)", 9,
-  "TADJ", "Dose adjusted during study", 10,
-  "TADJAE", "Dose adjusted during study due to AE", 11,
-  "TNDOSINT", "Overall dose intensity (%)", 12
+  ~PARAMCD,                                                         ~PARAM, ~PARAMN,
+  "DURD",     "Study drug duration during constant dosing interval (days)",       1,
+  "DOSE",         "Dose administered during constant dosing interval (mg)",       2,
+  "PLDOSE",            "Planned dose during constant dosing interval (mg)",       3,
+  "ADJ",                   "Dose adjusted during constant dosing interval",       4,
+  "ADJAE",      "Dose adjusted  due to AE during constant dosing interval",       5,
+  "TDURD",                                       "Overall duration (days)",       6,
+  "TDOSE",                                  "Total dose administered (mg)",       7,
+  "TPDOSE",                                      "Total planned dose (mg)",       9,
+  "TADJ",                                     "Dose adjusted during study",      10,
+  "TADJAE",                         "Dose adjusted during study due to AE",      11,
+  "TNDOSINT",                                 "Overall dose intensity (%)",      12
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
@@ -344,16 +343,21 @@ adex <- derive_vars_merged(
 count(adex, PARAMCD, PARAM, PARAMN)
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+avalcax_lookup <- exprs(
+  ~PARAMCD,            ~condition,             ~AVALCAT1,
+  "TDURD",             AVAL >= 90,          ">= 90 days",
+  "TDURD", AVAL >= 30 & AVAL < 90, ">= 30 and < 90 days",
+  "TDURD",              AVAL < 30,           "< 30 days",
+  "TDOSE",            AVAL < 1000,           "< 1000 mg",
+  "TDOSE",           AVAL >= 1000,          ">= 1000 mg",
+  "TPDOSE",           AVAL < 1000,           "< 1000 mg",
+  "TPDOSE",          AVAL >= 1000,          ">= 1000 mg"
+)
+
 adex <- adex %>%
-  mutate(
-    AVALCAT1 = case_when(
-      PARAMCD %in% c("TDURD") & AVAL < 30 ~ "< 30 days",
-      PARAMCD %in% c("TDURD") & AVAL >= 30 & AVAL < 90 ~ ">= 30 and < 90 days",
-      PARAMCD %in% c("TDURD") & AVAL >= 90 ~ ">=90 days",
-      PARAMCD %in% c("TDOSE", "TPDOSE") & AVAL < 1000 ~ "< 1000 mg",
-      PARAMCD %in% c("TDOSE", "TPDOSE") & AVAL >= 1000 ~ ">= 1000 mg",
-      TRUE ~ NA_character_
-    )
+  derive_vars_cat(
+    definition = avalcax_lookup,
+    by_vars = exprs(PARAMCD)
   )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
@@ -365,7 +369,7 @@ adex %>%
 adex <- derive_var_obs_number(
   adex,
   new_var = ASEQ,
-  by_vars = exprs(STUDYID, USUBJID),
+  by_vars = get_admiral_option("subject_keys"),
   order = exprs(PARCAT1, ASTDT, VISIT, VISITNUM, EXSEQ, PARAMN),
   check_type = "error"
 )
@@ -380,6 +384,6 @@ dataset_vignette(
 adex <- adex %>%
   derive_vars_merged(
     dataset_add = select(adsl, !!!negate_vars(adsl_vars)),
-    by_vars = exprs(STUDYID, USUBJID)
+    by_vars = get_admiral_option("subject_keys")
   )
 

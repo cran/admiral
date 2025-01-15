@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -381,11 +381,11 @@ are included in <code>{pharmaversesdtm}</code>— are used.</p>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(pharmaversesdtm)</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ae&quot;</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ae)</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span></code></pre></div>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>ae <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>ae</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral<span class="sc">::</span>admiral_adsl</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>ex_single <span class="ot">&lt;-</span> admiral<span class="sc">::</span>ex_single</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ae)</span></code></pre></div>
 <p>At this step, it may be useful to join <code>ADSL</code> to your
 <code>AE</code> domain as well. Only the <code>ADSL</code> variables
 used for derivations are selected at this step. The rest of the relevant
@@ -855,50 +855,44 @@ Class Variables.</p>
 <p>The expected result is the input dataset with ATC variables
 added.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>cm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>CMGRPID, <span class="sc">~</span>CMREFID,  <span class="sc">~</span>CMDECOD,</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;14&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;PARACETAMOL&quot;</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,     <span class="st">&quot;18&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;SOLUMEDROL&quot;</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,     <span class="st">&quot;19&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;SPIRONOLACTONE&quot;</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="sc">~</span>STUDYID,  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>CMGRPID, <span class="sc">~</span>CMREFID,  <span class="sc">~</span>CMDECOD,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;14&quot;</span>,     <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;PARACETAMOL&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;18&quot;</span>,     <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;SOLUMEDROL&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1002&quot;</span>, <span class="st">&quot;19&quot;</span>,     <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;SPIRONOLACTONE&quot;</span></span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>)</span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>facm <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>FAGRPID,  <span class="sc">~</span>FAREFID, <span class="sc">~</span>FATESTCD,  <span class="sc">~</span>FASTRESC,</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;N&quot;</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;N02&quot;</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;N02B&quot;</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;N02BE&quot;</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;D&quot;</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;D10&quot;</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;D10A&quot;</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;D10AA&quot;</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;D&quot;</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;D07&quot;</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;D07A&quot;</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;2&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;D07AA&quot;</span>,</span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;H&quot;</span>,</span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;H02&quot;</span>,</span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;H02A&quot;</span>,</span>
-<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="st">&quot;BP40257-1001&quot;</span>,      <span class="st">&quot;3&quot;</span>, <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;H02AB&quot;</span>,</span>
-<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>,       <span class="st">&quot;C&quot;</span>,</span>
-<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>,     <span class="st">&quot;C03&quot;</span>,</span>
-<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>,    <span class="st">&quot;C03D&quot;</span>,</span>
-<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>  <span class="st">&quot;BP40257-1002&quot;</span>,      <span class="st">&quot;1&quot;</span>, <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>,   <span class="st">&quot;C03DA&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="sc">~</span>STUDYID,  <span class="sc">~</span>USUBJID,       <span class="sc">~</span>FAGRPID, <span class="sc">~</span>FAREFID,  <span class="sc">~</span>FATESTCD,  <span class="sc">~</span>FASTRESC,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>, <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>, <span class="st">&quot;N02&quot;</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>, <span class="st">&quot;N02B&quot;</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;1192056&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>, <span class="st">&quot;N02BE&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>, <span class="st">&quot;D&quot;</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>, <span class="st">&quot;D10&quot;</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>, <span class="st">&quot;D10A&quot;</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>, <span class="st">&quot;D10AA&quot;</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>, <span class="st">&quot;D&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>, <span class="st">&quot;D07&quot;</span>,</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>, <span class="st">&quot;D07A&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;2&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>, <span class="st">&quot;D07AA&quot;</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;3&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>, <span class="st">&quot;H&quot;</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;3&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>, <span class="st">&quot;H02&quot;</span>,</span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;3&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>, <span class="st">&quot;H02A&quot;</span>,</span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1001&quot;</span>, <span class="st">&quot;3&quot;</span>,      <span class="st">&quot;2007001&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>, <span class="st">&quot;H02AB&quot;</span>,</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1002&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC1CD&quot;</span>, <span class="st">&quot;C&quot;</span>,</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1002&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC2CD&quot;</span>, <span class="st">&quot;C03&quot;</span>,</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1002&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC3CD&quot;</span>, <span class="st">&quot;C03D&quot;</span>,</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>  <span class="st">&quot;STUDY01&quot;</span>, <span class="st">&quot;BP40257-1002&quot;</span>, <span class="st">&quot;1&quot;</span>,      <span class="st">&quot;2791596&quot;</span>, <span class="st">&quot;CMATC4CD&quot;</span>, <span class="st">&quot;C03DA&quot;</span></span>
 <span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>)</span>
 <span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a></span>
-<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="fu">derive_vars_atc</span>(cm, facm)</span>
-<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; Warning: Values from `FASTRESC` are not uniquely identified; output will contain</span></span>
-<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt; list-cols.</span></span>
-<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt; • Use `values_fn = list` to suppress this warning.</span></span>
-<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; • Use `values_fn = {summary_fun}` to summarise duplicates.</span></span>
-<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; • Use the following dplyr code to identify duplicates.</span></span>
-<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt;   {data} |&gt;</span></span>
-<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="co">#&gt;   dplyr::summarise(n = dplyr::n(), .by = c(USUBJID, FAREFID, FATESTCD)) |&gt;</span></span>
-<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="co">#&gt;   dplyr::filter(n &gt; 1L)</span></span>
-<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 8</span></span>
-<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a><span class="co">#&gt;   USUBJID      CMGRPID CMREFID CMDECOD        ATC1CD    ATC2CD    ATC3CD ATC4CD</span></span>
-<span id="cb5-42"><a href="#cb5-42" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;          &lt;list&gt;    &lt;list&gt;    &lt;list&gt; &lt;list&gt;</span></span>
-<span id="cb5-43"><a href="#cb5-43" tabindex="-1"></a><span class="co">#&gt; 1 BP40257-1001 14      1192056 PARACETAMOL    &lt;chr [1]&gt; &lt;chr [1]&gt; &lt;chr&gt;  &lt;chr&gt; </span></span>
-<span id="cb5-44"><a href="#cb5-44" tabindex="-1"></a><span class="co">#&gt; 2 BP40257-1001 18      2007001 SOLUMEDROL     &lt;chr [3]&gt; &lt;chr [3]&gt; &lt;chr&gt;  &lt;chr&gt; </span></span>
-<span id="cb5-45"><a href="#cb5-45" tabindex="-1"></a><span class="co">#&gt; 3 BP40257-1002 19      2791596 SPIRONOLACTONE &lt;chr [1]&gt; &lt;chr [1]&gt; &lt;chr&gt;  &lt;chr&gt;</span></span></code></pre></div>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="fu">derive_vars_atc</span>(cm, <span class="at">dataset_facm =</span> facm, <span class="at">id_vars =</span> <span class="fu">exprs</span>(FAGRPID))</span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 9</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt;   STUDYID USUBJID      CMGRPID CMREFID CMDECOD       ATC1CD ATC2CD ATC3CD ATC4CD</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; </span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt; 1 STUDY01 BP40257-1001 14      1192056 PARACETAMOL   N      N02    N02B   N02BE </span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt; 2 STUDY01 BP40257-1001 18      2007001 SOLUMEDROL    D      D10    D10A   D10AA </span></span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt; 3 STUDY01 BP40257-1001 18      2007001 SOLUMEDROL    D      D07    D07A   D07AA </span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="co">#&gt; 4 STUDY01 BP40257-1001 18      2007001 SOLUMEDROL    H      H02    H02A   H02AB </span></span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="co">#&gt; 5 STUDY01 BP40257-1002 19      2791596 SPIRONOLACTO… C      C03    C03D   C03DA</span></span></code></pre></div>
 </div>
 <div id="trtpa" class="section level2">
 <h2>Derive Planned and Actual Treatment</h2>
@@ -924,26 +918,25 @@ vignette</a>.</p>
 <h2>Derive Date/Date-time of Last Dose</h2>
 <p>The function <code>derive_vars_joined()</code> can be used to derive
 the last dose date before the start of the event.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">data</span>(ex_single)</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>ex_single <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  ex_single,</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">dtc =</span> EXSTDTC,</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;EXST&quot;</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">flag_imputation =</span> <span class="st">&quot;none&quot;</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>)</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">derive_vars_joined</span>(</span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  adae,</span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  ex_single,</span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">LDOSEDTM =</span> EXSTDTM),</span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">join_vars =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">join_type =</span> <span class="st">&quot;all&quot;</span>,</span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(EXSTDTM),</span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="at">filter_join =</span> EXSTDTM <span class="sc">&lt;=</span> ASTDTM,</span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;last&quot;</span></span>
-<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>ex_single <span class="ot">&lt;-</span> <span class="fu">derive_vars_dtm</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  ex_single,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">dtc =</span> EXSTDTC,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">new_vars_prefix =</span> <span class="st">&quot;EXST&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">flag_imputation =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>adae <span class="ot">&lt;-</span> <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  adae,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  ex_single,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">LDOSEDTM =</span> EXSTDTM),</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">join_vars =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">join_type =</span> <span class="st">&quot;all&quot;</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(EXSTDTM),</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">filter_add =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&quot;PLACEBO&quot;</span>, EXTRT))) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(EXSTDTM),</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="at">filter_join =</span> EXSTDTM <span class="sc">&lt;=</span> ASTDTM,</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;last&quot;</span></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>)</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="10%" />
@@ -1409,7 +1402,7 @@ dataset. The <code>create_query_data()</code> function can be used to
 create queries datasets.</p>
 <p>The following example shows how to derive query variables for
 Standardized MedDRA Queries (SMQs) in ADAE.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;queries&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>queries <span class="ot">&lt;-</span> admiral<span class="sc">::</span>queries</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="5%" />
@@ -1541,7 +1534,7 @@ Standardized MedDRA Queries (SMQs) in ADAE.</p>
 <span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="st">&quot;01&quot;</span>, <span class="st">&quot;2020-06-02 23:59:59&quot;</span>, <span class="st">&quot;ALANINE AMINOTRANSFERASE ABNORMAL&quot;</span>,</span>
 <span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="dv">3</span>, <span class="st">&quot;Alanine aminotransferase abnormal&quot;</span>, <span class="cn">NA_character_</span>, <span class="cn">NA_integer_</span>,</span>
 <span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="st">&quot;02&quot;</span>, <span class="st">&quot;2020-06-05 23:59:59&quot;</span>, <span class="st">&quot;BASEDOW&#39;S DISEASE&quot;</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="dv">5</span>, <span class="st">&quot;Basedow&#39;s disease&quot;</span>, <span class="cn">NA_character_</span>, 1L,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="dv">5</span>, <span class="st">&quot;Basedow&#39;s disease&quot;</span>, <span class="cn">NA_character_</span>, <span class="dv">1</span><span class="dt">L</span>,</span>
 <span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  <span class="st">&quot;03&quot;</span>, <span class="st">&quot;2020-06-07 23:59:59&quot;</span>, <span class="st">&quot;SOME TERM&quot;</span>,</span>
 <span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="dv">2</span>, <span class="st">&quot;Some query&quot;</span>, <span class="st">&quot;Some term&quot;</span>, <span class="cn">NA_integer_</span>,</span>
 <span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>  <span class="st">&quot;05&quot;</span>, <span class="st">&quot;2020-06-09 23:59:59&quot;</span>, <span class="st">&quot;ALVEOLAR PROTEINOSIS&quot;</span>,</span>

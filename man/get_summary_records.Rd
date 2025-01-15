@@ -4,19 +4,12 @@
 \alias{get_summary_records}
 \title{Create Summary Records}
 \usage{
-get_summary_records(
-  dataset,
-  by_vars,
-  filter = NULL,
-  analysis_var,
-  summary_fun,
-  set_values_to = NULL
-)
+get_summary_records(dataset, by_vars, filter = NULL, set_values_to = NULL)
 }
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} and \code{analysis_var} arguments are expected to be in the dataset.}
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
 
 \item{by_vars}{Grouping variables
 
@@ -37,18 +30,6 @@ values greater than mean of AVAL with in \code{by_vars}.
 \item \code{filter_rows = (dplyr::n() > 2)} will filter n count of \code{by_vars} greater
 than 2.
 }}
-
-\item{analysis_var}{Analysis variable.
-
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{set_values_to} instead.}
-
-\item{summary_fun}{Function that takes as an input the \code{analysis_var} and
-performs the calculation.
-
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{set_values_to} instead.
-
-This can include built-in functions as well as user defined functions,
-for example \code{mean} or \code{function(x) mean(x, na.rm = TRUE)}.}
 
 \item{set_values_to}{Variables to be set
 
@@ -76,10 +57,9 @@ For example:
 A data frame of derived records.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
-
-Development on \code{get_summary_records()} is complete, and for new code we recommend
-switching to using the \code{dataset_add} argument in \code{derive_summary_records()}.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} The \code{get_summary_records()} has been
+deprecated in favor of \code{derive_summary_records()} (call it with the \code{dataset_add}
+argument and without the \code{dataset} argument).
 
 It is not uncommon to have an analysis need whereby one needs to derive an
 analysis value (\code{AVAL}) from multiple records. The ADaM basic dataset
@@ -172,7 +152,7 @@ get_summary_records(
 \seealso{
 \code{\link[=derive_summary_records]{derive_summary_records()}}, \code{\link[=derive_var_merged_summary]{derive_var_merged_summary()}}
 
-Other superseded: 
+Other deprecated: 
 \code{\link{date_source}()},
 \code{\link{derive_param_extreme_record}()},
 \code{\link{derive_var_dthcaus}()},
@@ -180,5 +160,5 @@ Other superseded:
 \code{\link{derive_var_extreme_dtm}()},
 \code{\link{dthcaus_source}()}
 }
-\concept{superseded}
-\keyword{superseded}
+\concept{deprecated}
+\keyword{deprecated}

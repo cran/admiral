@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -378,11 +378,10 @@ specific process.</p>
 <p>For example purpose, the ADSL dataset—which is included in
 <code>{admiral}</code>—and the SDTM datasets from
 <code>{pharmaversesdtm}</code> are used.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ae&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>ae</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral<span class="sc">::</span>admiral_adsl</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ae)</span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span></code></pre></div>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ae)</span></code></pre></div>
 <p>The following code creates a minimally viable ADAE dataset to be used
 throughout the following examples.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>adae <span class="ot">&lt;-</span> ae <span class="sc">%&gt;%</span></span>
@@ -1307,7 +1306,13 @@ differs.</p>
 <span id="cb14-68"><a href="#cb14-68" tabindex="-1"></a>    <span class="at">ae =</span> <span class="fu">filter</span>(adae, TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>)</span>
 <span id="cb14-69"><a href="#cb14-69" tabindex="-1"></a>  ),</span>
 <span id="cb14-70"><a href="#cb14-70" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(observation_end)</span>
-<span id="cb14-71"><a href="#cb14-71" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb14-71"><a href="#cb14-71" tabindex="-1"></a>)</span>
+<span id="cb14-72"><a href="#cb14-72" tabindex="-1"></a><span class="co">#&gt; Warning: Dataset &quot;ae&quot; contains duplicate records with respect to `STUDYID`, `USUBJID`,</span></span>
+<span id="cb14-73"><a href="#cb14-73" tabindex="-1"></a><span class="co">#&gt; and `ASTDT`</span></span>
+<span id="cb14-74"><a href="#cb14-74" tabindex="-1"></a><span class="co">#&gt; ℹ Run `admiral::get_duplicates_dataset()` to access the duplicate records</span></span>
+<span id="cb14-75"><a href="#cb14-75" tabindex="-1"></a><span class="co">#&gt; Dataset &quot;ae&quot; contains duplicate records with respect to `STUDYID`, `USUBJID`,</span></span>
+<span id="cb14-76"><a href="#cb14-76" tabindex="-1"></a><span class="co">#&gt; and `ASTDT`</span></span>
+<span id="cb14-77"><a href="#cb14-77" tabindex="-1"></a><span class="co">#&gt; ℹ Run `admiral::get_duplicates_dataset()` to access the duplicate records</span></span></code></pre></div>
 <table>
 <colgroup>
 <col width="14%" />

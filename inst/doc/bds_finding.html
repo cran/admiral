@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -384,7 +384,9 @@ format as input unless otherwise specified.</em></p>
 <code>TRTP</code>)</a></li>
 <li><a href="#aseq">Assign <code>ASEQ</code></a></li>
 <li><a href="#cat">Derive Categorization Variables
-(<code>AVALCATx</code>)</a></li>
+(<code>AVALCATy</code>)</a></li>
+<li><a href="#crit_vars">Derive Criterion Variables (<code>CRITy</code>,
+<code>CRITyFL</code>, <code>CRITyFN</code>)</a></li>
 <li><a href="#adsl_vars">Add ADSL variables</a></li>
 <li><a href="#additional">Derive New Rows</a></li>
 <li><a href="#attributes">Add Labels and Attributes</a></li>
@@ -404,11 +406,10 @@ included in <code>{pharmaversesdtm}</code>—are used.</p>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;vs&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>vs <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>vs</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral<span class="sc">::</span>admiral_adsl</span>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(vs)</span></code></pre></div>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(vs)</span></code></pre></div>
 <p>At this step, it may be useful to join <code>ADSL</code> to your
 <code>VS</code> domain. Only the <code>ADSL</code> variables used for
 derivations are selected at this step. The rest of the relevant
@@ -910,8 +911,8 @@ SDTM <code>--TESTCD</code> value may be created:</p>
 derivations. Additional derived parameters may be added, so only
 <code>PARAMCD</code> is joined to the datasets at this point. All other
 variables related to <code>PARAMCD</code> (e.g. <code>PARAM</code>,
-<code>PARAMCAT1</code>, …) will be added when all <code>PARAMCD</code>
-are derived.</p>
+<code>PARCAT1</code>, …) will be added when all <code>PARAMCD</code> are
+derived.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_vars_merged_lookup</span>(</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  advs,</span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">dataset_add =</span> param_lookup,</span>
@@ -1318,11 +1319,11 @@ visits where both are collected.</p>
 call. See example below for <code>PARAMCD</code> =
 <code>QTCF</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>adeg <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>EGSTRESU, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>AVAL, <span class="sc">~</span>VISIT,</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;msec&quot;</span>, <span class="st">&quot;QT&quot;</span>, <span class="dv">350</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;msec&quot;</span>, <span class="st">&quot;QT&quot;</span>, <span class="dv">370</span>, <span class="st">&quot;CYCLE 2 DAY 1&quot;</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;msec&quot;</span>, <span class="st">&quot;RR&quot;</span>, <span class="dv">842</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;msec&quot;</span>, <span class="st">&quot;RR&quot;</span>, <span class="dv">710</span>, <span class="st">&quot;CYCLE 2 DAY 1&quot;</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>EGSTRESU, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>AVAL,          <span class="sc">~</span>VISIT,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,       <span class="st">&quot;msec&quot;</span>,     <span class="st">&quot;QT&quot;</span>,   <span class="dv">350</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,       <span class="st">&quot;msec&quot;</span>,     <span class="st">&quot;QT&quot;</span>,   <span class="dv">370</span>, <span class="st">&quot;CYCLE 2 DAY 1&quot;</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,       <span class="st">&quot;msec&quot;</span>,     <span class="st">&quot;RR&quot;</span>,   <span class="dv">842</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,       <span class="st">&quot;msec&quot;</span>,     <span class="st">&quot;RR&quot;</span>,   <span class="dv">710</span>, <span class="st">&quot;CYCLE 2 DAY 1&quot;</span></span>
 <span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>)</span>
 <span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a></span>
 <span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>adeg <span class="ot">&lt;-</span> <span class="fu">derive_param_qtc</span>(</span>
@@ -1337,11 +1338,11 @@ call. See example below for <code>PARAMCD</code> =
 for lab differentials converted to absolute values. See example
 below:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>adlb <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>AVAL, <span class="sc">~</span>PARAM, <span class="sc">~</span>VISIT,</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;WBC&quot;</span>, <span class="dv">33</span>, <span class="st">&quot;Leukocyte Count (10^9/L)&quot;</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;WBC&quot;</span>, <span class="dv">38</span>, <span class="st">&quot;Leukocyte Count (10^9/L)&quot;</span>, <span class="st">&quot;CYCLE 2 DAY 1&quot;</span>,</span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;LYMLE&quot;</span>, <span class="fl">0.90</span>, <span class="st">&quot;Lymphocytes (fraction of 1)&quot;</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>, <span class="st">&quot;LYMLE&quot;</span>, <span class="fl">0.70</span>, <span class="st">&quot;Lymphocytes (fraction of 1)&quot;</span>, <span class="st">&quot;CYCLE 2 DAY 1&quot;</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="sc">~</span>USUBJID, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>AVAL,                        <span class="sc">~</span>PARAM,          <span class="sc">~</span>VISIT,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,       <span class="st">&quot;WBC&quot;</span>,    <span class="dv">33</span>,    <span class="st">&quot;Leukocyte Count (10^9/L)&quot;</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,       <span class="st">&quot;WBC&quot;</span>,    <span class="dv">38</span>,    <span class="st">&quot;Leukocyte Count (10^9/L)&quot;</span>, <span class="st">&quot;CYCLE 2 DAY 1&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,     <span class="st">&quot;LYMLE&quot;</span>,  <span class="fl">0.90</span>, <span class="st">&quot;Lymphocytes (fraction of 1)&quot;</span>, <span class="st">&quot;CYCLE 1 DAY 1&quot;</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="st">&quot;P01&quot;</span>,     <span class="st">&quot;LYMLE&quot;</span>,  <span class="fl">0.70</span>, <span class="st">&quot;Lymphocytes (fraction of 1)&quot;</span>, <span class="st">&quot;CYCLE 2 DAY 1&quot;</span></span>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>)</span>
 <span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a></span>
 <span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="fu">derive_param_wbc_abs</span>(</span>
@@ -2255,6 +2256,89 @@ Examples calls are:</p>
 <span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>  <span class="at">from_var =</span> BNRIND,</span>
 <span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="at">to_var =</span> ANRIND</span>
 <span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">SHIFT1</th>
+<th align="left">BNRIND</th>
+<th align="left">ANRIND</th>
+<th align="left">VISIT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">LOW to LOW</td>
+<td align="left">LOW</td>
+<td align="left">LOW</td>
+<td align="left">WEEK 2</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">LOW to NORMAL</td>
+<td align="left">LOW</td>
+<td align="left">NORMAL</td>
+<td align="left">WEEK 8</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1023</td>
+<td align="left">HIGH to HIGH</td>
+<td align="left">HIGH</td>
+<td align="left">HIGH</td>
+<td align="left">WEEK 2</td>
+</tr>
+<tr class="even">
+<td align="left">01-703-1086</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">NORMAL</td>
+<td align="left">NORMAL</td>
+<td align="left">WEEK 2</td>
+</tr>
+<tr class="odd">
+<td align="left">01-703-1086</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">NORMAL</td>
+<td align="left">NORMAL</td>
+<td align="left">WEEK 8</td>
+</tr>
+<tr class="even">
+<td align="left">01-703-1096</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">NORMAL</td>
+<td align="left">NORMAL</td>
+<td align="left">WEEK 2</td>
+</tr>
+<tr class="odd">
+<td align="left">01-707-1037</td>
+<td align="left">HIGH to NORMAL</td>
+<td align="left">HIGH</td>
+<td align="left">NORMAL</td>
+<td align="left">WEEK 2</td>
+</tr>
+<tr class="even">
+<td align="left">01-716-1024</td>
+<td align="left">NORMAL to HIGH</td>
+<td align="left">NORMAL</td>
+<td align="left">HIGH</td>
+<td align="left">WEEK 2</td>
+</tr>
+<tr class="odd">
+<td align="left">01-716-1024</td>
+<td align="left">NORMAL to NORMAL</td>
+<td align="left">NORMAL</td>
+<td align="left">NORMAL</td>
+<td align="left">WEEK 8</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">LOW to LOW</td>
+<td align="left">LOW</td>
+<td align="left">LOW</td>
+<td align="left">WEEK 2</td>
+</tr>
+</tbody>
+</table>
 <p>If the variables should not be derived for all records, e.g., for
 post-baseline records only, <code>restrict_derivation()</code> can be
 used.</p>
@@ -2783,29 +2867,19 @@ vignette</a>.</p>
 </table>
 </div>
 <div id="cat" class="section level2">
-<h2>Derive Categorization Variables (<code>AVALCATx</code>)</h2>
-<p>Admiral does not currently have a generic function to aid in
-assigning <code>AVALCATx</code>/ <code>AVALCAxN</code> values. Below is
-a simple example of how these values may be assigned:</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>avalcat_lookup <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="sc">~</span>PARAMCD, <span class="sc">~</span>AVALCA1N, <span class="sc">~</span>AVALCAT1,</span>
-<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="st">&quot;HEIGHT&quot;</span>,         <span class="dv">1</span>, <span class="st">&quot;&gt;140 cm&quot;</span>,</span>
-<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="st">&quot;HEIGHT&quot;</span>,         <span class="dv">2</span>, <span class="st">&quot;&lt;= 140 cm&quot;</span></span>
+<h2>Derive Categorization Variables (<code>AVALCATy</code>)</h2>
+<p>We can use the <code>derive_vars_cat()</code> function to derive the
+categorization variables.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>avalcat_lookup <span class="ot">&lt;-</span> <span class="fu">exprs</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="sc">~</span>PARAMCD,  <span class="sc">~</span>condition,   <span class="sc">~</span>AVALCAT1, <span class="sc">~</span>AVALCA1N,</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="st">&quot;HEIGHT&quot;</span>,  AVAL <span class="sc">&gt;</span> <span class="dv">140</span>,   <span class="st">&quot;&gt;140 cm&quot;</span>,         <span class="dv">1</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="st">&quot;HEIGHT&quot;</span>, AVAL <span class="sc">&lt;=</span> <span class="dv">140</span>, <span class="st">&quot;&lt;= 140 cm&quot;</span>,         <span class="dv">2</span></span>
 <span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>)</span>
-<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a></span>
-<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>format_avalcat1n <span class="ot">&lt;-</span> <span class="cf">function</span>(param, aval) {</span>
-<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>  <span class="fu">case_when</span>(</span>
-<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>    param <span class="sc">==</span> <span class="st">&quot;HEIGHT&quot;</span> <span class="sc">&amp;</span> aval <span class="sc">&gt;</span> <span class="dv">140</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>    param <span class="sc">==</span> <span class="st">&quot;HEIGHT&quot;</span> <span class="sc">&amp;</span> aval <span class="sc">&lt;=</span> <span class="dv">140</span> <span class="sc">~</span> <span class="dv">2</span></span>
-<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>  )</span>
-<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a>}</span>
-<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a></span>
-<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>advs <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
-<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">AVALCA1N =</span> <span class="fu">format_avalcat1n</span>(<span class="at">param =</span> PARAMCD, <span class="at">aval =</span> AVAL)) <span class="sc">%&gt;%</span></span>
-<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a>    avalcat_lookup,</span>
-<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">exprs</span>(PARAMCD, AVALCA1N)</span>
-<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>advs <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>  <span class="fu">derive_vars_cat</span>(</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>    <span class="at">definition =</span> avalcat_lookup,</span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -2862,16 +2936,309 @@ a simple example of how these values may be assigned:</p>
 </tbody>
 </table>
 </div>
+<div id="crit_vars" class="section level2">
+<h2>Derive Criterion Variables (<code>CRITy</code>,
+<code>CRITyFL</code>, <code>CRITyFN</code>)</h2>
+<p>For deriving criterion variables (<code>CRITy</code>,
+<code>CRITyFL</code>, <code>CRITyFN</code>) <code>{admiral}</code>
+provides <code>derive_vars_crit_flag()</code>. It ensures that they are
+derived in an ADaM-compliant way (see documentation of the function for
+details).</p>
+<p>In most cases the criterion depends on the parameter. The higher
+order functions <code>restrict_derivation()</code> and
+<code>slice_derivation()</code> are useful in this case. In the
+following example the criterion flags for systolic and diastolic blood
+pressure from the ADaM IG are derived.</p>
+<p>The first criterion is based on <code>AVAL</code> and is derived for
+systolic and diastolic blood pressure. <code>slice_derivation()</code>
+us used to specify the condition and description of the criterion
+depending on the parameter.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>advs <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  <span class="fu">slice_derivation</span>(</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="at">derivation =</span> derive_vars_crit_flag,</span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>      <span class="at">values_yn =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>      <span class="at">create_numeric_flag =</span> <span class="cn">TRUE</span></span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>    ),</span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>    <span class="fu">derivation_slice</span>(</span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>      <span class="at">filter =</span> PARAMCD <span class="sc">==</span> <span class="st">&quot;SYSBP&quot;</span>,</span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>      <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>        <span class="at">condition =</span> AVAL <span class="sc">&gt;</span> <span class="dv">160</span>,</span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a>        <span class="at">description =</span> <span class="st">&quot;Systolic Pressure &gt; 160&quot;</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>      )</span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>    ),</span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a>    <span class="fu">derivation_slice</span>(</span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a>      <span class="at">filter =</span> PARAMCD <span class="sc">==</span> <span class="st">&quot;DIABP&quot;</span>,</span>
+<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a>      <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb31-18"><a href="#cb31-18" tabindex="-1"></a>        <span class="at">condition =</span> AVAL <span class="sc">&gt;</span> <span class="dv">95</span>,</span>
+<span id="cb31-19"><a href="#cb31-19" tabindex="-1"></a>        <span class="at">description =</span> <span class="st">&quot;Diastolic Pressure &gt; 95&quot;</span></span>
+<span id="cb31-20"><a href="#cb31-20" tabindex="-1"></a>      )</span>
+<span id="cb31-21"><a href="#cb31-21" tabindex="-1"></a>    )</span>
+<span id="cb31-22"><a href="#cb31-22" tabindex="-1"></a>  )</span></code></pre></div>
+<table style="width:100%;">
+<colgroup>
+<col width="17%" />
+<col width="11%" />
+<col width="7%" />
+<col width="5%" />
+<col width="34%" />
+<col width="11%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">PARAMCD</th>
+<th align="right">AVAL</th>
+<th align="right">CHG</th>
+<th align="left">CRIT1</th>
+<th align="left">CRIT1FL</th>
+<th align="right">CRIT1FN</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DIABP</td>
+<td align="right">56</td>
+<td align="right">0</td>
+<td align="left">Diastolic Pressure &gt; 95</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">130</td>
+<td align="right">0</td>
+<td align="left">Systolic Pressure &gt; 160</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DIABP</td>
+<td align="right">51</td>
+<td align="right">0</td>
+<td align="left">Diastolic Pressure &gt; 95</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">121</td>
+<td align="right">0</td>
+<td align="left">Systolic Pressure &gt; 160</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DIABP</td>
+<td align="right">61</td>
+<td align="right">0</td>
+<td align="left">Diastolic Pressure &gt; 95</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">131</td>
+<td align="right">0</td>
+<td align="left">Systolic Pressure &gt; 160</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DIABP</td>
+<td align="right">56</td>
+<td align="right">0</td>
+<td align="left">Diastolic Pressure &gt; 95</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">114</td>
+<td align="right">-16</td>
+<td align="left">Systolic Pressure &gt; 160</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">DIABP</td>
+<td align="right">50</td>
+<td align="right">-1</td>
+<td align="left">Diastolic Pressure &gt; 95</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">121</td>
+<td align="right">0</td>
+<td align="left">Systolic Pressure &gt; 160</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>The second criterion is based on <code>AVAL</code> and
+<code>CHG</code> and is derived for systolic blood pressure only. Thus
+<code>restrict_derivation()</code> is used.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>advs <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>  <span class="fu">restrict_derivation</span>(</span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>    <span class="at">derivation =</span> derive_vars_crit_flag,</span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>      <span class="at">condition =</span> AVAL <span class="sc">&gt;</span> <span class="dv">160</span> <span class="sc">&amp;</span> CHG <span class="sc">&gt;</span> <span class="dv">10</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>      <span class="at">description =</span> <span class="st">&quot;Systolic Pressure &gt; 160 and Change from Baseline in Systolic Pressure &gt; 10&quot;</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>      <span class="at">crit_nr =</span> <span class="dv">2</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>      <span class="at">values_yn =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>      <span class="at">create_numeric_flag =</span> <span class="cn">TRUE</span></span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>    ),</span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>    <span class="at">filter =</span> PARAMCD <span class="sc">==</span> <span class="st">&quot;SYSBP&quot;</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="6%" />
+<col width="4%" />
+<col width="3%" />
+<col width="62%" />
+<col width="6%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">PARAMCD</th>
+<th align="right">AVAL</th>
+<th align="right">CHG</th>
+<th align="left">CRIT2</th>
+<th align="left">CRIT2FL</th>
+<th align="right">CRIT2FN</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">130</td>
+<td align="right">0</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">121</td>
+<td align="right">0</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">131</td>
+<td align="right">0</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">114</td>
+<td align="right">-16</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">121</td>
+<td align="right">0</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">132</td>
+<td align="right">1</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">138</td>
+<td align="right">8</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">137</td>
+<td align="right">16</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">132</td>
+<td align="right">1</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">01-701-1015</td>
+<td align="left">SYSBP</td>
+<td align="right">148</td>
+<td align="right">18</td>
+<td align="left">Systolic Pressure &gt; 160 and Change from Baseline in
+Systolic Pressure &gt; 10</td>
+<td align="left">N</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div id="adsl_vars" class="section level2">
 <h2>Add ADSL variables</h2>
 <p>If needed, the other <code>ADSL</code> variables can now be added.
 List of ADSL variables already merged held in vector
 <code>adsl_vars</code></p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>advs <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
-<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>advs <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -2996,19 +3363,19 @@ used. The new records include all variables of the selected records.</p>
 valid observation before end of treatment. Set <code>AVISIT</code> to
 <code>&quot;End of Treatment&quot;</code> and assign a unique <code>AVISITN</code>
 value.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>advs_ex1 <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
-<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> advs,</span>
-<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
-<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADT, AVISITN, ATPTN, AVAL),</span>
-<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="dv">4</span> <span class="sc">&lt;</span> AVISITN <span class="sc">&amp;</span> AVISITN <span class="sc">&lt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> ANL01FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>),</span>
-<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>      <span class="at">AVISIT =</span> <span class="st">&quot;End of Treatment&quot;</span>,</span>
-<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>      <span class="at">AVISITN =</span> <span class="dv">99</span>,</span>
-<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;LOV&quot;</span></span>
-<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>    )</span>
-<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>advs_ex1 <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> advs,</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADT, AVISITN, ATPTN, AVAL),</span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="dv">4</span> <span class="sc">&lt;</span> AVISITN <span class="sc">&amp;</span> AVISITN <span class="sc">&lt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> ANL01FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>),</span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a>      <span class="at">AVISIT =</span> <span class="st">&quot;End of Treatment&quot;</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a>      <span class="at">AVISITN =</span> <span class="dv">99</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;LOV&quot;</span></span>
+<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a>    )</span>
+<span id="cb34-13"><a href="#cb34-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="14%" />
@@ -3155,19 +3522,19 @@ minimum value before end of treatment. If the minimum is attained by
 multiple observations the first one is selected. Set <code>AVISIT</code>
 to <code>&quot;Minimum on Treatment&quot;</code> and assign a unique
 <code>AVISITN</code> value.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>advs_ex1 <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
-<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
-<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> advs,</span>
-<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
-<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(AVAL, ADT, AVISITN, ATPTN),</span>
-<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="dv">4</span> <span class="sc">&lt;</span> AVISITN <span class="sc">&amp;</span> AVISITN <span class="sc">&lt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> ANL01FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(AVAL)),</span>
-<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>      <span class="at">AVISIT =</span> <span class="st">&quot;Minimum on Treatment&quot;</span>,</span>
-<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>      <span class="at">AVISITN =</span> <span class="dv">98</span>,</span>
-<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;MINIMUM&quot;</span></span>
-<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>    )</span>
-<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>advs_ex1 <span class="ot">&lt;-</span> advs <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> advs,</span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD),</span>
+<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(AVAL, ADT, AVISITN, ATPTN),</span>
+<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="dv">4</span> <span class="sc">&lt;</span> AVISITN <span class="sc">&amp;</span> AVISITN <span class="sc">&lt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> ANL01FL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(AVAL)),</span>
+<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a>      <span class="at">AVISIT =</span> <span class="st">&quot;Minimum on Treatment&quot;</span>,</span>
+<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a>      <span class="at">AVISITN =</span> <span class="dv">98</span>,</span>
+<span id="cb35-11"><a href="#cb35-11" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;MINIMUM&quot;</span></span>
+<span id="cb35-12"><a href="#cb35-12" tabindex="-1"></a>    )</span>
+<span id="cb35-13"><a href="#cb35-13" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="13%" />
@@ -3317,15 +3684,15 @@ only the variables specified by <code>by_vars</code> and
 <p>For each subject, Vital Signs parameter, visit, and date add a record
 holding the average value for observations on that date. Set
 <code>DTYPE</code> to <code>AVERAGE</code>.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>advs_ex2 <span class="ot">&lt;-</span> <span class="fu">derive_summary_records</span>(</span>
-<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  advs,</span>
-<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>  <span class="at">dataset_add =</span> advs,</span>
-<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, VISITNUM, ADT),</span>
-<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">mean</span>(AVAL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>    <span class="at">DTYPE =</span> <span class="st">&quot;AVERAGE&quot;</span></span>
-<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>  )</span>
-<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>advs_ex2 <span class="ot">&lt;-</span> <span class="fu">derive_summary_records</span>(</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>  advs,</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>  <span class="at">dataset_add =</span> advs,</span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, VISITNUM, ADT),</span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">mean</span>(AVAL, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a>    <span class="at">DTYPE =</span> <span class="st">&quot;AVERAGE&quot;</span></span>
+<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a>  )</span>
+<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a>)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -3429,16 +3796,16 @@ holding the average value for observations on that date. Set
 records.</p>
 <p>Below is an example of creating <code>Mean Arterial Pressure</code>
 (<code>PARAMCD = MAP2</code>) with an alternative formula.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>advs_ex3 <span class="ot">&lt;-</span> <span class="fu">derive_param_computed</span>(</span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>  advs,</span>
-<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID, VISIT, ATPT),</span>
-<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a>  <span class="at">parameters =</span> <span class="fu">c</span>(<span class="st">&quot;SYSBP&quot;</span>, <span class="st">&quot;DIABP&quot;</span>),</span>
-<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>    <span class="at">AVAL =</span> (AVAL.SYSBP <span class="sc">-</span> AVAL.DIABP) <span class="sc">/</span> <span class="dv">3</span> <span class="sc">+</span> AVAL.DIABP,</span>
-<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;MAP2&quot;</span>,</span>
-<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a>    <span class="at">PARAM =</span> <span class="st">&quot;Mean Arterial Pressure 2 (mmHg)&quot;</span></span>
-<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a>  )</span>
-<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a>advs_ex3 <span class="ot">&lt;-</span> <span class="fu">derive_param_computed</span>(</span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>  advs,</span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a>  <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID, VISIT, ATPT),</span>
+<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a>  <span class="at">parameters =</span> <span class="fu">c</span>(<span class="st">&quot;SYSBP&quot;</span>, <span class="st">&quot;DIABP&quot;</span>),</span>
+<span id="cb37-5"><a href="#cb37-5" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb37-6"><a href="#cb37-6" tabindex="-1"></a>    <span class="at">AVAL =</span> (AVAL.SYSBP <span class="sc">-</span> AVAL.DIABP) <span class="sc">/</span> <span class="dv">3</span> <span class="sc">+</span> AVAL.DIABP,</span>
+<span id="cb37-7"><a href="#cb37-7" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="st">&quot;MAP2&quot;</span>,</span>
+<span id="cb37-8"><a href="#cb37-8" tabindex="-1"></a>    <span class="at">PARAM =</span> <span class="st">&quot;Mean Arterial Pressure 2 (mmHg)&quot;</span></span>
+<span id="cb37-9"><a href="#cb37-9" tabindex="-1"></a>  )</span>
+<span id="cb37-10"><a href="#cb37-10" tabindex="-1"></a>)</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="14%" />

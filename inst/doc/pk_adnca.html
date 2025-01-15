@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -444,34 +444,24 @@ used.</p>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;admiral_adsl&quot;</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ex&quot;</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;pc&quot;</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;vs&quot;</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;lb&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>ex <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>ex</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>pc <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>pc</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>vs <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>vs</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>lb <span class="ot">&lt;-</span> pharmaversesdtm<span class="sc">::</span>lb</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral<span class="sc">::</span>admiral_adsl</span>
 <span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>adsl <span class="ot">&lt;-</span> admiral_adsl</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ex)</span>
-<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co"># Load PC</span></span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(pc)</span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="co"># Load VS for baseline height and weight</span></span>
-<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(vs)</span>
-<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="co"># Load LB for baseline lab values</span></span>
-<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>lb <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(lb) <span class="sc">%&gt;%</span></span>
-<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>  <span class="fu">filter</span>(LBBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>)</span>
-<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a><span class="co"># ---- Lookup tables ----</span></span>
-<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>param_lookup <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
-<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>  <span class="sc">~</span>PCTESTCD, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>PARAM, <span class="sc">~</span>PARAMN,</span>
-<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>  <span class="st">&quot;XAN&quot;</span>, <span class="st">&quot;XAN&quot;</span>, <span class="st">&quot;Pharmacokinetic concentration of Xanomeline&quot;</span>, <span class="dv">1</span>,</span>
-<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>  <span class="st">&quot;DOSE&quot;</span>, <span class="st">&quot;DOSE&quot;</span>, <span class="st">&quot;Xanomeline Patch Dose&quot;</span>, <span class="dv">2</span>,</span>
-<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(ex)</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>pc <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(pc)</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(vs)</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>lb <span class="ot">&lt;-</span> <span class="fu">convert_blanks_to_na</span>(lb) <span class="sc">%&gt;%</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>  <span class="fu">filter</span>(LBBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="co"># ---- Lookup tables ----</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>param_lookup <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="sc">~</span>PCTESTCD, <span class="sc">~</span>PARAMCD, <span class="sc">~</span>PARAM, <span class="sc">~</span>PARAMN,</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>  <span class="st">&quot;XAN&quot;</span>, <span class="st">&quot;XAN&quot;</span>, <span class="st">&quot;Pharmacokinetic concentration of Xanomeline&quot;</span>, <span class="dv">1</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>  <span class="st">&quot;DOSE&quot;</span>, <span class="st">&quot;DOSE&quot;</span>, <span class="st">&quot;Xanomeline Patch Dose&quot;</span>, <span class="dv">2</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>)</span></code></pre></div>
 <p>At this step, it may be useful to join <code>ADSL</code> to your
 <code>PC</code> and <code>EX</code> domains as well. Only the
 <code>ADSL</code> variables used for derivations are selected at this
@@ -2367,28 +2357,34 @@ lookup table.</p>
 <span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">filter =</span> ABLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
 <span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  )</span>
 <span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>adpc_chg <span class="ot">&lt;-</span> <span class="fu">derive_var_chg</span>(adpc_base)</span>
-<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a></span>
-<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co"># ---- Add ASEQ ----</span></span>
-<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a></span>
-<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>adpc_aseq <span class="ot">&lt;-</span> adpc_chg <span class="sc">%&gt;%</span></span>
-<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>  <span class="co"># Calculate ASEQ</span></span>
-<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
-<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>    <span class="at">new_var =</span> ASEQ,</span>
-<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, BASETYPE, EVID, AVISITN, ATPTN, PARCAT1, DTYPE),</span>
-<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
-<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>  <span class="co"># Remove temporary variables</span></span>
-<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>    <span class="sc">-</span>DOMAIN, <span class="sc">-</span>PCSEQ, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;orig&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;min&quot;</span>),</span>
-<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;max&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;EX&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;next&quot;</span>),</span>
-<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;prev&quot;</span>), <span class="sc">-</span>DRUG, <span class="sc">-</span>EVID, <span class="sc">-</span>AXRLT, <span class="sc">-</span>NXRLT, <span class="sc">-</span>VISITDY</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># Calculate CHG for post-baseline records</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co"># The decision on how to populate pre-baseline and baseline values of CHG is left to producer choice</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>adpc_chg <span class="ot">&lt;-</span> <span class="fu">restrict_derivation</span>(</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>  adpc_base,</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>  <span class="at">derivation =</span> derive_var_chg,</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>  <span class="at">filter =</span> AVISITN <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>)</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co"># ---- Add ASEQ ----</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>adpc_aseq <span class="ot">&lt;-</span> adpc_chg <span class="sc">%&gt;%</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>  <span class="co"># Calculate ASEQ</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>    <span class="at">new_var =</span> ASEQ,</span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, BASETYPE, EVID, AVISITN, ATPTN, PARCAT1, DTYPE),</span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
 <span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>  <span class="co"># Derive PARAM and PARAMN</span></span>
-<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(param_lookup, <span class="sc">-</span>PCTESTCD), <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
-<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>  <span class="co"># Remove temporary variables</span></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>    <span class="sc">-</span>DOMAIN, <span class="sc">-</span>PCSEQ, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;orig&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;min&quot;</span>),</span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;max&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;EX&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;next&quot;</span>),</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;prev&quot;</span>), <span class="sc">-</span>DRUG, <span class="sc">-</span>EVID, <span class="sc">-</span>AXRLT, <span class="sc">-</span>NXRLT, <span class="sc">-</span>VISITDY</span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>  <span class="co"># Derive PARAM and PARAMN</span></span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(param_lookup, <span class="sc">-</span>PCTESTCD), <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="10%" />

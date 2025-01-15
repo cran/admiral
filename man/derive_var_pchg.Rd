@@ -27,10 +27,10 @@ library(tibble)
 advs <- tribble(
   ~USUBJID, ~PARAMCD, ~AVAL, ~ABLFL, ~BASE,
   "P01",    "WEIGHT", 80,    "Y",    80,
-  "P01",    "WEIGHT", 80.8,  "",     80,
-  "P01",    "WEIGHT", 81.4,  "",     80,
+  "P01",    "WEIGHT", 80.8,  NA,     80,
+  "P01",    "WEIGHT", 81.4,  NA,     80,
   "P02",    "WEIGHT", 75.3,  "Y",    75.3,
-  "P02",    "WEIGHT", 76,    "",     75.3
+  "P02",    "WEIGHT", 76,    NA,     75.3
 )
 derive_var_pchg(advs)
 }
@@ -46,7 +46,8 @@ BDS-Findings Functions that returns variable appended to dataset:
 \code{\link{derive_var_base}()},
 \code{\link{derive_var_chg}()},
 \code{\link{derive_var_ontrtfl}()},
-\code{\link{derive_var_shift}()}
+\code{\link{derive_var_shift}()},
+\code{\link{derive_vars_crit_flag}()}
 }
 \concept{der_bds_findings}
 \keyword{der_bds_findings}

@@ -13,23 +13,6 @@
 #'   Observations from the specified dataset are going to be used to calculate and added
 #'   as new records to the input dataset (`dataset`).
 #'
-#'
-#' @param filter
-#'
-#'  `r lifecycle::badge("deprecated")` Please use `filter_add` instead.
-#'
-#'   Filter condition as logical expression to apply during
-#'   summary calculation. By default, filtering expressions are computed within
-#'   `by_vars` as this will help when an aggregating, lagging, or ranking
-#'   function is involved.
-#'
-#'   For example,
-#'
-#'   + `filter = (AVAL > mean(AVAL, na.rm = TRUE))` will filter all `AVAL`
-#'   values greater than mean of `AVAL` with in `by_vars`.
-#'   + `filter = (dplyr::n() > 2)` will filter n count of `by_vars` greater
-#'   than 2.
-#'
 #' @param filter_add Filter condition as logical expression to apply during
 #'   summary calculation. By default, filtering expressions are computed within
 #'   `by_vars` as this will help when an aggregating, lagging, or ranking
@@ -48,13 +31,6 @@
 #' summary record.
 #'
 #'   *Permitted Values:* A character of `PARAMCD` value
-#'
-#' @param analysis_var Analysis variable.
-#'
-#' @param summary_fun Function that takes as an input the `analysis_var` and
-#'   performs the calculation.
-#'   This can include built-in functions as well as user defined functions,
-#'   for example `mean` or `function(x) mean(x, na.rm = TRUE)`.
 #'
 #' @param by_vars Grouping variables
 #'
@@ -78,11 +54,11 @@
 #' an observation is added to the output dataset and the defined values are set to the defined
 #' variables
 #'
-#' @return The input dataset with a new record added for each group (with respect to the variables
-#' specified for the `by_vars` parameter). That is, a variable will only
+#' @return The input dataset with a new record added for each group (as defined
+#' by `by_vars` parameter). That is, a variable will only
 #' be populated in this new record if it is specified in `by_vars`.
 #' For each new record,
-#' + the variable specified `analysis_var` is computed as defined by `summary_fun`,
+#' + `set_values_to` lists each specified variable and computes its value,
 #' + the variable(s) specified on the LHS of `set_values_to` are set to their paired value (RHS).
 #' In addition, the start and end date are computed as the minimum/maximum dates by `by_vars`.
 #'
@@ -164,19 +140,9 @@ derive_param_exposure <- function(dataset = NULL,
                                   dataset_add,
                                   by_vars,
                                   input_code,
-                                  analysis_var,
-                                  summary_fun,
-                                  filter = NULL,
                                   filter_add = NULL,
                                   set_values_to = NULL) {
   by_vars <- assert_vars(by_vars)
-  if (!missing(analysis_var) || !missing(summary_fun)) {
-    deprecate_stop(
-      "1.1.0",
-      I("derive_param_exposure(anaylsis_var = , summary_fun = )"),
-      "derive_param_exposure(set_values_to = )"
-    )
-  }
 
   dtm <- c("ASTDTM", "AENDTM") %in% colnames(dataset)
   dt <- c("ASTDT", "AENDT") %in% colnames(dataset)
@@ -203,14 +169,6 @@ derive_param_exposure <- function(dataset = NULL,
     required_vars = expr_c(by_vars, exprs(PARAMCD), dates)
   )
 
-  if (!missing(filter)) {
-    deprecate_stop(
-      "1.1.0",
-      I("derive_param_exposure(filter = )"),
-      "derive_param_exposure(filter_add = )"
-    )
-    filter_add <- assert_filter_cond(enexpr(filter), optional = TRUE)
-  }
   filter_add <- assert_filter_cond(enexpr(filter_add), optional = TRUE)
   assert_varval_list(set_values_to, required_elements = "PARAMCD")
   assert_param_does_not_exist(dataset, set_values_to$PARAMCD)

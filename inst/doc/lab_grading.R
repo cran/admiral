@@ -13,9 +13,9 @@ library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 library(tibble)
 
-data("lb")
+lb <- pharmaversesdtm::lb
+adsl <- admiral::admiral_adsl
 
-adsl <- admiral_adsl
 lb <- convert_blanks_to_na(lb)
 
 ## ----echo=FALSE---------------------------------------------------------------

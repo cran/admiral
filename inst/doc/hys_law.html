@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -344,10 +344,12 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1>Introduction</h1>
 <p>During the drug development process, clinical trials are often
 required to assess for the potential that the experimental drug can
-cause severe liver injury, known as a drug induced liver injury <a href="https://www.fda.gov/media/116737/download">(DILI)</a>. There are
-multiple criteria that need to be evaluated to determine and classify a
-DILI “Event”. Hy’s Law, a common rule of thumb for a DILI Event , is
-usually comprised of three parts:</p>
+cause severe liver injury, known as a drug induced liver injury (DILI)
+<a href="https://www.fda.gov/media/116737/download">Drug-Induced Liver
+Injury: Premarketing Clinical Evaluation</a>. There are multiple
+criteria that need to be evaluated to determine and classify a DILI
+“Event”. Hy’s Law, a common rule of thumb for a DILI Event , is usually
+comprised of three parts:</p>
 <ul>
 <li>Elevated alanine aminotransferase (ALT) or aspartate
 aminotransferase (AST) by 3-times or greater of the upper limit of
@@ -378,11 +380,10 @@ Potential Events</a></li>
 <div id="readdata" class="section level2">
 <h2>Read in Data</h2>
 <p>We assume that an <code>ADLB</code> dataset is available <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
-<p>First we read in the ADLB parameters required for the Hy’s Law
-parameters:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(admiral_adlb)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>adlb <span class="ot">&lt;-</span> admiral_adlb <span class="sc">%&gt;%</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;BILI&quot;</span>) <span class="sc">&amp;</span> <span class="fu">is.na</span>(DTYPE))</span></code></pre></div>
+<p>First we read in the <code>ADLB</code> parameters required for the
+Hy’s Law parameters:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>adlb <span class="ot">&lt;-</span> admiral<span class="sc">::</span>admiral_adlb <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">filter</span>(PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;BILI&quot;</span>) <span class="sc">&amp;</span> <span class="fu">is.na</span>(DTYPE))</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
 <col width="1%" />
@@ -648,7 +649,7 @@ parameters:</p>
 <td align="right">3</td>
 <td align="left">CHEMISTRY</td>
 <td align="right">27</td>
-<td align="left">27</td>
+<td align="left">NA</td>
 <td align="right">6</td>
 <td align="right">34</td>
 <td align="left">NA</td>
@@ -659,10 +660,10 @@ parameters:</p>
 <td align="left">LAST</td>
 <td align="left">Y</td>
 <td align="right">27</td>
-<td align="left">27</td>
+<td align="left">NA</td>
 <td align="left">NORMAL</td>
-<td align="right">0</td>
-<td align="right">0.000000</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
 <td align="left">NA</td>
 <td align="left">Alanine aminotransferase increased</td>
 <td align="left">NA</td>
@@ -761,7 +762,7 @@ parameters:</p>
 <td align="right">3</td>
 <td align="left">CHEMISTRY</td>
 <td align="right">41</td>
-<td align="left">41</td>
+<td align="left">NA</td>
 <td align="right">6</td>
 <td align="right">34</td>
 <td align="left">NA</td>
@@ -772,7 +773,7 @@ parameters:</p>
 <td align="left">LAST</td>
 <td align="left">NA</td>
 <td align="right">27</td>
-<td align="left">27</td>
+<td align="left">NA</td>
 <td align="left">NORMAL</td>
 <td align="right">14</td>
 <td align="right">51.851852</td>
@@ -874,7 +875,7 @@ parameters:</p>
 <td align="right">3</td>
 <td align="left">CHEMISTRY</td>
 <td align="right">18</td>
-<td align="left">18</td>
+<td align="left">NA</td>
 <td align="right">6</td>
 <td align="right">34</td>
 <td align="left">NA</td>
@@ -885,7 +886,7 @@ parameters:</p>
 <td align="left">LAST</td>
 <td align="left">NA</td>
 <td align="right">27</td>
-<td align="left">27</td>
+<td align="left">NA</td>
 <td align="left">NORMAL</td>
 <td align="right">-9</td>
 <td align="right">-33.333333</td>
@@ -987,7 +988,7 @@ parameters:</p>
 <td align="right">3</td>
 <td align="left">CHEMISTRY</td>
 <td align="right">26</td>
-<td align="left">26</td>
+<td align="left">NA</td>
 <td align="right">6</td>
 <td align="right">34</td>
 <td align="left">NA</td>
@@ -998,7 +999,7 @@ parameters:</p>
 <td align="left">LAST</td>
 <td align="left">NA</td>
 <td align="right">27</td>
-<td align="left">27</td>
+<td align="left">NA</td>
 <td align="left">NORMAL</td>
 <td align="right">-1</td>
 <td align="right">-3.703704</td>
@@ -1100,7 +1101,7 @@ parameters:</p>
 <td align="right">3</td>
 <td align="left">CHEMISTRY</td>
 <td align="right">22</td>
-<td align="left">22</td>
+<td align="left">NA</td>
 <td align="right">6</td>
 <td align="right">34</td>
 <td align="left">NA</td>
@@ -1111,7 +1112,7 @@ parameters:</p>
 <td align="left">LAST</td>
 <td align="left">NA</td>
 <td align="right">27</td>
-<td align="left">27</td>
+<td align="left">NA</td>
 <td align="left">NORMAL</td>
 <td align="right">-5</td>
 <td align="right">-18.518518</td>
@@ -1213,7 +1214,7 @@ parameters:</p>
 <td align="right">3</td>
 <td align="left">CHEMISTRY</td>
 <td align="right">27</td>
-<td align="left">27</td>
+<td align="left">NA</td>
 <td align="right">6</td>
 <td align="right">34</td>
 <td align="left">NA</td>
@@ -1224,7 +1225,7 @@ parameters:</p>
 <td align="left">LAST</td>
 <td align="left">NA</td>
 <td align="right">27</td>
-<td align="left">27</td>
+<td align="left">NA</td>
 <td align="left">NORMAL</td>
 <td align="right">0</td>
 <td align="right">0.000000</td>
@@ -1297,7 +1298,7 @@ parameters:</p>
 <div id="columns" class="section level2">
 <h2>Flagging Elevated Values (<code>CRITy</code>,
 <code>CRITyFL</code>)</h2>
-<p>A standard convention of ADLBHY datasets, are various
+<p>A standard convention of <code>ADLBHY</code> datasets, are various
 <code>CRITy</code> and <code>CRITyFL</code> columns to describe the
 conditions necessary to reach that particular criterion of Hy’s Law and
 the actual flag itself to indicate whether or not the condition was
@@ -1310,45 +1311,33 @@ BILI.</p>
 <p>To increase visibility and for simplicity, we will retain only
 columns that are relevant to a Hy’s Law analysis for now.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>adlb_annotated <span class="ot">&lt;-</span> adlb <span class="sc">%&gt;%</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">CRIT1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;AST&quot;</span> <span class="sc">~</span> <span class="st">&quot;AST &gt;=3xULN&quot;</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;ALT&quot;</span> <span class="sc">~</span> <span class="st">&quot;ALT &gt;=3xULN&quot;</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>      PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span> <span class="sc">~</span> <span class="st">&quot;BILI &gt;=2xULN&quot;</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    ),</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="at">CRIT1FL =</span> <span class="fu">if_else</span>(</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>      (AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">3</span> <span class="sc">&amp;</span> PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>)) <span class="sc">|</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>        (AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">2</span> <span class="sc">&amp;</span> PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span>),</span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>      <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>      <span class="cn">NA_character_</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    )</span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A, PARAMCD, LBSEQ, ADT, AVISIT, ADY, AVAL, ANRHI, CRIT1, CRIT1FL)</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">slice_derivation</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    derive_vars_crit_flag,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>      <span class="at">values_yn =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    ),</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="fu">derivation_slice</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>      <span class="at">filter =</span> PARAMCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;AST&quot;</span>, <span class="st">&quot;ALT&quot;</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>      <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>        <span class="at">condition =</span> AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">3</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>        <span class="at">description =</span> <span class="fu">paste</span>(PARAMCD, <span class="st">&quot;&gt;=3xULN&quot;</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>      )</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    ),</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="fu">derivation_slice</span>(</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>      <span class="at">filter =</span> PARAMCD <span class="sc">==</span> <span class="st">&quot;BILI&quot;</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>      <span class="at">args =</span> <span class="fu">params</span>(</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>        <span class="at">condition =</span> AVAL <span class="sc">/</span> ANRHI <span class="sc">&gt;=</span> <span class="dv">2</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>        <span class="at">description =</span> <span class="st">&quot;BILI &gt;= 2xULN&quot;</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>      )</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>    )</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, TRT01A, PARAMCD, LBSEQ, ADT, AVISIT, ADY, AVAL, ANRHI, CRIT1, CRIT1FL)</span></code></pre></div>
 <table>
-<colgroup>
-<col width="12%" />
-<col width="11%" />
-<col width="7%" />
-<col width="7%" />
-<col width="5%" />
-<col width="10%" />
-<col width="8%" />
-<col width="3%" />
-<col width="4%" />
-<col width="5%" />
-<col width="11%" />
-<col width="7%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th align="left">STUDYID</th>
 <th align="left">USUBJID</th>
-<th align="left">TRT01A</th>
 <th align="left">PARAMCD</th>
-<th align="right">LBSEQ</th>
-<th align="left">ADT</th>
 <th align="left">AVISIT</th>
-<th align="right">ADY</th>
 <th align="right">AVAL</th>
 <th align="right">ANRHI</th>
 <th align="left">CRIT1</th>
@@ -1357,144 +1346,94 @@ columns that are relevant to a Hy’s Law analysis for now.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">3</td>
-<td align="left">2013-12-26</td>
 <td align="left">Baseline</td>
-<td align="right">-7</td>
 <td align="right">27</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">41</td>
-<td align="left">2014-01-16</td>
 <td align="left">Week 2</td>
-<td align="right">15</td>
 <td align="right">41</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">76</td>
-<td align="left">2014-01-30</td>
 <td align="left">Week 4</td>
-<td align="right">29</td>
 <td align="right">18</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">106</td>
-<td align="left">2014-02-12</td>
 <td align="left">Week 6</td>
-<td align="right">42</td>
 <td align="right">26</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">136</td>
-<td align="left">2014-03-05</td>
 <td align="left">Week 8</td>
-<td align="right">63</td>
 <td align="right">22</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">166</td>
-<td align="left">2014-03-26</td>
 <td align="left">Week 12</td>
-<td align="right">84</td>
 <td align="right">27</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">201</td>
-<td align="left">2014-05-07</td>
 <td align="left">Week 16</td>
-<td align="right">126</td>
 <td align="right">17</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">231</td>
-<td align="left">2014-05-21</td>
 <td align="left">Week 20</td>
-<td align="right">140</td>
 <td align="right">21</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">261</td>
-<td align="left">2014-06-18</td>
 <td align="left">Week 24</td>
-<td align="right">168</td>
 <td align="right">23</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">296</td>
-<td align="left">2014-07-02</td>
 <td align="left">Week 26</td>
-<td align="right">182</td>
 <td align="right">23</td>
 <td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 </tbody>
 </table>
@@ -1535,36 +1474,22 @@ event.</p>
 <span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">BILI_DT =</span> ADT, <span class="at">BILI_CRITFL =</span> CRIT1FL),</span>
 <span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">&quot;first&quot;</span></span>
 <span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>)</span></code></pre></div>
-<table>
+<table style="width:100%;">
 <colgroup>
-<col width="8%" />
-<col width="8%" />
+<col width="15%" />
+<col width="10%" />
+<col width="20%" />
 <col width="14%" />
-<col width="5%" />
-<col width="4%" />
-<col width="7%" />
-<col width="11%" />
-<col width="2%" />
-<col width="3%" />
-<col width="4%" />
-<col width="8%" />
-<col width="5%" />
-<col width="7%" />
-<col width="8%" />
+<col width="10%" />
+<col width="14%" />
+<col width="15%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">STUDYID</th>
 <th align="left">USUBJID</th>
-<th align="left">TRT01A</th>
 <th align="left">PARAMCD</th>
-<th align="right">LBSEQ</th>
-<th align="left">ADT</th>
 <th align="left">AVISIT</th>
-<th align="right">ADY</th>
-<th align="right">AVAL</th>
-<th align="right">ANRHI</th>
-<th align="left">CRIT1</th>
+<th align="left">ADT</th>
 <th align="left">CRIT1FL</th>
 <th align="left">BILI_DT</th>
 <th align="left">BILI_CRITFL</th>
@@ -1572,161 +1497,91 @@ event.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1186</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">40</td>
-<td align="left">2014-01-23</td>
 <td align="left">Week 2</td>
-<td align="right">16</td>
-<td align="right">104</td>
-<td align="right">32</td>
-<td align="left">ALT &gt;=3xULN</td>
+<td align="left">2014-01-23</td>
 <td align="left">Y</td>
 <td align="left">2014-01-23</td>
 <td align="left">Y</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1186</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">127</td>
-<td align="left">2014-01-29</td>
 <td align="left">Week 4</td>
-<td align="right">22</td>
-<td align="right">107</td>
-<td align="right">32</td>
-<td align="left">ALT &gt;=3xULN</td>
+<td align="left">2014-01-29</td>
 <td align="left">Y</td>
 <td align="left">2014-01-29</td>
 <td align="left">Y</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1186</td>
-<td align="left">Placebo</td>
 <td align="left">AST</td>
-<td align="right">41</td>
-<td align="left">2014-01-23</td>
 <td align="left">Week 2</td>
-<td align="right">16</td>
-<td align="right">118</td>
-<td align="right">34</td>
-<td align="left">AST &gt;=3xULN</td>
+<td align="left">2014-01-23</td>
 <td align="left">Y</td>
 <td align="left">2014-01-23</td>
 <td align="left">Y</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1186</td>
-<td align="left">Placebo</td>
 <td align="left">AST</td>
-<td align="right">77</td>
-<td align="left">2014-01-26</td>
 <td align="left">Unscheduled 4.1</td>
-<td align="right">19</td>
-<td align="right">115</td>
-<td align="right">34</td>
-<td align="left">AST &gt;=3xULN</td>
+<td align="left">2014-01-26</td>
 <td align="left">Y</td>
 <td align="left">2014-01-26</td>
 <td align="left">Y</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1186</td>
-<td align="left">Placebo</td>
 <td align="left">AST</td>
-<td align="right">128</td>
-<td align="left">2014-01-29</td>
 <td align="left">Week 4</td>
-<td align="right">22</td>
-<td align="right">135</td>
-<td align="right">34</td>
-<td align="left">AST &gt;=3xULN</td>
+<td align="left">2014-01-29</td>
 <td align="left">Y</td>
 <td align="left">2014-01-29</td>
 <td align="left">Y</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1186</td>
-<td align="left">Placebo</td>
 <td align="left">AST</td>
-<td align="right">113</td>
-<td align="left">2014-02-01</td>
 <td align="left">Unscheduled 4.2</td>
-<td align="right">25</td>
-<td align="right">114</td>
-<td align="right">34</td>
-<td align="left">AST &gt;=3xULN</td>
+<td align="left">2014-02-01</td>
 <td align="left">Y</td>
 <td align="left">2014-02-01</td>
 <td align="left">Y</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1292</td>
-<td align="left">Xanomeline Low Dose</td>
 <td align="left">AST</td>
-<td align="right">180</td>
-<td align="left">2014-02-07</td>
 <td align="left">Week 12</td>
-<td align="right">117</td>
-<td align="right">125</td>
-<td align="right">34</td>
-<td align="left">AST &gt;=3xULN</td>
+<td align="left">2014-02-07</td>
 <td align="left">Y</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1310</td>
-<td align="left">Xanomeline High Dose</td>
 <td align="left">ALT</td>
-<td align="right">135</td>
-<td align="left">2013-12-26</td>
 <td align="left">Week 8</td>
-<td align="right">55</td>
-<td align="right">129</td>
-<td align="right">32</td>
-<td align="left">ALT &gt;=3xULN</td>
+<td align="left">2013-12-26</td>
 <td align="left">Y</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1310</td>
-<td align="left">Xanomeline High Dose</td>
 <td align="left">AST</td>
-<td align="right">136</td>
-<td align="left">2013-12-26</td>
 <td align="left">Week 8</td>
-<td align="right">55</td>
-<td align="right">114</td>
-<td align="right">34</td>
-<td align="left">AST &gt;=3xULN</td>
+<td align="left">2013-12-26</td>
 <td align="left">Y</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-708-1286</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">207</td>
-<td align="left">2014-02-23</td>
 <td align="left">Week 24</td>
-<td align="right">167</td>
-<td align="right">124</td>
-<td align="right">32</td>
-<td align="left">ALT &gt;=3xULN</td>
+<td align="left">2014-02-23</td>
 <td align="left">Y</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
@@ -1775,115 +1630,84 @@ following code.</p>
 <span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  )</span>
 <span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>)</span></code></pre></div>
 <table>
-<colgroup>
-<col width="13%" />
-<col width="12%" />
-<col width="21%" />
-<col width="6%" />
-<col width="8%" />
-<col width="35%" />
-<col width="5%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th align="left">STUDYID</th>
 <th align="left">USUBJID</th>
-<th align="left">TRT01A</th>
-<th align="left">AVALC</th>
 <th align="left">PARAMCD</th>
 <th align="left">PARAM</th>
+<th align="left">AVALC</th>
 <th align="right">AVAL</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1186</td>
-<td align="left">Placebo</td>
-<td align="left">Y</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">Y</td>
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1023</td>
-<td align="left">Placebo</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
-<td align="left">Xanomeline High Dose</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1033</td>
-<td align="left">Xanomeline Low Dose</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1034</td>
-<td align="left">Xanomeline High Dose</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1047</td>
-<td align="left">Placebo</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1097</td>
-<td align="left">Xanomeline Low Dose</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1292</td>
-<td align="left">Xanomeline Low Dose</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-705-1310</td>
-<td align="left">Xanomeline High Dose</td>
-<td align="left">N</td>
 <td align="left">HYSLAW</td>
 <td align="left">ALT/AST &gt;= 3xULN and BILI &gt;= 2xULN</td>
+<td align="left">N</td>
 <td align="right">0</td>
 </tr>
 </tbody>
@@ -1898,200 +1722,107 @@ object.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>adlbhy <span class="ot">&lt;-</span> adlb_annotated <span class="sc">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="fu">bind_rows</span>(hylaw_params)</span></code></pre></div>
 <table>
-<colgroup>
-<col width="11%" />
-<col width="10%" />
-<col width="7%" />
-<col width="7%" />
-<col width="5%" />
-<col width="9%" />
-<col width="7%" />
-<col width="3%" />
-<col width="4%" />
-<col width="5%" />
-<col width="10%" />
-<col width="7%" />
-<col width="5%" />
-<col width="5%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th align="left">STUDYID</th>
 <th align="left">USUBJID</th>
-<th align="left">TRT01A</th>
 <th align="left">PARAMCD</th>
-<th align="right">LBSEQ</th>
-<th align="left">ADT</th>
 <th align="left">AVISIT</th>
-<th align="right">ADY</th>
+<th align="left">AVALC</th>
 <th align="right">AVAL</th>
-<th align="right">ANRHI</th>
 <th align="left">CRIT1</th>
 <th align="left">CRIT1FL</th>
-<th align="left">AVALC</th>
-<th align="left">PARAM</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">3</td>
-<td align="left">2013-12-26</td>
 <td align="left">Baseline</td>
-<td align="right">-7</td>
+<td align="left">NA</td>
 <td align="right">27</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">41</td>
-<td align="left">2014-01-16</td>
 <td align="left">Week 2</td>
-<td align="right">15</td>
+<td align="left">NA</td>
 <td align="right">41</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">76</td>
-<td align="left">2014-01-30</td>
 <td align="left">Week 4</td>
-<td align="right">29</td>
+<td align="left">NA</td>
 <td align="right">18</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">106</td>
-<td align="left">2014-02-12</td>
 <td align="left">Week 6</td>
-<td align="right">42</td>
+<td align="left">NA</td>
 <td align="right">26</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">136</td>
-<td align="left">2014-03-05</td>
 <td align="left">Week 8</td>
-<td align="right">63</td>
+<td align="left">NA</td>
 <td align="right">22</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">166</td>
-<td align="left">2014-03-26</td>
 <td align="left">Week 12</td>
-<td align="right">84</td>
+<td align="left">NA</td>
 <td align="right">27</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">201</td>
-<td align="left">2014-05-07</td>
 <td align="left">Week 16</td>
-<td align="right">126</td>
+<td align="left">NA</td>
 <td align="right">17</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">231</td>
-<td align="left">2014-05-21</td>
 <td align="left">Week 20</td>
-<td align="right">140</td>
+<td align="left">NA</td>
 <td align="right">21</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="odd">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">261</td>
-<td align="left">2014-06-18</td>
 <td align="left">Week 24</td>
-<td align="right">168</td>
+<td align="left">NA</td>
 <td align="right">23</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
-<td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1015</td>
-<td align="left">Placebo</td>
 <td align="left">ALT</td>
-<td align="right">296</td>
-<td align="left">2014-07-02</td>
 <td align="left">Week 26</td>
-<td align="right">182</td>
+<td align="left">NA</td>
 <td align="right">23</td>
-<td align="right">34</td>
 <td align="left">ALT &gt;=3xULN</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 </tbody>
 </table>
@@ -2113,8 +1844,8 @@ characteristics</li>
 </ul>
 <p>We hope by demonstrating the flexibility of <code>admiral</code>
 functions and using a general workflow to create the necessary
-parameters for an ADLBHY, that creating this final dataset becomes
-simplified and easily scalable. Ideally, this is ready for your
+parameters for an <code>ADLBHY</code>, that creating this final dataset
+becomes simplified and easily scalable. Ideally, this is ready for your
 organization’s standard macros or previous code for TLFs and outputs as
 well. This is our first attempt at breaking down and summarizing this
 topic. We welcome feedback and ideas to improve this guide!</p>
@@ -2131,7 +1862,7 @@ topic. We welcome feedback and ideas to improve this guide!</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td>ADLBHY</td>
+<td><code>ADLBHY</code></td>
 <td><code>use_ad_template(&quot;ADLBHY&quot;)</code></td>
 </tr>
 </tbody>
@@ -2140,9 +1871,10 @@ topic. We welcome feedback and ideas to improve this guide!</p>
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p>In the walk through below we will use the ADLB dataset
-created from the call <code>use_ad_template(&quot;adlb&quot;)</code>. Due to the
-size of the dataset, we only included the following USUBJIDs:</p>
+<li id="fn1"><p>In the walk through below we will use the
+<code>ADLB</code> dataset created from the call
+<code>use_ad_template(&quot;adlb&quot;)</code>. Due to the size of the dataset, we
+only included the following <code>USUBJID</code>s:</p>
 <ul>
 <li><code>01-701-1015</code>, <code>01-701-1023</code>,
 <code>01-701-1028</code>, <code>01-701-1033</code>,

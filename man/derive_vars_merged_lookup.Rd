@@ -94,7 +94,7 @@ condition.
 
 \item{check_type}{Check uniqueness?
 
-If \code{"warning"} or \code{"error"} is specified, the specified message is issued
+If \code{"warning"}, \code{"message"}, or \code{"error"} is specified, the specified message is issued
 if the observations of the (restricted) additional dataset are not unique
 with respect to the by variables and the order.
 
@@ -102,7 +102,7 @@ If the \code{order} argument is not specified, the \code{check_type} argument is
 if the observations of the (restricted) additional dataset are not unique with respect
 to the by variables, an error is issued.
 
-\emph{Permitted Values}: \code{"none"}, \code{"warning"}, \code{"error"}}
+\emph{Permitted Values}: \code{"none"}, \code{"message"}, \code{"warning"}, \code{"error"}}
 
 \item{duplicate_msg}{Message of unique check
 
@@ -190,6 +190,7 @@ General Derivation Functions for all ADaMs that returns variable appended to dat
 \code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
+\code{\link{derive_vars_cat}()},
 \code{\link{derive_vars_computed}()},
 \code{\link{derive_vars_joined}()},
 \code{\link{derive_vars_merged}()},

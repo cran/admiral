@@ -56,21 +56,6 @@
 #'
 #'   The `*.join` variables are not included in the output dataset.
 #'
-#' @param first_cond Condition for selecting range of data
-#'
-#'   `r lifecycle::badge("deprecated")`
-#'
-#'   This argument is *deprecated*, please use `first_cond_upper` instead.
-#'
-#'   If this argument is specified, the other observations are restricted up to
-#'   the first observation where the specified condition is fulfilled. If the
-#'   condition is not fulfilled for any of the other observations, no
-#'   observations are considered, i.e., the observation is not flagged.
-#'
-#'   This parameter should be specified if `filter_join` contains summary
-#'   functions which should not apply to all observations but only up to the
-#'   confirmation assessment. For an example see the third example below.
-#'
 #' @param first_cond_lower Condition for selecting range of data (before)
 #'
 #'   If this argument is specified, the other observations are restricted from
@@ -106,21 +91,6 @@
 #'   selects observations with response "CR" and for all observations up to the
 #'   confirmation observation the response is "CR" or "NE" and there is at most
 #'   one "NE".
-#'
-#' @param filter Condition for selecting observations
-#'
-#'   `r lifecycle::badge("deprecated")`
-#'
-#'   This argument is *deprecated*, please use `filter_join` instead.
-#'
-#'   The filter is applied to the joined dataset for flagging the confirmed
-#'   observations. The condition can include summary functions. The joined
-#'   dataset is grouped by the original observations. I.e., the summary function
-#'   are applied to all observations up to the confirmation observation. For
-#'   example, `filter = AVALC == "CR" & all(AVALC.join %in% c("CR", "NE")) &
-#'   count_vals(var = AVALC.join, val = "NE") <= 1` selects observations with
-#'   response "CR" and for all observations up to the confirmation observation
-#'   the response is "CR" or "NE" and there is at most one "NE".
 #'
 #' @param check_type Check uniqueness?
 #'
@@ -226,8 +196,9 @@
 #'   set to `true_value` for all observations which were selected in the
 #'   previous step. For the other observations it is set to `false_value`.
 #'
-#' @return The input dataset with the variable specified by `new_var` added.
+#' `r roxygen_save_memory()`
 #'
+#' @return The input dataset with the variable specified by `new_var` added.
 #'
 #' @keywords der_gen
 #' @family der_gen
@@ -436,6 +407,58 @@
 #'   first_cond_upper = val.join == "++",
 #'   filter_join = val == "0" & all(val.join %in% c("+", "++"))
 #' )
+#'
+#' # flag each dose which is lower than the previous dose per subject
+#' ex <- tribble(
+#'   ~USUBJID, ~EXSTDTM,          ~EXDOSE,
+#'   "1",      "2024-01-01T08:00",      2,
+#'   "1",      "2024-01-02T08:00",      4,
+#'   "2",      "2024-01-01T08:30",      1,
+#'   "2",      "2024-01-02T08:30",      4,
+#'   "2",      "2024-01-03T08:30",      3,
+#'   "2",      "2024-01-04T08:30",      2,
+#'   "2",      "2024-01-05T08:30",      2
+#' )
+#'
+#' derive_var_joined_exist_flag(
+#'   ex,
+#'   dataset_add = ex,
+#'   by_vars = exprs(USUBJID),
+#'   order = exprs(EXSTDTM),
+#'   new_var = DOSREDFL,
+#'   tmp_obs_nr_var = tmp_dose_nr,
+#'   join_vars = exprs(EXDOSE),
+#'   join_type = "before",
+#'   filter_join = (
+#'     tmp_dose_nr == tmp_dose_nr.join + 1 # Look only at adjacent doses
+#'     & EXDOSE > 0 & EXDOSE.join > 0 # Both doses are valid
+#'     & EXDOSE < EXDOSE.join # Dose is lower than previous
+#'   )
+#' )
+#'
+#' # derive definitive deterioration flag as any deterioration (CHGCAT1 = "Worsened")
+#' # by parameter that is not followed by a non-deterioration
+#' adqs <- tribble(
+#'   ~USUBJID, ~PARAMCD, ~ADY, ~CHGCAT1,
+#'   "1",      "QS1",      10, "Improved",
+#'   "1",      "QS1",      21, "Improved",
+#'   "1",      "QS1",      23, "Improved",
+#'   "1",      "QS2",      32, "Worsened",
+#'   "1",      "QS2",      42, "Improved",
+#'   "2",      "QS1",      11, "Worsened",
+#'   "2",      "QS1",      24, "Worsened"
+#' )
+#'
+#' derive_var_joined_exist_flag(
+#'   adqs,
+#'   dataset_add = adqs,
+#'   new_var = DDETERFL,
+#'   by_vars = exprs(USUBJID, PARAMCD),
+#'   join_vars = exprs(CHGCAT1),
+#'   join_type = "all",
+#'   order = exprs(ADY),
+#'   filter_join = all(CHGCAT1.join == "Worsened" | ADY > ADY.join)
+#' )
 derive_var_joined_exist_flag <- function(dataset,
                                          dataset_add,
                                          by_vars,
@@ -444,10 +467,8 @@ derive_var_joined_exist_flag <- function(dataset,
                                          tmp_obs_nr_var = NULL,
                                          join_vars,
                                          join_type,
-                                         first_cond = NULL,
                                          first_cond_lower = NULL,
                                          first_cond_upper = NULL,
-                                         filter = NULL,
                                          filter_add = NULL,
                                          filter_join,
                                          true_value = "Y",
@@ -457,24 +478,8 @@ derive_var_joined_exist_flag <- function(dataset,
   tmp_obs_nr_var <- assert_symbol(enexpr(tmp_obs_nr_var), optional = TRUE)
   first_cond_lower <- assert_filter_cond(enexpr(first_cond_lower), optional = TRUE)
   first_cond_upper <- assert_filter_cond(enexpr(first_cond_upper), optional = TRUE)
-  if (!missing(first_cond)) {
-    deprecate_stop(
-      "1.1.0",
-      "derive_var_joined_exist_flag(first_cond=)",
-      "derive_var_joined_exist_flag(first_cond_upper=)"
-    )
-    first_cond_upper <- assert_filter_cond(enexpr(first_cond), optional = TRUE)
-  }
   filter_add <- assert_filter_cond(enexpr(filter_add), optional = TRUE)
   filter_join <- assert_filter_cond(enexpr(filter_join))
-  if (!missing(filter)) {
-    deprecate_stop(
-      "1.1.0",
-      "derive_var_joined_exist_flag(filter=)",
-      "derive_var_joined_exist_flag(filter_join=)"
-    )
-    filter_join <- assert_filter_cond(enexpr(filter))
-  }
   assert_data_frame(dataset)
 
   tmp_obs_nr <- get_new_tmp_var(dataset, prefix = "tmp_obs_nr_")

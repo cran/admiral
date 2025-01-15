@@ -9,9 +9,6 @@ derive_param_exposure(
   dataset_add,
   by_vars,
   input_code,
-  analysis_var,
-  summary_fun,
-  filter = NULL,
   filter_add = NULL,
   set_values_to = NULL
 )
@@ -44,28 +41,6 @@ summary record.
 
 \emph{Permitted Values:} A character of \code{PARAMCD} value}
 
-\item{analysis_var}{Analysis variable.}
-
-\item{summary_fun}{Function that takes as an input the \code{analysis_var} and
-performs the calculation.
-This can include built-in functions as well as user defined functions,
-for example \code{mean} or \code{function(x) mean(x, na.rm = TRUE)}.}
-
-\item{filter}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Please use \code{filter_add} instead.
-
-Filter condition as logical expression to apply during
-summary calculation. By default, filtering expressions are computed within
-\code{by_vars} as this will help when an aggregating, lagging, or ranking
-function is involved.
-
-For example,
-\itemize{
-\item \code{filter = (AVAL > mean(AVAL, na.rm = TRUE))} will filter all \code{AVAL}
-values greater than mean of \code{AVAL} with in \code{by_vars}.
-\item \code{filter = (dplyr::n() > 2)} will filter n count of \code{by_vars} greater
-than 2.
-}}
-
 \item{filter_add}{Filter condition as logical expression to apply during
 summary calculation. By default, filtering expressions are computed within
 \code{by_vars} as this will help when an aggregating, lagging, or ranking
@@ -92,12 +67,12 @@ value, \code{NA}, or an expression.
 \emph{Permitted Values:} List of variable-value pairs}
 }
 \value{
-The input dataset with a new record added for each group (with respect to the variables
-specified for the \code{by_vars} parameter). That is, a variable will only
+The input dataset with a new record added for each group (as defined
+by \code{by_vars} parameter). That is, a variable will only
 be populated in this new record if it is specified in \code{by_vars}.
 For each new record,
 \itemize{
-\item the variable specified \code{analysis_var} is computed as defined by \code{summary_fun},
+\item \code{set_values_to} lists each specified variable and computes its value,
 \item the variable(s) specified on the LHS of \code{set_values_to} are set to their paired value (RHS).
 In addition, the start and end date are computed as the minimum/maximum dates by \code{by_vars}.
 }

@@ -13,10 +13,8 @@ derive_var_joined_exist_flag(
   tmp_obs_nr_var = NULL,
   join_vars,
   join_type,
-  first_cond = NULL,
   first_cond_lower = NULL,
   first_cond_upper = NULL,
-  filter = NULL,
   filter_add = NULL,
   filter_join,
   true_value = "Y",
@@ -86,21 +84,6 @@ after seven days before a COVID AE. Thus \code{join_type = "all"} could be used.
 
 \emph{Permitted Values:} \code{"before"}, \code{"after"}, \code{"all"}}
 
-\item{first_cond}{Condition for selecting range of data
-
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-This argument is \emph{deprecated}, please use \code{first_cond_upper} instead.
-
-If this argument is specified, the other observations are restricted up to
-the first observation where the specified condition is fulfilled. If the
-condition is not fulfilled for any of the other observations, no
-observations are considered, i.e., the observation is not flagged.
-
-This parameter should be specified if \code{filter_join} contains summary
-functions which should not apply to all observations but only up to the
-confirmation assessment. For an example see the third example below.}
-
 \item{first_cond_lower}{Condition for selecting range of data (before)
 
 If this argument is specified, the other observations are restricted from
@@ -124,20 +107,6 @@ observations are considered, i.e., the observation is not flagged.
 This parameter should be specified if \code{filter_join} contains summary
 functions which should not apply to all observations but only up to the
 confirmation assessment. For an example see the third example below.}
-
-\item{filter}{Condition for selecting observations
-
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-This argument is \emph{deprecated}, please use \code{filter_join} instead.
-
-The filter is applied to the joined dataset for flagging the confirmed
-observations. The condition can include summary functions. The joined
-dataset is grouped by the original observations. I.e., the summary function
-are applied to all observations up to the confirmation observation. For
-example, \code{filter = AVALC == "CR" & all(AVALC.join \%in\% c("CR", "NE")) & count_vals(var = AVALC.join, val = "NE") <= 1} selects observations with
-response "CR" and for all observations up to the confirmation observation
-the response is "CR" or "NE" and there is at most one "NE".}
 
 \item{filter_add}{Filter for additional dataset (\code{dataset_add})
 
@@ -278,6 +247,11 @@ The first observation of each group is selected
 The variable specified by \code{new_var} is added to the input dataset. It is
 set to \code{true_value} for all observations which were selected in the
 previous step. For the other observations it is set to \code{false_value}.
+
+\strong{Note:} This function creates temporary datasets which may be much bigger
+than the input datasets. If this causes memory issues, please try setting
+the admiral option \code{save_memory} to \code{TRUE} (see \code{set_admiral_options()}).
+This reduces the memory consumption but increases the run-time.
 }
 }
 \examples{
@@ -480,6 +454,58 @@ derive_var_joined_exist_flag(
   first_cond_upper = val.join == "++",
   filter_join = val == "0" & all(val.join \%in\% c("+", "++"))
 )
+
+# flag each dose which is lower than the previous dose per subject
+ex <- tribble(
+  ~USUBJID, ~EXSTDTM,          ~EXDOSE,
+  "1",      "2024-01-01T08:00",      2,
+  "1",      "2024-01-02T08:00",      4,
+  "2",      "2024-01-01T08:30",      1,
+  "2",      "2024-01-02T08:30",      4,
+  "2",      "2024-01-03T08:30",      3,
+  "2",      "2024-01-04T08:30",      2,
+  "2",      "2024-01-05T08:30",      2
+)
+
+derive_var_joined_exist_flag(
+  ex,
+  dataset_add = ex,
+  by_vars = exprs(USUBJID),
+  order = exprs(EXSTDTM),
+  new_var = DOSREDFL,
+  tmp_obs_nr_var = tmp_dose_nr,
+  join_vars = exprs(EXDOSE),
+  join_type = "before",
+  filter_join = (
+    tmp_dose_nr == tmp_dose_nr.join + 1 # Look only at adjacent doses
+    & EXDOSE > 0 & EXDOSE.join > 0 # Both doses are valid
+    & EXDOSE < EXDOSE.join # Dose is lower than previous
+  )
+)
+
+# derive definitive deterioration flag as any deterioration (CHGCAT1 = "Worsened")
+# by parameter that is not followed by a non-deterioration
+adqs <- tribble(
+  ~USUBJID, ~PARAMCD, ~ADY, ~CHGCAT1,
+  "1",      "QS1",      10, "Improved",
+  "1",      "QS1",      21, "Improved",
+  "1",      "QS1",      23, "Improved",
+  "1",      "QS2",      32, "Worsened",
+  "1",      "QS2",      42, "Improved",
+  "2",      "QS1",      11, "Worsened",
+  "2",      "QS1",      24, "Worsened"
+)
+
+derive_var_joined_exist_flag(
+  adqs,
+  dataset_add = adqs,
+  new_var = DDETERFL,
+  by_vars = exprs(USUBJID, PARAMCD),
+  join_vars = exprs(CHGCAT1),
+  join_type = "all",
+  order = exprs(ADY),
+  filter_join = all(CHGCAT1.join == "Worsened" | ADY > ADY.join)
+)
 }
 \seealso{
 \code{\link[=filter_joined]{filter_joined()}}, \code{\link[=derive_vars_joined]{derive_vars_joined()}}
@@ -491,6 +517,7 @@ General Derivation Functions for all ADaMs that returns variable appended to dat
 \code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
+\code{\link{derive_vars_cat}()},
 \code{\link{derive_vars_computed}()},
 \code{\link{derive_vars_joined}()},
 \code{\link{derive_vars_merged}()},
