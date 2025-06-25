@@ -196,12 +196,12 @@ adsl <- adsl %>%
 dataset_vignette(adsl %>% filter(!is.na(DTHDT) | row_number() %% 50 == 0), display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHFL))
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  adsl <- adsl %>%
-#    derive_vars_dt(
-#      new_vars_prefix = "DTH",
-#      dtc = DTHDTC,
-#      date_imputation = "first"
-#    )
+# adsl <- adsl %>%
+#   derive_vars_dt(
+#     new_vars_prefix = "DTH",
+#     dtc = DTHDTC,
+#     date_imputation = "first"
+#   )
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
@@ -435,27 +435,27 @@ adsl <- adsl %>%
   )
 
 ## -----------------------------------------------------------------------------
-#  format_agegr1 <- function(var_input) {
-#    case_when(
-#      var_input < 18 ~ "<18",
-#      between(var_input, 18, 64) ~ "18-64",
-#      var_input > 64 ~ ">64",
-#      TRUE ~ "Missing"
-#    )
-#  }
-#  format_region1 <- function(var_input) {
-#    case_when(
-#      var_input %in% c("CAN", "USA") ~ "North America",
-#      !is.na(var_input) ~ "Rest of the World",
-#      TRUE ~ "Missing"
-#    )
-#  }
-#  
-#  adsl %>%
-#    mutate(
-#      AGEGR1 = format_agegr1(AGE),
-#      REGION1 = format_region1(COUNTRY)
-#    )
+# format_agegr1 <- function(var_input) {
+#   case_when(
+#     var_input < 18 ~ "<18",
+#     between(var_input, 18, 64) ~ "18-64",
+#     var_input > 64 ~ ">64",
+#     TRUE ~ "Missing"
+#   )
+# }
+# format_region1 <- function(var_input) {
+#   case_when(
+#     var_input %in% c("CAN", "USA") ~ "North America",
+#     !is.na(var_input) ~ "Rest of the World",
+#     TRUE ~ "Missing"
+#   )
+# }
+# 
+# adsl %>%
+#   mutate(
+#     AGEGR1 = format_agegr1(AGE),
+#     REGION1 = format_region1(COUNTRY)
+#   )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(

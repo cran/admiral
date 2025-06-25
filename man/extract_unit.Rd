@@ -7,7 +7,11 @@
 extract_unit(x)
 }
 \arguments{
-\item{x}{A parameter description}
+\item{x}{A parameter description
+
+\describe{
+\item{Default value}{none}
+}}
 }
 \value{
 A string
@@ -22,7 +26,6 @@ extract_unit("Diastolic Blood Pressure (mmHg)")
 }
 \seealso{
 Utilities used within Derivation functions: 
-\code{\link{call_user_fun}()},
 \code{\link{get_flagged_records}()},
 \code{\link{get_not_mapped}()},
 \code{\link{get_vars_query}()}

@@ -1142,9 +1142,10 @@ of disease. This is handled within <code>derive_param_tte()</code>.</p>
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
 <span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;LAST TUMOR ASSESSMENT&quot;</span>,</span>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;ADRS&quot;</span>,</span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;ADT&quot;</span></span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  )</span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;ADT&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> ASEQ</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>  )</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>)</span></code></pre></div>
 <p>Patients without tumor assessment should be censored at the start
 date. Therefore the <code>start</code> object is defined with the
 treatment start date as censoring date. It is not necessary to exclude
@@ -1252,77 +1253,78 @@ differs.</p>
 <span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>tt_ae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
 <span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
 <span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>  <span class="at">date =</span> ASTDT,</span>
-<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;ADVERSE EVENT&quot;</span>,</span>
-<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
-<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
-<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>  )</span>
-<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>)</span>
-<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a></span>
-<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co"># define time to first serious AE #</span></span>
-<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>tt_ser_ae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
-<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>  <span class="at">filter =</span> AESER <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a>  <span class="at">date =</span> ASTDT,</span>
-<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;SERIOUS ADVERSE EVENT&quot;</span>,</span>
-<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
-<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
-<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>  )</span>
-<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>)</span>
-<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a></span>
-<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a><span class="co"># define time to first related AE #</span></span>
-<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a>tt_rel_ae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
-<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
-<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a>  <span class="at">filter =</span> AEREL <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;PROBABLE&quot;</span>, <span class="st">&quot;POSSIBLE&quot;</span>, <span class="st">&quot;REMOTE&quot;</span>),</span>
-<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a>  <span class="at">date =</span> ASTDT,</span>
-<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
-<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;RELATED ADVERSE EVENT&quot;</span>,</span>
-<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
-<span id="cb14-44"><a href="#cb14-44" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span></span>
-<span id="cb14-45"><a href="#cb14-45" tabindex="-1"></a>  )</span>
-<span id="cb14-46"><a href="#cb14-46" tabindex="-1"></a>)</span>
-<span id="cb14-47"><a href="#cb14-47" tabindex="-1"></a></span>
-<span id="cb14-48"><a href="#cb14-48" tabindex="-1"></a><span class="co"># derive all three time to event parameters #</span></span>
-<span id="cb14-49"><a href="#cb14-49" tabindex="-1"></a>adaette <span class="ot">&lt;-</span> <span class="fu">call_derivation</span>(</span>
-<span id="cb14-50"><a href="#cb14-50" tabindex="-1"></a>  <span class="at">derivation =</span> derive_param_tte,</span>
-<span id="cb14-51"><a href="#cb14-51" tabindex="-1"></a>  <span class="at">variable_params =</span> <span class="fu">list</span>(</span>
-<span id="cb14-52"><a href="#cb14-52" tabindex="-1"></a>    <span class="fu">params</span>(</span>
-<span id="cb14-53"><a href="#cb14-53" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_ae),</span>
-<span id="cb14-54"><a href="#cb14-54" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTAE&quot;</span>)</span>
-<span id="cb14-55"><a href="#cb14-55" tabindex="-1"></a>    ),</span>
-<span id="cb14-56"><a href="#cb14-56" tabindex="-1"></a>    <span class="fu">params</span>(</span>
-<span id="cb14-57"><a href="#cb14-57" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_ser_ae),</span>
-<span id="cb14-58"><a href="#cb14-58" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTSERAE&quot;</span>)</span>
-<span id="cb14-59"><a href="#cb14-59" tabindex="-1"></a>    ),</span>
-<span id="cb14-60"><a href="#cb14-60" tabindex="-1"></a>    <span class="fu">params</span>(</span>
-<span id="cb14-61"><a href="#cb14-61" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_rel_ae),</span>
-<span id="cb14-62"><a href="#cb14-62" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTRELAE&quot;</span>)</span>
-<span id="cb14-63"><a href="#cb14-63" tabindex="-1"></a>    )</span>
-<span id="cb14-64"><a href="#cb14-64" tabindex="-1"></a>  ),</span>
-<span id="cb14-65"><a href="#cb14-65" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
-<span id="cb14-66"><a href="#cb14-66" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(</span>
-<span id="cb14-67"><a href="#cb14-67" tabindex="-1"></a>    <span class="at">adsl =</span> adsl,</span>
-<span id="cb14-68"><a href="#cb14-68" tabindex="-1"></a>    <span class="at">ae =</span> <span class="fu">filter</span>(adae, TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>)</span>
-<span id="cb14-69"><a href="#cb14-69" tabindex="-1"></a>  ),</span>
-<span id="cb14-70"><a href="#cb14-70" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(observation_end)</span>
-<span id="cb14-71"><a href="#cb14-71" tabindex="-1"></a>)</span>
-<span id="cb14-72"><a href="#cb14-72" tabindex="-1"></a><span class="co">#&gt; Warning: Dataset &quot;ae&quot; contains duplicate records with respect to `STUDYID`, `USUBJID`,</span></span>
-<span id="cb14-73"><a href="#cb14-73" tabindex="-1"></a><span class="co">#&gt; and `ASTDT`</span></span>
-<span id="cb14-74"><a href="#cb14-74" tabindex="-1"></a><span class="co">#&gt; ℹ Run `admiral::get_duplicates_dataset()` to access the duplicate records</span></span>
-<span id="cb14-75"><a href="#cb14-75" tabindex="-1"></a><span class="co">#&gt; Dataset &quot;ae&quot; contains duplicate records with respect to `STUDYID`, `USUBJID`,</span></span>
-<span id="cb14-76"><a href="#cb14-76" tabindex="-1"></a><span class="co">#&gt; and `ASTDT`</span></span>
-<span id="cb14-77"><a href="#cb14-77" tabindex="-1"></a><span class="co">#&gt; ℹ Run `admiral::get_duplicates_dataset()` to access the duplicate records</span></span></code></pre></div>
-<table>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(AESEQ),</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;ADVERSE EVENT&quot;</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span>,</span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> AESEQ</span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>  )</span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>)</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a><span class="co"># define time to first serious AE #</span></span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>tt_ser_ae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a>  <span class="at">filter =</span> AESER <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>  <span class="at">date =</span> ASTDT,</span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(AESEQ),</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;SERIOUS ADVERSE EVENT&quot;</span>,</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span>,</span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> AESEQ</span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a>  )</span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a>)</span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a></span>
+<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a><span class="co"># define time to first related AE #</span></span>
+<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a>tt_rel_ae <span class="ot">&lt;-</span> <span class="fu">event_source</span>(</span>
+<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a>  <span class="at">dataset_name =</span> <span class="st">&quot;ae&quot;</span>,</span>
+<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a>  <span class="at">filter =</span> AEREL <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;PROBABLE&quot;</span>, <span class="st">&quot;POSSIBLE&quot;</span>, <span class="st">&quot;REMOTE&quot;</span>),</span>
+<span id="cb14-44"><a href="#cb14-44" tabindex="-1"></a>  <span class="at">date =</span> ASTDT,</span>
+<span id="cb14-45"><a href="#cb14-45" tabindex="-1"></a>  <span class="at">order =</span> <span class="fu">exprs</span>(AESEQ),</span>
+<span id="cb14-46"><a href="#cb14-46" tabindex="-1"></a>  <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb14-47"><a href="#cb14-47" tabindex="-1"></a>    <span class="at">EVNTDESC =</span> <span class="st">&quot;RELATED ADVERSE EVENT&quot;</span>,</span>
+<span id="cb14-48"><a href="#cb14-48" tabindex="-1"></a>    <span class="at">SRCDOM =</span> <span class="st">&quot;AE&quot;</span>,</span>
+<span id="cb14-49"><a href="#cb14-49" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;AESTDTC&quot;</span>,</span>
+<span id="cb14-50"><a href="#cb14-50" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> AESEQ</span>
+<span id="cb14-51"><a href="#cb14-51" tabindex="-1"></a>  )</span>
+<span id="cb14-52"><a href="#cb14-52" tabindex="-1"></a>)</span>
+<span id="cb14-53"><a href="#cb14-53" tabindex="-1"></a></span>
+<span id="cb14-54"><a href="#cb14-54" tabindex="-1"></a><span class="co"># derive all three time to event parameters #</span></span>
+<span id="cb14-55"><a href="#cb14-55" tabindex="-1"></a>adaette <span class="ot">&lt;-</span> <span class="fu">call_derivation</span>(</span>
+<span id="cb14-56"><a href="#cb14-56" tabindex="-1"></a>  <span class="at">derivation =</span> derive_param_tte,</span>
+<span id="cb14-57"><a href="#cb14-57" tabindex="-1"></a>  <span class="at">variable_params =</span> <span class="fu">list</span>(</span>
+<span id="cb14-58"><a href="#cb14-58" tabindex="-1"></a>    <span class="fu">params</span>(</span>
+<span id="cb14-59"><a href="#cb14-59" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_ae),</span>
+<span id="cb14-60"><a href="#cb14-60" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTAE&quot;</span>)</span>
+<span id="cb14-61"><a href="#cb14-61" tabindex="-1"></a>    ),</span>
+<span id="cb14-62"><a href="#cb14-62" tabindex="-1"></a>    <span class="fu">params</span>(</span>
+<span id="cb14-63"><a href="#cb14-63" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_ser_ae),</span>
+<span id="cb14-64"><a href="#cb14-64" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTSERAE&quot;</span>)</span>
+<span id="cb14-65"><a href="#cb14-65" tabindex="-1"></a>    ),</span>
+<span id="cb14-66"><a href="#cb14-66" tabindex="-1"></a>    <span class="fu">params</span>(</span>
+<span id="cb14-67"><a href="#cb14-67" tabindex="-1"></a>      <span class="at">event_conditions =</span> <span class="fu">list</span>(tt_rel_ae),</span>
+<span id="cb14-68"><a href="#cb14-68" tabindex="-1"></a>      <span class="at">set_values_to =</span> <span class="fu">exprs</span>(<span class="at">PARAMCD =</span> <span class="st">&quot;TTRELAE&quot;</span>)</span>
+<span id="cb14-69"><a href="#cb14-69" tabindex="-1"></a>    )</span>
+<span id="cb14-70"><a href="#cb14-70" tabindex="-1"></a>  ),</span>
+<span id="cb14-71"><a href="#cb14-71" tabindex="-1"></a>  <span class="at">dataset_adsl =</span> adsl,</span>
+<span id="cb14-72"><a href="#cb14-72" tabindex="-1"></a>  <span class="at">source_datasets =</span> <span class="fu">list</span>(</span>
+<span id="cb14-73"><a href="#cb14-73" tabindex="-1"></a>    <span class="at">adsl =</span> adsl,</span>
+<span id="cb14-74"><a href="#cb14-74" tabindex="-1"></a>    <span class="at">ae =</span> <span class="fu">filter</span>(adae, TRTEMFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>)</span>
+<span id="cb14-75"><a href="#cb14-75" tabindex="-1"></a>  ),</span>
+<span id="cb14-76"><a href="#cb14-76" tabindex="-1"></a>  <span class="at">censor_conditions =</span> <span class="fu">list</span>(observation_end)</span>
+<span id="cb14-77"><a href="#cb14-77" tabindex="-1"></a>)</span></code></pre></div>
+<table style="width:100%;">
 <colgroup>
-<col width="14%" />
-<col width="9%" />
 <col width="13%" />
-<col width="13%" />
-<col width="5%" />
-<col width="26%" />
 <col width="8%" />
-<col width="9%" />
+<col width="12%" />
+<col width="12%" />
+<col width="5%" />
+<col width="24%" />
+<col width="7%" />
+<col width="8%" />
+<col width="7%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1334,6 +1336,7 @@ differs.</p>
 <th align="left">EVNTDESC</th>
 <th align="left">SRCDOM</th>
 <th align="left">SRCVAR</th>
+<th align="right">SRCSEQ</th>
 </tr>
 </thead>
 <tbody>
@@ -1346,6 +1349,7 @@ differs.</p>
 <td align="left">ADVERSE EVENT</td>
 <td align="left">AE</td>
 <td align="left">AESTDTC</td>
+<td align="right">3</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1015</td>
@@ -1356,6 +1360,7 @@ differs.</p>
 <td align="left">RELATED ADVERSE EVENT</td>
 <td align="left">AE</td>
 <td align="left">AESTDTC</td>
+<td align="right">3</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1015</td>
@@ -1366,6 +1371,7 @@ differs.</p>
 <td align="left">END OF TREATMENT</td>
 <td align="left">ADSL</td>
 <td align="left">TRTEDT</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1023</td>
@@ -1376,6 +1382,7 @@ differs.</p>
 <td align="left">ADVERSE EVENT</td>
 <td align="left">AE</td>
 <td align="left">AESTDTC</td>
+<td align="right">1</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1023</td>
@@ -1386,6 +1393,7 @@ differs.</p>
 <td align="left">RELATED ADVERSE EVENT</td>
 <td align="left">AE</td>
 <td align="left">AESTDTC</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1023</td>
@@ -1396,6 +1404,7 @@ differs.</p>
 <td align="left">END OF TREATMENT</td>
 <td align="left">ADSL</td>
 <td align="left">TRTEDT</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1028</td>
@@ -1406,6 +1415,7 @@ differs.</p>
 <td align="left">END OF TREATMENT</td>
 <td align="left">ADSL</td>
 <td align="left">TRTEDT</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1028</td>
@@ -1416,6 +1426,7 @@ differs.</p>
 <td align="left">END OF TREATMENT</td>
 <td align="left">ADSL</td>
 <td align="left">TRTEDT</td>
+<td align="right">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">01-701-1028</td>
@@ -1426,6 +1437,7 @@ differs.</p>
 <td align="left">END OF TREATMENT</td>
 <td align="left">ADSL</td>
 <td align="left">TRTEDT</td>
+<td align="right">NA</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1033</td>
@@ -1436,6 +1448,7 @@ differs.</p>
 <td align="left">END OF TREATMENT</td>
 <td align="left">ADSL</td>
 <td align="left">TRTEDT</td>
+<td align="right">NA</td>
 </tr>
 </tbody>
 </table>

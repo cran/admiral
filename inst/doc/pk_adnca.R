@@ -392,7 +392,7 @@ dataset_vignette(
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Derive Analysis Variables ----
-# Derive ATPTN, ATPT, ATPTREF, ABLFL and BASETYPE
+# Derive ATPTN, ATPT, ATPTREF, and BASETYPE
 # Derive planned dose DOSEP, actual dose DOSEA and units
 # Derive PARAMCD and relative time units
 # Derive AVAL, AVALU and AVALCAT1
@@ -412,11 +412,6 @@ adpc_aval <- adpc_nrrlt %>%
       EVID == 1 ~ AVISIT,
       is.na(AVISIT_prev) ~ AVISIT_next,
       TRUE ~ AVISIT_prev
-    ),
-    # Derive baseline flag for pre-dose records
-    ABLFL = case_when(
-      ATPT == "Pre-dose" ~ "Y",
-      TRUE ~ NA_character_
     ),
     # Derive BASETYPE
     BASETYPE = paste(ATPTREF, "Baseline"),
@@ -444,8 +439,6 @@ adpc_aval <- adpc_nrrlt %>%
     # Derive AVAL
     AVAL = case_when(
       EVID == 1 ~ EXDOSE,
-      PCSTRESC == "<BLQ" & NFRLT == 0 ~ 0,
-      PCSTRESC == "<BLQ" & NFRLT > 0 ~ 0.5 * ALLOQ,
       TRUE ~ PCSTRESN
     ),
     AVALU = case_when(
@@ -465,19 +458,42 @@ adpc_aval <- adpc_nrrlt %>%
 dataset_vignette(
   adpc_aval,
   display_vars = exprs(
-    USUBJID, NFRLT, AVISIT, ATPT, ABLFL, ATPTREF, AVAL, AVALCAT1
+    USUBJID, NFRLT, AVISIT, ATPT, ATPTREF, AVAL, AVALCAT1
+  )
+)
+
+## ----eval=TRUE, echo=TRUE-----------------------------------------------------
+# ---- Create DTYPE imputation
+
+adpc_lloq <- adpc_aval %>%
+  derive_extreme_records(
+    dataset_add = adpc_aval,
+    by_vars = exprs(USUBJID, PARAMCD, PARCAT1, AVISITN, AVISIT, ADTM, PCSEQ),
+    order = exprs(ADTM, BASETYPE, EVID, ATPTN, PARCAT1),
+    mode = "last",
+    filter_add = PCSTRESC == "<BLQ" & is.na(AVAL),
+    set_values_to = exprs(
+      AVAL = ALLOQ * .5,
+      DTYPE = "HALFLLOQ"
+    )
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(
+  tail(adpc_lloq),
+  display_vars = exprs(
+    USUBJID, PARAMCD, PARCAT1, AVISITN, DTYPE, PCSTRESC, AVAL,
   )
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Create DTYPE copy records ----
 
-dtype <- adpc_aval %>%
+dtype <- adpc_lloq %>%
   filter(NFRLT > 0 & NXRLT == 0 & EVID == 0 & !is.na(AVISIT_next)) %>%
   select(-PCRFTDT, -PCRFTTM) %>%
   # Re-derive variables in for DTYPE copy records
   mutate(
-    ABLFL = NA_character_,
     ATPTREF = AVISIT_next,
     ARRLT = AXRLT,
     NRRLT = NXRLT,
@@ -487,7 +503,10 @@ dtype <- adpc_aval %>%
     ATPT = "Pre-dose",
     ATPTN = -0.5,
     ABLFL = "Y",
-    DTYPE = "COPY"
+    DTYPE = case_when(
+      is.na(DTYPE) ~ "COPY",
+      DTYPE == "HALFLLOQ" ~ "COPY/HALFLLOQ"
+    )
   ) %>%
   derive_vars_dtm_to_dt(exprs(PCRFTDTM)) %>%
   derive_vars_dtm_to_tm(exprs(PCRFTDTM))
@@ -503,19 +522,24 @@ dataset_vignette(
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
 # ---- Combine original records and DTYPE copy records ----
 
-adpc_dtype <- bind_rows(adpc_aval, dtype) %>%
+adpc_dtype <- bind_rows(adpc_lloq, dtype) %>%
   arrange(STUDYID, USUBJID, BASETYPE, ADTM, NFRLT) %>%
   mutate(
+    # Derive baseline flag for pre-dose records
+    ABLFL = case_when(
+      ATPT == "Pre-dose" & !is.na(AVAL) ~ "Y",
+      TRUE ~ NA_character_
+    ),
     # Derive MRRLT, ANL01FL and ANL02FL
     MRRLT = if_else(ARRLT < 0, 0, ARRLT),
     ANL01FL = "Y",
-    ANL02FL = if_else(is.na(DTYPE), "Y", NA_character_),
+    ANL02FL = if_else(is.na(DTYPE), "Y", NA_character_)
   )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 adpc_dtype %>%
   dataset_vignette(display_vars = exprs(
-    STUDYID, USUBJID, BASETYPE, ADTM, ATPT, NFRLT, NRRLT, ARRLT, MRRLT
+    STUDYID, USUBJID, ABLFL, BASETYPE, DTYPE, ADTM, ATPT, NFRLT, NRRLT, ARRLT, MRRLT
   ))
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------

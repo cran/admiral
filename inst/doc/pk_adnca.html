@@ -414,6 +414,8 @@ PK Records</a></p></li>
 <li><p><a href="#relative">Combine <code>PC</code> and <code>EX</code>
 Records and Derive Relative Time Variables</a></p></li>
 <li><p><a href="#analysis">Derive Analysis Variables</a></p></li>
+<li><p><a href="#lloq">Create <code>DTYPE</code> for Imputed
+records</a></p></li>
 <li><p><a href="#copy">Create Duplicated Records for
 Analysis</a></p></li>
 <li><p><a href="#combine">Combine <code>ADPC</code> data with Duplicated
@@ -1797,21 +1799,14 @@ Baseline”, “Day 2 Baseline”, etc. The baseline flag <code>ABLFL</code>
 will be set to “Y” for pre-dose records.</p>
 <p>Analysis value <code>AVAL</code> in this example comes from
 <code>PCSTRESN</code> for concentration records. In addition we are
-including the dose value <code>EXDOSE</code> for dosing records and
-setting BLQ (Below Limit of Quantitation) records to 0 before the first
-dose and to 1/2 of LLOQ (Lower Limit of Quantitation) for records after
-first dose. (Additional tests such as whether more than 1/3 of records
-are BLQ may be required and are not done in this example.) We also
-create a listing-ready variable <code>AVALCAT1</code> which includes the
-“BLQ” record indicator and formats the numeric values to three
-significant digits.</p>
+including the dose value <code>EXDOSE</code> for dosing records.</p>
 <p>We derive actual dose <code>DOSEA</code> based on
 <code>EXDOSE_prev</code> and <code>EXDOSE_next</code> and planned dose
 <code>DOSEP</code> based on the planned treatment <code>TRT01P</code>.
 In addition we add the units for the dose variables and the relative
 time variables.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># ---- Derive Analysis Variables ----</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># Derive ATPTN, ATPT, ATPTREF, ABLFL and BASETYPE</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># Derive ATPTN, ATPT, ATPTREF, and BASETYPE</span></span>
 <span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co"># Derive planned dose DOSEP, actual dose DOSEA and units</span></span>
 <span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># Derive PARAMCD and relative time units</span></span>
 <span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co"># Derive AVAL, AVALU and AVALCAT1</span></span>
@@ -1832,63 +1827,55 @@ time variables.</p>
 <span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>      <span class="fu">is.na</span>(AVISIT_prev) <span class="sc">~</span> AVISIT_next,</span>
 <span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> AVISIT_prev</span>
 <span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>    ),</span>
-<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>    <span class="co"># Derive baseline flag for pre-dose records</span></span>
-<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>    <span class="at">ABLFL =</span> <span class="fu">case_when</span>(</span>
-<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a>      ATPT <span class="sc">==</span> <span class="st">&quot;Pre-dose&quot;</span> <span class="sc">~</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
-<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a>    ),</span>
-<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>    <span class="co"># Derive BASETYPE</span></span>
-<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a>    <span class="at">BASETYPE =</span> <span class="fu">paste</span>(ATPTREF, <span class="st">&quot;Baseline&quot;</span>),</span>
-<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a></span>
-<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a>    <span class="co"># Derive Actual Dose</span></span>
-<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a>    <span class="at">DOSEA =</span> <span class="fu">case_when</span>(</span>
-<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
-<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a>      <span class="fu">is.na</span>(EXDOSE_prev) <span class="sc">~</span> EXDOSE_next,</span>
-<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> EXDOSE_prev</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>    <span class="co"># Derive BASETYPE</span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>    <span class="at">BASETYPE =</span> <span class="fu">paste</span>(ATPTREF, <span class="st">&quot;Baseline&quot;</span>),</span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a>    <span class="co"># Derive Actual Dose</span></span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a>    <span class="at">DOSEA =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a>      <span class="fu">is.na</span>(EXDOSE_prev) <span class="sc">~</span> EXDOSE_next,</span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> EXDOSE_prev</span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a>    ),</span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a>    <span class="co"># Derive Planned Dose</span></span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a>    <span class="at">DOSEP =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">81</span>,</span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">54</span></span>
 <span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a>    ),</span>
-<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a>    <span class="co"># Derive Planned Dose</span></span>
-<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a>    <span class="at">DOSEP =</span> <span class="fu">case_when</span>(</span>
-<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">81</span>,</span>
-<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">54</span></span>
-<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a>    ),</span>
-<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a>    <span class="at">DOSEU =</span> <span class="st">&quot;mg&quot;</span>,</span>
-<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a>  <span class="co"># Derive relative time units</span></span>
-<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a>    <span class="at">FRLTU =</span> <span class="st">&quot;h&quot;</span>,</span>
-<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a>    <span class="at">RRLTU =</span> <span class="st">&quot;h&quot;</span>,</span>
-<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a>    <span class="co"># Derive PARAMCD</span></span>
-<span id="cb11-49"><a href="#cb11-49" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="fu">coalesce</span>(PCTESTCD, <span class="st">&quot;DOSE&quot;</span>),</span>
-<span id="cb11-50"><a href="#cb11-50" tabindex="-1"></a>    <span class="at">ALLOQ =</span> PCLLOQ,</span>
-<span id="cb11-51"><a href="#cb11-51" tabindex="-1"></a>    <span class="co"># Derive AVAL</span></span>
-<span id="cb11-52"><a href="#cb11-52" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">case_when</span>(</span>
-<span id="cb11-53"><a href="#cb11-53" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
-<span id="cb11-54"><a href="#cb11-54" tabindex="-1"></a>      PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">&amp;</span> NFRLT <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb11-55"><a href="#cb11-55" tabindex="-1"></a>      PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">&amp;</span> NFRLT <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="fl">0.5</span> <span class="sc">*</span> ALLOQ,</span>
-<span id="cb11-56"><a href="#cb11-56" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCSTRESN</span>
-<span id="cb11-57"><a href="#cb11-57" tabindex="-1"></a>    ),</span>
-<span id="cb11-58"><a href="#cb11-58" tabindex="-1"></a>    <span class="at">AVALU =</span> <span class="fu">case_when</span>(</span>
-<span id="cb11-59"><a href="#cb11-59" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSU,</span>
-<span id="cb11-60"><a href="#cb11-60" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCSTRESU</span>
-<span id="cb11-61"><a href="#cb11-61" tabindex="-1"></a>    ),</span>
-<span id="cb11-62"><a href="#cb11-62" tabindex="-1"></a>    <span class="at">AVALCAT1 =</span> <span class="fu">if_else</span>(PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span>, PCSTRESC, <span class="fu">prettyNum</span>(<span class="fu">signif</span>(AVAL, <span class="at">digits =</span> <span class="dv">3</span>))),</span>
-<span id="cb11-63"><a href="#cb11-63" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb11-64"><a href="#cb11-64" tabindex="-1"></a>  <span class="co"># Add SRCSEQ</span></span>
-<span id="cb11-65"><a href="#cb11-65" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb11-66"><a href="#cb11-66" tabindex="-1"></a>    <span class="at">SRCDOM =</span> DOMAIN,</span>
-<span id="cb11-67"><a href="#cb11-67" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;SEQ&quot;</span>,</span>
-<span id="cb11-68"><a href="#cb11-68" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> <span class="fu">coalesce</span>(PCSEQ, EXSEQ)</span>
-<span id="cb11-69"><a href="#cb11-69" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a>    <span class="at">DOSEU =</span> <span class="st">&quot;mg&quot;</span>,</span>
+<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a>  <span class="co"># Derive relative time units</span></span>
+<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a>    <span class="at">FRLTU =</span> <span class="st">&quot;h&quot;</span>,</span>
+<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a>    <span class="at">RRLTU =</span> <span class="st">&quot;h&quot;</span>,</span>
+<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a>    <span class="co"># Derive PARAMCD</span></span>
+<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="fu">coalesce</span>(PCTESTCD, <span class="st">&quot;DOSE&quot;</span>),</span>
+<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a>    <span class="at">ALLOQ =</span> PCLLOQ,</span>
+<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a>    <span class="co"># Derive AVAL</span></span>
+<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a>    <span class="at">AVAL =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
+<span id="cb11-49"><a href="#cb11-49" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCSTRESN</span>
+<span id="cb11-50"><a href="#cb11-50" tabindex="-1"></a>    ),</span>
+<span id="cb11-51"><a href="#cb11-51" tabindex="-1"></a>    <span class="at">AVALU =</span> <span class="fu">case_when</span>(</span>
+<span id="cb11-52"><a href="#cb11-52" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSU,</span>
+<span id="cb11-53"><a href="#cb11-53" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCSTRESU</span>
+<span id="cb11-54"><a href="#cb11-54" tabindex="-1"></a>    ),</span>
+<span id="cb11-55"><a href="#cb11-55" tabindex="-1"></a>    <span class="at">AVALCAT1 =</span> <span class="fu">if_else</span>(PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span>, PCSTRESC, <span class="fu">prettyNum</span>(<span class="fu">signif</span>(AVAL, <span class="at">digits =</span> <span class="dv">3</span>))),</span>
+<span id="cb11-56"><a href="#cb11-56" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-57"><a href="#cb11-57" tabindex="-1"></a>  <span class="co"># Add SRCSEQ</span></span>
+<span id="cb11-58"><a href="#cb11-58" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-59"><a href="#cb11-59" tabindex="-1"></a>    <span class="at">SRCDOM =</span> DOMAIN,</span>
+<span id="cb11-60"><a href="#cb11-60" tabindex="-1"></a>    <span class="at">SRCVAR =</span> <span class="st">&quot;SEQ&quot;</span>,</span>
+<span id="cb11-61"><a href="#cb11-61" tabindex="-1"></a>    <span class="at">SRCSEQ =</span> <span class="fu">coalesce</span>(PCSEQ, EXSEQ)</span>
+<span id="cb11-62"><a href="#cb11-62" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
-<col width="15%" />
-<col width="7%" />
-<col width="9%" />
-<col width="22%" />
-<col width="7%" />
+<col width="17%" />
+<col width="8%" />
 <col width="10%" />
-<col width="14%" />
+<col width="24%" />
 <col width="11%" />
+<col width="15%" />
+<col width="12%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -1896,7 +1883,6 @@ time variables.</p>
 <th align="right">NFRLT</th>
 <th align="left">AVISIT</th>
 <th align="left">ATPT</th>
-<th align="left">ABLFL</th>
 <th align="left">ATPTREF</th>
 <th align="right">AVAL</th>
 <th align="left">AVALCAT1</th>
@@ -1908,7 +1894,6 @@ time variables.</p>
 <td align="right">0.00</td>
 <td align="left">Day 1</td>
 <td align="left">Pre-dose</td>
-<td align="left">Y</td>
 <td align="left">Day 1</td>
 <td align="right">0.0000000</td>
 <td align="left">&lt;BLQ</td>
@@ -1918,7 +1903,6 @@ time variables.</p>
 <td align="right">0.00</td>
 <td align="left">Day 1</td>
 <td align="left">Dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">54.0000000</td>
 <td align="left">NA</td>
@@ -1928,7 +1912,6 @@ time variables.</p>
 <td align="right">0.08</td>
 <td align="left">Day 1</td>
 <td align="left">5 Min Post-dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">0.1015662</td>
 <td align="left">0.102</td>
@@ -1938,7 +1921,6 @@ time variables.</p>
 <td align="right">0.50</td>
 <td align="left">Day 1</td>
 <td align="left">30 Min Post-dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">0.5469018</td>
 <td align="left">0.547</td>
@@ -1948,7 +1930,6 @@ time variables.</p>
 <td align="right">1.00</td>
 <td align="left">Day 1</td>
 <td align="left">1h Post-dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">0.9254654</td>
 <td align="left">0.925</td>
@@ -1958,7 +1939,6 @@ time variables.</p>
 <td align="right">1.50</td>
 <td align="left">Day 1</td>
 <td align="left">1.5h Post-dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">1.1875059</td>
 <td align="left">1.19</td>
@@ -1968,7 +1948,6 @@ time variables.</p>
 <td align="right">2.00</td>
 <td align="left">Day 1</td>
 <td align="left">2h Post-dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">1.3688894</td>
 <td align="left">1.37</td>
@@ -1978,7 +1957,6 @@ time variables.</p>
 <td align="right">4.00</td>
 <td align="left">Day 1</td>
 <td align="left">4h Post-dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">1.6831476</td>
 <td align="left">1.68</td>
@@ -1988,7 +1966,6 @@ time variables.</p>
 <td align="right">6.00</td>
 <td align="left">Day 1</td>
 <td align="left">6h Post-dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">1.7552923</td>
 <td align="left">1.76</td>
@@ -1998,10 +1975,102 @@ time variables.</p>
 <td align="right">3.00</td>
 <td align="left">Day 1</td>
 <td align="left">0-6h Post-dose</td>
-<td align="left">NA</td>
 <td align="left">Day 1</td>
 <td align="right">24.9423721</td>
 <td align="left">24.9</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="lloq" class="section level2">
+<h2>Create <code>DTYPE</code> for Imputed records</h2>
+<p>For records that are BLQ (Below Limit of Quantitation), we will
+create imputed records set to 1/2 of LLOQ. <code>DTYPE</code> for these
+records will be set to “HALFLLOQ”. (Additional tests such as whether
+more than 1/3 of records are BLQ may be required and are not done in
+this example.) We also create a listing-ready variable
+<code>AVALCAT1</code> which includes the “BLQ” record indicator and
+formats the numeric values to three significant digits.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># ---- Create DTYPE imputation</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>adpc_lloq <span class="ot">&lt;-</span> adpc_aval <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">derive_extreme_records</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>    <span class="at">dataset_add =</span> adpc_aval,</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID, PARAMCD, PARCAT1, AVISITN, AVISIT, ADTM, PCSEQ),</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, BASETYPE, EVID, ATPTN, PARCAT1),</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>    <span class="at">filter_add =</span> PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">&amp;</span> <span class="fu">is.na</span>(AVAL),</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>    <span class="at">set_values_to =</span> <span class="fu">exprs</span>(</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>      <span class="at">AVAL =</span> ALLOQ <span class="sc">*</span> .<span class="dv">5</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>      <span class="at">DTYPE =</span> <span class="st">&quot;HALFLLOQ&quot;</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>    )</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>  )</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">USUBJID</th>
+<th align="left">PARAMCD</th>
+<th align="left">PARCAT1</th>
+<th align="right">AVISITN</th>
+<th align="left">DTYPE</th>
+<th align="left">PCSTRESC</th>
+<th align="right">AVAL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01-714-1288</td>
+<td align="left">XAN</td>
+<td align="left">PLASMA</td>
+<td align="right">2</td>
+<td align="left">HALFLLOQ</td>
+<td align="left">&lt;BLQ</td>
+<td align="right">0.005</td>
+</tr>
+<tr class="even">
+<td align="left">01-714-1288</td>
+<td align="left">XAN</td>
+<td align="left">PLASMA</td>
+<td align="right">3</td>
+<td align="left">HALFLLOQ</td>
+<td align="left">&lt;BLQ</td>
+<td align="right">0.005</td>
+</tr>
+<tr class="odd">
+<td align="left">01-714-1288</td>
+<td align="left">XAN</td>
+<td align="left">URINE</td>
+<td align="right">2</td>
+<td align="left">HALFLLOQ</td>
+<td align="left">&lt;BLQ</td>
+<td align="right">0.005</td>
+</tr>
+<tr class="even">
+<td align="left">01-718-1101</td>
+<td align="left">XAN</td>
+<td align="left">PLASMA</td>
+<td align="right">2</td>
+<td align="left">HALFLLOQ</td>
+<td align="left">&lt;BLQ</td>
+<td align="right">0.005</td>
+</tr>
+<tr class="odd">
+<td align="left">01-718-1101</td>
+<td align="left">XAN</td>
+<td align="left">PLASMA</td>
+<td align="right">3</td>
+<td align="left">HALFLLOQ</td>
+<td align="left">&lt;BLQ</td>
+<td align="right">0.005</td>
+</tr>
+<tr class="even">
+<td align="left">01-718-1101</td>
+<td align="left">XAN</td>
+<td align="left">URINE</td>
+<td align="right">2</td>
+<td align="left">HALFLLOQ</td>
+<td align="left">&lt;BLQ</td>
+<td align="right">0.005</td>
 </tr>
 </tbody>
 </table>
@@ -2025,27 +2094,29 @@ change “24h Post-dose” to “Pre-dose”. <code>ABLFL</code> is set to “Y�
 since these records will serve as baseline for the “Day 2” dose.
 <code>DOSEA</code> is set to <code>EXDOSE_next</code> and
 <code>PCRFTDTM</code> is set to <code>ADTM_next</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># ---- Create DTYPE copy records ----</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>dtype <span class="ot">&lt;-</span> adpc_aval <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">filter</span>(NFRLT <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> NXRLT <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> EVID <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(AVISIT_next)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>PCRFTDT, <span class="sc">-</span>PCRFTTM) <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="co"># Re-derive variables in for DTYPE copy records</span></span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">ABLFL =</span> <span class="cn">NA_character_</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>    <span class="at">ATPTREF =</span> AVISIT_next,</span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>    <span class="at">ARRLT =</span> AXRLT,</span>
-<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a>    <span class="at">NRRLT =</span> NXRLT,</span>
-<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>    <span class="at">PCRFTDTM =</span> ADTM_next,</span>
-<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>    <span class="at">DOSEA =</span> EXDOSE_next,</span>
-<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>    <span class="at">BASETYPE =</span> <span class="fu">paste</span>(AVISIT_next, <span class="st">&quot;Baseline&quot;</span>),</span>
-<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>    <span class="at">ATPT =</span> <span class="st">&quot;Pre-dose&quot;</span>,</span>
-<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>    <span class="at">ATPTN =</span> <span class="sc">-</span><span class="fl">0.5</span>,</span>
-<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a>    <span class="at">ABLFL =</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a>    <span class="at">DTYPE =</span> <span class="st">&quot;COPY&quot;</span></span>
-<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(PCRFTDTM)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(PCRFTDTM))</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># ---- Create DTYPE copy records ----</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>dtype <span class="ot">&lt;-</span> adpc_lloq <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">filter</span>(NFRLT <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> NXRLT <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> EVID <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(AVISIT_next)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>PCRFTDT, <span class="sc">-</span>PCRFTTM) <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="co"># Re-derive variables in for DTYPE copy records</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>    <span class="at">ATPTREF =</span> AVISIT_next,</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>    <span class="at">ARRLT =</span> AXRLT,</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>    <span class="at">NRRLT =</span> NXRLT,</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>    <span class="at">PCRFTDTM =</span> ADTM_next,</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>    <span class="at">DOSEA =</span> EXDOSE_next,</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>    <span class="at">BASETYPE =</span> <span class="fu">paste</span>(AVISIT_next, <span class="st">&quot;Baseline&quot;</span>),</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>    <span class="at">ATPT =</span> <span class="st">&quot;Pre-dose&quot;</span>,</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>    <span class="at">ATPTN =</span> <span class="sc">-</span><span class="fl">0.5</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>    <span class="at">ABLFL =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>    <span class="at">DTYPE =</span> <span class="fu">case_when</span>(</span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a>      <span class="fu">is.na</span>(DTYPE) <span class="sc">~</span> <span class="st">&quot;COPY&quot;</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>      DTYPE <span class="sc">==</span> <span class="st">&quot;HALFLLOQ&quot;</span> <span class="sc">~</span> <span class="st">&quot;COPY/HALFLLOQ&quot;</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>    )</span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_dt</span>(<span class="fu">exprs</span>(PCRFTDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a>  <span class="fu">derive_vars_dtm_to_tm</span>(<span class="fu">exprs</span>(PCRFTDTM))</span></code></pre></div>
 <table>
 <colgroup>
 <col width="18%" />
@@ -2186,33 +2257,42 @@ e.g. <code>ANL01FL</code> , <code>ANL02FL</code> etc. In this example
 records with <code>DTYPE</code> = “COPY”. Additional flags may be used
 to select full profile records and/or to select records included in the
 tables and figures, etc.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># ---- Combine original records and DTYPE copy records ----</span></span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>adpc_dtype <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(adpc_aval, dtype) <span class="sc">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">arrange</span>(STUDYID, USUBJID, BASETYPE, ADTM, NFRLT) <span class="sc">%&gt;%</span></span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>    <span class="co"># Derive MRRLT, ANL01FL and ANL02FL</span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>    <span class="at">MRRLT =</span> <span class="fu">if_else</span>(ARRLT <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">0</span>, ARRLT),</span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>    <span class="at">ANL01FL =</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>    <span class="at">ANL02FL =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(DTYPE), <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>),</span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>  )</span></code></pre></div>
-<table>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># ---- Combine original records and DTYPE copy records ----</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>adpc_dtype <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(adpc_lloq, dtype) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="fu">arrange</span>(STUDYID, USUBJID, BASETYPE, ADTM, NFRLT) <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="co"># Derive baseline flag for pre-dose records</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="at">ABLFL =</span> <span class="fu">case_when</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>      ATPT <span class="sc">==</span> <span class="st">&quot;Pre-dose&quot;</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(AVAL) <span class="sc">~</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_character_</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    ),</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>    <span class="co"># Derive MRRLT, ANL01FL and ANL02FL</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>    <span class="at">MRRLT =</span> <span class="fu">if_else</span>(ARRLT <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="dv">0</span>, ARRLT),</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>    <span class="at">ANL01FL =</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>    <span class="at">ANL02FL =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(DTYPE), <span class="st">&quot;Y&quot;</span>, <span class="cn">NA_character_</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>  )</span></code></pre></div>
+<table style="width:100%;">
 <colgroup>
-<col width="11%" />
-<col width="10%" />
-<col width="13%" />
-<col width="18%" />
-<col width="15%" />
-<col width="5%" />
-<col width="5%" />
 <col width="10%" />
 <col width="9%" />
+<col width="4%" />
+<col width="12%" />
+<col width="4%" />
+<col width="16%" />
+<col width="13%" />
+<col width="4%" />
+<col width="4%" />
+<col width="9%" />
+<col width="8%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="left">STUDYID</th>
 <th align="left">USUBJID</th>
+<th align="left">ABLFL</th>
 <th align="left">BASETYPE</th>
+<th align="left">DTYPE</th>
 <th align="left">ADTM</th>
 <th align="left">ATPT</th>
 <th align="right">NFRLT</th>
@@ -2225,7 +2305,9 @@ tables and figures, etc.</p>
 <tr class="odd">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">Y</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-18 23:30:00</td>
 <td align="left">Pre-dose</td>
 <td align="right">0.00</td>
@@ -2236,7 +2318,9 @@ tables and figures, etc.</p>
 <tr class="even">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 00:00:00</td>
 <td align="left">Dose</td>
 <td align="right">0.00</td>
@@ -2247,7 +2331,9 @@ tables and figures, etc.</p>
 <tr class="odd">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 00:05:00</td>
 <td align="left">5 Min Post-dose</td>
 <td align="right">0.08</td>
@@ -2258,7 +2344,9 @@ tables and figures, etc.</p>
 <tr class="even">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 00:30:00</td>
 <td align="left">30 Min Post-dose</td>
 <td align="right">0.50</td>
@@ -2269,7 +2357,9 @@ tables and figures, etc.</p>
 <tr class="odd">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 01:00:00</td>
 <td align="left">1h Post-dose</td>
 <td align="right">1.00</td>
@@ -2280,7 +2370,9 @@ tables and figures, etc.</p>
 <tr class="even">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 01:30:00</td>
 <td align="left">1.5h Post-dose</td>
 <td align="right">1.50</td>
@@ -2291,7 +2383,9 @@ tables and figures, etc.</p>
 <tr class="odd">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 02:00:00</td>
 <td align="left">2h Post-dose</td>
 <td align="right">2.00</td>
@@ -2302,7 +2396,9 @@ tables and figures, etc.</p>
 <tr class="even">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 04:00:00</td>
 <td align="left">4h Post-dose</td>
 <td align="right">4.00</td>
@@ -2313,7 +2409,9 @@ tables and figures, etc.</p>
 <tr class="odd">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 06:00:00</td>
 <td align="left">0-6h Post-dose</td>
 <td align="right">3.00</td>
@@ -2324,7 +2422,9 @@ tables and figures, etc.</p>
 <tr class="even">
 <td align="left">CDISCPILOT01</td>
 <td align="left">01-701-1028</td>
+<td align="left">NA</td>
 <td align="left">Day 1 Baseline</td>
+<td align="left">NA</td>
 <td align="left">2013-07-19 06:00:00</td>
 <td align="left">6h Post-dose</td>
 <td align="right">6.00</td>
@@ -2346,45 +2446,45 @@ used to derive <code>BASE</code> and the function
 such as those ending with “_prev” and “_next”.</p>
 <p>Finally we derive <code>PARAM</code> and <code>PARAMN</code> from a
 lookup table.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># ---- Derive BASE and Calculate Change from Baseline ----</span></span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>adpc_base <span class="ot">&lt;-</span> adpc_dtype <span class="sc">%&gt;%</span></span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="co"># Derive BASE</span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="fu">derive_var_base</span>(</span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, PARCAT1, BASETYPE),</span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="at">source_var =</span> AVAL,</span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    <span class="at">new_var =</span> BASE,</span>
-<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">filter =</span> ABLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
-<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>  )</span>
-<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co"># Calculate CHG for post-baseline records</span></span>
-<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co"># The decision on how to populate pre-baseline and baseline values of CHG is left to producer choice</span></span>
-<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>adpc_chg <span class="ot">&lt;-</span> <span class="fu">restrict_derivation</span>(</span>
-<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>  adpc_base,</span>
-<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>  <span class="at">derivation =</span> derive_var_chg,</span>
-<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>  <span class="at">filter =</span> AVISITN <span class="sc">&gt;</span> <span class="dv">0</span></span>
-<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>)</span>
-<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a></span>
-<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co"># ---- Add ASEQ ----</span></span>
-<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a></span>
-<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>adpc_aseq <span class="ot">&lt;-</span> adpc_chg <span class="sc">%&gt;%</span></span>
-<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>  <span class="co"># Calculate ASEQ</span></span>
-<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
-<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>    <span class="at">new_var =</span> ASEQ,</span>
-<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, BASETYPE, EVID, AVISITN, ATPTN, PARCAT1, DTYPE),</span>
-<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
-<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a>  <span class="co"># Remove temporary variables</span></span>
-<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a>    <span class="sc">-</span>DOMAIN, <span class="sc">-</span>PCSEQ, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;orig&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;min&quot;</span>),</span>
-<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;max&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;EX&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;next&quot;</span>),</span>
-<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;prev&quot;</span>), <span class="sc">-</span>DRUG, <span class="sc">-</span>EVID, <span class="sc">-</span>AXRLT, <span class="sc">-</span>NXRLT, <span class="sc">-</span>VISITDY</span>
-<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>  <span class="co"># Derive PARAM and PARAMN</span></span>
-<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(param_lookup, <span class="sc">-</span>PCTESTCD), <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
-<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># ---- Derive BASE and Calculate Change from Baseline ----</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>adpc_base <span class="ot">&lt;-</span> adpc_dtype <span class="sc">%&gt;%</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="co"># Derive BASE</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  <span class="fu">derive_var_base</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, PARAMCD, PARCAT1, BASETYPE),</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>    <span class="at">source_var =</span> AVAL,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    <span class="at">new_var =</span> BASE,</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>    <span class="at">filter =</span> ABLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>  )</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co"># Calculate CHG for post-baseline records</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co"># The decision on how to populate pre-baseline and baseline values of CHG is left to producer choice</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>adpc_chg <span class="ot">&lt;-</span> <span class="fu">restrict_derivation</span>(</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>  adpc_base,</span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>  <span class="at">derivation =</span> derive_var_chg,</span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>  <span class="at">filter =</span> AVISITN <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>)</span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a><span class="co"># ---- Add ASEQ ----</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a>adpc_aseq <span class="ot">&lt;-</span> adpc_chg <span class="sc">%&gt;%</span></span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a>  <span class="co"># Calculate ASEQ</span></span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a>    <span class="at">new_var =</span> ASEQ,</span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, BASETYPE, EVID, AVISITN, ATPTN, PARCAT1, DTYPE),</span>
+<span id="cb15-28"><a href="#cb15-28" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
+<span id="cb15-29"><a href="#cb15-29" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-30"><a href="#cb15-30" tabindex="-1"></a>  <span class="co"># Remove temporary variables</span></span>
+<span id="cb15-31"><a href="#cb15-31" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb15-32"><a href="#cb15-32" tabindex="-1"></a>    <span class="sc">-</span>DOMAIN, <span class="sc">-</span>PCSEQ, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;orig&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;min&quot;</span>),</span>
+<span id="cb15-33"><a href="#cb15-33" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;max&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;EX&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;next&quot;</span>),</span>
+<span id="cb15-34"><a href="#cb15-34" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;prev&quot;</span>), <span class="sc">-</span>DRUG, <span class="sc">-</span>EVID, <span class="sc">-</span>AXRLT, <span class="sc">-</span>NXRLT, <span class="sc">-</span>VISITDY</span>
+<span id="cb15-35"><a href="#cb15-35" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-36"><a href="#cb15-36" tabindex="-1"></a>  <span class="co"># Derive PARAM and PARAMN</span></span>
+<span id="cb15-37"><a href="#cb15-37" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb15-38"><a href="#cb15-38" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(param_lookup, <span class="sc">-</span>PCTESTCD), <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)</span>
+<span id="cb15-39"><a href="#cb15-39" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="10%" />
@@ -2568,24 +2668,24 @@ compute the body mass index (BMI) with <code>compute_bmi()</code>. These
 values could also be obtained from <code>ADVS</code> if available.
 Baseline lab values could also be derived from <code>LB</code> or
 <code>ADLB</code> in a similar manner.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Derive additional baselines from VS</span></span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>adpc_baselines <span class="ot">&lt;-</span> adpc_aseq <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;HEIGHT&quot;</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">HTBL =</span> VSSTRESN, <span class="at">HTBLU =</span> VSSTRESU)</span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
-<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;WEIGHT&quot;</span> <span class="sc">&amp;</span> VSBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">WTBL =</span> VSSTRESN, <span class="at">WTBLU =</span> VSSTRESU)</span>
-<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a>    <span class="at">BMIBL =</span> <span class="fu">compute_bmi</span>(<span class="at">height =</span> HTBL, <span class="at">weight =</span> WTBL),</span>
-<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>    <span class="at">BMIBLU =</span> <span class="st">&quot;kg/m^2&quot;</span></span>
-<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Derive additional baselines from VS</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>adpc_baselines <span class="ot">&lt;-</span> adpc_aseq <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;HEIGHT&quot;</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">HTBL =</span> VSSTRESN, <span class="at">HTBLU =</span> VSSTRESU)</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;WEIGHT&quot;</span> <span class="sc">&amp;</span> VSBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">WTBL =</span> VSSTRESN, <span class="at">WTBLU =</span> VSSTRESU)</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>    <span class="at">BMIBL =</span> <span class="fu">compute_bmi</span>(<span class="at">height =</span> HTBL, <span class="at">weight =</span> WTBL),</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a>    <span class="at">BMIBLU =</span> <span class="st">&quot;kg/m^2&quot;</span></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="12%" />
@@ -2741,12 +2841,12 @@ Baseline lab values could also be derived from <code>LB</code> or
 <h2>Add the <code>ADSL</code> variables</h2>
 <p>If needed, the other <code>ADSL</code> variables can now be
 added:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># Add all ADSL variables</span></span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc_baselines <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Add all ADSL variables</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>adpc <span class="ot">&lt;-</span> adpc_baselines <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>    <span class="at">dataset_add =</span> <span class="fu">select</span>(adsl, <span class="sc">!!!</span><span class="fu">negate_vars</span>(adsl_vars)),</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>  )</span></code></pre></div>
 <p>Adding attributes to the <code>ADPC</code> file will be discussed <a href="#attributes">below</a>. We will now turn to the Population PK
 example.</p>
 </div>
@@ -2829,26 +2929,26 @@ expanding dosing records. For more detail see these steps above (<a href="#readd
 <p>We will pick this up at the stage where we find the first dose for
 the concentration records. We will use <code>derive_vars_merged()</code>
 as we did for <code>ADPC</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># ---- Find first dose per treatment per subject ----</span></span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co"># ---- Join with ADPC data and keep only subjects with dosing ----</span></span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>adppk_first_dose <span class="ot">&lt;-</span> pc_dates <span class="sc">%&gt;%</span></span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="sc">!</span><span class="fu">is.na</span>(ADTM)),</span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">FANLDTM =</span> ADTM, <span class="at">EXDOSE_first =</span> EXDOSE),</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, EXSEQ),</span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, DRUG)</span>
-<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FANLDTM)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>  <span class="co"># Derive AVISIT based on nominal relative time</span></span>
-<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>  <span class="co"># Derive AVISITN to nominal time in whole days using integer division</span></span>
-<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  <span class="co"># Define AVISIT based on nominal day</span></span>
-<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>    <span class="at">AVISITN =</span> NFRLT <span class="sc">%/%</span> <span class="dv">24</span> <span class="sc">+</span> <span class="dv">1</span>,</span>
-<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>    <span class="at">AVISIT =</span> <span class="fu">paste</span>(<span class="st">&quot;Day&quot;</span>, AVISITN),</span>
-<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># ---- Find first dose per treatment per subject ----</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co"># ---- Join with ADPC data and keep only subjects with dosing ----</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>adppk_first_dose <span class="ot">&lt;-</span> pc_dates <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>    <span class="at">filter_add =</span> (<span class="sc">!</span><span class="fu">is.na</span>(ADTM)),</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">FANLDTM =</span> ADTM, <span class="at">EXDOSE_first =</span> EXDOSE),</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM, EXSEQ),</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;first&quot;</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID, DRUG)</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(FANLDTM)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>  <span class="co"># Derive AVISIT based on nominal relative time</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>  <span class="co"># Derive AVISITN to nominal time in whole days using integer division</span></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a>  <span class="co"># Define AVISIT based on nominal day</span></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a>    <span class="at">AVISITN =</span> NFRLT <span class="sc">%/%</span> <span class="dv">24</span> <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a>    <span class="at">AVISIT =</span> <span class="fu">paste</span>(<span class="st">&quot;Day&quot;</span>, AVISITN),</span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="17%" />
@@ -2947,40 +3047,40 @@ actual time and nominal time. We will use
 <code>derive_vars_joined()</code> as we did for <code>ADPC</code>, but
 note that we will not need to find the next dose as for
 <code>ADPC</code>.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># ---- Find previous dose  ----</span></span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>adppk_prev <span class="ot">&lt;-</span> adppk_first_dose <span class="sc">%&gt;%</span></span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>  <span class="fu">derive_vars_joined</span>(</span>
-<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
-<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM),</span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(</span>
-<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>      <span class="at">ADTM_prev =</span> ADTM, <span class="at">EXDOSE_prev =</span> EXDOSE, <span class="at">AVISIT_prev =</span> AVISIT,</span>
-<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>      <span class="at">AENDTM_prev =</span> AENDTM</span>
-<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>    ),</span>
-<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>    <span class="at">join_vars =</span> <span class="fu">exprs</span>(ADTM),</span>
-<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>    <span class="at">join_type =</span> <span class="st">&quot;all&quot;</span>,</span>
-<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a>    <span class="at">filter_add =</span> <span class="cn">NULL</span>,</span>
-<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>    <span class="at">filter_join =</span> ADTM <span class="sc">&gt;</span> ADTM.join,</span>
-<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;none&quot;</span></span>
-<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a>  )</span>
-<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a></span>
-<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a><span class="co"># ---- Find previous nominal dose ----</span></span>
-<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a></span>
-<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a>adppk_nom_prev <span class="ot">&lt;-</span> adppk_prev <span class="sc">%&gt;%</span></span>
-<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a>  <span class="fu">derive_vars_joined</span>(</span>
-<span id="cb18-24"><a href="#cb18-24" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
-<span id="cb18-25"><a href="#cb18-25" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
-<span id="cb18-26"><a href="#cb18-26" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(NFRLT),</span>
-<span id="cb18-27"><a href="#cb18-27" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">NFRLT_prev =</span> NFRLT),</span>
-<span id="cb18-28"><a href="#cb18-28" tabindex="-1"></a>    <span class="at">join_vars =</span> <span class="fu">exprs</span>(NFRLT),</span>
-<span id="cb18-29"><a href="#cb18-29" tabindex="-1"></a>    <span class="at">join_type =</span> <span class="st">&quot;all&quot;</span>,</span>
-<span id="cb18-30"><a href="#cb18-30" tabindex="-1"></a>    <span class="at">filter_add =</span> <span class="cn">NULL</span>,</span>
-<span id="cb18-31"><a href="#cb18-31" tabindex="-1"></a>    <span class="at">filter_join =</span> NFRLT <span class="sc">&gt;</span> NFRLT.join,</span>
-<span id="cb18-32"><a href="#cb18-32" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
-<span id="cb18-33"><a href="#cb18-33" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;none&quot;</span></span>
-<span id="cb18-34"><a href="#cb18-34" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># ---- Find previous dose  ----</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>adppk_prev <span class="ot">&lt;-</span> adppk_first_dose <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(ADTM),</span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(</span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>      <span class="at">ADTM_prev =</span> ADTM, <span class="at">EXDOSE_prev =</span> EXDOSE, <span class="at">AVISIT_prev =</span> AVISIT,</span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>      <span class="at">AENDTM_prev =</span> AENDTM</span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>    ),</span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a>    <span class="at">join_vars =</span> <span class="fu">exprs</span>(ADTM),</span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a>    <span class="at">join_type =</span> <span class="st">&quot;all&quot;</span>,</span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a>    <span class="at">filter_add =</span> <span class="cn">NULL</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>    <span class="at">filter_join =</span> ADTM <span class="sc">&gt;</span> ADTM.join,</span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a>  )</span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a><span class="co"># ---- Find previous nominal dose ----</span></span>
+<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a>adppk_nom_prev <span class="ot">&lt;-</span> adppk_prev <span class="sc">%&gt;%</span></span>
+<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a>  <span class="fu">derive_vars_joined</span>(</span>
+<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex_exp,</span>
+<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(USUBJID),</span>
+<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(NFRLT),</span>
+<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">NFRLT_prev =</span> NFRLT),</span>
+<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a>    <span class="at">join_vars =</span> <span class="fu">exprs</span>(NFRLT),</span>
+<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a>    <span class="at">join_type =</span> <span class="st">&quot;all&quot;</span>,</span>
+<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a>    <span class="at">filter_add =</span> <span class="cn">NULL</span>,</span>
+<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a>    <span class="at">filter_join =</span> NFRLT <span class="sc">&gt;</span> NFRLT.join,</span>
+<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">&quot;last&quot;</span>,</span>
+<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="15%" />
@@ -3094,50 +3194,50 @@ and <code>EX</code> records. We will derive the relative time variables
 <code>derive_vars_duration()</code> to derive <code>AFRLT</code> and
 <code>APRLT</code>. Note we defined <code>EVID</code> above with values
 of 0 for observation records and 1 for dosing records.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># ---- Combine ADPPK and EX data ----</span></span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="co"># Derive Relative Time Variables</span></span>
-<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>adppk_aprlt <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(adppk_nom_prev, ex_exp) <span class="sc">%&gt;%</span></span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>  <span class="fu">group_by</span>(USUBJID, DRUG) <span class="sc">%&gt;%</span></span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>    <span class="at">FANLDTM =</span> <span class="fu">min</span>(FANLDTM, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>    <span class="at">min_NFRLT =</span> <span class="fu">min</span>(NFRLT, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>    <span class="at">maxdate =</span> <span class="fu">max</span>(ADT[EVID <span class="sc">==</span> <span class="dv">0</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.after =</span> USUBJID</span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>  <span class="fu">arrange</span>(USUBJID, ADTM) <span class="sc">%&gt;%</span></span>
-<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a>  <span class="fu">filter</span>(ADT <span class="sc">&lt;=</span> maxdate) <span class="sc">%&gt;%</span></span>
-<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a>  <span class="co"># Derive Actual Relative Time from First Dose (AFRLT)</span></span>
-<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
-<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>    <span class="at">new_var =</span> AFRLT,</span>
-<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a>    <span class="at">start_date =</span> FANLDTM,</span>
-<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a>    <span class="at">end_date =</span> ADTM,</span>
-<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;hours&quot;</span>,</span>
-<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a>    <span class="at">floor_in =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a>    <span class="at">add_one =</span> <span class="cn">FALSE</span></span>
-<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a>  <span class="co"># Derive Actual Relative Time from Reference Dose (APRLT)</span></span>
-<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
-<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a>    <span class="at">new_var =</span> APRLT,</span>
-<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a>    <span class="at">start_date =</span> ADTM_prev,</span>
-<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a>    <span class="at">end_date =</span> ADTM,</span>
-<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;hours&quot;</span>,</span>
-<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a>    <span class="at">floor_in =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a>    <span class="at">add_one =</span> <span class="cn">FALSE</span></span>
-<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a>  <span class="co"># Derive APRLT</span></span>
-<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a>    <span class="at">APRLT =</span> <span class="fu">case_when</span>(</span>
-<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb19-36"><a href="#cb19-36" tabindex="-1"></a>      <span class="fu">is.na</span>(APRLT) <span class="sc">~</span> AFRLT,</span>
-<span id="cb19-37"><a href="#cb19-37" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> APRLT</span>
-<span id="cb19-38"><a href="#cb19-38" tabindex="-1"></a>    ),</span>
-<span id="cb19-39"><a href="#cb19-39" tabindex="-1"></a>    <span class="at">NPRLT =</span> <span class="fu">case_when</span>(</span>
-<span id="cb19-40"><a href="#cb19-40" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb19-41"><a href="#cb19-41" tabindex="-1"></a>      <span class="fu">is.na</span>(NFRLT_prev) <span class="sc">~</span> NFRLT <span class="sc">-</span> min_NFRLT,</span>
-<span id="cb19-42"><a href="#cb19-42" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> NFRLT <span class="sc">-</span> NFRLT_prev</span>
-<span id="cb19-43"><a href="#cb19-43" tabindex="-1"></a>    )</span>
-<span id="cb19-44"><a href="#cb19-44" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># ---- Combine ADPPK and EX data ----</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co"># Derive Relative Time Variables</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>adppk_aprlt <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(adppk_nom_prev, ex_exp) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  <span class="fu">group_by</span>(USUBJID, DRUG) <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>    <span class="at">FANLDTM =</span> <span class="fu">min</span>(FANLDTM, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>    <span class="at">min_NFRLT =</span> <span class="fu">min</span>(NFRLT, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>    <span class="at">maxdate =</span> <span class="fu">max</span>(ADT[EVID <span class="sc">==</span> <span class="dv">0</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.after =</span> USUBJID</span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>  <span class="fu">arrange</span>(USUBJID, ADTM) <span class="sc">%&gt;%</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>  <span class="fu">filter</span>(ADT <span class="sc">&lt;=</span> maxdate) <span class="sc">%&gt;%</span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a>  <span class="co"># Derive Actual Relative Time from First Dose (AFRLT)</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a>    <span class="at">new_var =</span> AFRLT,</span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a>    <span class="at">start_date =</span> FANLDTM,</span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a>    <span class="at">end_date =</span> ADTM,</span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;hours&quot;</span>,</span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a>    <span class="at">floor_in =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a>    <span class="at">add_one =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a>  <span class="co"># Derive Actual Relative Time from Reference Dose (APRLT)</span></span>
+<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a>  <span class="fu">derive_vars_duration</span>(</span>
+<span id="cb20-25"><a href="#cb20-25" tabindex="-1"></a>    <span class="at">new_var =</span> APRLT,</span>
+<span id="cb20-26"><a href="#cb20-26" tabindex="-1"></a>    <span class="at">start_date =</span> ADTM_prev,</span>
+<span id="cb20-27"><a href="#cb20-27" tabindex="-1"></a>    <span class="at">end_date =</span> ADTM,</span>
+<span id="cb20-28"><a href="#cb20-28" tabindex="-1"></a>    <span class="at">out_unit =</span> <span class="st">&quot;hours&quot;</span>,</span>
+<span id="cb20-29"><a href="#cb20-29" tabindex="-1"></a>    <span class="at">floor_in =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-30"><a href="#cb20-30" tabindex="-1"></a>    <span class="at">add_one =</span> <span class="cn">FALSE</span></span>
+<span id="cb20-31"><a href="#cb20-31" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-32"><a href="#cb20-32" tabindex="-1"></a>  <span class="co"># Derive APRLT</span></span>
+<span id="cb20-33"><a href="#cb20-33" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-34"><a href="#cb20-34" tabindex="-1"></a>    <span class="at">APRLT =</span> <span class="fu">case_when</span>(</span>
+<span id="cb20-35"><a href="#cb20-35" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb20-36"><a href="#cb20-36" tabindex="-1"></a>      <span class="fu">is.na</span>(APRLT) <span class="sc">~</span> AFRLT,</span>
+<span id="cb20-37"><a href="#cb20-37" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> APRLT</span>
+<span id="cb20-38"><a href="#cb20-38" tabindex="-1"></a>    ),</span>
+<span id="cb20-39"><a href="#cb20-39" tabindex="-1"></a>    <span class="at">NPRLT =</span> <span class="fu">case_when</span>(</span>
+<span id="cb20-40"><a href="#cb20-40" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb20-41"><a href="#cb20-41" tabindex="-1"></a>      <span class="fu">is.na</span>(NFRLT_prev) <span class="sc">~</span> NFRLT <span class="sc">-</span> min_NFRLT,</span>
+<span id="cb20-42"><a href="#cb20-42" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> NFRLT <span class="sc">-</span> NFRLT_prev</span>
+<span id="cb20-43"><a href="#cb20-43" tabindex="-1"></a>    )</span>
+<span id="cb20-44"><a href="#cb20-44" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -3242,70 +3342,70 @@ is set to the numeric concentration value <code>PCSTRESN</code>. We will
 also include <code>AVAL</code> equivalent to <code>DV</code> for
 consistency with CDISC ADaM standards. <code>MDV</code> missing
 dependent variable will also be included.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># ---- Derive Analysis Variables ----</span></span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co"># Derive actual dose DOSEA and planned dose DOSEP,</span></span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co"># Derive AVAL and DV</span></span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>adppk_aval <span class="ot">&lt;-</span> adppk_aprlt <span class="sc">%&gt;%</span></span>
-<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>    <span class="co"># Derive Actual Dose</span></span>
-<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>    <span class="at">DOSEA =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
-<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>      <span class="fu">is.na</span>(EXDOSE_prev) <span class="sc">~</span> EXDOSE_first,</span>
-<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> EXDOSE_prev</span>
-<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>    ),</span>
-<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>    <span class="co"># Derive Planned Dose</span></span>
-<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a>    <span class="at">DOSEP =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">81</span>,</span>
-<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">54</span>,</span>
-<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Placebo&quot;</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a>    ),</span>
-<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a>    <span class="co"># Derive PARAMCD</span></span>
-<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">&quot;DOSE&quot;</span>,</span>
-<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCTESTCD</span>
-<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a>    ),</span>
-<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a>    <span class="at">ALLOQ =</span> PCLLOQ,</span>
-<span id="cb20-25"><a href="#cb20-25" tabindex="-1"></a>    <span class="co"># Derive CMT</span></span>
-<span id="cb20-26"><a href="#cb20-26" tabindex="-1"></a>    <span class="at">CMT =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-27"><a href="#cb20-27" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb20-28"><a href="#cb20-28" tabindex="-1"></a>      PCSPEC <span class="sc">==</span> <span class="st">&quot;PLASMA&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb20-29"><a href="#cb20-29" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
-<span id="cb20-30"><a href="#cb20-30" tabindex="-1"></a>    ),</span>
-<span id="cb20-31"><a href="#cb20-31" tabindex="-1"></a>    <span class="co"># Derive BLQFL/BLQFN</span></span>
-<span id="cb20-32"><a href="#cb20-32" tabindex="-1"></a>    <span class="at">BLQFL =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-33"><a href="#cb20-33" tabindex="-1"></a>      PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">~</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb20-34"><a href="#cb20-34" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;N&quot;</span></span>
-<span id="cb20-35"><a href="#cb20-35" tabindex="-1"></a>    ),</span>
-<span id="cb20-36"><a href="#cb20-36" tabindex="-1"></a>    <span class="at">BLQFN =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-37"><a href="#cb20-37" tabindex="-1"></a>      PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb20-38"><a href="#cb20-38" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb20-39"><a href="#cb20-39" tabindex="-1"></a>    ),</span>
-<span id="cb20-40"><a href="#cb20-40" tabindex="-1"></a>    <span class="at">AMT =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-41"><a href="#cb20-41" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
-<span id="cb20-42"><a href="#cb20-42" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
-<span id="cb20-43"><a href="#cb20-43" tabindex="-1"></a>    ),</span>
-<span id="cb20-44"><a href="#cb20-44" tabindex="-1"></a>    <span class="co"># Derive DV and AVAL</span></span>
-<span id="cb20-45"><a href="#cb20-45" tabindex="-1"></a>    <span class="at">DV =</span> PCSTRESN,</span>
-<span id="cb20-46"><a href="#cb20-46" tabindex="-1"></a>    <span class="at">AVAL =</span> DV,</span>
-<span id="cb20-47"><a href="#cb20-47" tabindex="-1"></a>    <span class="at">DVL =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-48"><a href="#cb20-48" tabindex="-1"></a>      DV <span class="sc">!=</span> <span class="dv">0</span> <span class="sc">~</span> <span class="fu">log</span>(DV),</span>
-<span id="cb20-49"><a href="#cb20-49" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
-<span id="cb20-50"><a href="#cb20-50" tabindex="-1"></a>    ),</span>
-<span id="cb20-51"><a href="#cb20-51" tabindex="-1"></a>    <span class="co"># Derive MDV</span></span>
-<span id="cb20-52"><a href="#cb20-52" tabindex="-1"></a>    <span class="at">MDV =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-53"><a href="#cb20-53" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb20-54"><a href="#cb20-54" tabindex="-1"></a>      <span class="fu">is.na</span>(DV) <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb20-55"><a href="#cb20-55" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
-<span id="cb20-56"><a href="#cb20-56" tabindex="-1"></a>    ),</span>
-<span id="cb20-57"><a href="#cb20-57" tabindex="-1"></a>    <span class="at">AVALU =</span> <span class="fu">case_when</span>(</span>
-<span id="cb20-58"><a href="#cb20-58" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
-<span id="cb20-59"><a href="#cb20-59" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCSTRESU</span>
-<span id="cb20-60"><a href="#cb20-60" tabindex="-1"></a>    ),</span>
-<span id="cb20-61"><a href="#cb20-61" tabindex="-1"></a>    <span class="at">UDTC =</span> <span class="fu">format_ISO8601</span>(ADTM),</span>
-<span id="cb20-62"><a href="#cb20-62" tabindex="-1"></a>    <span class="at">II =</span> <span class="fu">if_else</span>(EVID <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb20-63"><a href="#cb20-63" tabindex="-1"></a>    <span class="at">SS =</span> <span class="fu">if_else</span>(EVID <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb20-64"><a href="#cb20-64" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># ---- Derive Analysis Variables ----</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co"># Derive actual dose DOSEA and planned dose DOSEP,</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co"># Derive AVAL and DV</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>adppk_aval <span class="ot">&lt;-</span> adppk_aprlt <span class="sc">%&gt;%</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>    <span class="co"># Derive Actual Dose</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>    <span class="at">DOSEA =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>      <span class="fu">is.na</span>(EXDOSE_prev) <span class="sc">~</span> EXDOSE_first,</span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> EXDOSE_prev</span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a>    ),</span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>    <span class="co"># Derive Planned Dose</span></span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a>    <span class="at">DOSEP =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">81</span>,</span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">54</span>,</span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a>      TRT01P <span class="sc">==</span> <span class="st">&quot;Placebo&quot;</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a>    ),</span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a>    <span class="co"># Derive PARAMCD</span></span>
+<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a>    <span class="at">PARAMCD =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">&quot;DOSE&quot;</span>,</span>
+<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCTESTCD</span>
+<span id="cb21-23"><a href="#cb21-23" tabindex="-1"></a>    ),</span>
+<span id="cb21-24"><a href="#cb21-24" tabindex="-1"></a>    <span class="at">ALLOQ =</span> PCLLOQ,</span>
+<span id="cb21-25"><a href="#cb21-25" tabindex="-1"></a>    <span class="co"># Derive CMT</span></span>
+<span id="cb21-26"><a href="#cb21-26" tabindex="-1"></a>    <span class="at">CMT =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-27"><a href="#cb21-27" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a>      PCSPEC <span class="sc">==</span> <span class="st">&quot;PLASMA&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb21-29"><a href="#cb21-29" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
+<span id="cb21-30"><a href="#cb21-30" tabindex="-1"></a>    ),</span>
+<span id="cb21-31"><a href="#cb21-31" tabindex="-1"></a>    <span class="co"># Derive BLQFL/BLQFN</span></span>
+<span id="cb21-32"><a href="#cb21-32" tabindex="-1"></a>    <span class="at">BLQFL =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-33"><a href="#cb21-33" tabindex="-1"></a>      PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">~</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb21-34"><a href="#cb21-34" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;N&quot;</span></span>
+<span id="cb21-35"><a href="#cb21-35" tabindex="-1"></a>    ),</span>
+<span id="cb21-36"><a href="#cb21-36" tabindex="-1"></a>    <span class="at">BLQFN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-37"><a href="#cb21-37" tabindex="-1"></a>      PCSTRESC <span class="sc">==</span> <span class="st">&quot;&lt;BLQ&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb21-38"><a href="#cb21-38" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb21-39"><a href="#cb21-39" tabindex="-1"></a>    ),</span>
+<span id="cb21-40"><a href="#cb21-40" tabindex="-1"></a>    <span class="at">AMT =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-41"><a href="#cb21-41" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> EXDOSE,</span>
+<span id="cb21-42"><a href="#cb21-42" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
+<span id="cb21-43"><a href="#cb21-43" tabindex="-1"></a>    ),</span>
+<span id="cb21-44"><a href="#cb21-44" tabindex="-1"></a>    <span class="co"># Derive DV and AVAL</span></span>
+<span id="cb21-45"><a href="#cb21-45" tabindex="-1"></a>    <span class="at">DV =</span> PCSTRESN,</span>
+<span id="cb21-46"><a href="#cb21-46" tabindex="-1"></a>    <span class="at">AVAL =</span> DV,</span>
+<span id="cb21-47"><a href="#cb21-47" tabindex="-1"></a>    <span class="at">DVL =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-48"><a href="#cb21-48" tabindex="-1"></a>      DV <span class="sc">!=</span> <span class="dv">0</span> <span class="sc">~</span> <span class="fu">log</span>(DV),</span>
+<span id="cb21-49"><a href="#cb21-49" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
+<span id="cb21-50"><a href="#cb21-50" tabindex="-1"></a>    ),</span>
+<span id="cb21-51"><a href="#cb21-51" tabindex="-1"></a>    <span class="co"># Derive MDV</span></span>
+<span id="cb21-52"><a href="#cb21-52" tabindex="-1"></a>    <span class="at">MDV =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-53"><a href="#cb21-53" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb21-54"><a href="#cb21-54" tabindex="-1"></a>      <span class="fu">is.na</span>(DV) <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb21-55"><a href="#cb21-55" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb21-56"><a href="#cb21-56" tabindex="-1"></a>    ),</span>
+<span id="cb21-57"><a href="#cb21-57" tabindex="-1"></a>    <span class="at">AVALU =</span> <span class="fu">case_when</span>(</span>
+<span id="cb21-58"><a href="#cb21-58" tabindex="-1"></a>      EVID <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
+<span id="cb21-59"><a href="#cb21-59" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> PCSTRESU</span>
+<span id="cb21-60"><a href="#cb21-60" tabindex="-1"></a>    ),</span>
+<span id="cb21-61"><a href="#cb21-61" tabindex="-1"></a>    <span class="at">UDTC =</span> <span class="fu">format_ISO8601</span>(ADTM),</span>
+<span id="cb21-62"><a href="#cb21-62" tabindex="-1"></a>    <span class="at">II =</span> <span class="fu">if_else</span>(EVID <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb21-63"><a href="#cb21-63" tabindex="-1"></a>    <span class="at">SS =</span> <span class="fu">if_else</span>(EVID <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb21-64"><a href="#cb21-64" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="17%" />
@@ -3464,30 +3564,30 @@ dependent variable will also be included.</p>
 on drug and include the numeric version <code>PROJIDN</code>, and we
 drop and we drop intermediate variables such as those ending with
 “_prev”.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># ---- Add ASEQ ----</span></span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>adppk_aseq <span class="ot">&lt;-</span> adppk_aval <span class="sc">%&gt;%</span></span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>  <span class="co"># Calculate ASEQ</span></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
-<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>    <span class="at">new_var =</span> ASEQ,</span>
-<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(AFRLT, EVID, CMT),</span>
-<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
-<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a>  <span class="co"># Derive PARAM and PARAMN</span></span>
-<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(<span class="at">dataset_add =</span> <span class="fu">select</span>(param_lookup, <span class="sc">-</span>PCTESTCD), <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)) <span class="sc">%&gt;%</span></span>
-<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a>    <span class="at">PROJID =</span> DRUG,</span>
-<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>    <span class="at">PROJIDN =</span> <span class="dv">1</span></span>
-<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a>  <span class="co"># Remove temporary variables</span></span>
-<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a>    <span class="sc">-</span>DOMAIN, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;min&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;max&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;EX&quot;</span>),</span>
-<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;PC&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;first&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;prev&quot;</span>),</span>
-<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;DTM&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;DT&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;TM&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;VISIT&quot;</span>),</span>
-<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;AVISIT&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;TMF&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;TRT&quot;</span>),</span>
-<span id="cb21-23"><a href="#cb21-23" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;ATPT&quot;</span>), <span class="sc">-</span>DRUG</span>
-<span id="cb21-24"><a href="#cb21-24" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># ---- Add ASEQ ----</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>adppk_aseq <span class="ot">&lt;-</span> adppk_aval <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>  <span class="co"># Calculate ASEQ</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="fu">derive_var_obs_number</span>(</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>    <span class="at">new_var =</span> ASEQ,</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>    <span class="at">order =</span> <span class="fu">exprs</span>(AFRLT, EVID, CMT),</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>    <span class="at">check_type =</span> <span class="st">&quot;error&quot;</span></span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>  <span class="co"># Derive PARAM and PARAMN</span></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(<span class="at">dataset_add =</span> <span class="fu">select</span>(param_lookup, <span class="sc">-</span>PCTESTCD), <span class="at">by_vars =</span> <span class="fu">exprs</span>(PARAMCD)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>    <span class="at">PROJID =</span> DRUG,</span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>    <span class="at">PROJIDN =</span> <span class="dv">1</span></span>
+<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a>  <span class="co"># Remove temporary variables</span></span>
+<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a>    <span class="sc">-</span>DOMAIN, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;min&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;max&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;EX&quot;</span>),</span>
+<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;PC&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;first&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;prev&quot;</span>),</span>
+<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;DTM&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;DT&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;TM&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;VISIT&quot;</span>),</span>
+<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;AVISIT&quot;</span>), <span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;TMF&quot;</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;TRT&quot;</span>),</span>
+<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&quot;ATPT&quot;</span>), <span class="sc">-</span>DRUG</span>
+<span id="cb22-24"><a href="#cb22-24" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="16%" />
@@ -3658,68 +3758,68 @@ covariates. We will create numeric versions of many of our standard
 CDISC demographic variables including <code>STUDYIDN</code>,
 <code>USUBJIDN</code>, <code>SEXN</code>, <code>RACEN</code>, and
 <code>ETHNICN</code>.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co">#---- Derive Covariates ----</span></span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co"># Include numeric values for STUDYIDN, USUBJIDN, SEXN, RACEN etc.</span></span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>covar <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>    <span class="at">dataset_add =</span> country_code_lookup,</span>
-<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">COUNTRYN =</span> country_number, <span class="at">COUNTRYL =</span> country_name),</span>
-<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(<span class="at">COUNTRY =</span> country_code),</span>
-<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>    <span class="at">STUDYIDN =</span> <span class="fu">as.numeric</span>(<span class="fu">word</span>(USUBJID, <span class="dv">1</span>, <span class="at">sep =</span> <span class="fu">fixed</span>(<span class="st">&quot;-&quot;</span>))),</span>
-<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>    <span class="at">SITEIDN =</span> <span class="fu">as.numeric</span>(<span class="fu">word</span>(USUBJID, <span class="dv">2</span>, <span class="at">sep =</span> <span class="fu">fixed</span>(<span class="st">&quot;-&quot;</span>))),</span>
-<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>    <span class="at">USUBJIDN =</span> <span class="fu">as.numeric</span>(<span class="fu">word</span>(USUBJID, <span class="dv">3</span>, <span class="at">sep =</span> <span class="fu">fixed</span>(<span class="st">&quot;-&quot;</span>))),</span>
-<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>    <span class="at">SUBJIDN =</span> <span class="fu">as.numeric</span>(SUBJID),</span>
-<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>    <span class="at">SEXN =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>      SEX <span class="sc">==</span> <span class="st">&quot;M&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a>      SEX <span class="sc">==</span> <span class="st">&quot;F&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
-<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a>    ),</span>
-<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a>    <span class="at">RACEN =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;AMERICAN INDIAN OR ALASKA NATIVE&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;ASIAN&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;BLACK OR AFRICAN AMERICAN&quot;</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
-<span id="cb22-24"><a href="#cb22-24" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER&quot;</span> <span class="sc">~</span> <span class="dv">4</span>,</span>
-<span id="cb22-25"><a href="#cb22-25" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;WHITE&quot;</span> <span class="sc">~</span> <span class="dv">5</span>,</span>
-<span id="cb22-26"><a href="#cb22-26" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">6</span></span>
-<span id="cb22-27"><a href="#cb22-27" tabindex="-1"></a>    ),</span>
-<span id="cb22-28"><a href="#cb22-28" tabindex="-1"></a>    <span class="at">ETHNICN =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-29"><a href="#cb22-29" tabindex="-1"></a>      ETHNIC <span class="sc">==</span> <span class="st">&quot;HISPANIC OR LATINO&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb22-30"><a href="#cb22-30" tabindex="-1"></a>      ETHNIC <span class="sc">==</span> <span class="st">&quot;NOT HISPANIC OR LATINO&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb22-31"><a href="#cb22-31" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
-<span id="cb22-32"><a href="#cb22-32" tabindex="-1"></a>    ),</span>
-<span id="cb22-33"><a href="#cb22-33" tabindex="-1"></a>    <span class="at">ARMN =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-34"><a href="#cb22-34" tabindex="-1"></a>      ARM <span class="sc">==</span> <span class="st">&quot;Placebo&quot;</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb22-35"><a href="#cb22-35" tabindex="-1"></a>      ARM <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb22-36"><a href="#cb22-36" tabindex="-1"></a>      ARM <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb22-37"><a href="#cb22-37" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
-<span id="cb22-38"><a href="#cb22-38" tabindex="-1"></a>    ),</span>
-<span id="cb22-39"><a href="#cb22-39" tabindex="-1"></a>    <span class="at">ACTARMN =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-40"><a href="#cb22-40" tabindex="-1"></a>      ACTARM <span class="sc">==</span> <span class="st">&quot;Placebo&quot;</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb22-41"><a href="#cb22-41" tabindex="-1"></a>      ACTARM <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb22-42"><a href="#cb22-42" tabindex="-1"></a>      ACTARM <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb22-43"><a href="#cb22-43" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
-<span id="cb22-44"><a href="#cb22-44" tabindex="-1"></a>    ),</span>
-<span id="cb22-45"><a href="#cb22-45" tabindex="-1"></a>    <span class="at">COHORT =</span> ARMN,</span>
-<span id="cb22-46"><a href="#cb22-46" tabindex="-1"></a>    <span class="at">COHORTC =</span> ARM,</span>
-<span id="cb22-47"><a href="#cb22-47" tabindex="-1"></a>    <span class="at">ROUTE =</span> <span class="fu">unique</span>(ex<span class="sc">$</span>EXROUTE),</span>
-<span id="cb22-48"><a href="#cb22-48" tabindex="-1"></a>    <span class="at">ROUTEN =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-49"><a href="#cb22-49" tabindex="-1"></a>      ROUTE <span class="sc">==</span> <span class="st">&quot;TRANSDERMAL&quot;</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
-<span id="cb22-50"><a href="#cb22-50" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
-<span id="cb22-51"><a href="#cb22-51" tabindex="-1"></a>    ),</span>
-<span id="cb22-52"><a href="#cb22-52" tabindex="-1"></a>    <span class="at">FORM =</span> <span class="fu">unique</span>(ex<span class="sc">$</span>EXDOSFRM),</span>
-<span id="cb22-53"><a href="#cb22-53" tabindex="-1"></a>    <span class="at">FORMN =</span> <span class="fu">case_when</span>(</span>
-<span id="cb22-54"><a href="#cb22-54" tabindex="-1"></a>      FORM <span class="sc">==</span> <span class="st">&quot;PATCH&quot;</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
-<span id="cb22-55"><a href="#cb22-55" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">4</span></span>
-<span id="cb22-56"><a href="#cb22-56" tabindex="-1"></a>    )</span>
-<span id="cb22-57"><a href="#cb22-57" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb22-58"><a href="#cb22-58" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb22-59"><a href="#cb22-59" tabindex="-1"></a>    STUDYID, STUDYIDN, SITEID, SITEIDN, USUBJID, USUBJIDN,</span>
-<span id="cb22-60"><a href="#cb22-60" tabindex="-1"></a>    SUBJID, SUBJIDN, AGE, SEX, SEXN, COHORT, COHORTC, ROUTE, ROUTEN,</span>
-<span id="cb22-61"><a href="#cb22-61" tabindex="-1"></a>    RACE, RACEN, ETHNIC, ETHNICN, FORM, FORMN, COUNTRY, COUNTRYN, COUNTRYL</span>
-<span id="cb22-62"><a href="#cb22-62" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co">#---- Derive Covariates ----</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co"># Include numeric values for STUDYIDN, USUBJIDN, SEXN, RACEN etc.</span></span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>covar <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>    <span class="at">dataset_add =</span> country_code_lookup,</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">COUNTRYN =</span> country_number, <span class="at">COUNTRYL =</span> country_name),</span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(<span class="at">COUNTRY =</span> country_code),</span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a>    <span class="at">STUDYIDN =</span> <span class="fu">as.numeric</span>(<span class="fu">word</span>(USUBJID, <span class="dv">1</span>, <span class="at">sep =</span> <span class="fu">fixed</span>(<span class="st">&quot;-&quot;</span>))),</span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a>    <span class="at">SITEIDN =</span> <span class="fu">as.numeric</span>(<span class="fu">word</span>(USUBJID, <span class="dv">2</span>, <span class="at">sep =</span> <span class="fu">fixed</span>(<span class="st">&quot;-&quot;</span>))),</span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a>    <span class="at">USUBJIDN =</span> <span class="fu">as.numeric</span>(<span class="fu">word</span>(USUBJID, <span class="dv">3</span>, <span class="at">sep =</span> <span class="fu">fixed</span>(<span class="st">&quot;-&quot;</span>))),</span>
+<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a>    <span class="at">SUBJIDN =</span> <span class="fu">as.numeric</span>(SUBJID),</span>
+<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a>    <span class="at">SEXN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a>      SEX <span class="sc">==</span> <span class="st">&quot;M&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a>      SEX <span class="sc">==</span> <span class="st">&quot;F&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb23-18"><a href="#cb23-18" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
+<span id="cb23-19"><a href="#cb23-19" tabindex="-1"></a>    ),</span>
+<span id="cb23-20"><a href="#cb23-20" tabindex="-1"></a>    <span class="at">RACEN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-21"><a href="#cb23-21" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;AMERICAN INDIAN OR ALASKA NATIVE&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb23-22"><a href="#cb23-22" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;ASIAN&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb23-23"><a href="#cb23-23" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;BLACK OR AFRICAN AMERICAN&quot;</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb23-24"><a href="#cb23-24" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;NATIVE HAWAIIAN OR OTHER PACIFIC ISLANDER&quot;</span> <span class="sc">~</span> <span class="dv">4</span>,</span>
+<span id="cb23-25"><a href="#cb23-25" tabindex="-1"></a>      RACE <span class="sc">==</span> <span class="st">&quot;WHITE&quot;</span> <span class="sc">~</span> <span class="dv">5</span>,</span>
+<span id="cb23-26"><a href="#cb23-26" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">6</span></span>
+<span id="cb23-27"><a href="#cb23-27" tabindex="-1"></a>    ),</span>
+<span id="cb23-28"><a href="#cb23-28" tabindex="-1"></a>    <span class="at">ETHNICN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-29"><a href="#cb23-29" tabindex="-1"></a>      ETHNIC <span class="sc">==</span> <span class="st">&quot;HISPANIC OR LATINO&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb23-30"><a href="#cb23-30" tabindex="-1"></a>      ETHNIC <span class="sc">==</span> <span class="st">&quot;NOT HISPANIC OR LATINO&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb23-31"><a href="#cb23-31" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
+<span id="cb23-32"><a href="#cb23-32" tabindex="-1"></a>    ),</span>
+<span id="cb23-33"><a href="#cb23-33" tabindex="-1"></a>    <span class="at">ARMN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-34"><a href="#cb23-34" tabindex="-1"></a>      ARM <span class="sc">==</span> <span class="st">&quot;Placebo&quot;</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb23-35"><a href="#cb23-35" tabindex="-1"></a>      ARM <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb23-36"><a href="#cb23-36" tabindex="-1"></a>      ARM <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb23-37"><a href="#cb23-37" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
+<span id="cb23-38"><a href="#cb23-38" tabindex="-1"></a>    ),</span>
+<span id="cb23-39"><a href="#cb23-39" tabindex="-1"></a>    <span class="at">ACTARMN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-40"><a href="#cb23-40" tabindex="-1"></a>      ACTARM <span class="sc">==</span> <span class="st">&quot;Placebo&quot;</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb23-41"><a href="#cb23-41" tabindex="-1"></a>      ACTARM <span class="sc">==</span> <span class="st">&quot;Xanomeline Low Dose&quot;</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb23-42"><a href="#cb23-42" tabindex="-1"></a>      ACTARM <span class="sc">==</span> <span class="st">&quot;Xanomeline High Dose&quot;</span> <span class="sc">~</span> <span class="dv">2</span>,</span>
+<span id="cb23-43"><a href="#cb23-43" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">3</span></span>
+<span id="cb23-44"><a href="#cb23-44" tabindex="-1"></a>    ),</span>
+<span id="cb23-45"><a href="#cb23-45" tabindex="-1"></a>    <span class="at">COHORT =</span> ARMN,</span>
+<span id="cb23-46"><a href="#cb23-46" tabindex="-1"></a>    <span class="at">COHORTC =</span> ARM,</span>
+<span id="cb23-47"><a href="#cb23-47" tabindex="-1"></a>    <span class="at">ROUTE =</span> <span class="fu">unique</span>(ex<span class="sc">$</span>EXROUTE),</span>
+<span id="cb23-48"><a href="#cb23-48" tabindex="-1"></a>    <span class="at">ROUTEN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-49"><a href="#cb23-49" tabindex="-1"></a>      ROUTE <span class="sc">==</span> <span class="st">&quot;TRANSDERMAL&quot;</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb23-50"><a href="#cb23-50" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
+<span id="cb23-51"><a href="#cb23-51" tabindex="-1"></a>    ),</span>
+<span id="cb23-52"><a href="#cb23-52" tabindex="-1"></a>    <span class="at">FORM =</span> <span class="fu">unique</span>(ex<span class="sc">$</span>EXDOSFRM),</span>
+<span id="cb23-53"><a href="#cb23-53" tabindex="-1"></a>    <span class="at">FORMN =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-54"><a href="#cb23-54" tabindex="-1"></a>      FORM <span class="sc">==</span> <span class="st">&quot;PATCH&quot;</span> <span class="sc">~</span> <span class="dv">3</span>,</span>
+<span id="cb23-55"><a href="#cb23-55" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="dv">4</span></span>
+<span id="cb23-56"><a href="#cb23-56" tabindex="-1"></a>    )</span>
+<span id="cb23-57"><a href="#cb23-57" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-58"><a href="#cb23-58" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb23-59"><a href="#cb23-59" tabindex="-1"></a>    STUDYID, STUDYIDN, SITEID, SITEIDN, USUBJID, USUBJIDN,</span>
+<span id="cb23-60"><a href="#cb23-60" tabindex="-1"></a>    SUBJID, SUBJIDN, AGE, SEX, SEXN, COHORT, COHORTC, ROUTE, ROUTEN,</span>
+<span id="cb23-61"><a href="#cb23-61" tabindex="-1"></a>    RACE, RACEN, ETHNIC, ETHNICN, FORM, FORMN, COUNTRY, COUNTRYN, COUNTRYL</span>
+<span id="cb23-62"><a href="#cb23-62" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="12%" />
@@ -3882,50 +3982,50 @@ calculate BMI and BSA from height and weight using
 calculate creatinine clearance <code>CRCLBL</code> and estimated
 glomerular filtration rate (eGFR) <code>EGFRBL</code> using
 <code>compute_egfr()</code> function.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co">#---- Derive additional baselines from VS and LB ----</span></span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>labsbl <span class="ot">&lt;-</span> lb <span class="sc">%&gt;%</span></span>
-<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>  <span class="fu">filter</span>(LBBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> LBTESTCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CREAT&quot;</span>, <span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;AST&quot;</span>, <span class="st">&quot;BILI&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">LBTESTCDB =</span> <span class="fu">paste0</span>(LBTESTCD, <span class="st">&quot;BL&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, LBTESTCDB, LBSTRESN)</span>
-<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>covar_vslb <span class="ot">&lt;-</span> covar <span class="sc">%&gt;%</span></span>
-<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
-<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;HEIGHT&quot;</span>,</span>
-<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">HTBL =</span> VSSTRESN)</span>
-<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
-<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;WEIGHT&quot;</span> <span class="sc">&amp;</span> VSBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
-<span id="cb23-18"><a href="#cb23-18" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb23-19"><a href="#cb23-19" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">WTBL =</span> VSSTRESN)</span>
-<span id="cb23-20"><a href="#cb23-20" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb23-21"><a href="#cb23-21" tabindex="-1"></a>  <span class="fu">derive_vars_transposed</span>(</span>
-<span id="cb23-22"><a href="#cb23-22" tabindex="-1"></a>    <span class="at">dataset_merge =</span> labsbl,</span>
-<span id="cb23-23"><a href="#cb23-23" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
-<span id="cb23-24"><a href="#cb23-24" tabindex="-1"></a>    <span class="at">key_var =</span> LBTESTCDB,</span>
-<span id="cb23-25"><a href="#cb23-25" tabindex="-1"></a>    <span class="at">value_var =</span> LBSTRESN</span>
-<span id="cb23-26"><a href="#cb23-26" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb23-27"><a href="#cb23-27" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb23-28"><a href="#cb23-28" tabindex="-1"></a>    <span class="at">BMIBL =</span> <span class="fu">compute_bmi</span>(<span class="at">height =</span> HTBL, <span class="at">weight =</span> WTBL),</span>
-<span id="cb23-29"><a href="#cb23-29" tabindex="-1"></a>    <span class="at">BSABL =</span> <span class="fu">compute_bsa</span>(</span>
-<span id="cb23-30"><a href="#cb23-30" tabindex="-1"></a>      <span class="at">height =</span> HTBL,</span>
-<span id="cb23-31"><a href="#cb23-31" tabindex="-1"></a>      <span class="at">weight =</span> HTBL,</span>
-<span id="cb23-32"><a href="#cb23-32" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">&quot;Mosteller&quot;</span></span>
-<span id="cb23-33"><a href="#cb23-33" tabindex="-1"></a>    ),</span>
-<span id="cb23-34"><a href="#cb23-34" tabindex="-1"></a>    <span class="co"># Derive CRCLBL and EGFRBL using new function</span></span>
-<span id="cb23-35"><a href="#cb23-35" tabindex="-1"></a>    <span class="at">CRCLBL =</span> <span class="fu">compute_egfr</span>(</span>
-<span id="cb23-36"><a href="#cb23-36" tabindex="-1"></a>      <span class="at">creat =</span> CREATBL, <span class="at">creatu =</span> <span class="st">&quot;SI&quot;</span>, <span class="at">age =</span> AGE, <span class="at">weight =</span> WTBL, <span class="at">sex =</span> SEX,</span>
-<span id="cb23-37"><a href="#cb23-37" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">&quot;CRCL&quot;</span></span>
-<span id="cb23-38"><a href="#cb23-38" tabindex="-1"></a>    ),</span>
-<span id="cb23-39"><a href="#cb23-39" tabindex="-1"></a>    <span class="at">EGFRBL =</span> <span class="fu">compute_egfr</span>(</span>
-<span id="cb23-40"><a href="#cb23-40" tabindex="-1"></a>      <span class="at">creat =</span> CREATBL, <span class="at">creatu =</span> <span class="st">&quot;SI&quot;</span>, <span class="at">age =</span> AGE, <span class="at">weight =</span> WTBL, <span class="at">sex =</span> SEX,</span>
-<span id="cb23-41"><a href="#cb23-41" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">&quot;CKD-EPI&quot;</span></span>
-<span id="cb23-42"><a href="#cb23-42" tabindex="-1"></a>    )</span>
-<span id="cb23-43"><a href="#cb23-43" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb23-44"><a href="#cb23-44" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">TBILBL =</span> BILIBL)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co">#---- Derive additional baselines from VS and LB ----</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>labsbl <span class="ot">&lt;-</span> lb <span class="sc">%&gt;%</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="fu">filter</span>(LBBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> LBTESTCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CREAT&quot;</span>, <span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;AST&quot;</span>, <span class="st">&quot;BILI&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">LBTESTCDB =</span> <span class="fu">paste0</span>(LBTESTCD, <span class="st">&quot;BL&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>  <span class="fu">select</span>(STUDYID, USUBJID, LBTESTCDB, LBSTRESN)</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>covar_vslb <span class="ot">&lt;-</span> covar <span class="sc">%&gt;%</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;HEIGHT&quot;</span>,</span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">HTBL =</span> VSSTRESN)</span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a>    <span class="at">dataset_add =</span> vs,</span>
+<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a>    <span class="at">filter_add =</span> VSTESTCD <span class="sc">==</span> <span class="st">&quot;WEIGHT&quot;</span> <span class="sc">&amp;</span> VSBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span>,</span>
+<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a>    <span class="at">new_vars =</span> <span class="fu">exprs</span>(<span class="at">WTBL =</span> VSSTRESN)</span>
+<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a>  <span class="fu">derive_vars_transposed</span>(</span>
+<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a>    <span class="at">dataset_merge =</span> labsbl,</span>
+<span id="cb24-23"><a href="#cb24-23" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
+<span id="cb24-24"><a href="#cb24-24" tabindex="-1"></a>    <span class="at">key_var =</span> LBTESTCDB,</span>
+<span id="cb24-25"><a href="#cb24-25" tabindex="-1"></a>    <span class="at">value_var =</span> LBSTRESN</span>
+<span id="cb24-26"><a href="#cb24-26" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-27"><a href="#cb24-27" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-28"><a href="#cb24-28" tabindex="-1"></a>    <span class="at">BMIBL =</span> <span class="fu">compute_bmi</span>(<span class="at">height =</span> HTBL, <span class="at">weight =</span> WTBL),</span>
+<span id="cb24-29"><a href="#cb24-29" tabindex="-1"></a>    <span class="at">BSABL =</span> <span class="fu">compute_bsa</span>(</span>
+<span id="cb24-30"><a href="#cb24-30" tabindex="-1"></a>      <span class="at">height =</span> HTBL,</span>
+<span id="cb24-31"><a href="#cb24-31" tabindex="-1"></a>      <span class="at">weight =</span> HTBL,</span>
+<span id="cb24-32"><a href="#cb24-32" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">&quot;Mosteller&quot;</span></span>
+<span id="cb24-33"><a href="#cb24-33" tabindex="-1"></a>    ),</span>
+<span id="cb24-34"><a href="#cb24-34" tabindex="-1"></a>    <span class="co"># Derive CRCLBL and EGFRBL using new function</span></span>
+<span id="cb24-35"><a href="#cb24-35" tabindex="-1"></a>    <span class="at">CRCLBL =</span> <span class="fu">compute_egfr</span>(</span>
+<span id="cb24-36"><a href="#cb24-36" tabindex="-1"></a>      <span class="at">creat =</span> CREATBL, <span class="at">creatu =</span> <span class="st">&quot;SI&quot;</span>, <span class="at">age =</span> AGE, <span class="at">weight =</span> WTBL, <span class="at">sex =</span> SEX,</span>
+<span id="cb24-37"><a href="#cb24-37" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">&quot;CRCL&quot;</span></span>
+<span id="cb24-38"><a href="#cb24-38" tabindex="-1"></a>    ),</span>
+<span id="cb24-39"><a href="#cb24-39" tabindex="-1"></a>    <span class="at">EGFRBL =</span> <span class="fu">compute_egfr</span>(</span>
+<span id="cb24-40"><a href="#cb24-40" tabindex="-1"></a>      <span class="at">creat =</span> CREATBL, <span class="at">creatu =</span> <span class="st">&quot;SI&quot;</span>, <span class="at">age =</span> AGE, <span class="at">weight =</span> WTBL, <span class="at">sex =</span> SEX,</span>
+<span id="cb24-41"><a href="#cb24-41" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">&quot;CKD-EPI&quot;</span></span>
+<span id="cb24-42"><a href="#cb24-42" tabindex="-1"></a>    )</span>
+<span id="cb24-43"><a href="#cb24-43" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-44"><a href="#cb24-44" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">TBILBL =</span> BILIBL)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -4047,15 +4147,15 @@ glomerular filtration rate (eGFR) <code>EGFRBL</code> using
 <h2>Combine Covariates with <code>ADPPK</code> Data</h2>
 <p>Finally, we combine the covariates with the <code>ADPPK</code>
 data.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># Combine covariates with APPPK data</span></span>
-<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>adppk <span class="ot">&lt;-</span> adppk_aseq <span class="sc">%&gt;%</span></span>
-<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
-<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>    <span class="at">dataset_add =</span> covar_vslb,</span>
-<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
-<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>  <span class="fu">arrange</span>(STUDYIDN, USUBJIDN, AFRLT, EVID) <span class="sc">%&gt;%</span></span>
-<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">RECSEQ =</span> <span class="fu">row_number</span>())</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co"># Combine covariates with APPPK data</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>adppk <span class="ot">&lt;-</span> adppk_aseq <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>  <span class="fu">derive_vars_merged</span>(</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>    <span class="at">dataset_add =</span> covar_vslb,</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID)</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>  <span class="fu">arrange</span>(STUDYIDN, USUBJIDN, AFRLT, EVID) <span class="sc">%&gt;%</span></span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">RECSEQ =</span> <span class="fu">row_number</span>())</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">

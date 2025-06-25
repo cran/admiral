@@ -1176,7 +1176,7 @@ baseline variables can be derived:</p>
 makes sense to create a separate time to event dataset for them.
 However, it might be useful to create flags or categorization variables
 in <code>ADQS</code>. For example:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Create AVALCATx lookup table</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Create AVALCATy lookup table</span></span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>avalcat_lookup <span class="ot">&lt;-</span> <span class="fu">exprs</span>(</span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="sc">~</span>PARAMCD, <span class="sc">~</span>condition, <span class="sc">~</span>AVALCAT1, <span class="sc">~</span>AVALCAT1N,</span>
 <span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="st">&quot;GDS02TS&quot;</span>, AVAL <span class="sc">&lt;=</span> <span class="dv">5</span>, <span class="st">&quot;Normal&quot;</span>, <span class="dv">0</span><span class="dt">L</span>,</span>

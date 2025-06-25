@@ -4,8 +4,6 @@
 #'
 #' **Note:** This is a wrapper function for the more generic `derive_vars_duration()`.
 #'
-#' @inheritParams derive_vars_duration
-#'
 #' @param dataset
 #'   `r roxygen_param_dataset(expected_vars = c("start_date", "end_date"))`
 #'
@@ -16,8 +14,6 @@
 #'   Refer to `derive_vars_dt()` to impute and derive a date from a date character
 #'   vector to a date object.
 #'
-#'   Default: `BRTHDT`
-#'
 #' @param end_date The end date
 #'
 #'   A date or date-time object is expected.
@@ -25,13 +21,11 @@
 #'   Refer to `derive_vars_dt()` to impute and derive a date from a date character
 #'   vector to a date object.
 #'
-#'   Default: `RANDDT`
-#'
 #' @param age_unit Age unit
 #'
 #'   The age is derived in the specified unit
 #'
-#'   Permitted Values (case-insensitive):
+#' @permitted The values are considered case-insensitive.
 #'
 #'   For years: `"year"`, `"years"`, `"yr"`, `"yrs"`, `"y"`
 #'
@@ -46,6 +40,14 @@
 #'   For minutes: `"minute"`, `"minutes"`, `"min"`, `"mins"`
 #'
 #'   For seconds: `"second"`, `"seconds"`, `"sec"`, `"secs"`, `"s"`
+#'
+#' @param type lubridate duration type
+#'
+#'   See below for details.
+#'
+#'   Default: `"interval"`
+#'
+#'   Permitted Values: `"duration"`, `"interval"`
 #'
 #' @details The duration is derived as time from start to end date in the
 #'   specified output unit. If the end date is before the start date, the duration
@@ -141,9 +143,8 @@ derive_vars_aage <- function(dataset,
 #'   in `dataset`. This gives the unit of the `age_var` variable and is used to convert
 #'   AGE to 'years' so that grouping can occur.
 #'
-#'   Default: NULL
 #'
-#'   Permitted Values: 'years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'
+#' @permitted 'years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'
 #'
 #' @param new_var New age variable to be created in years. The returned values are
 #'   doubles and NOT integers.

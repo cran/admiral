@@ -330,9 +330,53 @@ test_that("create_query_data Test 7: issues error if SDGs without meddra_version
   )
 })
 
+## Test 8: error if no `get_terms_fun` provided ----
+test_that("create_query_data Test 8: error if no `get_terms_fun` provided", {
+  expect_snapshot(
+    create_query_data(queries = list(
+      query(
+        prefix = "SMQ02",
+        id = auto,
+        definition = basket_select(
+          name = "Pregnancy and neonatal topics (SMQ)",
+          scope = "NARROW",
+          type = "smq"
+        )
+      )
+    )),
+    error = TRUE
+  )
+})
+
+## Test 9: catching error from user function (get_terms_fun) ----
+test_that("create_query_data Test 9: catching error from user function (get_terms_fun)", {
+  faulty_fun <- function(version, basket_select, keep_id, temp_env) {
+    stop("Intentional error for testing")
+  }
+
+  pregsmq <- query(
+    prefix = "SMQ02",
+    id = auto,
+    definition = basket_select(
+      name = "Pregnancy and neonatal topics (SMQ)",
+      scope = "NARROW",
+      type = "smq"
+    )
+  )
+
+  expect_snapshot(
+    create_query_data(
+      queries = list(pregsmq),
+      version = "20.0",
+      get_terms_fun = faulty_fun
+    ),
+    error = TRUE
+  )
+})
+
 # query ----
-## Test 8: error if name = auto for non SMQs/SDGs ----
-test_that("query Test 8: error if name = auto for non SMQs/SDGs", {
+## Test 10: error if name = auto for non SMQs/SDGs ----
+test_that("query Test 10: error if name = auto for non SMQs/SDGs", {
   expect_snapshot(
     sdg <- query(
       prefix = "CQ01",
@@ -342,8 +386,8 @@ test_that("query Test 8: error if name = auto for non SMQs/SDGs", {
   )
 })
 
-## Test 9: error if id = auto for non SMQs/SDGs ----
-test_that("query Test 9: error if id = auto for non SMQs/SDGs", {
+## Test 11: error if id = auto for non SMQs/SDGs ----
+test_that("query Test 11: error if id = auto for non SMQs/SDGs", {
   expect_snapshot(
     sdg <- query(
       name = "My CQ",
@@ -355,8 +399,8 @@ test_that("query Test 9: error if id = auto for non SMQs/SDGs", {
   )
 })
 
-## Test 10: error if invalid definition ----
-test_that("query Test 10: error if invalid definition", {
+## Test 12: error if invalid definition ----
+test_that("query Test 12: error if invalid definition", {
   expect_snapshot(
     sdg <- query(
       name = "My CQ",
@@ -368,8 +412,8 @@ test_that("query Test 10: error if invalid definition", {
 })
 
 # assert_terms ----
-## Test 11: error if SRCVAR missing ----
-test_that("assert_terms Test 11: error if SRCVAR missing", {
+## Test 13: error if SRCVAR missing ----
+test_that("assert_terms Test 13: error if SRCVAR missing", {
   expect_snapshot(
     assert_terms(
       terms = select(cqterms, -SRCVAR),
@@ -379,8 +423,8 @@ test_that("assert_terms Test 11: error if SRCVAR missing", {
   )
 })
 
-## Test 12: error if SRCVAR and GRPNAME missing ----
-test_that("assert_terms Test 12: error if SRCVAR and GRPNAME missing", {
+## Test 14: error if SRCVAR and GRPNAME missing ----
+test_that("assert_terms Test 14: error if SRCVAR and GRPNAME missing", {
   expect_snapshot(
     assert_terms(
       terms = select(cqterms, -SRCVAR),
@@ -391,8 +435,8 @@ test_that("assert_terms Test 12: error if SRCVAR and GRPNAME missing", {
   )
 })
 
-## Test 13: error if TERMCHAR and TERMNUM missing ----
-test_that("assert_terms Test 13: error if TERMCHAR and TERMNUM missing", {
+## Test 15: error if TERMCHAR and TERMNUM missing ----
+test_that("assert_terms Test 15: error if TERMCHAR and TERMNUM missing", {
   expect_snapshot(
     assert_terms(
       terms = select(cqterms, SRCVAR),
@@ -402,8 +446,8 @@ test_that("assert_terms Test 13: error if TERMCHAR and TERMNUM missing", {
   )
 })
 
-## Test 14: error if no data frame ----
-test_that("assert_terms Test 14: error if no data frame", {
+## Test 16: error if no data frame ----
+test_that("assert_terms Test 16: error if no data frame", {
   expect_snapshot(
     assert_terms(
       terms = 42,
@@ -413,8 +457,8 @@ test_that("assert_terms Test 14: error if no data frame", {
   )
 })
 
-## Test 15: error if no observations ----
-test_that("assert_terms Test 15: error if no observations", {
+## Test 17: error if no observations ----
+test_that("assert_terms Test 17: error if no observations", {
   expect_snapshot(
     assert_terms(
       terms = filter(cqterms, TERMNUM == 42),
@@ -424,8 +468,8 @@ test_that("assert_terms Test 15: error if no observations", {
   )
 })
 
-## Test 16: error if GRPNAME is missing ----
-test_that("assert_terms Test 16: error if GRPNAME is missing", {
+## Test 18: error if GRPNAME is missing ----
+test_that("assert_terms Test 18: error if GRPNAME is missing", {
   expect_snapshot(
     assert_terms(
       terms = cqterms,
@@ -436,8 +480,8 @@ test_that("assert_terms Test 16: error if GRPNAME is missing", {
   )
 })
 
-## Test 17: error if GRPID is missing ----
-test_that("assert_terms Test 17: error if GRPID is missing", {
+## Test 19: error if GRPID is missing ----
+test_that("assert_terms Test 19: error if GRPID is missing", {
   expect_snapshot(
     assert_terms(
       terms = cqterms,
@@ -449,8 +493,8 @@ test_that("assert_terms Test 17: error if GRPID is missing", {
 })
 
 # basket_select ----
-## Test 18: error if name and id specified ----
-test_that("basket_select Test 18: error if name and id specified", {
+## Test 20: error if name and id specified ----
+test_that("basket_select Test 20: error if name and id specified", {
   expect_snapshot(
     basket_select(
       name = "My SMQ",
@@ -462,16 +506,16 @@ test_that("basket_select Test 18: error if name and id specified", {
   )
 })
 
-## Test 19: error if neither name nor id specified ----
-test_that("basket_select Test 19: error if neither name nor id specified", {
+## Test 21: error if neither name nor id specified ----
+test_that("basket_select Test 21: error if neither name nor id specified", {
   expect_snapshot(
     basket_select(scope = "NARROW", type = "smq"),
     error = TRUE
   )
 })
 
-## Test 20: error if type is not specified ----
-test_that("basket_select Test 20: error if type is not specified", {
+## Test 22: error if type is not specified ----
+test_that("basket_select Test 22: error if type is not specified", {
   expect_snapshot(
     basket_select(id = 42, scope = "NARROW"),
     error = TRUE
@@ -507,8 +551,8 @@ get_smq_oth <- function(basket_select,
 }
 
 
-## Test 21: basket_select customized query defined by SMQs extra arguments ----
-test_that("basket_select Test 21: basket_select customized query defined by SMQs extra arguments", {
+## Test 23: basket_select customized query defined by SMQs extra arguments ----
+test_that("basket_select Test 23: basket_select customized query defined by SMQs extra arguments", {
   cq <- query(
     prefix = "CQ02",
     name = "Immune-Mediated Meningoencephalitis",
@@ -558,8 +602,8 @@ test_that("basket_select Test 21: basket_select customized query defined by SMQs
 })
 
 # format.basket_select ----
-## Test 22: formatting is correct (id specified) ----
-test_that("format.basket_select Test 22: formatting is correct (id specified)", {
+## Test 24: formatting is correct (id specified) ----
+test_that("format.basket_select Test 24: formatting is correct (id specified)", {
   expect_equal(
     format(basket_select(
       id = 42,
@@ -571,10 +615,46 @@ test_that("format.basket_select Test 22: formatting is correct (id specified)", 
   )
 })
 
-## Test 23: formatting is correct (name specified) ----
-test_that("format.basket_select Test 23: formatting is correct (name specified)", {
+## Test 25: formatting is correct (name specified) ----
+test_that("format.basket_select Test 25: formatting is correct (name specified)", {
   expect_equal(
     format(basket_select(name = "My SDG", type = "sdg", scope = NA_character_)),
-    "basket_select(name = \"My SDG\", id = NULL, scope = \"NA\", type = \"sdg\")"
+    "basket_select(name = \"My SDG\", id = NULL, scope = NA, type = \"sdg\")"
+  )
+})
+
+## Test 26: custom fields ----
+test_that("format.basket_select Test 26: custom fields", {
+  expect_equal(
+    format(basket_select(
+      name = "My SDG",
+      type = "sdg",
+      scope = NA_character_,
+      filter = expr(STATUS == "approved"),
+      list = list(a = 1, b = 2),
+      vector = c("a", "b", "c")
+    )),
+    paste(
+      "basket_select(name = \"My SDG\", id = NULL, scope = NA, type = \"sdg\",",
+      "filter = STATUS == \"approved\", list = list(...), vector = c(...))"
+    )
+  )
+})
+
+## Test 27: long expressions ----
+test_that("format.basket_select Test 27: long expressions", {
+  expect_equal(
+    format(basket_select(
+      name = "My SDG",
+      type = "sdg",
+      scope = NA_character_,
+      filter = expr((PT_NAME == "Dysaesthesia" | LLT_NAME == "Paraesthesia skin") &
+        PRIMARY_PATH == "Y")
+    )),
+    paste(
+      "basket_select(name = \"My SDG\", id = NULL, scope = NA, type = \"sdg\",",
+      "filter = (PT_NAME == \"Dysaesthesia\" | LLT_NAME == \"Paraesthesia skin\")",
+      "& PRIMARY_PATH == \"Y\")"
+    )
   )
 })

@@ -170,9 +170,9 @@ adlb <- adlb %>%
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 atoxgr_criteria_ctcv4 %>%
-  filter(!is.na(SI_UNIT_CHECK)) %>%
+  filter(!is.na(UNIT_CHECK)) %>%
   dataset_vignette(
-    display_vars = exprs(TERM, SI_UNIT_CHECK),
+    display_vars = exprs(TERM, UNIT_CHECK),
   )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -229,6 +229,14 @@ atoxgr_criteria_ctcv4 %>%
   )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
+atoxgr_criteria_ctcv4 %>%
+  filter(!is.na(COMMENT) & str_detect(TERM, "glycemia", negate = TRUE) &
+    str_detect(TERM, "calcemia", negate = TRUE)) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, Grade_1, Grade_2, Grade_3, Grade_4, COMMENT)
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
 atoxgr_criteria_ctcv5 %>%
   filter(str_detect(TERM, "calcemia")) %>%
   dataset_vignette(
@@ -258,7 +266,7 @@ atoxgr_criteria_ctcv5 %>%
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 atoxgr_criteria_ctcv5 %>%
-  filter(str_detect(TERM, "INR") | str_detect(TERM, "amylase")) %>%
+  filter(str_detect(TERM, "Lipase") | str_detect(TERM, "amylase")) %>%
   dataset_vignette(
     display_vars = exprs(TERM, COMMENT)
   )
@@ -275,6 +283,13 @@ atoxgr_criteria_ctcv5 %>%
   filter(str_detect(TERM, "Hypokalemia") | str_detect(TERM, "Hyponatremia")) %>%
   dataset_vignette(
     display_vars = exprs(TERM, Grade_1, Grade_2, Grade_3, COMMENT)
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+atoxgr_criteria_ctcv5 %>%
+  filter(!is.na(COMMENT) & str_detect(TERM, "calcemia", negate = TRUE)) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, Grade_1, Grade_2, Grade_3, Grade_4, COMMENT)
   )
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
@@ -330,6 +345,15 @@ atoxgr_criteria_daids %>%
 atoxgr_criteria_daids %>%
   filter(str_detect(COMMENT, "conver")) %>%
   dataset_vignette(
-    display_vars = exprs(TERM, FILTER, COMMENT)
+    display_vars = exprs(TERM, COMMENT)
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+atoxgr_criteria_daids %>%
+  filter(!is.na(COMMENT) & str_detect(COMMENT, "No criteria given", negate = TRUE) &
+    str_detect(COMMENT, "Did not grade", negate = TRUE)) %>%
+  arrange(TERM) %>%
+  dataset_vignette(
+    display_vars = exprs(TERM, COMMENT)
   )
 

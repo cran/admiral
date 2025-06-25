@@ -158,6 +158,35 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
+ex_single <- derive_vars_dtm(
+  ex_single,
+  dtc = EXENDTC,
+  new_vars_prefix = "EXEN",
+  time_imputation = "last",
+  flag_imputation = "none"
+)
+
+adae <- derive_vars_joined(
+  adae,
+  ex_single,
+  by_vars = exprs(STUDYID, USUBJID),
+  new_vars = exprs(DOSEON = EXDOSE, DOSEU = EXDOSU),
+  join_vars = exprs(EXSTDTM, EXENDTM),
+  join_type = "all",
+  filter_add = (EXDOSE > 0 | (EXDOSE == 0 & grepl("PLACEBO", EXTRT))) & !is.na(EXSTDTM),
+  filter_join = EXSTDTM <= ASTDTM & (ASTDTM <= EXENDTM | is.na(EXENDTM))
+)
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(
+  adae,
+  display_vars = exprs(
+    USUBJID, AEDECOD, AESEQ, AESTDTC, AEENDTC,
+    ASTDT, AENDT, DOSEON, DOSEU
+  )
+)
+
+## ----eval=TRUE----------------------------------------------------------------
 adae <- adae %>%
   mutate(
     ASEV = AESEV,
@@ -229,17 +258,17 @@ derive_var_ontrtfl(
 )
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  adae <- adae %>%
-#    restrict_derivation(
-#      derivation = derive_var_extreme_flag,
-#      args = params(
-#        by_vars = exprs(USUBJID),
-#        order = exprs(desc(ATOXGR), ASTDTM, AESEQ),
-#        new_var = AOCCIFL,
-#        mode = "first"
-#      ),
-#      filter = TRTEMFL == "Y"
-#    )
+# adae <- adae %>%
+#   restrict_derivation(
+#     derivation = derive_var_extreme_flag,
+#     args = params(
+#       by_vars = exprs(USUBJID),
+#       order = exprs(desc(ATOXGR), ASTDTM, AESEQ),
+#       new_var = AOCCIFL,
+#       mode = "first"
+#     ),
+#     filter = TRTEMFL == "Y"
+#   )
 
 ## ----eval=TRUE----------------------------------------------------------------
 adae <- adae %>%

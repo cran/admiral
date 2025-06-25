@@ -7,13 +7,21 @@
 get_vars_query(dataset, dataset_queries)
 }
 \arguments{
-\item{dataset}{Input dataset}
+\item{dataset}{Input dataset
+
+\describe{
+\item{Default value}{none}
+}}
 
 \item{dataset_queries}{A dataset containing required columns \code{PREFIX},
 \code{GRPNAME}, \code{SRCVAR}, \code{TERMCHAR} and/or \code{TERMNUM}, and optional columns
 \code{GRPID}, \code{SCOPE}, \code{SCOPEN}.
 
-\code{create_query_data()} can be used to create the dataset.}
+\code{create_query_data()} can be used to create the dataset.
+
+\describe{
+\item{Default value}{none}
+}}
 }
 \value{
 The processed query dataset with \code{SRCVAR} and \code{TERM_NAME_ID} so that
@@ -74,7 +82,6 @@ get_vars_query(adae, queries)
 \code{\link[=create_query_data]{create_query_data()}}
 
 Utilities used within Derivation functions: 
-\code{\link{call_user_fun}()},
 \code{\link{extract_unit}()},
 \code{\link{get_flagged_records}()},
 \code{\link{get_not_mapped}()}

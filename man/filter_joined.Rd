@@ -12,7 +12,7 @@ filter_joined(
   join_type,
   first_cond_lower = NULL,
   first_cond_upper = NULL,
-  order,
+  order = NULL,
   tmp_obs_nr_var = NULL,
   filter_add = NULL,
   filter_join,
@@ -22,20 +22,32 @@ filter_joined(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} and \code{order} arguments are expected to be in the dataset.}
+The variables specified by the \code{by_vars} and \code{order} arguments are expected to be in the dataset.
+
+\describe{
+\item{Permitted values}{a dataset, i.e., a \code{data.frame} or tibble}
+\item{Default value}{none}
+}}
 
 \item{dataset_add}{Additional dataset
 
 The variables specified for \code{by_vars}, \code{join_vars}, and \code{order} are
-expected.}
+expected.
+
+\describe{
+\item{Permitted values}{a dataset, i.e., a \code{data.frame} or tibble}
+\item{Default value}{none}
+}}
 
 \item{by_vars}{By variables
 
 The specified variables are used as by variables for joining the input
 dataset with itself.
 
-\emph{Permitted Values}: list of variables created by \code{exprs()}
-e.g. \code{exprs(USUBJID, VISIT)}}
+\describe{
+\item{Permitted values}{list of variables created by \code{exprs()}, e.g., \code{exprs(USUBJID, VISIT)}}
+\item{Default value}{none}
+}}
 
 \item{join_vars}{Variables to keep from joined dataset
 
@@ -43,7 +55,12 @@ The variables needed from the other observations should be specified for
 this parameter. The specified variables are added to the joined dataset
 with suffix ".join". For example to select all observations with \code{AVALC == "Y"} and \code{AVALC == "Y"} for at least one subsequent visit \code{join_vars = exprs(AVALC, AVISITN)} and \code{filter_join = AVALC == "Y" & AVALC.join == "Y" & AVISITN < AVISITN.join} could be specified.
 
-The \verb{*.join} variables are not included in the output dataset.}
+The \verb{*.join} variables are not included in the output dataset.
+
+\describe{
+\item{Permitted values}{list of variables created by \code{exprs()}, e.g., \code{exprs(USUBJID, VISIT)}}
+\item{Default value}{none}
+}}
 
 \item{join_type}{Observations to keep after joining
 
@@ -59,7 +76,10 @@ Whereas, sometimes you might allow for confirmatory observations to occur
 prior to the observation. For example, to identify AEs occurring on or
 after seven days before a COVID AE. Thus \code{join_type = "all"} could be used.
 
-\emph{Permitted Values:} \code{"before"}, \code{"after"}, \code{"all"}}
+\describe{
+\item{Permitted values}{\code{"before"}, \code{"after"}, \code{"all"}}
+\item{Default value}{none}
+}}
 
 \item{first_cond_lower}{Condition for selecting range of data (before)
 
@@ -72,7 +92,12 @@ considered, i.e., the observation is not flagged.
 This parameter should be specified if \code{filter_join} contains summary
 functions which should not apply to all observations but only from a
 certain observation before the current observation up to the current
-observation. For an example see the last example below.}
+observation. For examples see the "Examples" section below.
+
+\describe{
+\item{Permitted values}{an unquoted condition, e.g., \code{AVISIT == "BASELINE"}}
+\item{Default value}{\code{NULL}}
+}}
 
 \item{first_cond_upper}{Condition for selecting range of data (after)
 
@@ -83,7 +108,12 @@ observations are considered, i.e., the observation is not flagged.
 
 This parameter should be specified if \code{filter_join} contains summary
 functions which should not apply to all observations but only up to the
-confirmation assessment. For an example see the last example below.}
+confirmation assessment. For examples see the "Examples" section below.
+
+\describe{
+\item{Permitted values}{an unquoted condition, e.g., \code{AVISIT == "BASELINE"}}
+\item{Default value}{\code{NULL}}
+}}
 
 \item{order}{Order
 
@@ -91,18 +121,28 @@ The observations are ordered by the specified order.
 
 For handling of \code{NA}s in sorting variables see \href{../articles/generic.html#sort_order}{Sort Order}.
 
-\emph{Permitted Values:} list of expressions created by \code{exprs()}, e.g.,
-\code{exprs(ADT, desc(AVAL))}}
+\describe{
+\item{Permitted values}{list of expressions created by \code{exprs()}, e.g., \code{exprs(ADT, desc(AVAL))} or \code{NULL}}
+\item{Default value}{\code{NULL}}
+}}
 
 \item{tmp_obs_nr_var}{Temporary observation number
 
 The specified variable is added to the input dataset (\code{dataset}) and the
 additional dataset (\code{dataset_add}). It is set to the observation number
 with respect to \code{order}. For each by group (\code{by_vars}) the observation
-number starts with \code{1}. The variable can be used in the conditions
-(\code{filter_join}, \code{first_cond_upper}, \code{first_cond_lower}). It is not included
-in the output dataset. It can also be used to select consecutive
-observations or the last observation (see example below).}
+number starts with \code{1}. If there is more than one record for specific
+values for \code{by_vars} and \code{order}, all records get the same observation
+number. By default, a warning (see \code{check_type}) is issued in this case.
+The variable can be used in the conditions (\code{filter_join},
+\code{first_cond_upper}, \code{first_cond_lower}). It is not included in the output
+dataset. It can also be used to select consecutive observations or the last
+observation (see example below).
+
+\describe{
+\item{Permitted values}{an unquoted symbol, e.g., \code{AVAL}}
+\item{Default value}{\code{NULL}}
+}}
 
 \item{filter_add}{Filter for additional dataset (\code{dataset_add})
 
@@ -113,7 +153,12 @@ observations are joined.
 Variables created by the \code{order} argument can be used in the condition.
 
 The condition can include summary functions. The additional dataset is
-grouped by the by variables (\code{by_vars}).}
+grouped by the by variables (\code{by_vars}).
+
+\describe{
+\item{Permitted values}{an unquoted condition, e.g., \code{AVISIT == "BASELINE"}}
+\item{Default value}{\code{NULL}}
+}}
 
 \item{filter_join}{Condition for selecting observations
 
@@ -124,15 +169,23 @@ the summary function are applied to all observations up to the confirmation
 observation. For example in the oncology setting when using this function
 for confirmed best overall response,  \code{filter_join = AVALC == "CR" & all(AVALC.join \%in\% c("CR", "NE")) & count_vals(var = AVALC.join, val = "NE") <= 1} selects observations with response "CR" and for all
 observations up to the confirmation observation the response is "CR" or
-"NE" and there is at most one "NE".}
+"NE" and there is at most one "NE".
+
+\describe{
+\item{Permitted values}{an unquoted condition, e.g., \code{AVISIT == "BASELINE"}}
+\item{Default value}{none}
+}}
 
 \item{check_type}{Check uniqueness?
 
-If \code{"warning"} or \code{"error"} is specified, the specified message is issued
-if the observations of the input dataset are not unique with respect to the
-by variables and the order.
+If \code{"message"}, \code{"warning"}, or \code{"error"} is specified, the specified
+message is issued if the observations of the input dataset are not unique
+with respect to the by variables and the order.
 
-\emph{Permitted Values:} \code{"none"}, \code{"warning"}, \code{"error"}}
+\describe{
+\item{Permitted values}{\code{"none"}, \code{"message"}, \code{"warning"}, \code{"error"}}
+\item{Default value}{\code{"warning"}}
+}}
 }
 \value{
 A subset of the observations of the input dataset. All variables of
@@ -242,13 +295,34 @@ the admiral option \code{save_memory} to \code{TRUE} (see \code{set_admiral_opti
 This reduces the memory consumption but increases the run-time.
 }
 }
-\examples{
+\seealso{
+\code{\link[=count_vals]{count_vals()}}, \code{\link[=min_cond]{min_cond()}}, \code{\link[=max_cond]{max_cond()}}
 
-library(tibble)
-library(admiral)
+Utilities for Filtering Observations: 
+\code{\link{count_vals}()},
+\code{\link{filter_exist}()},
+\code{\link{filter_extreme}()},
+\code{\link{filter_not_exist}()},
+\code{\link{filter_relative}()},
+\code{\link{max_cond}()},
+\code{\link{min_cond}()}
+}
+\concept{utils_fil}
+\keyword{utils_fil}
+\section{Examples}{
+\subsection{Filter records considering other records (\code{filter_join}, \code{join_vars})}{
 
-# filter observations with a duration longer than 30 and
-# on or after 7 days before a COVID AE (ACOVFL == "Y")
+In this example, the input dataset should be restricted to records with
+a duration longer than 30 and where a COVID AE (\code{ACOVFL == "Y"}) occurred
+before or up to seven days after the record. The condition for restricting
+the records is specified by the \code{filter_join} argument. Variables from the
+other records are referenced by variable names with the suffix \code{.join}.
+These variables have to be specified for the \code{join_vars} argument. As
+records before \emph{and} after the current record should be considered,
+\code{join_type = "all"} is specified.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(tibble)
+
 adae <- tribble(
   ~USUBJID, ~ADY, ~ACOVFL, ~ADURN,
   "1",        10, "N",          1,
@@ -269,12 +343,21 @@ filter_joined(
   by_vars = exprs(USUBJID),
   join_vars = exprs(ACOVFL, ADY),
   join_type = "all",
-  order = exprs(ADY),
-  filter_join = ADURN > 30 & ACOVFL.join == "Y" & ADY >= ADY.join - 7
+  filter_join = ADURN > 30 & ACOVFL.join == "Y" & ADY.join <= ADY + 7
 )
+#> # A tibble: 2 × 4
+#>   USUBJID   ADY ACOVFL ADURN
+#>   <chr>   <dbl> <chr>  <dbl>
+#> 1 1          21 N         50
+#> 2 1          32 N         31}\if{html}{\out{</div>}}}
+\subsection{Considering only records after the current one (\code{join_type = "after"})}{
 
-# filter observations with AVALC == "Y" and AVALC == "Y" at a subsequent visit
-data <- tribble(
+In this example, the input dataset is restricted to records with \code{AVALC == "Y"} and \code{AVALC == "Y"} at a subsequent visit. \code{join_type = "after"} is
+specified to consider only records after the current one. Please note that
+the \code{order} argument must be specified, as otherwise it is not possible to
+determine which records are after the current record.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{data <- tribble(
   ~USUBJID, ~AVISITN, ~AVALC,
   "1",      1,        "Y",
   "1",      2,        "N",
@@ -294,12 +377,86 @@ filter_joined(
   join_vars = exprs(AVALC, AVISITN),
   join_type = "after",
   order = exprs(AVISITN),
-  filter_join = AVALC == "Y" & AVALC.join == "Y" & AVISITN < AVISITN.join
+  filter_join = AVALC == "Y" & AVALC.join == "Y"
 )
+#> # A tibble: 1 × 3
+#>   USUBJID AVISITN AVALC
+#>   <chr>     <dbl> <chr>
+#> 1 1             1 Y    }\if{html}{\out{</div>}}}
+\subsection{Considering a range of records only (\code{first_cond_lower}, \code{first_cond_upper})}{
 
-# select observations with AVALC == "CR", AVALC == "CR" at a subsequent visit,
-# only "CR" or "NE" in between, and at most one "NE" in between
-data <- tribble(
+Consider the following data.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{myd <- tribble(
+  ~subj, ~day, ~val,
+  "1",      1, "++",
+  "1",      2, "-",
+  "1",      3, "0",
+  "1",      4, "+",
+  "1",      5, "++",
+  "1",      6, "-",
+  "2",      1, "-",
+  "2",      2, "++",
+  "2",      3, "+",
+  "2",      4, "0",
+  "2",      5, "-",
+  "2",      6, "++"
+)}\if{html}{\out{</div>}}
+
+To select \code{"0"} where all results from the first \code{"++"} before the
+\code{"0"} up to the \code{"0"} (excluding the \code{"0"}) are \code{"+"} or \code{"++"} the
+\code{first_cond_lower} argument and \code{join_type = "before"} are specified.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{filter_joined(
+  myd,
+  dataset_add = myd,
+  by_vars = exprs(subj),
+  order = exprs(day),
+  join_vars = exprs(val),
+  join_type = "before",
+  first_cond_lower = val.join == "++",
+  filter_join = val == "0" & all(val.join \%in\% c("+", "++"))
+)
+#> # A tibble: 1 × 3
+#>   subj    day val  
+#>   <chr> <dbl> <chr>
+#> 1 2         4 0    }\if{html}{\out{</div>}}
+
+To select \code{"0"} where all results from the \code{"0"} (excluding the \code{"0"})
+up to the first \code{"++"} after the \code{"0"} are \code{"+"} or \code{"++"} the
+\code{first_cond_upper} argument and \code{join_type = "after"} are specified.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{filter_joined(
+  myd,
+  dataset_add = myd,
+  by_vars = exprs(subj),
+  order = exprs(day),
+  join_vars = exprs(val),
+  join_type = "after",
+  first_cond_upper = val.join == "++",
+  filter_join = val == "0" & all(val.join \%in\% c("+", "++"))
+)
+#> # A tibble: 1 × 3
+#>   subj    day val  
+#>   <chr> <dbl> <chr>
+#> 1 1         3 0    }\if{html}{\out{</div>}}}
+\subsection{Considering only records up to a condition (\code{first_cond_upper})}{
+
+In this example from deriving confirmed response in oncology, the
+records with
+\itemize{
+\item \code{AVALC == "CR"},
+\item \code{AVALC == "CR"} at a subsequent visit,
+\item only \code{"CR"} or \code{"NE"} in between, and
+\item at most one \code{"NE"} in between
+}
+
+should be selected. The other records to be considered are restricted to
+those up to the first occurrence of \code{"CR"} by specifying the
+\code{first_cond_upper} argument. The \code{count_vals()} function is used to count the
+\code{"NE"}s for the last condition.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{data <- tribble(
   ~USUBJID, ~AVISITN, ~AVALC,
   "1",      1,        "PR",
   "1",      2,        "CR",
@@ -328,11 +485,30 @@ filter_joined(
   filter_join = AVALC == "CR" & all(AVALC.join \%in\% c("CR", "NE")) &
     count_vals(var = AVALC.join, val = "NE") <= 1
 )
+#> # A tibble: 1 × 3
+#>   USUBJID AVISITN AVALC
+#>   <chr>     <dbl> <chr>
+#> 1 1             2 CR   }\if{html}{\out{</div>}}}
+\subsection{Considering order of values (\code{min_cond()}, \code{max_cond()})}{
 
-# select observations with AVALC == "PR", AVALC == "CR" or AVALC == "PR"
-# at a subsequent visit at least 20 days later, only "CR", "PR", or "NE"
-# in between, at most one "NE" in between, and "CR" is not followed by "PR"
-data <- tribble(
+In this example from deriving confirmed response in oncology, records
+with
+\itemize{
+\item \code{AVALC == "PR"},
+\item \code{AVALC == "CR"} or \code{AVALC == "PR"} at a subsequent visit at least 20 days later,
+\item only \code{"CR"}, \code{"PR"}, or \code{"NE"} in between,
+\item at most one \code{"NE"} in between, and
+\item \code{"CR"} is
+not followed by \code{"PR"}
+}
+
+should be selected. The last condition is realized by using \code{min_cond()} and
+\code{max_cond()}, ensuring that the first occurrence of \code{"CR"} is after the last
+occurrence of \code{"PR"}. The second call to \code{count_vals()} in the condition is
+required to cover the case of no \code{"CR"}s (the \code{min_cond()} call returns \code{NA}
+then).
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{data <- tribble(
   ~USUBJID, ~ADY, ~AVALC,
   "1",         6, "PR",
   "1",        12, "CR",
@@ -367,9 +543,19 @@ filter_joined(
         count_vals(var = AVALC.join, val = "CR") == 0
     )
 )
+#> # A tibble: 1 × 3
+#>   USUBJID   ADY AVALC
+#>   <chr>   <dbl> <chr>
+#> 1 4          32 PR   }\if{html}{\out{</div>}}}
+\subsection{Considering the order of records (\code{tmp_obs_nr_var})}{
 
-# select observations with CRIT1FL == "Y" at two consecutive visits or at the last visit
-data <- tribble(
+In this example, the records with \code{CRIT1FL == "Y"} at two consecutive
+visits or at the last visit should be selected. A temporary order variable
+is created by specifying the \code{tmp_obs_nr_var} argument. Then it is used in
+\code{filter_join}. The temporary variable doesn't need to be specified for
+\code{join_vars}.
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{data <- tribble(
   ~USUBJID, ~AVISITN, ~CRIT1FL,
   "1",      1,        "Y",
   "1",      2,        "N",
@@ -394,61 +580,9 @@ filter_joined(
   filter_join = CRIT1FL == "Y" & CRIT1FL.join == "Y" &
     (tmp_obs_nr + 1 == tmp_obs_nr.join | tmp_obs_nr == max(tmp_obs_nr.join))
 )
+#> # A tibble: 2 × 3
+#>   USUBJID AVISITN CRIT1FL
+#>   <chr>     <dbl> <chr>  
+#> 1 2             1 Y      
+#> 2 3             1 Y      }\if{html}{\out{</div>}}}}
 
-# first_cond_lower and first_cond_upper argument
-myd <- tribble(
-  ~subj, ~day, ~val,
-  "1",      1, "++",
-  "1",      2, "-",
-  "1",      3, "0",
-  "1",      4, "+",
-  "1",      5, "++",
-  "1",      6, "-",
-  "2",      1, "-",
-  "2",      2, "++",
-  "2",      3, "+",
-  "2",      4, "0",
-  "2",      5, "-",
-  "2",      6, "++"
-)
-
-# select "0" where all results from the first "++" before the "0" up to the "0"
-# (excluding the "0") are "+" or "++"
-filter_joined(
-  myd,
-  dataset_add = myd,
-  by_vars = exprs(subj),
-  order = exprs(day),
-  join_vars = exprs(val),
-  join_type = "before",
-  first_cond_lower = val.join == "++",
-  filter_join = val == "0" & all(val.join \%in\% c("+", "++"))
-)
-
-# select "0" where all results from the "0" (excluding the "0") up to the first
-# "++" after the "0" are "+" or "++"
-filter_joined(
-  myd,
-  dataset_add = myd,
-  by_vars = exprs(subj),
-  order = exprs(day),
-  join_vars = exprs(val),
-  join_type = "after",
-  first_cond_upper = val.join == "++",
-  filter_join = val == "0" & all(val.join \%in\% c("+", "++"))
-)
-}
-\seealso{
-\code{\link[=count_vals]{count_vals()}}, \code{\link[=min_cond]{min_cond()}}, \code{\link[=max_cond]{max_cond()}}
-
-Utilities for Filtering Observations: 
-\code{\link{count_vals}()},
-\code{\link{filter_exist}()},
-\code{\link{filter_extreme}()},
-\code{\link{filter_not_exist}()},
-\code{\link{filter_relative}()},
-\code{\link{max_cond}()},
-\code{\link{min_cond}()}
-}
-\concept{utils_fil}
-\keyword{utils_fil}

@@ -18,7 +18,8 @@ generic_derivations <- tibble::tribble(
   "derive_var_joined_exist_flag()", "selection",   "variables", "single",
   "derive_var_merged_ef_msrc()",    "selection",   "variables", "multiple",
   "derive_var_merged_exist_flag()", "selection",   "variables", "single",
-  "derive_vars_merged_summary()",   "summary",     "variables", "single",
+  "derive_vars_joined_summary()",   "summary",     "variables", "single",
+  "derive_var_merged_summary()",    "summary",     "variables", "single",
   "derive_vars_joined()",           "selection",   "variables", "single",
   "derive_vars_merged()",           "selection",   "variables", "single",
   "derive_vars_extreme_event()",    "selection",   "variables", "multiple",
@@ -277,6 +278,36 @@ derive_var_merged_summary(
     AVERDOSE = mean(AVAL)
   ),
   missing_values = exprs(AVERDOSE = 0)
+)
+
+## -----------------------------------------------------------------------------
+adex <- tribble(
+  ~USUBJID, ~ADY, ~AVAL,
+  "1",         1,    10,
+  "1",         8,    20,
+  "1",        15,    10,
+  "2",         8,     5
+)
+
+adae <- tribble(
+  ~USUBJID, ~ADY, ~AEDECOD,
+  "1",         2, "Fatigue",
+  "1",         9, "Influenza",
+  "1",        15, "Theft",
+  "1",        15, "Fatigue",
+  "2",         4, "Parasomnia",
+  "3",         2, "Truancy"
+)
+
+derive_vars_joined_summary(
+  dataset = adae,
+  dataset_add = adex,
+  by_vars = exprs(USUBJID),
+  filter_join = ADY.join <= ADY,
+  join_type = "all",
+  join_vars = exprs(ADY),
+  new_vars = exprs(CUMDOSA = sum(AVAL, na.rm = TRUE)),
+  missing_value = exprs(CUMDOSA = 0)
 )
 
 ## -----------------------------------------------------------------------------

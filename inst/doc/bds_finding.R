@@ -81,14 +81,14 @@ dataset_vignette(
 advs <- advs_old
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  # CDISC Pilot data does not contain times and the output of the derivation
-#  # ADTM is not presented.
-#  advs <- derive_vars_dtm(
-#    advs,
-#    new_vars_prefix = "A",
-#    dtc = VSDTC,
-#    highest_imputation = "M"
-#  )
+# # CDISC Pilot data does not contain times and the output of the derivation
+# # ADTM is not presented.
+# advs <- derive_vars_dtm(
+#   advs,
+#   new_vars_prefix = "A",
+#   dtc = VSDTC,
+#   highest_imputation = "M"
+# )
 
 ## ----eval=TRUE----------------------------------------------------------------
 advs <-
@@ -185,44 +185,44 @@ dataset_vignette(
 )
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  adeg <- tibble::tribble(
-#    ~USUBJID, ~EGSTRESU, ~PARAMCD, ~AVAL,          ~VISIT,
-#    "P01",       "msec",     "QT",   350, "CYCLE 1 DAY 1",
-#    "P01",       "msec",     "QT",   370, "CYCLE 2 DAY 1",
-#    "P01",       "msec",     "RR",   842, "CYCLE 1 DAY 1",
-#    "P01",       "msec",     "RR",   710, "CYCLE 2 DAY 1"
-#  )
-#  
-#  adeg <- derive_param_qtc(
-#    adeg,
-#    by_vars = exprs(USUBJID, VISIT),
-#    method = "Fridericia",
-#    set_values_to = exprs(PARAMCD = "QTCFR"),
-#    get_unit_expr = EGSTRESU
-#  )
+# adeg <- tibble::tribble(
+#   ~USUBJID, ~EGSTRESU, ~PARAMCD, ~AVAL,          ~VISIT,
+#   "P01",       "msec",     "QT",   350, "CYCLE 1 DAY 1",
+#   "P01",       "msec",     "QT",   370, "CYCLE 2 DAY 1",
+#   "P01",       "msec",     "RR",   842, "CYCLE 1 DAY 1",
+#   "P01",       "msec",     "RR",   710, "CYCLE 2 DAY 1"
+# )
+# 
+# adeg <- derive_param_qtc(
+#   adeg,
+#   by_vars = exprs(USUBJID, VISIT),
+#   method = "Fridericia",
+#   set_values_to = exprs(PARAMCD = "QTCFR"),
+#   get_unit_expr = EGSTRESU
+# )
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  adlb <- tibble::tribble(
-#    ~USUBJID, ~PARAMCD, ~AVAL,                        ~PARAM,          ~VISIT,
-#    "P01",       "WBC",    33,    "Leukocyte Count (10^9/L)", "CYCLE 1 DAY 1",
-#    "P01",       "WBC",    38,    "Leukocyte Count (10^9/L)", "CYCLE 2 DAY 1",
-#    "P01",     "LYMLE",  0.90, "Lymphocytes (fraction of 1)", "CYCLE 1 DAY 1",
-#    "P01",     "LYMLE",  0.70, "Lymphocytes (fraction of 1)", "CYCLE 2 DAY 1"
-#  )
-#  
-#  derive_param_wbc_abs(
-#    dataset = adlb,
-#    by_vars = exprs(USUBJID, VISIT),
-#    set_values_to = exprs(
-#      PARAMCD = "LYMPH",
-#      PARAM = "Lymphocytes Abs (10^9/L)",
-#      DTYPE = "CALCULATION"
-#    ),
-#    get_unit_expr = extract_unit(PARAM),
-#    wbc_code = "WBC",
-#    diff_code = "LYMLE",
-#    diff_type = "fraction"
-#  )
+# adlb <- tibble::tribble(
+#   ~USUBJID, ~PARAMCD, ~AVAL,                        ~PARAM,          ~VISIT,
+#   "P01",       "WBC",    33,    "Leukocyte Count (10^9/L)", "CYCLE 1 DAY 1",
+#   "P01",       "WBC",    38,    "Leukocyte Count (10^9/L)", "CYCLE 2 DAY 1",
+#   "P01",     "LYMLE",  0.90, "Lymphocytes (fraction of 1)", "CYCLE 1 DAY 1",
+#   "P01",     "LYMLE",  0.70, "Lymphocytes (fraction of 1)", "CYCLE 2 DAY 1"
+# )
+# 
+# derive_param_wbc_abs(
+#   dataset = adlb,
+#   by_vars = exprs(USUBJID, VISIT),
+#   set_values_to = exprs(
+#     PARAMCD = "LYMPH",
+#     PARAM = "Lymphocytes Abs (10^9/L)",
+#     DTYPE = "CALCULATION"
+#   ),
+#   get_unit_expr = extract_unit(PARAM),
+#   wbc_code = "WBC",
+#   diff_code = "LYMLE",
+#   diff_type = "fraction"
+# )
 
 ## ----eval=TRUE----------------------------------------------------------------
 # Derive PARAM and PARAMN

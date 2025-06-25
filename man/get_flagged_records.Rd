@@ -7,17 +7,29 @@
 get_flagged_records(dataset, new_var, condition, filter = NULL)
 }
 \arguments{
-\item{dataset}{Input dataset}
+\item{dataset}{Input dataset
+
+\describe{
+\item{Default value}{none}
+}}
 
 \item{new_var}{New variable
 
-The specified variable is added to the input dataset.}
+The specified variable is added to the input dataset.
+
+\describe{
+\item{Default value}{none}
+}}
 
 \item{condition}{Condition
 
 The condition is evaluated at the dataset (\code{dataset}). For
 all rows where it evaluates as \code{TRUE} the new variable
-is set to \code{1} in the new column. Otherwise, it is set to \code{0}.}
+is set to \code{1} in the new column. Otherwise, it is set to \code{0}.
+
+\describe{
+\item{Default value}{none}
+}}
 
 \item{filter}{Filter for additional data
 
@@ -25,7 +37,10 @@ Only observations fulfilling the specified condition are taken into account
 for flagging. If the argument is not specified, all observations are
 considered.
 
-\emph{Permitted Values}: a condition}
+\describe{
+\item{Permitted values}{a condition}
+\item{Default value}{\code{NULL}}
+}}
 }
 \value{
 The output dataset is the input dataset filtered by the \code{filter} condition
@@ -86,7 +101,6 @@ get_flagged_records(
 }
 \seealso{
 Utilities used within Derivation functions: 
-\code{\link{call_user_fun}()},
 \code{\link{extract_unit}()},
 \code{\link{get_not_mapped}()},
 \code{\link{get_vars_query}()}

@@ -22,7 +22,7 @@ ex_single <- admiral::ex_single
 # When SAS datasets are imported into R using haven::read_sas(), missing
 # character values from SAS appear as "" characters in R, instead of appearing
 # as NA values. Further details can be obtained via the following link:
-# https://pharmaverse.github.io/admiral/articles/admiral.html#handling-of-missing-values # nolint
+# https://pharmaverse.github.io/admiral/cran-release/articles/admiral.html#handling-of-missing-values # nolint
 
 ae <- convert_blanks_to_na(ae)
 ex <- convert_blanks_to_na(ex_single)
@@ -80,7 +80,13 @@ ex_ext <- derive_vars_dtm(
   dtc = EXSTDTC,
   new_vars_prefix = "EXST",
   flag_imputation = "none"
-)
+) %>%
+  derive_vars_dtm(
+    dtc = EXENDTC,
+    new_vars_prefix = "EXEN",
+    time_imputation = "last",
+    flag_imputation = "none"
+  )
 
 adae <- adae %>%
   ## Derive last dose date/time ----
@@ -94,6 +100,16 @@ adae <- adae %>%
     filter_add = (EXDOSE > 0 | (EXDOSE == 0 & grepl("PLACEBO", EXTRT))) & !is.na(EXSTDTM),
     filter_join = EXSTDTM <= ASTDTM,
     mode = "last"
+  ) %>%
+  ## Derive treatment dose and unit ----
+  derive_vars_joined(
+    dataset_add = ex_ext,
+    by_vars = exprs(STUDYID, USUBJID),
+    new_vars = exprs(DOSEON = EXDOSE, DOSEU = EXDOSU),
+    join_vars = exprs(EXSTDTM, EXENDTM),
+    join_type = "all",
+    filter_add = (EXDOSE > 0 | (EXDOSE == 0 & grepl("PLACEBO", EXTRT))) & !is.na(EXSTDTM),
+    filter_join = EXSTDTM <= ASTDTM & (ASTDTM <= EXENDTM | is.na(EXENDTM))
   ) %>%
   ## Derive severity / causality / ... ----
   mutate(

@@ -155,7 +155,7 @@ dataset_vignette(
 )
 
 ## -----------------------------------------------------------------------------
-# Create AVALCATx lookup table
+# Create AVALCATy lookup table
 avalcat_lookup <- exprs(
   ~PARAMCD, ~condition, ~AVALCAT1, ~AVALCAT1N,
   "GDS02TS", AVAL <= 5, "Normal", 0L,

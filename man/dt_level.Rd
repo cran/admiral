@@ -9,8 +9,11 @@ dt_level(level)
 \arguments{
 \item{level}{Date level
 
-\emph{Permitted Values}: \code{"Y"} (year, highest level), \code{"M"} (month), \code{"D"}
+\describe{
+\item{Permitted values}{\code{"Y"} (year, highest level), \code{"M"} (month), \code{"D"}
 (day), \code{"n"} (none, lowest level)}
+\item{Default value}{none}
+}}
 }
 \value{
 A \code{dt_level} object
@@ -21,6 +24,19 @@ Create a \code{dt_level} object
 \details{
 A \code{dt_level} object is an ordered factor, i.e., two objects can be
 compared.
+}
+\examples{
+# Create a dt_level object with level "D" (day)
+level_day <- admiral:::dt_level("D")
+print(level_day)
+
+# Create a dt_level object with level "Y" (year)
+level_year <- admiral:::dt_level("Y")
+print(level_year)
+
+# Compare two dt_level objects
+level_day > level_year # TRUE, because "Y" is larger than "D".
+
 }
 \seealso{
 Utilities used for date imputation: 

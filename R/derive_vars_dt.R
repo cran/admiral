@@ -1,8 +1,8 @@
-#' Derive/Impute a Date from a Date Character Vector
+#' Derive/Impute a Date from a Character Date
 #'
-#' Derive a date (`'--DT'`) from a date character vector (`'--DTC`').
+#' Derive a date (`*DT`) from a character date (`--DTC`).
 #' The date can be imputed (see `date_imputation` argument)
-#' and the date imputation flag ('`--DTF'`) can be added.
+#' and the date imputation flag (`*DTF`) can be added.
 #'
 #' In `{admiral}` we don't allow users to pick any single part of the date/time to
 #' impute, we only enable to impute up to a highest level, i.e. you couldn't
@@ -11,11 +11,15 @@
 #' @param dataset
 #' `r roxygen_param_dataset(expected_vars = c("dtc"))`
 #'
+#' @permitted [dataset]
+#'
 #' @param new_vars_prefix Prefix used for the output variable(s).
 #'
-#'   A character scalar is expected. For the date variable "DT" is appended to
-#'   the specified prefix and for the date imputation flag "DTF". I.e., for
+#'   A character scalar is expected. For the date variable (`*DT`) is appended to
+#'   the specified prefix and for the date imputation flag (`*DTF`), i.e., for
 #'   `new_vars_prefix = "AST"` the variables `ASTDT` and `ASTDTF` are created.
+#'
+#' @permitted [char_scalar]
 #'
 #' @param flag_imputation Whether the date imputation flag must also be derived.
 #'
@@ -26,18 +30,21 @@
 #'
 #'   If `"none"` is specified, then no date imputation flag is derived.
 #'
-#'   *Permitted Values*: `"auto"`, `"date"` or `"none"`
+#'  Please note that CDISC requirements dictate the need for a date imputation
+#'  flag if any imputation is performed, so `flag_imputation = "none"` should
+#'  only be used if the imputed variable is not part of the final ADaM dataset.
 #'
+#' @permitted [date_flag_imp]
 #'
 #' @inheritParams impute_dtc_dt
 #'
 #' @return
-#' The input dataset with the date `'--DT'` (and the date imputation flag `'--DTF'`
+#' The input dataset with the date `*DT` (and the date imputation flag `*DTF`
 #' if requested) added.
 #'
 #' @details
-#' The presence of a `'--DTF'` variable is checked and if it already exists in the input dataset,
-#' a warning is issued and `'--DTF'` will be overwritten.
+#' The presence of a `*DTF` variable is checked and if it already exists in the input dataset,
+#' a warning is issued and `*DTF` will be overwritten.
 #'
 #'
 #' @family der_date_time
@@ -46,7 +53,13 @@
 #'
 #' @export
 #'
-#' @examples
+#' @examplesx
+#'
+#' @caption Derive a date variable without imputation
+#'
+#' @info In this example, we derive `ASTDT` from `MHSTDTC` with no imputation
+#' done for partial dates.
+#' @code
 #' library(tibble)
 #' library(lubridate)
 #'
@@ -61,24 +74,89 @@
 #'   ""
 #' )
 #'
-#' # Create ASTDT and ASTDTF
-#' # No imputation for partial date
 #' derive_vars_dt(
 #'   mhdt,
 #'   new_vars_prefix = "AST",
 #'   dtc = MHSTDTC
 #' )
 #'
-#' # Create ASTDT and ASTDTF
-#' # Impute partial dates to first day/month
+#' @caption Impute partial dates (`highest_imputation`)
+#' @info Imputation is requested by the `highest_imputation` argument. Here
+#' `highest_imputation = "M"` for month imputation is used, i.e. the highest
+#' imputation done on a partial date is up to the month. By default, missing date
+#' components are imputed to the first day/month/year. A date imputation flag variable, `ASTDTF`,
+#' is automatically created. The flag variable indicates if imputation was done
+#' on the date.
+#'
+#' @code
 #' derive_vars_dt(
 #'   mhdt,
 #'   new_vars_prefix = "AST",
 #'   dtc = MHSTDTC,
-#'   highest_imputation = "M"
+#'   highest_imputation = "M",
+#'   date_imputation = "first"
 #' )
 #'
-#' # Impute partial dates to 6th of April
+#' @caption Impute to the last day/month (`date_imputation = "last"`)
+#' @info In this example, we derive `ADT` impute partial dates to last day/month, i.e.
+#' `date_imputation = "last"`.
+#'
+#' @code
+#' qsdt <- tribble(
+#'   ~QSDTC,
+#'   "2019-07-18T15:25:40",
+#'   "2019-07-18T15:25",
+#'   "2019-07-18",
+#'   "2019-02",
+#'   "2019",
+#'   "2019---07",
+#'   ""
+#' )
+#'
+#' derive_vars_dt(
+#'   qsdt,
+#'   new_vars_prefix = "A",
+#'   dtc = QSDTC,
+#'   highest_imputation = "M",
+#'   date_imputation = "last"
+#' )
+#'
+#' @caption Impute to the middle (`date_imputaton = "mid"`) and suppress
+#' imputation flag (`flag_imputation = "none"`)
+#' @info In this example, we will derive `TRTSDT` with date imputation flag
+#' (`*DTF`) suppressed. Since `date_imputation = "mid"`, partial date imputation
+#'  will be set to June 30th for missing month and 15th for missing day only.
+#'  The `flag_imputation = "none"` call ensures no date imputation flag is
+#'  created. In practice, as per CDISC requirements this option can only be
+#'  selected if the imputed variable is not part of the final ADaM dataset.
+#'
+#' @code
+#'
+#' exdt <- tribble(
+#'   ~EXSTDTC,
+#'   "2019-07-18T15:25:40",
+#'   "2019-07-18T15:25",
+#'   "2019-07-18",
+#'   "2019-02",
+#'   "2019",
+#'   "2019---07",
+#'   ""
+#' )
+#' derive_vars_dt(
+#'   exdt,
+#'   new_vars_prefix = "TRTS",
+#'   dtc = EXSTDTC,
+#'   highest_imputation = "M",
+#'   date_imputation = "mid",
+#'   flag_imputation = "none"
+#' )
+#'
+#' @caption Impute to a specific date (`date_imputation = "04-06"`)
+#' @info In this example, we derive `ASTDT` with specific date imputation, i.e.
+#' `date_imputation = "04-06"`. Note that day portion, `"-06"`, is used in the
+#' imputation of the record with `"2019-02"`.
+#'
+#' @code
 #' derive_vars_dt(
 #'   mhdt,
 #'   new_vars_prefix = "AST",
@@ -86,30 +164,14 @@
 #'   highest_imputation = "M",
 #'   date_imputation = "04-06"
 #' )
+#' @caption Avoid imputation before a user-defined date (`min_dates`)
+#' @info In this example, we derive `ASTDT` where `AESTDTC` is all partial dates in
+#' need of imputation. Using `min_dates = exprs(TRTSDTM)`, we are telling the function
+#' to not allow imputation dates to be before the treatment start date
+#' via `min_dates` argument. Note that the second record does not get imputed
+#' as it is before `TRTSDTM`.
 #'
-#' # Create AENDT and AENDTF
-#' # Impute partial dates to last day/month
-#' derive_vars_dt(
-#'   mhdt,
-#'   new_vars_prefix = "AEN",
-#'   dtc = MHSTDTC,
-#'   highest_imputation = "M",
-#'   date_imputation = "last"
-#' )
-#'
-#' # Create BIRTHDT
-#' # Impute partial dates to 15th of June. No Date Imputation Flag
-#' derive_vars_dt(
-#'   mhdt,
-#'   new_vars_prefix = "BIRTH",
-#'   dtc = MHSTDTC,
-#'   highest_imputation = "M",
-#'   date_imputation = "mid",
-#'   flag_imputation = "none"
-#' )
-#'
-#' # Impute AE start date to the first date and ensure that the imputed date
-#' # is not before the treatment start date
+#' @code
 #' adae <- tribble(
 #'   ~AESTDTC, ~TRTSDTM,
 #'   "2020-12", ymd_hms("2020-12-06T12:12:12"),
@@ -124,10 +186,12 @@
 #'   min_dates = exprs(TRTSDTM)
 #' )
 #'
-#' # A user imputing dates as middle month/day, i.e. date_imputation = "mid" can
-#' # use preserve argument to "preserve" partial dates.  For example, "2019---07",
-#' # will be displayed as "2019-06-07" rather than 2019-06-15 with preserve = TRUE
+#' @caption Preserve lower components if higher ones were imputed (`preserve`)
+#' @info The `preserve` argument can be used to "preserve" information from the partial dates.
+#' For example, `"2019---07"`, will be displayed as `"2019-06-07"` rather than
+#' `"2019-06-30"` with `preserve = TRUE` and `date_imputation = "mid"` .
 #'
+#' @code
 #' derive_vars_dt(
 #'   mhdt,
 #'   new_vars_prefix = "AST",
@@ -136,7 +200,10 @@
 #'   date_imputation = "mid",
 #'   preserve = TRUE
 #' )
-derive_vars_dt <- function(dataset, # nolint: cyclocomp_linter
+#' @caption Further examples
+#' @info Further example usages of this function can be found in the
+#'   [Date and Time Imputation vignette](../articles/imputation.html).
+derive_vars_dt <- function(dataset,
                            new_vars_prefix,
                            dtc,
                            highest_imputation = "n",
@@ -146,44 +213,31 @@ derive_vars_dt <- function(dataset, # nolint: cyclocomp_linter
                            max_dates = NULL,
                            preserve = FALSE) {
   # check and quote arguments
-  assert_character_scalar(new_vars_prefix)
-  assert_vars(max_dates, optional = TRUE)
-  assert_vars(min_dates, optional = TRUE)
   dtc <- assert_symbol(enexpr(dtc))
   assert_data_frame(dataset, required_vars = exprs(!!dtc))
-  assert_character_scalar(
+
+  assert_character_scalar(new_vars_prefix)
+
+  flag_imputation <- assert_character_scalar(
     flag_imputation,
     values = c("auto", "date", "none"),
     case_sensitive = FALSE
   )
-  if ((highest_imputation == "Y" && is.null(min_dates) && is.null(max_dates)) ||
-    (highest_imputation == "Y" && length(min_dates) == 0 && length(max_dates) == 0)) {
-    cli_abort(paste(
-      "If {.code highest_impuation = \"Y\"} is specified, {.arg min_dates} or",
-      "{.arg max_dates} must be specified respectively."
-    ))
-  }
-  if (highest_imputation == "Y") {
-    assert_character_scalar(date_imputation, values = c("first", "last"))
-  }
-  if (highest_imputation == "Y" && is.null(min_dates) && date_imputation == "first") {
-    cli_warn(paste(
-      "If {.code highest_impuation = \"Y\"} and {.code date_imputation = \"first\"}",
-      "is specified, {.arg min_dates} should be specified."
-    ))
-  }
-  if (highest_imputation == "Y" && is.null(max_dates) && date_imputation == "last") {
-    cli_warn(paste(
-      "If {.code highest_impuation = \"Y\"} and {.code date_imputation = \"last\"}",
-      "is specified, {.arg max_dates} should be specified."
-    ))
-  }
+
+  # the `assert_highest_imputation` function is stored in `derive_vars_dt_dtm_utils.R`
+  assert_highest_imputation(
+    highest_imputation = highest_imputation,
+    highest_imputation_values = c("Y", "M", "D", "n"),
+    date_imputation = date_imputation,
+    min_dates = min_dates,
+    max_dates = max_dates
+  )
 
   # output varname
   dt <- paste0(new_vars_prefix, "DT")
   warn_if_vars_exist(dataset, dt)
 
-  # derive --DT var
+  # derive *DT var
   dataset <- dataset %>%
     mutate(
       !!sym(dt) := convert_dtc_to_dt(
@@ -199,7 +253,7 @@ derive_vars_dt <- function(dataset, # nolint: cyclocomp_linter
   # derive DTF
   if (flag_imputation == "date" ||
     flag_imputation == "auto" && highest_imputation != "n") {
-    # add --DTF if not there already
+    # add *DTF if not there already
     dtf <- paste0(new_vars_prefix, "DTF")
     dtf_exist <- dtf %in% colnames(dataset)
     if (!dtf_exist) {
@@ -219,12 +273,13 @@ derive_vars_dt <- function(dataset, # nolint: cyclocomp_linter
 
 #' Convert a Date Character Vector into a Date Object
 #'
-#' Convert a date character vector (usually '--DTC') into a Date vector (usually '--DT').
+#' Convert a date character vector (usually `--DTC`) into a Date vector (usually `*DT`).
 #'
 #' @param dtc The --DTC date to convert.
 #'
-#' @inheritParams impute_dtc_dt
+#' @permitted [date_chr_vector]
 #'
+#' @inheritParams impute_dtc_dt
 #'
 #' @details Usually this computation function can not be used with `%>%`.
 #'
@@ -248,6 +303,7 @@ convert_dtc_to_dt <- function(dtc,
   assert_character_vector(dtc)
   warn_if_invalid_dtc(dtc, is_valid_dtc(dtc))
 
+
   imputed_dtc <- impute_dtc_dt(
     dtc = dtc,
     highest_imputation = highest_imputation,
@@ -264,19 +320,21 @@ convert_dtc_to_dt <- function(dtc,
   ymd(imputed_dtc)
 }
 
-#' Impute Partial Date Portion of a `'--DTC'` Variable
+#' Impute Partial Date Portion of a `--DTC` Variable
 #'
-#' Imputation partial date portion of a `'--DTC'` variable based on user input.
+#' Imputation partial date portion of a `--DTC` variable based on user input.
 #'
-#' @param dtc The `'--DTC'` date to impute
+#' @param dtc The `--DTC` date to impute
 #'
 #'   A character date is expected in a format like `yyyy-mm-dd` or
 #'   `yyyy-mm-ddThh:mm:ss`. Trailing components can be omitted and `-` is a
 #'   valid "missing" value for any component.
 #'
+#' @permitted [date_chr]
+#'
 #' @param highest_imputation Highest imputation level
 #'
-#'   The `highest_imputation` argument controls which components of the DTC
+#'   The `highest_imputation` argument controls which components of the `--DTC`
 #'   value are imputed if they are missing. All components up to the specified
 #'   level are imputed.
 #'
@@ -287,29 +345,31 @@ convert_dtc_to_dt <- function(dtc,
 #'   If `"n"` is specified no imputation is performed, i.e., if any component is
 #'   missing, `NA_character_` is returned.
 #'
-#'   If `"Y"` is specified, `date_imputation` should be `"first"` or `"last"`
-#'   and `min_dates` or `max_dates` should be specified respectively. Otherwise,
-#'   `NA_character_` is returned if the year component is missing.
+#'   If `"Y"` is specified, `date_imputation` must be `"first"` or `"last"`
+#'   and `min_dates` or `max_dates` must be specified respectively. Otherwise,
+#'   an error is thrown.
 #'
-#'   *Permitted Values*: `"Y"` (year, highest level), `"M"` (month), `"D"`
-#'   (day), `"n"` (none, lowest level)
+#' @permitted [date_high_imp]
 #'
 #' @param date_imputation The value to impute the day/month when a datepart is
 #'   missing.
 #'
-#'   A character value is expected, either as a
-#'   - format with month and day specified as `"mm-dd"`: e.g. `"06-15"` for the
-#'   15th of June (The year can not be specified; for imputing the year
-#'   `"first"` or `"last"` together with `min_dates` or `max_dates` argument can
-#'   be used (see examples).),
-#'   - or as a keyword: `"first"`, `"mid"`, `"last"` to impute to the first/mid/last
-#'   day/month. If `"mid"` is specified, missing components are imputed as the
-#'   middle of the possible range:
+#'   A character value is expected.
+#'    - If  `highest_imputation` is `"M"`, month and day can be
+#'      specified as `"mm-dd"`: e.g. `"06-15"` for the 15th of June
+#'    - When  `highest_imputation` is `"M"` or  `"D"`, the following keywords are available:
+#'      `"first"`, `"mid"`, `"last"` to impute to the first/mid/last
+#'      day/month. If `"mid"` is specified, missing components are imputed as the
+#'      middle of the possible range:
 #'       - If both month and day are missing, they are imputed as `"06-30"`
 #'        (middle of the year).
 #'       - If only day is missing, it is imputed as `"15"` (middle of the month).
 #'
-#'   The argument is ignored if `highest_imputation` is less then `"D"`.
+#'   The year can not be specified; for imputing the year
+#'   `"first"` or `"last"` together with `min_dates` or `max_dates` argument can
+#'   be used (see examples).
+#'
+#' @permitted [date_imp]
 #'
 #' @param min_dates Minimum dates
 #'
@@ -338,6 +398,8 @@ convert_dtc_to_dt <- function(dtc,
 #' `"2020-12-06T12:12:12"` is ignored. Returning `"2020-12-06T12:12:12"` would
 #' have changed the month although it is not missing (in the `dtc` date).
 #'
+#' @permitted [date_list]
+#'
 #' @param max_dates Maximum dates
 #'
 #' A list of dates is expected. It is ensured that the imputed date is not after
@@ -345,12 +407,14 @@ convert_dtc_to_dt <- function(dtc,
 #' cut off date. Only dates which are in the range of possible dates are
 #' considered. A date or date-time object is expected.
 #'
+#' @permitted [date_list]
+#'
 #' @param preserve Preserve day if month is missing and day is present
 #'
 #' For example `"2019---07"` would return `"2019-06-07` if `preserve = TRUE`
 #' (and `date_imputation = "MID"`).
 #'
-#' Permitted Values: `TRUE`, `FALSE`
+#' @permitted [boolean]
 #'
 #' @details Usually this computation function can not be used with `%>%`.
 #'
@@ -443,42 +507,40 @@ impute_dtc_dt <- function(dtc,
     month = "M",
     year = "Y"
   )
-  assert_character_scalar(highest_imputation, values = imputation_levels)
+
+  assert_highest_imputation(
+    highest_imputation = highest_imputation,
+    highest_imputation_values = imputation_levels,
+    date_imputation = date_imputation,
+    min_dates = min_dates,
+    max_dates = max_dates
+  )
+
   highest_imputation <- dt_level(highest_imputation)
-  date_imputation <-
-    assert_character_scalar(
-      date_imputation,
-      case_sensitive = FALSE
-    )
+
   assert_logical_scalar(preserve)
 
-  # Parse character date ----
-  two <- "(\\d{2}|-?)"
-  partialdate <- str_match(dtc, paste0(
-    "(\\d{4}|-?)-?",
-    two,
-    "-?",
-    two
-  ))
-  partial <- vector("list", 3)
-  components <- c("year", "month", "day")
-  names(partial) <- components
-  for (i in seq_along(components)) {
-    partial[[i]] <- partialdate[, i + 1]
-    partial[[i]] <- if_else(partial[[i]] %in% c("-", ""), NA_character_, partial[[i]])
+  # the `assert_date_imputation` function is stored in `derive_vars_dt_dtm_utils.R`
+  date_imputation <- assert_date_imputation(
+    highest_imputation = highest_imputation,
+    date_imputation = date_imputation
+  )
+
+  if (length(dtc) == 0) {
+    return(character(0))
   }
+
+  # Parse partials
+  partial <- get_partialdatetime(dtc, create_datetime = FALSE)
+  components <- names(partial)
 
   # Handle preserve argument ----
   if (!preserve) {
-    for (i in 2:3) {
-      partial[[i]] <- if_else(is.na(partial[[i - 1]]), NA_character_, partial[[i]])
-    }
+    partial <- propagate_na_values(partial)
   }
+
   # Determine target components ----
-  target <- get_imputation_target_date(
-    date_imputation = date_imputation,
-    month = partial[["month"]]
-  )
+  target <- get_imputation_targets(partial, date_imputation)
 
   for (c in components) {
     if (highest_imputation < dt_level(imputation_levels[[c]])) {
@@ -487,32 +549,12 @@ impute_dtc_dt <- function(dtc,
   }
 
   # Impute ----
-  imputed <- vector("list", 3)
-  names(imputed) <- components
-  for (c in components) {
-    imputed[[c]] <- if_else(is.na(partial[[c]]), target[[c]], partial[[c]])
-  }
+  imputed <- impute_date_time(partial, target)
+  imputed_dtc <- format_imputed_dtc(imputed)
 
-  imputed_dtc <-
-    paste(imputed[["year"]], imputed[["month"]], imputed[["day"]], sep = "-")
-
-  imputed_dtc <-
-    if_else(
-      str_detect(imputed_dtc, "x"),
-      NA_character_,
-      imputed_dtc
-    )
 
   if (date_imputation == "last") {
-    imputed_dtc <-
-      if_else(
-        is.na(partial[["day"]]),
-        strftime(
-          rollback(ymd(imputed_dtc) + months(1)),
-          format = "%Y-%m-%d"
-        ),
-        imputed_dtc
-      )
+    imputed_dtc <- adjust_last_day_imputation(imputed_dtc, partial)
   }
 
   # Handle min_dates and max_dates argument ----
@@ -522,10 +564,6 @@ impute_dtc_dt <- function(dtc,
     min_dates = min_dates,
     max_dates = max_dates
   )
-
-  if (highest_imputation == "Y" && is.null(min_dates) && is.null(max_dates)) {
-    warning("If `highest_impuation` = \"Y\" is specified, `min_dates` or `max_dates` should be specified respectively.") # nolint
-  }
 
   return(restricted)
 }
@@ -554,29 +592,19 @@ restrict_imputed_dtc_dt <- function(dtc,
                                     imputed_dtc,
                                     min_dates,
                                     max_dates) {
-  if (!(is.null(min_dates) || length(min_dates) == 0) ||
-    !(is.null(max_dates) || length(max_dates) == 0)) {
-    suppress_warning(
-      { # nolint
-        # determine range of possible dates
-        min_dtc <-
-          impute_dtc_dt(
-            dtc,
-            highest_imputation = "Y",
-            date_imputation = "first"
-          )
-        max_dtc <-
-          impute_dtc_dt(
-            dtc,
-            highest_imputation = "Y",
-            date_imputation = "last"
-          )
-      },
-      # Suppress warning because we need to run without min/max dates but users should not
-      regexpr = "If `highest_impuation` = \"Y\" is specified, `min_dates` or `max_dates` should be specified respectively." # nolint
-    )
+  any_mindate <- !(is.null(min_dates) || length(min_dates) == 0)
+  any_maxdate <- !(is.null(max_dates) || length(max_dates) == 0)
+  if (any_mindate || any_maxdate) {
+    # determine range of possible dates
+    dtc_range <-
+      get_dt_dtm_range(
+        dtc,
+        create_datetime = FALSE
+      )
+    min_dtc <- dtc_range[["lower"]]
+    max_dtc <- dtc_range[["upper"]]
   }
-  if (!(is.null(min_dates) || length(min_dates) == 0)) {
+  if (any_mindate) {
     if (length(unique(c(length(imputed_dtc), unlist(lapply(min_dates, length))))) != 1) {
       cli_abort("Length of {.arg min_dates} do not match length of dates to be imputed.")
     }
@@ -593,7 +621,7 @@ restrict_imputed_dtc_dt <- function(dtc,
       )
     }
   }
-  if (!(is.null(max_dates) || length(max_dates) == 0)) {
+  if (any_maxdate) {
     if (length(unique(c(length(imputed_dtc), unlist(lapply(max_dates, length))))) != 1) {
       cli_abort("Length of {.arg max_dates} do not match length of dates to be imputed.")
     }
@@ -615,10 +643,10 @@ restrict_imputed_dtc_dt <- function(dtc,
 
 #' Derive the Date Imputation Flag
 #'
-#' Derive the date imputation flag (`'--DTF'`) comparing a date character vector
-#' (`'--DTC'`) with a Date vector (`'--DT'`).
+#' Derive the date imputation flag (`*DTF`) comparing a date character vector
+#' (`--DTC`) with a Date vector (`*DT`).
 #'
-#' @param dtc The date character vector (`'--DTC'`).
+#' @param dtc The date character vector (`--DTC`).
 #'
 #'   A character date is expected in a format like `yyyy-mm-ddThh:mm:ss` (partial or complete).
 #'
@@ -628,7 +656,7 @@ restrict_imputed_dtc_dt <- function(dtc,
 #'
 #' @details Usually this computation function can not be used with `%>%`.
 #'
-#' @return The date imputation flag (`'--DTF'`) (character value of `'D'`, `'M'` , `'Y'` or `NA`)
+#' @return The date imputation flag (`*DTF`) (character value of `"D"`, `"M"` , `"Y"` or `NA`)
 #'
 #'
 #' @family com_date_time

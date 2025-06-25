@@ -203,7 +203,8 @@ lastvisit <- censor_source(
   set_values_to = exprs(
     EVNTDESC = "LAST TUMOR ASSESSMENT",
     SRCDOM = "ADRS",
-    SRCVAR = "ADT"
+    SRCVAR = "ADT",
+    SRCSEQ = ASEQ
   )
 )
 
@@ -236,7 +237,7 @@ dataset_vignette(
   adtte %>%
     select(
       STUDYID, USUBJID, PARAMCD, PARAM, STARTDT, ADT, ADTF, CNSR,
-      EVNTDESC, SRCDOM, SRCVAR
+      EVNTDESC, SRCDOM, SRCVAR, SRCSEQ
     ),
   display_vars = exprs(USUBJID, PARAMCD, STARTDT, ADT, ADTF, CNSR)
 )
@@ -262,10 +263,12 @@ observation_end <- censor_source(
 tt_ae <- event_source(
   dataset_name = "ae",
   date = ASTDT,
+  order = exprs(AESEQ),
   set_values_to = exprs(
     EVNTDESC = "ADVERSE EVENT",
     SRCDOM = "AE",
-    SRCVAR = "AESTDTC"
+    SRCVAR = "AESTDTC",
+    SRCSEQ = AESEQ
   )
 )
 
@@ -274,10 +277,12 @@ tt_ser_ae <- event_source(
   dataset_name = "ae",
   filter = AESER == "Y",
   date = ASTDT,
+  order = exprs(AESEQ),
   set_values_to = exprs(
     EVNTDESC = "SERIOUS ADVERSE EVENT",
     SRCDOM = "AE",
-    SRCVAR = "AESTDTC"
+    SRCVAR = "AESTDTC",
+    SRCSEQ = AESEQ
   )
 )
 
@@ -286,10 +291,12 @@ tt_rel_ae <- event_source(
   dataset_name = "ae",
   filter = AEREL %in% c("PROBABLE", "POSSIBLE", "REMOTE"),
   date = ASTDT,
+  order = exprs(AESEQ),
   set_values_to = exprs(
     EVNTDESC = "RELATED ADVERSE EVENT",
     SRCDOM = "AE",
-    SRCVAR = "AESTDTC"
+    SRCVAR = "AESTDTC",
+    SRCSEQ = AESEQ
   )
 )
 
@@ -320,9 +327,9 @@ adaette <- call_derivation(
 
 ## ----echo=FALSE---------------------------------------------------------------
 adaette %>%
-  select(STUDYID, USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR) %>%
+  select(STUDYID, USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR, SRCSEQ) %>%
   arrange(USUBJID, PARAMCD) %>%
-  dataset_vignette(display_vars = exprs(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR))
+  dataset_vignette(display_vars = exprs(USUBJID, PARAMCD, STARTDT, ADT, CNSR, EVNTDESC, SRCDOM, SRCVAR, SRCSEQ))
 
 ## ----echo=FALSE---------------------------------------------------------------
 adsl <- tibble::tribble(

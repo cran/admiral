@@ -11,11 +11,9 @@
 #'   A function that performs a specific derivation is expected. A derivation
 #'   adds variables or observations to a dataset. The first argument of a
 #'   derivation must expect a dataset and the derivation must return a dataset.
-#'   The function must provide the `dataset` argument and all arguments
-#'   specified in the `params()` objects passed to the `arg` argument.
-#'
-#'   Please note that it is not possible to specify `{dplyr}`
-#'   functions like `mutate()` or `summarize()`.
+#'   All expected arguments for the derivation function must be provided through
+#'   the `params()` object passed to the `args` argument or be provided in _every_
+#'   `derivation_slice()`.
 #'
 #' @param args Arguments of the derivation
 #'
@@ -40,8 +38,15 @@
 #'   - Observations that match with more than one slice are only considered for
 #'   the first matching slice.
 #'
+#'   - The derivation is called for slices with no observations.
+#'
 #'   - Observations with no match to any of the slices are included in the
 #'   output dataset but the derivation is not called for them.
+#'
+#'   It is also possible to pass functions from outside the `{admiral}` package
+#'   to `slice_derivation()`, e.g. an extension package function, or
+#'   `dplyr::mutate()`. The only requirement for a function being passed to `derivation` is that
+#'   it must take a dataset as its first argument and return a dataset.
 #'
 #' @return The input dataset with the variables derived by the derivation added
 #'
@@ -49,7 +54,7 @@
 #' @keywords high_order_function
 #'
 #'
-#' @seealso [params()] [restrict_derivation()]
+#' @seealso [params()] [restrict_derivation()] [call_derivation()]
 #'
 #' @export
 #'
@@ -81,19 +86,53 @@
 #'     args = params(time_imputation = "last")
 #'   )
 #' )
+#'
 slice_derivation <- function(dataset,
                              derivation,
                              args = NULL,
                              ...) {
   # check input
   assert_data_frame(dataset)
-  assert_function(derivation, params = c("dataset"))
+  assert_function(derivation)
   assert_s3_class(args, "params", optional = TRUE)
   if (!is.null(args)) {
     assert_function(derivation, names(args))
   }
   slices <- list2(...)
   assert_list_of(slices, "derivation_slice")
+
+  # Check that every mandatory argument to the derivation function is either passed
+  # inside args or present in every slice
+  mandatory_args <- formals(derivation) %>%
+    keep(is_missing) %>%
+    names()
+
+  if (length(mandatory_args > 1)) {
+    # ignore first item, as that is the dataset
+    mandatory_args <- mandatory_args[-1]
+    # ignore the ... argument too, if present
+    mandatory_args <- mandatory_args[mandatory_args != "..."]
+
+    if (length(mandatory_args > 1)) {
+      for (mandatory_arg in mandatory_args) {
+        if (!mandatory_arg %in% names(args)) {
+          check <- vapply(
+            slices,
+            function(x) mandatory_arg %in% names(x$args),
+            FUN.VALUE = length(slices)
+          )
+
+          if (!all(check)) {
+            cli_abort(
+              "Issue with the mandatory argument `{mandatory_arg}` of derivation
+              function `{deparse(substitute(derivation))}`. It must: (1) be passed
+              to the `args` argument, or (2) be passed to all derivation slices."
+            )
+          }
+        }
+      }
+    }
+  }
 
   # the variable temp_slicenr is added to the dataset which indicates to which
   # slice the observation belongs. Observations which match to more than one
@@ -109,12 +148,7 @@ slice_derivation <- function(dataset,
     dataset,
     temp_slicenr = !!slice_call
   )
-
-  # split dataset into slices
-  dataset_split <- dataset %>%
-    group_by(temp_slicenr) %>%
-    nest()
-
+  ret <- list()
   # call derivation for each slice
   for (i in seq_along(slices)) {
     # call derivation on subset
@@ -122,35 +156,29 @@ slice_derivation <- function(dataset,
     act_args <- args[names(args) %notin% names(slices[[i]]$args)]
 
     call <- call2(derivation, expr(data), !!!act_args, !!!slices[[i]]$args)
-    obsnr <- which(dataset_split$temp_slicenr == i)
-    if (length(obsnr) > 0) {
-      # call the derivation for non-empty slices only
-      # create environment in which the call to the derivation is evaluated
-      act_env <- attr(args, "env")
-      slice_env <- attr(slices[[i]]$args, "env")
-      if (!identical(act_env, slice_env)) {
-        # prefer objects in the slice environment to object in args environment
-        # Note: objects in any of the parent environments of the slice environment are ignored.
-        eval_env <- new_environment(
-          data = c(list(data = dataset_split$data[[obsnr]]), as.list(slice_env)),
-          parent = act_env
-        )
-      } else {
-        eval_env <- new_environment(
-          data = list(data = dataset_split$data[[obsnr]]),
-          parent = act_env
-        )
-      }
-
-      dataset_split$data[[obsnr]] <-
-        eval_tidy(call, env = eval_env)
+    obsnr <- which(dataset$temp_slicenr == i)
+    # call the derivation for non-empty slices only
+    # create environment in which the call to the derivation is evaluated
+    act_env <- attr(args, "env")
+    slice_env <- attr(slices[[i]]$args, "env")
+    if (!identical(act_env, slice_env)) {
+      # prefer objects in the slice environment to object in args environment
+      # Note: objects in any of the parent environments of the slice environment are ignored.
+      eval_env <- new_environment(
+        data = c(list(data = dataset[obsnr, , drop = FALSE]), as.list(slice_env)),
+        parent = act_env
+      )
+    } else {
+      eval_env <- new_environment(
+        data = list(data = dataset[obsnr, , drop = FALSE]),
+        parent = act_env
+      )
     }
-  }
 
+    ret[[i]] <- eval_tidy(call, env = eval_env)
+  }
   # put datasets together again
-  dataset_split %>%
-    unnest(cols = c(data)) %>%
-    ungroup() %>%
+  bind_rows(ret, dataset[is.na(dataset$temp_slicenr), , drop = FALSE]) %>%
     select(-temp_slicenr)
 }
 

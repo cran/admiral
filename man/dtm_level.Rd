@@ -9,9 +9,12 @@ dtm_level(level)
 \arguments{
 \item{level}{Datetime level
 
-\emph{Permitted Values}: \code{"Y"} (year, highest level), \code{"M"} (month), \code{"D"}
+\describe{
+\item{Permitted values}{\code{"Y"} (year, highest level), \code{"M"} (month), \code{"D"}
 (day), \code{"h"} (hour), \code{"m"} (minute), \code{"s"} (second, lowest level), \code{"n"}
 (none)}
+\item{Default value}{none}
+}}
 }
 \value{
 A \code{dtm_level} object
@@ -22,6 +25,18 @@ Create a \code{dtm_level} object
 \details{
 A \code{dtm_level} object is an ordered factor, i.e., two objects can be
 compared.
+}
+\examples{
+# Create a dtm_level object with level "D" (day)
+level_day <- admiral:::dtm_level("D")
+print(level_day)
+
+# Create a dtm_level object with level "h" (hour)
+level_hour <- admiral:::dtm_level("h")
+print(level_hour)
+
+# Compare two dtm_level objects
+level_day > level_hour # TRUE, because "D" is larger than "h".
 }
 \seealso{
 Utilities used for date imputation: 

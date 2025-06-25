@@ -15,6 +15,10 @@ A character value is expected, either as a
 \item format with hour, min and sec specified as \code{"hh:mm:ss"}: e.g. \code{"00:00:00"}
 for the start of the day,
 \item or as a keyword: \code{"first"},\code{"last"} to impute to the start/end of a day.
+}
+
+\describe{
+\item{Default value}{none}
 }}
 }
 \value{
@@ -30,6 +34,20 @@ Get Time Imputation Targets
 \item For \code{time_imputation = "last"} \code{"23"}, \code{"59"}, \code{"59"} are returned.
 \item For \code{time_imputation = "<hh>:<mm>:<ss>"} \code{"<hh>"}, \code{"<mm>"}, \code{"<ss>"} are returned.
 }
+}
+\examples{
+# Get imputation target for "first" time
+target_first_time <- admiral:::get_imputation_target_time("first")
+print(target_first_time)
+
+# Get imputation target for "last" time
+target_last_time <- admiral:::get_imputation_target_time("last")
+print(target_last_time)
+
+# Get imputation target for custom time imputation "12-34-56"
+target_custom_time <- admiral:::get_imputation_target_time("12-34-56")
+print(target_custom_time)
+
 }
 \seealso{
 \code{\link[=impute_dtc_dtm]{impute_dtc_dtm()}}

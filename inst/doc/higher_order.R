@@ -21,7 +21,12 @@ vs <- convert_blanks_to_na(vs)
 ## ----echo=FALSE---------------------------------------------------------------
 adsl <- filter(adsl, USUBJID %in% c("01-701-1111", "01-705-1393"))
 ae <- filter(ae, USUBJID %in% c("01-701-1111", "01-705-1393"))
-vs <- filter(vs, USUBJID %in% c("01-701-1015"))
+vs <- vs %>%
+  filter(
+    USUBJID %in% c("01-701-1015"),
+    VISIT %in% c("BASELINE", "WEEK 2", "WEEK 4"),
+    VSTESTCD %in% c("TEMP", "WEIGHT")
+  )
 
 ## -----------------------------------------------------------------------------
 adae <- ae %>%
@@ -52,8 +57,7 @@ vs_without <- vs %>%
 vs_without %>%
   arrange(USUBJID, VSTESTCD, VSDY, VSSEQ) %>%
   dataset_vignette(
-    display_vars = exprs(USUBJID, VSTESTCD, VSORRES, ALOFL, AHIFL),
-    filter = VSTESTCD %in% c("TEMP", "WEIGHT")
+    display_vars = exprs(USUBJID, VSTESTCD, VSORRES, ALOFL, AHIFL)
   )
 
 ## -----------------------------------------------------------------------------
@@ -72,8 +76,7 @@ vs_with <- vs %>%
 vs_with %>%
   arrange(USUBJID, VSTESTCD, VSDY, VSSEQ) %>%
   dataset_vignette(
-    display_vars = exprs(USUBJID, VSTESTCD, VSORRES, ALOFL, AHIFL),
-    filter = VSTESTCD %in% c("TEMP", "WEIGHT")
+    display_vars = exprs(USUBJID, VSTESTCD, VSORRES, ALOFL, AHIFL)
   )
 
 ## -----------------------------------------------------------------------------
@@ -181,5 +184,28 @@ ae %>%
   arrange(USUBJID, AESTDY, AESEQ) %>%
   dataset_vignette(
     display_vars = exprs(USUBJID, AEDECOD, AESTDY, AESEQ, AESEV, AHSEV3FL)
+  )
+
+## -----------------------------------------------------------------------------
+vs_hilotemp <- vs %>%
+  restrict_derivation(
+    derivation = call_derivation,
+    args = params(
+      derivation = derive_var_extreme_flag,
+      variable_params = list(
+        params(new_var = ATMPHIFL, mode = "last"),
+        params(new_var = ATMPLOFL, mode = "first")
+      ),
+      by_vars = exprs(USUBJID, VSTESTCD),
+      order = exprs(VSORRES, VSSEQ)
+    ),
+    filter = VSTESTCD == "TEMP"
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+vs_hilotemp %>%
+  arrange(USUBJID, VSTESTCD, VSDY, VSSEQ) %>%
+  dataset_vignette(
+    display_vars = exprs(USUBJID, VSTESTCD, VSORRES, ATMPLOFL, ATMPHIFL)
   )
 

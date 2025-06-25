@@ -118,8 +118,7 @@ globalVariables(c(
   "FILTER",
   "GRADE_CRITERIA_CODE",
   "DIRECTION",
-  "SI_UNIT_CHECK",
-  "SI_UNIT_UPPER",
+  "UNIT_CHECK",
   "VAR_CHECK",
   "TERM",
   "SRCVAR",
@@ -135,5 +134,6 @@ globalVariables(c(
   "worsen_date",
   "prev_intensity",
   "srfl",
-  "dose_freq_lookup"
+  "dose_freq_lookup",
+  "UNIT_CHECK"
 ))

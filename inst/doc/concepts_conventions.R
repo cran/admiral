@@ -36,19 +36,19 @@ adae
 expr(adae)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  derive_vars_merged(
-#    adsl,
-#    dataset_add = ex,
-#    filter_add = !is.na(EXENDTM),
-#    by_vars = exprs(STUDYID, USUBJID),
-#    new_vars = exprs(
-#      TRTEDTM = EXENDTM,
-#      TRTETMF = EXENTMF,
-#      COMPTRT = if_else(!is.na(EXENDTM), "Y", "N")
-#    ),
-#    order = exprs(EXENDTM),
-#    mode = "last"
-#  )
+# derive_vars_merged(
+#   adsl,
+#   dataset_add = ex,
+#   filter_add = !is.na(EXENDTM),
+#   by_vars = exprs(STUDYID, USUBJID),
+#   new_vars = exprs(
+#     TRTEDTM = EXENDTM,
+#     TRTETMF = EXENTMF,
+#     COMPTRT = if_else(!is.na(EXENDTM), "Y", "N")
+#   ),
+#   order = exprs(EXENDTM),
+#   mode = "last"
+# )
 
 ## ----eval = TRUE--------------------------------------------------------------
 a <- expr(2)
@@ -67,6 +67,7 @@ exprs(!!!list(a, b))
 get_admiral_option("subject_keys")
 
 ## ----eval = TRUE, error = TRUE------------------------------------------------
+try({
 adcm <- data.frame(STUDYID = "XXX", USUBJID = "XXX-1", CMTRT = "ASPIRIN")
 adcm
 
@@ -75,6 +76,7 @@ adcm %>% select(get_admiral_option("subject_keys"))
 
 # This works because we are unquoting the subject keys
 adcm %>% select(!!!get_admiral_option("subject_keys"))
+})
 
 ## ----eval = TRUE, echo = TRUE-------------------------------------------------
 library(dplyr, warn.conflicts = FALSE)
@@ -96,6 +98,7 @@ dm <- tribble(
 )
 
 ## ----eval = TRUE, error = TRUE------------------------------------------------
+try({
 my_expression <- expr(VSTESTCD == "WEIGHT" & VISIT == "SCREENING")
 
 derive_vars_merged(
@@ -104,6 +107,7 @@ derive_vars_merged(
   by_vars = exprs(USUBJID),
   filter_add = my_expression
 )
+})
 
 ## ----eval = TRUE, error = FALSE-----------------------------------------------
 derive_vars_merged(
@@ -114,6 +118,7 @@ derive_vars_merged(
 )
 
 ## ----eval = TRUE, error = TRUE------------------------------------------------
+try({
 filter_vs_and_merge <- function(my_expression) {
   derive_vars_merged(
     dm,
@@ -128,4 +133,5 @@ filter_vs_and_merge(expr(VSTESTCD == "WEIGHT" & VISIT == "SCREENING"))
 
 # This fails
 filter_vs_and_merge(expr(VSTESTCD == "WEIGHT" & VISIT == "SCREENING" & VSTPT == "PREDOSE"))
+})
 

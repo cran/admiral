@@ -990,6 +990,12 @@ expand this lookup or create a separate look up for
 project parameter mappings, are available,
 <code>consolidate_metadata()</code> can be used to consolidate these
 into a single lookup table.</p>
+<p>Additionally note that each parameter is mapped to only one
+<code>PARCAT1</code> variable. This is described in section 3.3.4.1 of
+the ADaM Implementation Guide, version 1.3: “Any given
+<code>PARAM</code> may be associated with at-most one level of
+<code>PARCATy</code> (e.g., one level of <code>PARCAT1</code> and one
+level of <code>PARCAT2</code>)”.</p>
 </div>
 <div id="aval" class="section level2">
 <h2>Derive Results (<code>AVAL</code>, <code>AVALC</code>)</h2>
@@ -2350,7 +2356,9 @@ used.</p>
 <code>derive_var_analysis_ratio()</code>. This function derives a ratio
 variable based on user-specified pair. For example, Ratio to Baseline is
 calculated by <code>AVAL / BASE</code> and the function appends a new
-variable <code>R2BASE</code> to the dataset. Examples calls are:</p>
+variable <code>R2BASE</code> to the dataset. This function can also
+derive <code>R2AyHI</code> and <code>R2AyLO</code> values. Examples
+calls are:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>advs <span class="ot">&lt;-</span> <span class="fu">derive_var_analysis_ratio</span>(advs,</span>
 <span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="at">numer_var =</span> AVAL,</span>
 <span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>  <span class="at">denom_var =</span> BASE</span>

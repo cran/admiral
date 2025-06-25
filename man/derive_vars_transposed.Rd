@@ -18,32 +18,58 @@ derive_vars_transposed(
 \arguments{
 \item{dataset}{Input dataset
 
-The variables specified by the \code{by_vars} argument are expected to be in the dataset.}
+The variables specified by the \code{by_vars} argument are expected to be in the dataset.
+
+\describe{
+\item{Default value}{none}
+}}
 
 \item{dataset_merge}{Dataset to transpose and merge
 
 The variables specified by the \code{by_vars}, \code{id_vars}, \code{key_var} and
 \code{value_var} arguments are expected. The variables \code{by_vars}, \code{id_vars},
-\code{key_var} have to be a unique key.}
+\code{key_var} have to be a unique key.
+
+\describe{
+\item{Default value}{none}
+}}
 
 \item{by_vars}{Grouping variables
 
-Keys used to merge \code{dataset_merge} with \code{dataset}.}
+Keys used to merge \code{dataset_merge} with \code{dataset}.
+
+\describe{
+\item{Default value}{none}
+}}
 
 \item{id_vars}{ID variables
 
-Variables (excluding by_vars) that uniquely identify each observation in \code{dataset_merge}.
+Variables (excluding \code{by_vars} and \code{key_var}) that uniquely identify each
+observation in \code{dataset_merge}.
 
-\emph{Permitted Values}: list of variables created by \code{exprs()}
-e.g. \code{exprs(USUBJID, VISIT)}}
+\describe{
+\item{Default value}{\code{NULL}}
+}}
 
 \item{key_var}{The variable of \code{dataset_merge} containing the names of the
-transposed variables}
+transposed variables
+
+\describe{
+\item{Default value}{none}
+}}
 
 \item{value_var}{The variable of \code{dataset_merge} containing the values of the
-transposed variables}
+transposed variables
 
-\item{filter}{Expression used to restrict the records of \code{dataset_merge} prior to transposing}
+\describe{
+\item{Default value}{none}
+}}
+
+\item{filter}{Expression used to restrict the records of \code{dataset_merge} prior to transposing
+
+\describe{
+\item{Default value}{\code{NULL}}
+}}
 
 \item{relationship}{Expected merge-relationship between the \code{by_vars}
 variable(s) in \code{dataset} and \code{dataset_merge} (after transposition)
@@ -52,8 +78,11 @@ This argument is passed to the \code{dplyr::left_join()} function. See
 \url{https://dplyr.tidyverse.org/reference/mutate-joins.html#arguments} for
 more details.
 
-\emph{Permitted Values}: \code{"one-to-one"}, \code{"one-to-many"}, \code{"many-to-one"},
+\describe{
+\item{Permitted values}{\code{"one-to-one"}, \code{"one-to-many"}, \code{"many-to-one"},
 \code{"many-to-many"}, \code{NULL}}
+\item{Default value}{\code{NULL}}
+}}
 }
 \value{
 The input dataset with transposed variables from \code{dataset_merge} added
@@ -62,14 +91,27 @@ The input dataset with transposed variables from \code{dataset_merge} added
 Adds variables from a vertical dataset after transposing it into a wide one.
 }
 \details{
-After filtering \code{dataset_merge} based upon the condition provided in \code{filter}, this
-dataset is transposed and subsequently merged onto \code{dataset} using \code{by_vars} as
-keys.
+\enumerate{
+\item The records from the dataset to transpose and merge (\code{dataset_merge}) are restricted
+to those matching the \code{filter} condition, if provided.
+\item The records from \code{dataset_merge} are checked to ensure they are uniquely identified
+using \code{by_vars}, \code{id_vars} and \code{key_var}.
+\item \code{dataset_merge} is transposed (from "tall" to "wide"), with new variables added whose
+names come from \code{key_var} and values come from \code{value_var}.
+\item The transposed dataset is merged with the input \code{dataset} using \code{by_vars} as
+keys. If a \code{relationship} has been provided, this merge must satisfy the relationship,
+otherwise an error is thrown.
+}
+
+Note that unlike other \verb{derive_vars_*()} functions, the final step may cause new
+records to be added to the input dataset. The \code{relationship} argument can be specified
+to ensure this does not happen inadvertently.
 }
 \examples{
 library(tibble)
 library(dplyr, warn.conflicts = FALSE)
 
+# Adding ATC classes to CM using FACM
 cm <- tribble(
   ~USUBJID,       ~CMGRPID, ~CMREFID,  ~CMDECOD,
   "BP40257-1001", "14",     "1192056", "PARACETAMOL",
@@ -102,13 +144,28 @@ facm <- tribble(
 
 cm \%>\%
   derive_vars_transposed(
-    facm,
+    dataset_merge = facm,
     by_vars = exprs(USUBJID, CMREFID = FAREFID),
     id_vars = exprs(FAGRPID),
     key_var = FATESTCD,
     value_var = FASTRESC
   ) \%>\%
   select(USUBJID, CMDECOD, starts_with("CMATC"))
+
+# Note: the `id_vars` argument here is needed to uniquely identify
+# rows of dataset_merge and avoid duplicates-related errors.
+# Compare the above call to when `id_vars = NULL`:
+
+try(
+  cm \%>\%
+    derive_vars_transposed(
+      dataset_merge = facm,
+      by_vars = exprs(USUBJID, CMREFID = FAREFID),
+      id_vars = NULL,
+      key_var = FATESTCD,
+      value_var = FASTRESC
+    )
+)
 }
 \seealso{
 \code{\link[=derive_vars_atc]{derive_vars_atc()}}
@@ -124,6 +181,7 @@ General Derivation Functions for all ADaMs that returns variable appended to dat
 \code{\link{derive_vars_cat}()},
 \code{\link{derive_vars_computed}()},
 \code{\link{derive_vars_joined}()},
+\code{\link{derive_vars_joined_summary}()},
 \code{\link{derive_vars_merged}()},
 \code{\link{derive_vars_merged_lookup}()}
 }

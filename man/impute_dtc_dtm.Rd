@@ -2,7 +2,7 @@
 % Please edit documentation in R/derive_vars_dtm.R
 \name{impute_dtc_dtm}
 \alias{impute_dtc_dtm}
-\title{Impute Partial Date(-time) Portion of a \code{'--DTC'} Variable}
+\title{Impute Partial Date(-time) Portion of a \code{--DTC} Variable}
 \usage{
 impute_dtc_dtm(
   dtc,
@@ -15,11 +15,16 @@ impute_dtc_dtm(
 )
 }
 \arguments{
-\item{dtc}{The \code{'--DTC'} date to impute
+\item{dtc}{The \code{--DTC} date to impute
 
 A character date is expected in a format like \code{yyyy-mm-dd} or
 \code{yyyy-mm-ddThh:mm:ss}. Trailing components can be omitted and \code{-} is a
-valid "missing" value for any component.}
+valid "missing" value for any component.
+
+\describe{
+\item{Permitted values}{a character date variable}
+\item{Default value}{none}
+}}
 
 \item{highest_imputation}{Highest imputation level
 
@@ -37,20 +42,22 @@ If \code{"Y"} is specified, \code{date_imputation} should be \code{"first"} or \
 and \code{min_dates} or \code{max_dates} should be specified respectively. Otherwise,
 \code{NA_character_} is returned if the year component is missing.
 
-\emph{Permitted Values}: \code{"Y"} (year, highest level), \code{"M"} (month), \code{"D"}
+\describe{
+\item{Permitted values}{\code{"Y"} (year, highest level), \code{"M"} (month), \code{"D"}
 (day), \code{"h"} (hour), \code{"m"} (minute), \code{"s"} (second), \code{"n"} (none, lowest
 level)}
+\item{Default value}{\code{"h"}}
+}}
 
 \item{date_imputation}{The value to impute the day/month when a datepart is
 missing.
 
-A character value is expected, either as a
+A character value is expected.
 \itemize{
-\item format with month and day specified as \code{"mm-dd"}: e.g. \code{"06-15"} for the
-15th of June (The year can not be specified; for imputing the year
-\code{"first"} or \code{"last"} together with \code{min_dates} or \code{max_dates} argument can
-be used (see examples).),
-\item or as a keyword: \code{"first"}, \code{"mid"}, \code{"last"} to impute to the first/mid/last
+\item If  \code{highest_imputation} is \code{"M"}, month and day can be
+specified as \code{"mm-dd"}: e.g. \code{"06-15"} for the 15th of June
+\item When  \code{highest_imputation} is \code{"M"} or  \code{"D"}, the following keywords are available:
+\code{"first"}, \code{"mid"}, \code{"last"} to impute to the first/mid/last
 day/month. If \code{"mid"} is specified, missing components are imputed as the
 middle of the possible range:
 \itemize{
@@ -60,7 +67,14 @@ middle of the possible range:
 }
 }
 
-The argument is ignored if \code{highest_imputation} is less then \code{"D"}.}
+The year can not be specified; for imputing the year
+\code{"first"} or \code{"last"} together with \code{min_dates} or \code{max_dates} argument can
+be used (see examples).
+
+\describe{
+\item{Permitted values}{\code{"first"}, \code{"mid"}, \code{"last"}, or user-defined}
+\item{Default value}{\code{"first"}}
+}}
 
 \item{time_imputation}{The value to impute the time when a timepart is
 missing.
@@ -72,7 +86,12 @@ for the start of the day,
 \item or as a keyword: \code{"first"},\code{"last"} to impute to the start/end of a day.
 }
 
-The argument is ignored if \code{highest_imputation = "n"}.}
+The argument is ignored if \code{highest_imputation = "n"}.
+
+\describe{
+\item{Permitted values}{\code{"first"}, \code{"last"}, or user-defined}
+\item{Default value}{\code{"first"}}
+}}
 
 \item{min_dates}{Minimum dates
 
@@ -102,7 +121,12 @@ have changed the month although it is not missing (in the \code{dtc} date).
 
 For date variables (not datetime) in the list the time is imputed to
 \code{"00:00:00"}. Specifying date variables makes sense only if the date is
-imputed. If only time is imputed, date variables do not affect the result.}
+imputed. If only time is imputed, date variables do not affect the result.
+
+\describe{
+\item{Permitted values}{a list of dates, e.g. \code{list(ymd_hms("2021-07-01T04:03:01"), ymd_hms("2022-05-12T13:57:23"))}}
+\item{Default value}{\code{NULL}}
+}}
 
 \item{max_dates}{Maximum dates
 
@@ -113,7 +137,12 @@ considered. A date or date-time object is expected.
 
 For date variables (not datetime) in the list the time is imputed to
 \code{"23:59:59"}. Specifying date variables makes sense only if the date is
-imputed. If only time is imputed, date variables do not affect the result.}
+imputed. If only time is imputed, date variables do not affect the result.
+
+\describe{
+\item{Permitted values}{a list of dates, e.g. \code{list(ymd_hms("2021-07-01T04:03:01"), ymd_hms("2022-05-12T13:57:23"))}}
+\item{Default value}{\code{NULL}}
+}}
 
 \item{preserve}{Preserve lower level date/time part when higher order part
 is missing, e.g. preserve day if month is missing or
@@ -122,13 +151,16 @@ preserve minute when hour is missing.
 For example \code{"2019---07"} would return \verb{"2019-06-07} if \code{preserve = TRUE}
 (and \code{date_imputation = "mid"}).
 
-Permitted Values: \code{TRUE}, \code{FALSE}}
+\describe{
+\item{Permitted values}{\code{"TRUE"}, \code{"FALSE"}}
+\item{Default value}{\code{FALSE}}
+}}
 }
 \value{
 A character vector
 }
 \description{
-Imputation partial date/time portion of a \code{'--DTC'} variable. based on user
+Imputation partial date/time portion of a \code{--DTC} variable. based on user
 input.
 }
 \details{

@@ -365,18 +365,23 @@ Corrected Version 2.1</strong></a></p>
 </div>
 <div id="grading-metadata" class="section level1">
 <h1>Grading metadata</h1>
-<p><code>{admiral}</code> will store a metadata data set for each set of
-grading criteria in the data folder of <code>{admiral}</code>.
-Currently, we have <code>atoxgr_criteria_ctcv4()</code> for NCI-CTCAEv4,
-<code>atoxgr_criteria_ctcv5()</code> for NCI-CTCAEv5 and
-<code>atoxgr_criteria_daids()</code> for DAIDS. Each metadata data set
-has required variables and optional variables, the optional variables
-are purely for transparency, and will contain detailed information about
-the grading criteria. The required variables are those used by
-<code>{admiral}</code> to create the grade.</p>
+<p><code>{admiral}</code> will store two sets of metadata data set for
+each set of grading criteria in the data folder of
+<code>{admiral}</code>, one for SI units, and one for US (conventional)
+units. These are as follows:</p>
+<p>NCI-CTCAEv4 + <code>atoxgr_criteria_ctcv4</code> for SI units. +
+<code>atoxgr_criteria_ctcv4_uscv</code> for US (conventional) units.</p>
+<p>NCI-CTCAEv5 + <code>atoxgr_criteria_ctcv5</code> for SI units. +
+<code>atoxgr_criteria_ctcv5_uscv</code> for US (conventional) units.</p>
+<p>DAIDS + <code>atoxgr_criteria_daids</code> for SI units. +
+<code>atoxgr_criteria_daids_uscv</code> for US (conventional) units.</p>
+<p>Each metadata data set has required variables and optional variables,
+the optional variables are purely for transparency, and will contain
+detailed information about the grading criteria. The required variables
+are those used by<code>{admiral}</code> to create the grade.</p>
 <div id="structure-of-metadata-set" class="section level2">
 <h2>Structure of metadata set</h2>
-<p>The metadata data set has the following structure for the required
+<p>Each metadata data set has the following structure for the required
 variables:</p>
 <table>
 <colgroup>
@@ -407,7 +412,7 @@ variables:</p>
 <td>“L” or “H”.</td>
 </tr>
 <tr class="odd">
-<td><strong>SI_UNIT_CHECK</strong></td>
+<td><strong>UNIT_CHECK</strong></td>
 <td>Unit of lab test, to check against input data if criteria is based
 on absolute values.</td>
 <td>Character</td>
@@ -818,7 +823,7 @@ update <code>meta_criteria</code> parameter to
 <p>Note: <code>{admiral}</code> does not grade ‘Anemia’ or ‘Hemoglobin
 Increased’ because the metadata is based on the SI unit of ‘g/L’,
 however the CDISC data has SI unit of ‘mmol/L’. Please see
-<code>SI_UNIT_CHECK</code> variable in <code>{admiral}</code> metadata
+<code>UNIT_CHECK</code> variable in <code>{admiral}</code> metadata
 <code>atoxgr_criteria_ctcv4()</code> or
 <code>atoxgr_criteria_ctcv5()</code> or
 <code>atoxgr_criteria_daids()</code>, the metadata is in the data folder
@@ -827,7 +832,7 @@ of <code>{admiral}</code>. <br></p>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">SI_UNIT_CHECK</th>
+<th align="left">UNIT_CHECK</th>
 </tr>
 </thead>
 <tbody>
@@ -1003,9 +1008,11 @@ nutrition disorders” and “Blood and lymphatic system disorders”.</p>
 <li>Serum amylase increased</li>
 <li>White blood cell decreased</li>
 </ul>
-<p>From the SOC = “Metabolism and nutrition disorders” there are 14
+<p>From the SOC = “Metabolism and nutrition disorders” there are 16
 CTCAE v4.0 Terms:</p>
 <ul>
+<li>Acidosis</li>
+<li>Alkalosis</li>
 <li>Hypercalcemia</li>
 <li>Hyperglycemia</li>
 <li>Hyperkalemia</li>
@@ -1210,6 +1217,63 @@ indicated”</td>
 </tr>
 </tbody>
 </table>
+<p><br> Here is a complete list of all assumptions in the metadata for
+NCI-CTCAE-v4 <br></p>
+<table>
+<colgroup>
+<col width="4%" />
+<col width="20%" />
+<col width="21%" />
+<col width="17%" />
+<col width="16%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">Grade_1</th>
+<th align="left">Grade_2</th>
+<th align="left">Grade_3</th>
+<th align="left">Grade_4</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">&gt;1 - 1.5 x ULN; &gt;1 - 1.5 times above baseline if
+on anticoagulation</td>
+<td align="left">&gt;1.5 - 2.5 x ULN; &gt;1.5 - 2.5 times above baseline
+if on anticoagulation</td>
+<td align="left">&gt;2.5 x ULN; &gt;2.5 times above baseline if on
+anticoagulation</td>
+<td align="left">-</td>
+<td align="left">Take worst case and assume “on anticoagulation”</td>
+</tr>
+<tr class="even">
+<td align="left">Hyperuricemia</td>
+<td align="left">&gt;ULN - 10 mg/dL (0.59 mmol/L) without physiologic
+consequences</td>
+<td align="left">-</td>
+<td align="left">&gt;ULN - 10 mg/dL (0.59 mmol/L) with physiologic
+consequences</td>
+<td align="left">&gt;10 mg/dL; &gt;0.59 mmol/L; life-threatening
+consequences</td>
+<td align="left">Take worst case and assume “with physiologic
+consequences”</td>
+</tr>
+<tr class="odd">
+<td align="left">Hypokalemia</td>
+<td align="left">&lt;LLN - 3.0 mmol/L</td>
+<td align="left">&lt;LLN - 3.0 mmol/L; symptomatic; intervention
+indicated</td>
+<td align="left">&lt;3.0 - 2.5 mmol/L; hospitalization indicated</td>
+<td align="left">&lt;2.5 mmol/L; life-threatening consequences</td>
+<td align="left">Take worst case and assume “symptomatic OR intervention
+indicated”</td>
+</tr>
+</tbody>
+</table>
 <p><br></p>
 </div>
 </div>
@@ -1250,9 +1314,11 @@ nutrition disorders” and “Blood and lymphatic system disorders”.</p>
 <li>White blood cell decreased</li>
 </ul>
 <p>Note: These are the same terms identified for NCI-CTCAEv4.</p>
-<p>From the SOC = “Metabolism and nutrition disorders” there are 12
-CTCAE v4.0 Terms:</p>
+<p>From the SOC = “Metabolism and nutrition disorders” there are 14
+CTCAE v5.0 Terms:</p>
 <ul>
+<li>Acidosis</li>
+<li>Alkalosis</li>
 <li>Hypercalcemia</li>
 <li>Hyperkalemia</li>
 <li>Hypermagnesemia</li>
@@ -1267,10 +1333,10 @@ CTCAE v4.0 Terms:</p>
 <li>Hyponatremia</li>
 </ul>
 <p>Note: These are the same terms identified for NCI-CTCAEv4, except
-“Hypophosphatemia” and “Hyperglycemia” which are not in NCICTCAEv5
-grading criteria.</p>
+“Hypophosphatemia” and “Hyperglycemia” which are not gradable by
+quantitative lab values in NCICTCAEv5 grading criteria.</p>
 <p>From the SOC = “Blood and lymphatic system disorders” there are 2
-CTCAE v4.0 Terms:</p>
+CTCAE v5.0 Terms:</p>
 <ul>
 <li>Anemia</li>
 <li>Leukocytosis</li>
@@ -1319,8 +1385,8 @@ separate terms.</td>
 </table>
 <p><br></p>
 </div>
-<div id="assumptions-made-when-grading-1" class="section level2">
-<h2>Assumptions made when grading</h2>
+<div id="criteria-dependent-on-the-baseline-value" class="section level2">
+<h2>Criteria dependent on the Baseline Value</h2>
 <p>For terms “Alanine aminotransferase increased”, “Alkaline phosphatase
 increased”, “Aspartate aminotransferase increased”, “Blood bilirubin
 increased” and “GGT increased” the criteria is dependent on the Baseline
@@ -1334,7 +1400,14 @@ with <code>BNRIND = &quot;HIGH&quot;</code> would be deemed to have an abnormal
 Baseline Value. Note: you can pass in multiple values,
 <code>abnormal_indicator = c(&quot;H&quot;, &quot;HIGH&quot;)</code></p>
 <p>For these 5 terms, this means if <code>BNRIND</code> is abnormal then
-the grade is always zero for the baseline observation.</p>
+the grade is always zero for the baseline observation. This is the
+conservative approach, to ensure you don’t see big changes in grade for
+a patient after they take treatment. Some companies may not want the
+baseline observation graded at all, so would post-process, if
+necessary.</p>
+</div>
+<div id="assumptions-made-when-grading-1" class="section level2">
+<h2>Assumptions made when grading</h2>
 <p>For term “INR Increased” there is the following criteria:</p>
 <p><br></p>
 <table>
@@ -1430,8 +1503,8 @@ field.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">INR increased</td>
-<td align="left">Take worst case and assume “on anticoagulation”</td>
+<td align="left">Lipase increased</td>
+<td align="left">Take worst case and assume “signs and symptoms”</td>
 </tr>
 <tr class="even">
 <td align="left">Serum amylase increased</td>
@@ -1473,7 +1546,7 @@ consequences”</td>
 <p>A similar approach was taken for TERM “Hypokalemia” and
 “Hyponatremia”. For “Hypokalemia”, where Grade 1 and Grade 2 criteria is
 the same with respect to the lab value, then worse case is assumed as
-grade 2. For “Hyponatremia”, where Grade 2 and Grade 2 criteria is the
+grade 2. For “Hyponatremia”, where Grade 2 and Grade 3 criteria is the
 same with respect to the lab value, then worse case is assumed as grade
 3. The decision made was put in the <code>COMMENT</code> field.</p>
 <p><br></p>
@@ -1509,6 +1582,89 @@ indicated</td>
 <td align="left">125-129 mmol/L and asymptomatic</td>
 <td align="left">125-129 mmol/L symptomatic; 120-124 mmol/L regardless
 of symptoms</td>
+<td align="left">Take worst case and assume “symptomatic”</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Here is a complete list of all assumptions in the metadata for
+NCI-CTCAE-v5 <br></p>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="22%" />
+<col width="23%" />
+<col width="19%" />
+<col width="11%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">Grade_1</th>
+<th align="left">Grade_2</th>
+<th align="left">Grade_3</th>
+<th align="left">Grade_4</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">&gt;1.2 - 1.5; &gt;1 - 1.5 x baseline if on
+anticoagulation; monitoring only indicated</td>
+<td align="left">&gt;1.5 - 2.5; &gt;1.5 - 2.5 x baseline if on
+anticoagulation; dose adjustment indicated</td>
+<td align="left">&gt;2.5; &gt;2.5 times above baseline if on
+anticoagulation</td>
+<td align="left">-</td>
+<td align="left">Take worst case and assume “on anticoagulation”</td>
+</tr>
+<tr class="even">
+<td align="left">Lipase increased</td>
+<td align="left">&gt;ULN - 1.5 x ULN</td>
+<td align="left">&gt;1.5 - 2.0 x ULN; &gt;2.0 - 5.0 x ULN and
+asymptomatic</td>
+<td align="left">&gt;2.0 - 5.0 x ULN with signs or symptoms; &gt;5.0 x
+ULN and asymptomatic</td>
+<td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
+<td align="left">Take worst case and assume “signs and symptoms”</td>
+</tr>
+<tr class="odd">
+<td align="left">Serum amylase increased</td>
+<td align="left">&gt;ULN - 1.5 x ULN</td>
+<td align="left">&gt;1.5 - 2.0 x ULN; &gt;2.0 - 5.0 x ULN and
+asymptomatic</td>
+<td align="left">&gt;2.0 - 5.0 x ULN with signs or symptoms; &gt;5.0 x
+ULN and asymptomatic</td>
+<td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
+<td align="left">Take worst case and assume “signs and symptoms”</td>
+</tr>
+<tr class="even">
+<td align="left">Hyperuricemia</td>
+<td align="left">&gt;ULN without physiologic consequences</td>
+<td align="left">-</td>
+<td align="left">&gt;ULN with physiologic consequences</td>
+<td align="left">Life-threatening consequences</td>
+<td align="left">Take worst case and assume “with physiologic
+consequences”</td>
+</tr>
+<tr class="odd">
+<td align="left">Hypokalemia</td>
+<td align="left">&lt;LLN - 3.0 mmol/L</td>
+<td align="left">Symptomatic with &lt;LLN - 3.0 mmol/L; intervention
+indicated</td>
+<td align="left">&lt;3.0 - 2.5 mmol/L; hospitalization indicated</td>
+<td align="left">&lt;2.5 mmol/L; life-threatening consequences</td>
+<td align="left">Take worst case and assume “symptomatic”</td>
+</tr>
+<tr class="even">
+<td align="left">Hyponatremia</td>
+<td align="left">&lt;LLN - 130 mmol/L</td>
+<td align="left">125-129 mmol/L and asymptomatic</td>
+<td align="left">125-129 mmol/L symptomatic; 120-124 mmol/L regardless
+of symptoms</td>
+<td align="left">&lt;120 mmol/L; life-threatening consequences</td>
 <td align="left">Take worst case and assume “symptomatic”</td>
 </tr>
 </tbody>
@@ -1785,34 +1941,104 @@ unit is in the comment field.</p>
 <p><br></p>
 <table>
 <colgroup>
-<col width="10%" />
+<col width="31%" />
 <col width="68%" />
-<col width="21%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">FILTER</th>
 <th align="left">COMMENT</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">Direct Bilirubin, High</td>
-<td align="left">compute_duration(start_date = BRTHDT, end_date = LBDT,
-trunc_out = TRUE, out_unit = “days”, add_one = FALSE) &lt;= 28 |
-is.na(BRTHDT) | is.na(LBDT)</td>
 <td align="left">17.1 used as conversion from “mg/dL” to “umol/L”</td>
 </tr>
 <tr class="even">
 <td align="left">Uric Acid, High</td>
-<td align="left">NA</td>
 <td align="left">To convert “mmol/L” to “umol/L” multiply by 1000</td>
+</tr>
+</tbody>
+</table>
+<p><br> Here is a complete list of all assumptions in the metadata for
+DAIDs <br></p>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="75%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Absolute CD4+ Count, Low</td>
+<td align="left">Assume “not HIV infected”</td>
+</tr>
+<tr class="even">
+<td align="left">Absolute Lymphocyte Count, Low</td>
+<td align="left">Assume “not HIV infected”</td>
+</tr>
+<tr class="odd">
+<td align="left">Acidosis</td>
+<td align="left">Assume “with lifethreatening consequences”</td>
+</tr>
+<tr class="even">
+<td align="left">Alkalosis</td>
+<td align="left">Assume “with lifethreatening consequences”</td>
+</tr>
+<tr class="odd">
+<td align="left">Direct Bilirubin, High</td>
+<td align="left">Assume worst case of “lifethreatening consequences
+(e.g., signs and symptoms of liver failure)”</td>
+</tr>
+<tr class="even">
+<td align="left">Direct Bilirubin, High</td>
+<td align="left">17.1 used as conversion from “mg/dL” to “umol/L”</td>
+</tr>
+<tr class="odd">
+<td align="left">INR, High</td>
+<td align="left">Assume “not on anticoagulation”</td>
+</tr>
+<tr class="even">
+<td align="left">Lactate, High</td>
+<td align="left">Assume “without acidosis” (only grade 1 and 2)</td>
+</tr>
+<tr class="odd">
+<td align="left">Methemoglobin</td>
+<td align="left">% hemoglobin</td>
+</tr>
+<tr class="even">
+<td align="left">PT, High</td>
+<td align="left">Assume “not on anticoagulation”</td>
 </tr>
 </tbody>
 </table>
 <p><br></p>
 </div>
+</div>
+<div id="us-conventional-unit-implementation" class="section level1">
+<h1>US (Conventional) unit implementation</h1>
+<p>The metadata for the US (Conventional) units is the same as the
+metadata for SI units except when checking for units, when the criteria
+is based on numeric values. The <code>UNIT_CHECK</code> variable will
+then contain the US (Conventional) unit, and if the unit is not a
+synonym for the SI unit then the grading criteria is updated
+accordingly. There were some lab tests where it made sense to have 2
+sets of US (Conventional) units, these were lab tests related to
+<code>&quot;WBC&quot;</code>, <code>&quot;Lymphocytes&quot;</code>,
+<code>&quot;Neutrophils&quot;</code> and <code>&quot;Platelets&quot;</code>. We have the US
+unit <code>&quot;10^3/uL&quot;</code> which is a synonym of the SI unit
+<code>&quot;10^9/L&quot;</code>, and also the US unit <code>&quot;10^3/ml&quot;</code> which
+is a synonym for <code>&quot;/mm3&quot;</code> which is included in the grading
+criteria documentation. If companies have lab tests that have units that
+don’t exactly match what is in the <code>UNIT_CHECK</code> variable, but
+the unit is a one-to-one mapping, then the <code>UNIT_CHECK</code>
+variable can be updated with company-specific code to reflect this.</p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
