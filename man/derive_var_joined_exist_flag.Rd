@@ -57,7 +57,7 @@ dataset (\code{dataset}) with the additional dataset (\code{dataset_add}).
 The observations are ordered by the specified order if \code{join_type = "after"}, \code{join_type = "before"}, \code{first_cond_lower}, \code{first_cond_upper},
 or \code{tmp_obs_nr_var} are specified.
 
-For handling of \code{NA}s in sorting variables see \href{../articles/generic.html#sort_order}{Sort Order}.
+For handling of \code{NA}s in sorting variables see the "Sort Order" section in \code{vignette("generic")}.
 
 \describe{
 \item{Permitted values}{list of variables created by \code{exprs()}, e.g., \code{exprs(USUBJID, VISIT)}}
@@ -819,11 +819,9 @@ derive_var_joined_exist_flag(
 #> 5 2             1     1 Y     Y     
 #> 6 2             2     8 Y     <NA>  
 #> 7 2             2    10 Y     <NA>  
-#> Warning: Dataset `dataset` contains duplicate records with respect to `USUBJID` and
-#> `AVISITN`
+#> Warning: Dataset `dataset` contains duplicate records with respect to `USUBJID` and `AVISITN`
 #> i Run `admiral::get_duplicates_dataset()` to access the duplicate records
-#> Warning: Dataset `dataset_add` contains duplicate records with respect to `USUBJID` and
-#> `AVISITN`
+#> Warning: Dataset `dataset_add` contains duplicate records with respect to `USUBJID` and `AVISITN`
 #> i Run `admiral::get_duplicates_dataset()` to access the duplicate records}\if{html}{\out{</div>}}
 
 The records for \code{USUBJID == "2"} are not unique with respect to

@@ -60,7 +60,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -2160,8 +2160,10 @@ derived using <code>derive_var_merged_exist_flag</code>.</p>
 <span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>    <span class="at">dataset_add =</span> ex,</span>
 <span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>    <span class="at">by_vars =</span> <span class="fu">exprs</span>(STUDYID, USUBJID),</span>
 <span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>    <span class="at">new_var =</span> SAFFL,</span>
-<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>    <span class="at">condition =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">str_detect</span>(EXTRT, <span class="st">&quot;PLACEBO&quot;</span>)))</span>
-<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>  )</span></code></pre></div>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>    <span class="at">false_value =</span> <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>    <span class="at">missing_value =</span> <span class="st">&quot;N&quot;</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>    <span class="at">condition =</span> (EXDOSE <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">|</span> (EXDOSE <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> <span class="fu">str_detect</span>(EXTRT, <span class="st">&quot;PLACEBO&quot;</span>)))</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
 <col width="16%" />
@@ -2227,7 +2229,7 @@ derived using <code>derive_var_merged_exist_flag</code>.</p>
 <td align="left">NA</td>
 <td align="left">Screen Failure</td>
 <td align="left">Screen Failure</td>
-<td align="left">NA</td>
+<td align="left">N</td>
 </tr>
 <tr class="even">
 <td align="left">01-701-1097</td>
