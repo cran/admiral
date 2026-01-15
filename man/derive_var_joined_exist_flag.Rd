@@ -331,7 +331,6 @@ General Derivation Functions for all ADaMs that returns variable appended to dat
 \code{\link{derive_var_extreme_flag}()},
 \code{\link{derive_var_merged_ef_msrc}()},
 \code{\link{derive_var_merged_exist_flag}()},
-\code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
 \code{\link{derive_vars_cat}()},
@@ -340,6 +339,7 @@ General Derivation Functions for all ADaMs that returns variable appended to dat
 \code{\link{derive_vars_joined_summary}()},
 \code{\link{derive_vars_merged}()},
 \code{\link{derive_vars_merged_lookup}()},
+\code{\link{derive_vars_merged_summary}()},
 \code{\link{derive_vars_transposed}()}
 }
 \concept{der_gen}
@@ -821,7 +821,8 @@ derive_var_joined_exist_flag(
 #> 7 2             2    10 Y     <NA>  
 #> Warning: Dataset `dataset` contains duplicate records with respect to `USUBJID` and `AVISITN`
 #> i Run `admiral::get_duplicates_dataset()` to access the duplicate records
-#> Warning: Dataset `dataset_add` contains duplicate records with respect to `USUBJID` and `AVISITN`
+#> Warning: Dataset `dataset_add` contains duplicate records with respect to `USUBJID` and
+#> `AVISITN`
 #> i Run `admiral::get_duplicates_dataset()` to access the duplicate records}\if{html}{\out{</div>}}
 
 The records for \code{USUBJID == "2"} are not unique with respect to

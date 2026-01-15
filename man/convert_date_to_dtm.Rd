@@ -25,7 +25,7 @@ A date or character date is expected in a format like \code{yyyy-mm-ddThh:mm:ss}
 
 \item{highest_imputation}{Highest imputation level
 
-The \code{highest_imputation} argument controls which components of the DTC
+The \code{highest_imputation} argument controls which components of the \code{--DTC}
 value are imputed if they are missing. All components up to the specified
 level are imputed.
 
@@ -104,8 +104,8 @@ For example
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{impute_dtc_dtm(
   "2020-11",
   min_dates = list(
-   ymd_hms("2020-12-06T12:12:12"),
-   ymd_hms("2020-11-11T11:11:11")
+   ymd_hm("2020-12-06T12:12"),
+   ymd_hm("2020-11-11T11:11")
   ),
   highest_imputation = "M"
 )
@@ -149,7 +149,7 @@ For example \code{"2019---07"} would return \verb{"2019-06-07} if \code{preserve
 (and \code{date_imputation = "mid"}).
 
 \describe{
-\item{Permitted values}{\code{"TRUE"}, \code{"FALSE"}}
+\item{Permitted values}{\code{TRUE}, \code{FALSE}}
 \item{Default value}{\code{FALSE}}
 }}
 }
@@ -173,13 +173,14 @@ convert_date_to_dtm("2019-07-18", time_imputation = "23:59:59")
 convert_date_to_dtm("2019-07-18")
 }
 \seealso{
-Date/Time Computation Functions that returns a vector: 
+Date/Time Computation Functions that returns a vector:
 \code{\link{compute_age_years}()},
 \code{\link{compute_dtf}()},
 \code{\link{compute_duration}()},
 \code{\link{compute_tmf}()},
 \code{\link{convert_dtc_to_dt}()},
 \code{\link{convert_dtc_to_dtm}()},
+\code{\link{convert_xxtpt_to_hours}()},
 \code{\link{impute_dtc_dt}()},
 \code{\link{impute_dtc_dtm}()}
 }

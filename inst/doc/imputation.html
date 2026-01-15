@@ -351,7 +351,7 @@ with lots of small examples to explore the imputation rules. These
 <code>derive_vars_dt()</code> and <code>derive_vars_dtm()</code> for
 building ADaM dataset. The final section moves into more detailed
 examples that a user might face while working on ADaMs in need of
-<code>---DT</code> and <code>---DTM</code> variables.</p>
+<code>*DT</code> and <code>*DTM</code> variables.</p>
 <div id="required-packages" class="section level2">
 <h2>Required Packages</h2>
 <p>The examples of this vignette require the following packages.</p>
@@ -385,8 +385,8 @@ we have called <strong>Highest Imputation</strong>, which has a
 corresponding argument in all our functions called
 <code>highest_imputation</code>. The rule is best explained by working
 through the examples below, but to put it briefly, this rule allows a
-user to control which components of the DTC value are imputed if they
-are missing.</p>
+user to control which components of the <code>--DTC</code> value are
+imputed if they are missing.</p>
 <p>The default imputation for <code>_dtm()</code> functions,
 e.g. <code>impute_dtc_dtm()</code>, <code>derive_vars_dtm()</code>, is
 “h” (hours). A user can specify that that no imputation is to be done by
@@ -551,11 +551,12 @@ argument to specify those dates. For example:</p>
 <span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>)</span>
 <span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2019-02-25T23:59:59&quot;</span></span></code></pre></div>
 <p>It is ensured that the imputed date is not after any of the specified
-dates. Only dates which are in the range of possible dates of the DTC
-value are considered. The possible dates are defined by the missing
-parts of the DTC date, i.e., for “2019-02” the possible dates range from
-“2019-02-01” to “2019-02-28”. Thus “2019-01-14” is ignored. This ensures
-that the non-missing parts of the DTC date are not changed.</p>
+dates. Only dates which are in the range of possible dates of the
+<code>--DTC</code> value are considered. The possible dates are defined
+by the missing parts of the <code>--DTC</code> date, i.e., for “2019-02”
+the possible dates range from “2019-02-01” to “2019-02-28”. Thus
+“2019-01-14” is ignored. This ensures that the non-missing parts of the
+<code>--DTC</code> date are not changed.</p>
 <p>If the <code>min_dates</code> or <code>max_dates</code> argument is
 specified, it is also possible to impute completely missing dates. For
 <code>date_imputation = &quot;first&quot;</code> the <code>min_dates</code>
@@ -599,11 +600,11 @@ imputed, the imputation flag is set to <code>&quot;M&quot;</code>. The
 adding the corresponding imputation flag variables.</p>
 <p>Note: The <code>{admiral}</code> datetime imputation function
 provides the <code>ignore_seconds_flag</code> argument which can be set
-to <code>TRUE</code> in cases where seconds were never collected. This
-is due to the following from ADaM IG: For a given SDTM DTC variable, if
-only hours and minutes are ever collected, and seconds are imputed in
-<code>*DTM</code> as <code>00</code>, then it is not necessary to set
-<code>*TMF</code> to <code>&quot;S&quot;</code>.</p>
+to <code>FALSE</code> in cases where seconds are expected. This is due
+to the following from ADaM IG: For a given SDTM <code>--DTC</code>
+variable, if only hours and minutes are ever collected, and seconds are
+imputed in <code>*DTM</code> as <code>00</code>, then it is not
+necessary to set <code>*TMF</code> to <code>&quot;S&quot;</code>.</p>
 </div>
 <div id="imputation-functions" class="section level1">
 <h1>Imputation Functions</h1>
@@ -647,7 +648,7 @@ imputation must be the same and the imputation flags are valid for both
 the datetime and the date variable.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34&quot;</span>,</span>
 <span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
 <span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
 <span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
@@ -672,8 +673,8 @@ the datetime and the date variable.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2019-08-09T12:34:56</td>
-<td align="left">2019-08-09 12:34:56</td>
+<td align="left">2019-08-09T12:34</td>
+<td align="left">2019-08-09 12:34:00</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 <td align="left">2019-08-09</td>
@@ -709,7 +710,7 @@ is required, it can be derived by the <code>derive_vars_dt()</code>
 function.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:00&quot;</span>,</span>
 <span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
 <span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
 <span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
@@ -730,7 +731,7 @@ function.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2019-08-09T12:34:56</td>
+<td align="left">2019-08-09T12:34:00</td>
 <td align="left">2019-08-09</td>
 <td align="left">NA</td>
 </tr>
@@ -761,7 +762,7 @@ partial. As no date is imputed the date imputation flag is not
 created.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
 <span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34&quot;</span>,</span>
 <span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="st">&quot;2019-04-12&quot;</span>,</span>
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>  <span class="st">&quot;2010-09&quot;</span>,</span>
 <span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>  <span class="cn">NA_character_</span></span>
@@ -782,8 +783,8 @@ created.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2019-08-09T12:34:56</td>
-<td align="left">2019-08-09 12:34:56</td>
+<td align="left">2019-08-09T12:34</td>
+<td align="left">2019-08-09 12:34:00</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
@@ -816,14 +817,14 @@ treatment start date variable (<code>TRTSDTM</code>) for the
 <p>Please note that <code>TRTSDTM</code> is used as imputed date only if
 the non missing date and time parts of <code>AESTDTC</code> coincide
 with those of <code>TRTSDTM</code>. Therefore <code>2019-10</code> is
-not imputed as <code>2019-11-11 12:34:56</code>. This ensures that
+not imputed as <code>2019-11-11 12:34</code>. This ensures that
 collected information is not changed by the imputation.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC,              <span class="sc">~</span>TRTSDTM,</span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="st">&quot;2019-10&quot;</span>,             <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="st">&quot;2019-11&quot;</span>,             <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>),</span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="fu">ymd_hms</span>(<span class="st">&quot;2019-11-11T12:34:56&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  <span class="sc">~</span>AESTDTC, <span class="sc">~</span>TRTSDTM,</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34&quot;</span>, <span class="fu">ymd_hm</span>(<span class="st">&quot;2019-11-11T12:34&quot;</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="st">&quot;2019-10&quot;</span>, <span class="fu">ymd_hm</span>(<span class="st">&quot;2019-11-11T12:34&quot;</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>  <span class="st">&quot;2019-11&quot;</span>, <span class="fu">ymd_hm</span>(<span class="st">&quot;2019-11-11T12:34&quot;</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>, <span class="fu">ymd_hm</span>(<span class="st">&quot;2019-11-11T12:34&quot;</span>)</span>
 <span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
 <span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>    <span class="at">dtc =</span> AESTDTC,</span>
@@ -835,9 +836,9 @@ collected information is not changed by the imputation.</p>
 <span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  )</span></code></pre></div>
 <table>
 <colgroup>
-<col width="27%" />
-<col width="27%" />
-<col width="27%" />
+<col width="23%" />
+<col width="28%" />
+<col width="28%" />
 <col width="9%" />
 <col width="9%" />
 </colgroup>
@@ -852,29 +853,29 @@ collected information is not changed by the imputation.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2019-08-09T12:34:56</td>
-<td align="left">2019-11-11 12:34:56</td>
-<td align="left">2019-08-09 12:34:56</td>
+<td align="left">2019-08-09T12:34</td>
+<td align="left">2019-11-11 12:34:00</td>
+<td align="left">2019-08-09 12:34:00</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">2019-10</td>
-<td align="left">2019-11-11 12:34:56</td>
+<td align="left">2019-11-11 12:34:00</td>
 <td align="left">2019-10-01 00:00:00</td>
 <td align="left">D</td>
 <td align="left">H</td>
 </tr>
 <tr class="odd">
 <td align="left">2019-11</td>
-<td align="left">2019-11-11 12:34:56</td>
-<td align="left">2019-11-11 12:34:56</td>
+<td align="left">2019-11-11 12:34:00</td>
+<td align="left">2019-11-11 12:34:00</td>
 <td align="left">D</td>
 <td align="left">H</td>
 </tr>
 <tr class="even">
 <td align="left">2019-12-04</td>
-<td align="left">2019-11-11 12:34:56</td>
+<td align="left">2019-11-11 12:34:00</td>
 <td align="left">2019-12-04 00:00:00</td>
 <td align="left">NA</td>
 <td align="left">H</td>
@@ -894,11 +895,11 @@ although it is after the data cut off date. It may make sense to replace
 it by the data cut off date but this is not part of the imputation. It
 should be done in a separate data cleaning or data cut off step.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>ae <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="sc">~</span>AEENDTC,              <span class="sc">~</span>DTHDT,            <span class="sc">~</span>DCUTDT,</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="st">&quot;2019-11&quot;</span>,             <span class="fu">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="st">&quot;2019-12&quot;</span>,             <span class="cn">NA</span>,                <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="cn">NA</span>,                <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="sc">~</span>AEENDTC, <span class="sc">~</span>DTHDT, <span class="sc">~</span>DCUTDT,</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="st">&quot;2019-11&quot;</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-11-11&quot;</span>), <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="st">&quot;2019-12&quot;</span>, <span class="cn">NA</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>, <span class="cn">NA</span>, <span class="fu">ymd</span>(<span class="st">&quot;2019-12-02&quot;</span>)</span>
 <span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>  <span class="fu">derive_vars_dtm</span>(</span>
 <span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">dtc =</span> AEENDTC,</span>
@@ -910,10 +911,10 @@ should be done in a separate data cleaning or data cut off step.</p>
 <span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>  )</span></code></pre></div>
 <table style="width:100%;">
 <colgroup>
-<col width="26%" />
-<col width="14%" />
-<col width="14%" />
-<col width="26%" />
+<col width="23%" />
+<col width="15%" />
+<col width="15%" />
+<col width="27%" />
 <col width="9%" />
 <col width="9%" />
 </colgroup>
@@ -929,10 +930,10 @@ should be done in a separate data cleaning or data cut off step.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2019-08-09T12:34:56</td>
+<td align="left">2019-08-09T12:34</td>
 <td align="left">2019-11-11</td>
 <td align="left">2019-12-02</td>
-<td align="left">2019-08-09 12:34:56</td>
+<td align="left">2019-08-09 12:34:59</td>
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
@@ -1006,11 +1007,11 @@ vector of imputed dates. It can be used for example in conditions:</p>
 <p>Using different imputation rules depending on the observation can be
 done by using <code>slice_derivation()</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="sc">~</span>VSDTC,                <span class="sc">~</span>VSTPT,</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34:56&quot;</span>, <span class="cn">NA</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="st">&quot;2019-10-12&quot;</span>,          <span class="st">&quot;PRE-DOSE&quot;</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="st">&quot;2019-11-10&quot;</span>,          <span class="cn">NA</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>,          <span class="cn">NA</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="sc">~</span>VSDTC, <span class="sc">~</span>VSTPT,</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="st">&quot;2019-08-09T12:34&quot;</span>, <span class="cn">NA</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>  <span class="st">&quot;2019-10-12&quot;</span>, <span class="st">&quot;PRE-DOSE&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="st">&quot;2019-11-10&quot;</span>, <span class="cn">NA</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="st">&quot;2019-12-04&quot;</span>, <span class="cn">NA</span></span>
 <span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>  <span class="fu">slice_derivation</span>(</span>
 <span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>    <span class="at">derivation =</span> derive_vars_dtm,</span>
@@ -1044,9 +1045,9 @@ done by using <code>slice_derivation()</code>.</p>
 <td align="left">H</td>
 </tr>
 <tr class="even">
-<td align="left">2019-08-09T12:34:56</td>
+<td align="left">2019-08-09T12:34</td>
 <td align="left">NA</td>
-<td align="left">2019-08-09 12:34:56</td>
+<td align="left">2019-08-09 12:34:59</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">

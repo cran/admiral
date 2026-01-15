@@ -90,7 +90,7 @@ A logical value where if set to \code{TRUE}, all records are flagged
 and no error or warning is issued if the first or last record is not unique.
 
 \describe{
-\item{Permitted values}{\code{"TRUE"}, \code{"FALSE"}}
+\item{Permitted values}{\code{TRUE}, \code{FALSE}}
 \item{Default value}{\code{FALSE}}
 }}
 
@@ -127,7 +127,6 @@ General Derivation Functions for all ADaMs that returns variable appended to dat
 \code{\link{derive_var_joined_exist_flag}()},
 \code{\link{derive_var_merged_ef_msrc}()},
 \code{\link{derive_var_merged_exist_flag}()},
-\code{\link{derive_var_merged_summary}()},
 \code{\link{derive_var_obs_number}()},
 \code{\link{derive_var_relative_flag}()},
 \code{\link{derive_vars_cat}()},
@@ -136,6 +135,7 @@ General Derivation Functions for all ADaMs that returns variable appended to dat
 \code{\link{derive_vars_joined_summary}()},
 \code{\link{derive_vars_merged}()},
 \code{\link{derive_vars_merged_lookup}()},
+\code{\link{derive_vars_merged_summary}()},
 \code{\link{derive_vars_transposed}()}
 }
 \concept{der_gen}

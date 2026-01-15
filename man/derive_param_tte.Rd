@@ -101,7 +101,7 @@ If set to \code{TRUE}, variables \code{ADTM} and \code{STARTDTM} are created. Ot
 variables \code{ADT} and \code{STARTDT} are created.
 
 \describe{
-\item{Permitted values}{\code{"TRUE"}, \code{"FALSE"}}
+\item{Permitted values}{\code{TRUE}, \code{FALSE}}
 \item{Default value}{\code{FALSE}}
 }}
 
@@ -349,8 +349,8 @@ derive_param_tte(
 #> 3 02      AB42    END OF STUDY ADSL   EOSDT      NA     1 2021-02-03 2021-01-16
 #> 4 02      AB42    END OF STUDY ADSL   EOSDT      NA     1 2021-02-03 2021-01-16
 #> # i 2 more variables: PARAMCD <chr>, PARAM <chr>
-#> Warning: Dataset "adae" contains duplicate records with respect to `STUDYID`, `USUBJID`, `AEDECOD`,
-#> and `ASTDT`
+#> Warning: Dataset "adae" contains duplicate records with respect to `STUDYID`, `USUBJID`,
+#> `AEDECOD`, and `ASTDT`
 #> i Run `admiral::get_duplicates_dataset()` to access the duplicate records}\if{html}{\out{</div>}}
 
 For investigating the issue, the dataset of the duplicate source records

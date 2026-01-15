@@ -40,9 +40,10 @@ Derive an imputed value
 }
 \examples{
 compute_qual_imputation("<40")
+compute_qual_imputation(c("3", ">30.2"))
 }
 \seealso{
-BDS-Findings Functions that returns a vector: 
+BDS-Findings Functions that returns a vector:
 \code{\link{compute_bmi}()},
 \code{\link{compute_bsa}()},
 \code{\link{compute_egfr}()},

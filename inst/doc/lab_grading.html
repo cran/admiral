@@ -348,12 +348,13 @@ severity or abnormality of a lab value. The grades are from 0 to 4,
 where grade 0 can be viewed generally as a “NORMAL” value. The higher
 the grade the more severe or more abnormal the lab value is. There are
 several sets of lab grading criteria, currently <code>{admiral}</code>
-has implemented NCI-CTCAEv4, NCI-CTCAEv5 and DAIDS grading criteria. In
-future releases <code>{admiral}</code> may look to implement further
-grading criteria.</p>
+has implemented NCI-CTCAEv4, NCI-CTCAEv5, NCI-CTCAEv6 and DAIDS grading
+criteria. In future releases <code>{admiral}</code> may look to
+implement further grading criteria.</p>
 <p>The NCI-CTCAEv4 criteria can be found under the heading <a href="https://dctd.cancer.gov/research/ctep-trials/trial-development#ctcae-and-ctep-codes"><strong>CTCAE
 and CTEP Codes</strong></a></p>
-<p>The NCI-CTCAEv5 criteria can be found under the heading <a href="https://dctd.cancer.gov/research/ctep-trials/for-sites/adverse-events#ctep-ctcae"><strong>CTEP
+<p>The NCI-CTCAEv5 and NCI-CTCAEv6 criteria can be found under the
+heading <a href="https://dctd.cancer.gov/research/ctep-trials/for-sites/adverse-events#ctep-ctcae"><strong>CTEP
 CTCAE</strong></a></p>
 <p>The DAIDS grading criteria can be found here: <a href="https://rsc.niaid.nih.gov/clinical-research-sites/daids-adverse-event-grading-tables" class="uri">https://rsc.niaid.nih.gov/clinical-research-sites/daids-adverse-event-grading-tables</a>
 .</p>
@@ -367,12 +368,30 @@ Corrected Version 2.1</strong></a></p>
 each set of grading criteria in the data folder of
 <code>{admiral}</code>, one for SI units, and one for US (conventional)
 units. These are as follows:</p>
-<p>NCI-CTCAEv4 + <code>atoxgr_criteria_ctcv4</code> for SI units. +
-<code>atoxgr_criteria_ctcv4_uscv</code> for US (conventional) units.</p>
-<p>NCI-CTCAEv5 + <code>atoxgr_criteria_ctcv5</code> for SI units. +
-<code>atoxgr_criteria_ctcv5_uscv</code> for US (conventional) units.</p>
-<p>DAIDS + <code>atoxgr_criteria_daids</code> for SI units. +
-<code>atoxgr_criteria_daids_uscv</code> for US (conventional) units.</p>
+<p>NCI-CTCAEv4</p>
+<ul>
+<li><code>atoxgr_criteria_ctcv4</code> for SI units.</li>
+<li><code>atoxgr_criteria_ctcv4_uscv</code> for US (conventional)
+units.</li>
+</ul>
+<p>NCI-CTCAEv5</p>
+<ul>
+<li><code>atoxgr_criteria_ctcv5</code> for SI units.</li>
+<li><code>atoxgr_criteria_ctcv5_uscv</code> for US (conventional)
+units.</li>
+</ul>
+<p>NCI-CTCAEv6</p>
+<ul>
+<li><code>atoxgr_criteria_ctcv6</code> for SI units.</li>
+<li><code>atoxgr_criteria_ctcv6_uscv</code> for US (conventional)
+units.</li>
+</ul>
+<p>DAIDS</p>
+<ul>
+<li><code>atoxgr_criteria_daids</code> for SI units.</li>
+<li><code>atoxgr_criteria_daids_uscv</code> for US (conventional)
+units.</li>
+</ul>
 <p>Each metadata data set has required variables and optional variables,
 the optional variables are purely for transparency, and will contain
 detailed information about the grading criteria. The required variables
@@ -632,6 +651,49 @@ which are not present in NCI-CTCAEv5. <br></p>
 </tr>
 <tr class="even">
 <td align="left">CPK increased</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><br> Similarly, the list of terms defined in the
+<code>{admiral}</code> metadata to implement NCI-CTCAEv6 is below:
+<br></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Anemia</td>
+</tr>
+<tr class="even">
+<td align="left">Leukocytosis</td>
+</tr>
+<tr class="odd">
+<td align="left">Thrombocytopenia</td>
+</tr>
+<tr class="even">
+<td align="left">Activated partial thromboplastin time prolonged</td>
+</tr>
+<tr class="odd">
+<td align="left">Alanine aminotransferase increased</td>
+</tr>
+<tr class="even">
+<td align="left">Alkaline phosphatase increased</td>
+</tr>
+<tr class="odd">
+<td align="left">Aspartate aminotransferase increased</td>
+</tr>
+<tr class="even">
+<td align="left">Blood bilirubin increased</td>
+</tr>
+<tr class="odd">
+<td align="left">Blood lactate dehydrogenase increased</td>
+</tr>
+<tr class="even">
+<td align="left">CD4 lymphocytes decreased</td>
 </tr>
 </tbody>
 </table>
@@ -1121,7 +1183,7 @@ terms.</td>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
+<th align="left">GRADE_1</th>
 </tr>
 </thead>
 <tbody>
@@ -1166,8 +1228,8 @@ The decision made was put in the <code>COMMENT</code> field.</p>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
-<th align="left">Grade_3</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_3</th>
 <th align="left">COMMENT</th>
 </tr>
 </thead>
@@ -1199,8 +1261,8 @@ case is assumed as grade 2. The decision made was put in the
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
-<th align="left">Grade_2</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_2</th>
 <th align="left">COMMENT</th>
 </tr>
 </thead>
@@ -1229,10 +1291,10 @@ NCI-CTCAE-v4 <br></p>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
-<th align="left">Grade_2</th>
-<th align="left">Grade_3</th>
-<th align="left">Grade_4</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_2</th>
+<th align="left">GRADE_3</th>
+<th align="left">GRADE_4</th>
 <th align="left">COMMENT</th>
 </tr>
 </thead>
@@ -1391,12 +1453,14 @@ increased” and “GGT increased” the criteria is dependent on the Baseline
 Value being normal or abnormal. We use the variable <code>BNRIND</code>
 to determine this, and users can pass in the value(s) of
 <code>BNRIND</code> that indicate the baseline is abnormal via the
-argument <code>abnormal_indicator</code> in the function
-<code>derive_var_atoxgr_dir()</code>. For example, setting
-<code>abnormal_indicator = &quot;HIGH&quot;</code> would mean any observations
-with <code>BNRIND = &quot;HIGH&quot;</code> would be deemed to have an abnormal
-Baseline Value. Note: you can pass in multiple values,
-<code>abnormal_indicator = c(&quot;H&quot;, &quot;HIGH&quot;)</code></p>
+arguments <code>high_indicator</code> and <code>low_indicator</code> in
+the function <code>derive_var_atoxgr_dir()</code>. For example, setting
+<code>high_indicator = &quot;HIGH&quot;</code> would mean any observations with
+<code>BNRIND = &quot;HIGH&quot;</code> would be deemed to have a high abnormal
+Baseline Value. Likewise, setting <code>low_indicator = &quot;LOW&quot;</code>
+would mean any observations with <code>BNRIND = &quot;LOW&quot;</code> would be
+deemed to have a low abnormal Baseline Value. Note: you can pass in
+multiple values, <code>high_indicator = c(&quot;H&quot;, &quot;HIGH&quot;)</code></p>
 <p>For these 5 terms, this means if <code>BNRIND</code> is abnormal then
 the grade is always zero for the baseline observation. This is the
 conservative approach, to ensure you don’t see big changes in grade for
@@ -1416,7 +1480,7 @@ necessary.</p>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
+<th align="left">GRADE_1</th>
 </tr>
 </thead>
 <tbody>
@@ -1459,9 +1523,9 @@ increased” there is the following criteria:</p>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_2</th>
-<th align="left">Grade_3</th>
-<th align="left">Grade_4</th>
+<th align="left">GRADE_2</th>
+<th align="left">GRADE_3</th>
+<th align="left">GRADE_4</th>
 </tr>
 </thead>
 <tbody>
@@ -1525,8 +1589,8 @@ The decision made was put in the <code>COMMENT</code> field.</p>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
-<th align="left">Grade_3</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_3</th>
 <th align="left">COMMENT</th>
 </tr>
 </thead>
@@ -1559,9 +1623,9 @@ same with respect to the lab value, then worse case is assumed as grade
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
-<th align="left">Grade_2</th>
-<th align="left">Grade_3</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_2</th>
+<th align="left">GRADE_3</th>
 <th align="left">COMMENT</th>
 </tr>
 </thead>
@@ -1599,10 +1663,10 @@ NCI-CTCAE-v5 <br></p>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
-<th align="left">Grade_2</th>
-<th align="left">Grade_3</th>
-<th align="left">Grade_4</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_2</th>
+<th align="left">GRADE_3</th>
+<th align="left">GRADE_4</th>
 <th align="left">COMMENT</th>
 </tr>
 </thead>
@@ -1670,9 +1734,416 @@ of symptoms</td>
 <p><br></p>
 </div>
 </div>
+<div id="implement_ctcv6" class="section level1">
+<h1>NCI-CTCAEV6 implementation</h1>
+<div id="terms-graded-2" class="section level2">
+<h2>Terms graded</h2>
+<p>Grading is implemented for those lab tests where a lab value is
+included in the grading definition, <code>{admiral}</code> does NOT try
+to read any other data to determine the grade, and only the
+<code>ADLB</code> dataset is used. The following CTCAE v6.0 SOC values
+were identified for grading, these are “Investigations”, “Metabolism and
+nutrition disorders” and “Blood and lymphatic system disorders”.</p>
+<p>From these SOC values the following terms criteria is implemented in
+<code>{admiral}</code></p>
+<p>From SOC = “Investigations” there are 22 CTCAE v6.0 Terms:</p>
+<ul>
+<li>Activated partial thromboplastin time prolonged</li>
+<li>Alanine aminotransferase increased</li>
+<li>Alkaline phosphatase increased</li>
+<li>Aspartate aminotransferase increased</li>
+<li>Blood bilirubin increased</li>
+<li>Blood lactate dehydrogenase increased</li>
+<li>CD4 lymphocytes decreased</li>
+<li>Cholesterol high</li>
+<li>Creatinine clearance decreased</li>
+<li>Creatinine increased</li>
+<li>Fibrinogen decreased</li>
+<li>GGT increased</li>
+<li>Haptoglobin decreased</li>
+<li>HDL decreased</li>
+<li>Hemoglobin increased</li>
+<li>INR increased</li>
+<li>LDL increased</li>
+<li>Lipase increased</li>
+<li>Lymphocyte count increased</li>
+<li>Neutrophil count decreased</li>
+<li>Serum amylase increased</li>
+<li>White blood cell decreased</li>
+</ul>
+<p>Note: These are 4 new terms added and 3 removed from the terms
+identified for NCI-CTCAEv5. “Blood lactate dehydrogenase increased”,
+“Creatinine clearance decreased”, “HDL decreased” and “LDL increased”
+have been added, and “CPK increased” and “Lymphocyte count decreased”
+have been removed, and “Platelet count decreased” has been moved to
+“Thrombocytopenia” under SOC “Blood and lymphatic system disorders”.</p>
+<p>From the SOC = “Metabolism and nutrition disorders” there are 15
+CTCAE v6.0 Terms:</p>
+<ul>
+<li>Acidosis</li>
+<li>Alkalosis</li>
+<li>Hypercalcemia</li>
+<li>Hyperglycemia</li>
+<li>Hyperkalemia</li>
+<li>Hypermagnesemia</li>
+<li>Hypernatremia</li>
+<li>Hypertriglyceridemia</li>
+<li>Hyperuricemia</li>
+<li>Hypoalbuminemia</li>
+<li>Hypocalcemia</li>
+<li>Hypoglycemia</li>
+<li>Hypokalemia</li>
+<li>Hypomagnesemia</li>
+<li>Hyponatremia</li>
+</ul>
+<p>Note: These are the same terms identified for NCI-CTCAEv5, except
+“Hyperglycemia” which has been added to NCICTCAEv6 grading criteria.</p>
+<p>From the SOC = “Blood and lymphatic system disorders” there are 3
+CTCAE v6.0 Terms:</p>
+<ul>
+<li>Anemia</li>
+<li>Leukocytosis</li>
+<li>Thrombocytopenia</li>
+</ul>
+<p>Note: These are the same terms identified for NCI-CTCAEv5, except
+“Thrombocytopenia” which as mentioned above has moved from “Platelet
+count decreased” under SOC “Investigations”.</p>
+</div>
+<div id="updates-made-to-term-2" class="section level2">
+<h2>Updates made to TERM</h2>
+<p>For terms “Hypocalcemia” and “Hypercalcemia” the criteria is provided
+for Calcium and Ionized Calcium, therefore <code>{admiral}</code>
+created a row for each in the metadata, this is noted in the COMMENT
+variable of the metadata: <br></p>
+<table>
+<colgroup>
+<col width="26%" />
+<col width="73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Hypercalcemia</td>
+<td align="left">Split Corrected Calcium and Ionized Calcium into 2
+separate terms.</td>
+</tr>
+<tr class="even">
+<td align="left">Hypercalcemia (Ionized)</td>
+<td align="left">Split Corrected Calcium and Ionized Calcium into 2
+separate terms.</td>
+</tr>
+<tr class="odd">
+<td align="left">Hypocalcemia</td>
+<td align="left">Split Corrected Calcium and Ionized Calcium into 2
+separate terms.</td>
+</tr>
+<tr class="even">
+<td align="left">Hypocalcemia (Ionized)</td>
+<td align="left">Split Corrected Calcium and Ionized Calcium into 2
+separate terms.</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+<div id="criteria-dependent-on-the-baseline-value-1" class="section level2">
+<h2>Criteria dependent on the Baseline Value</h2>
+<p>For terms “Alanine aminotransferase increased”, “Aspartate
+aminotransferase increased”, “Blood bilirubin increased”, “Creatinine
+increased” and “GGT increased” the criteria is dependent on the Baseline
+Value being normal or abnormal. We use the variable <code>BNRIND</code>
+to determine this, and users can pass in the value(s) of
+<code>BNRIND</code> that indicate the baseline is abnormal via the
+arguments <code>high_indicator</code> and <code>low_indicator</code> in
+the function <code>derive_var_atoxgr_dir()</code>. For example, setting
+<code>high_indicator = &quot;HIGH&quot;</code> would mean any observations with
+<code>BNRIND = &quot;HIGH&quot;</code> would be deemed to have a high abnormal
+Baseline Value. Likewise, setting <code>low_indicator = &quot;LOW&quot;</code>
+would mean any observations with <code>BNRIND = &quot;LOW&quot;</code> would be
+deemed to have a low abnormal Baseline Value. Note: you can pass in
+multiple values, <code>abnormal_indicator = c(&quot;H&quot;, &quot;HIGH&quot;)</code></p>
+<p>Excluding “Creatinine increased”, for the other 4 terms, this means
+if <code>BNRIND</code> is abnormal then the grade is always one for the
+baseline observation. Additionally, for “Alkaline phosphatase increased”
+the baseline grade is always zero, as the value has to be above the
+baseline value to have a grade greater than zero. This is the
+conservative approach, some companies may not want the baseline
+observation graded at all, so would post-process, if necessary.</p>
+</div>
+<div id="assumptions-made-when-grading-2" class="section level2">
+<h2>Assumptions made when grading</h2>
+<p>For term “INR Increased” there is the following criteria:</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="85%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">GRADE_1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">&gt;1.2 - 1.5; &gt;1 - 1.5 x baseline if on
+anticoagulation; monitoring only indicated</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><code>{admiral}</code> assumed worst case and used both parts of the
+criteria for grading, so comparing lab value against ULN and also BASE.
+The decision made was put in the <code>COMMENT</code> field.</p>
+<p><br></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">Take worst case and assume “on anticoagulation”</td>
+</tr>
+</tbody>
+</table>
+<p><br> Similarly, for terms “Lipase Increased” and “Serum amylase
+increased” there is the following criteria:</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="35%" />
+<col width="37%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">GRADE_2</th>
+<th align="left">GRADE_3</th>
+<th align="left">GRADE_4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lipase increased</td>
+<td align="left">&gt;1.5 - 3.0 x ULN; &gt;3.0 - 5.0 x ULN and
+asymptomatic</td>
+<td align="left">&gt;3.0 - 5.0 x ULN with signs or symptoms; &gt;5.0 x
+ULN and asymptomatic</td>
+<td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
+</tr>
+<tr class="even">
+<td align="left">Serum amylase increased</td>
+<td align="left">&gt;1.5 - 2.0 x ULN; &gt;2.0 - 5.0 x ULN and
+asymptomatic or with mild signs or symptoms</td>
+<td align="left">&gt;2.0 - 5.0 x ULN with moderate or severe signs or
+symptoms; &gt;5.0 x ULN and asymptomatic</td>
+<td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><code>{admiral}</code> assumed worst case and implemented highest
+grade possible. The decision made was put in the <code>COMMENT</code>
+field.</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="66%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lipase increased</td>
+<td align="left">Take worst case and assume “signs and symptoms”</td>
+</tr>
+<tr class="even">
+<td align="left">Serum amylase increased</td>
+<td align="left">Take worst case and assume “signs and symptoms”</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>For TERM “Hyperuricemia”, the criteria for Grade 1 and Grade 3 is the
+same with respect to the lab value, so worse case is assumed as grade 3.
+The decision made was put in the <code>COMMENT</code> field.</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="26%" />
+<col width="23%" />
+<col width="40%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_3</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Hyperuricemia</td>
+<td align="left">&gt;ULN without physiologic consequences</td>
+<td align="left">&gt;ULN with physiologic consequences</td>
+<td align="left">Take worst case and assume “with physiologic
+consequences”</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>A similar approach was taken for TERM “Hypokalemia” and
+“Hyponatremia”. For “Hypokalemia”, where Grade 1 and Grade 2 criteria is
+the same with respect to the lab value, then worse case is assumed as
+grade 2. For “Hyponatremia”, where Grade 2 and Grade 3 criteria is the
+same with respect to the lab value, then worse case is assumed as grade
+3. The decision made was put in the <code>COMMENT</code> field.</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="6%" />
+<col width="8%" />
+<col width="29%" />
+<col width="35%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_2</th>
+<th align="left">GRADE_3</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Hypokalemia</td>
+<td align="left">&lt;LLN - 3.0 mmol/L</td>
+<td align="left">Symptomatic with &lt;LLN - 3.0 mmol/L; intervention
+indicated</td>
+<td align="left">&lt;3.0 - 2.5 mmol/L; hospitalization indicated</td>
+<td align="left">Take worst case and assume “symptomatic”</td>
+</tr>
+<tr class="even">
+<td align="left">Hyponatremia</td>
+<td align="left">&lt;LLN - 130 mmol/L</td>
+<td align="left">125 - &lt;130 mmol/L and asymptomatic</td>
+<td align="left">125 - &lt;130 mmol/L symptomatic; 120 - &lt;125 mmol/L
+regardless of symptoms</td>
+<td align="left">Take worst case and assume “symptomatic”</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>Here is a complete list of all assumptions in the metadata for
+NCI-CTCAE-v6 <br></p>
+<table style="width:100%;">
+<colgroup>
+<col width="6%" />
+<col width="21%" />
+<col width="21%" />
+<col width="23%" />
+<col width="11%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">TERM</th>
+<th align="left">GRADE_1</th>
+<th align="left">GRADE_2</th>
+<th align="left">GRADE_3</th>
+<th align="left">GRADE_4</th>
+<th align="left">COMMENT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">INR increased</td>
+<td align="left">&gt;1.2 - 1.5; &gt;1 - 1.5 x baseline if on
+anticoagulation; monitoring only indicated</td>
+<td align="left">&gt;1.5 - 2.5; &gt;1.5 - 2.5 x baseline if on
+anticoagulation; dose adjustment indicated</td>
+<td align="left">&gt;2.5; &gt;2.5 x baseline if on anticoagulation;
+bleeding</td>
+<td align="left">-</td>
+<td align="left">Take worst case and assume “on anticoagulation”</td>
+</tr>
+<tr class="even">
+<td align="left">Lipase increased</td>
+<td align="left">&gt;ULN - 1.5 x ULN</td>
+<td align="left">&gt;1.5 - 3.0 x ULN; &gt;3.0 - 5.0 x ULN and
+asymptomatic</td>
+<td align="left">&gt;3.0 - 5.0 x ULN with signs or symptoms; &gt;5.0 x
+ULN and asymptomatic</td>
+<td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
+<td align="left">Take worst case and assume “signs and symptoms”</td>
+</tr>
+<tr class="odd">
+<td align="left">Serum amylase increased</td>
+<td align="left">&gt;ULN - 1.5 x ULN</td>
+<td align="left">&gt;1.5 - 2.0 x ULN; &gt;2.0 - 5.0 x ULN and
+asymptomatic or with mild signs or symptoms</td>
+<td align="left">&gt;2.0 - 5.0 x ULN with moderate or severe signs or
+symptoms; &gt;5.0 x ULN and asymptomatic</td>
+<td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
+<td align="left">Take worst case and assume “signs and symptoms”</td>
+</tr>
+<tr class="even">
+<td align="left">Hyperuricemia</td>
+<td align="left">&gt;ULN without physiologic consequences</td>
+<td align="left">-</td>
+<td align="left">&gt;ULN with physiologic consequences</td>
+<td align="left">Life-threatening consequences</td>
+<td align="left">Take worst case and assume “with physiologic
+consequences”</td>
+</tr>
+<tr class="odd">
+<td align="left">Hypokalemia</td>
+<td align="left">&lt;LLN - 3.0 mmol/L</td>
+<td align="left">Symptomatic with &lt;LLN - 3.0 mmol/L; intervention
+indicated</td>
+<td align="left">&lt;3.0 - 2.5 mmol/L; hospitalization indicated</td>
+<td align="left">&lt;2.5 mmol/L; life-threatening consequences</td>
+<td align="left">Take worst case and assume “symptomatic”</td>
+</tr>
+<tr class="even">
+<td align="left">Hyponatremia</td>
+<td align="left">&lt;LLN - 130 mmol/L</td>
+<td align="left">125 - &lt;130 mmol/L and asymptomatic</td>
+<td align="left">125 - &lt;130 mmol/L symptomatic; 120 - &lt;125 mmol/L
+regardless of symptoms</td>
+<td align="left">&lt;120 mmol/L; life-threatening consequences</td>
+<td align="left">Take worst case and assume “symptomatic”</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+</div>
 <div id="implement_daids" class="section level1">
 <h1>DAIDS implementation</h1>
-<div id="terms-graded-2" class="section level2">
+<div id="terms-graded-3" class="section level2">
 <h2>Terms graded</h2>
 <p>Grading is implemented for those lab tests where a lab value is
 included in the grading definition, <code>{admiral}</code> does NOT try
@@ -1812,7 +2283,7 @@ trunc_out = TRUE, out_unit = “years”, add_one = FALSE, type =
 </tbody>
 </table>
 </div>
-<div id="assumptions-made-when-grading-2" class="section level2">
+<div id="assumptions-made-when-grading-3" class="section level2">
 <h2>Assumptions made when grading</h2>
 <p>For terms “INR, High”, “PT, High” and “PTT, High”, the criteria is
 based on subjects “not on anticoagulation therapy”, this is captured in
@@ -1903,7 +2374,7 @@ in COMMENT field.</p>
 <thead>
 <tr class="header">
 <th align="left">TERM</th>
-<th align="left">Grade_1</th>
+<th align="left">GRADE_1</th>
 </tr>
 </thead>
 <tbody>
@@ -2040,12 +2511,12 @@ variable can be updated with company-specific code to reflect this.</p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>Conclusion</h1>
-<p>With NCI-CTCAEv4, NCI-CTCAEv5 and DAIDS grading now implemented,
-{admiral} may look to implement other industry standard grading
-criteria. Providing tools for users to easily interact with the metadata
-to update criteria, based on their companies needs will also be looked
-at. Ideally, users should be able to create their own metadata for
-company specific grading schemes.</p>
+<p>With NCI-CTCAEv4, NCI-CTCAEv5, NCI-CTCAEv6 and DAIDS grading now
+implemented, {admiral} may look to implement other industry standard
+grading criteria. Providing tools for users to easily interact with the
+metadata to update criteria, based on their companies needs will also be
+looked at. Ideally, users should be able to create their own metadata
+for company specific grading schemes.</p>
 </div>
 
 

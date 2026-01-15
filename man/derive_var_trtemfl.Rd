@@ -77,7 +77,7 @@ number of days after end of treatment, are not flagged.
 the event occurred more than \code{end_window} days after end of treatment.
 
 \describe{
-\item{Permitted values}{\code{"TRUE"}, \code{"FALSE"}}
+\item{Permitted values}{\code{TRUE}, \code{FALSE}}
 \item{Default value}{\code{TRUE}}
 }}
 
@@ -182,7 +182,7 @@ treatment-emergent AE assignment in the following
 See the final example in the examples section below.
 }
 \seealso{
-OCCDS Functions: 
+OCCDS Functions:
 \code{\link{derive_vars_atc}()},
 \code{\link{derive_vars_query}()}
 }

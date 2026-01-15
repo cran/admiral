@@ -34,10 +34,10 @@ level are imputed.
 If a component at a higher level than the highest imputation level is
 missing, \code{NA_character_} is returned. For example, for \code{highest_imputation = "D"} \code{"2020"} results in \code{NA_character_} because the month is missing.
 
-If \code{"n"} is specified no imputation is performed, i.e., if any component is
-missing, \code{NA_character_} is returned.
+If \code{"n"} (none, lowest level) is specified no imputation is performed, i.e.,
+if any component is missing, \code{NA_character_} is returned.
 
-If \code{"Y"} is specified, \code{date_imputation} must be \code{"first"} or \code{"last"}
+If \code{"Y"} (year, highest level) is specified, \code{date_imputation} must be \code{"first"} or \code{"last"}
 and \code{min_dates} or \code{max_dates} must be specified respectively. Otherwise,
 an error is thrown.
 
@@ -123,7 +123,7 @@ For example \code{"2019---07"} would return \verb{"2019-06-07} if \code{preserve
 (and \code{date_imputation = "MID"}).
 
 \describe{
-\item{Permitted values}{\code{"TRUE"}, \code{"FALSE"}}
+\item{Permitted values}{\code{TRUE}, \code{FALSE}}
 \item{Default value}{\code{FALSE}}
 }}
 }
@@ -202,7 +202,7 @@ impute_dtc_dt(
 )
 }
 \seealso{
-Date/Time Computation Functions that returns a vector: 
+Date/Time Computation Functions that returns a vector:
 \code{\link{compute_age_years}()},
 \code{\link{compute_dtf}()},
 \code{\link{compute_duration}()},
@@ -210,6 +210,7 @@ Date/Time Computation Functions that returns a vector:
 \code{\link{convert_date_to_dtm}()},
 \code{\link{convert_dtc_to_dt}()},
 \code{\link{convert_dtc_to_dtm}()},
+\code{\link{convert_xxtpt_to_hours}()},
 \code{\link{impute_dtc_dtm}()}
 }
 \concept{com_date_time}

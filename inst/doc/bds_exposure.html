@@ -372,7 +372,7 @@ etc. from Reference Tables</a></li>
 <li><a href="#cat">Derive Categorization Variables
 (<code>AVALCATy</code>)</a></li>
 <li><a href="#aseq">Assign <code>ASEQ</code></a></li>
-<li><a href="#adsl_vars">Add ADSL variables <code>ASEQ</code></a></li>
+<li><a href="#adsl_vars">Add ADSL variables</a></li>
 <li><a href="#attributes">Add Labels and Attributes</a></li>
 </ul>
 <div id="readdata" class="section level2">
@@ -2344,8 +2344,10 @@ added:</p>
 </div>
 <div id="attributes" class="section level2">
 <h2>Add Labels and Attributes</h2>
-<p>Adding labels and attributes for SAS transport files is supported by
-the following packages:</p>
+<p>Note that attributes may not be preserved in some cases after
+processing with <code>{admiral}</code>. The recommended approach is to
+apply variable labels and other metadata as a final step in your data
+derivation process using packages like:</p>
 <ul>
 <li><p><a href="https://atorus-research.github.io/metacore/">metacore</a>:
 establish a common foundation for the use of metadata within an R
@@ -2359,10 +2361,8 @@ functionality to associate all metadata information to a local R data
 frame, perform data set level validation checks and convert into a <a href="https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/movefile/n1xbwdre0giahfn11c99yjkpi2yb.htm">transport
 v5 file(xpt)</a>.</p></li>
 </ul>
-<p>NOTE: All these packages are in the experimental phase, but the
-vision is to have them associated with an End to End pipeline under the
-umbrella of the <a href="https://github.com/pharmaverse">pharmaverse</a>. An example of
-applying metadata and perform associated checks can be found at the <a href="https://pharmaverse.github.io/examples/adam/adsl">pharmaverse E2E
+<p>NOTE: Together with <code>{admiral}</code> these packages comprise an
+End to End pipeline under the umbrella of the <a href="https://pharmaverse.github.io/examples/adam/adsl">pharmaverse E2E
 example</a>.</p>
 </div>
 </div>

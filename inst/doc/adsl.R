@@ -40,8 +40,8 @@ adsl <- dm %>%
   mutate(TRT01P = ARM, TRT01A = ACTARM)
 
 ## ----eval=TRUE----------------------------------------------------------------
-# impute start and end time of exposure to first and last respectively,
-# do not impute date
+# Impute start and end time of exposure to first and last respectively,
+# Do not impute date
 ex_ext <- ex %>%
   derive_vars_dtm(
     dtc = EXSTDTC,
@@ -90,7 +90,7 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-# convert character date to numeric date without imputation
+# Convert character date to numeric date without imputation
 ds_ext <- derive_vars_dt(
   ds,
   dtc = DSSTDTC,
@@ -186,6 +186,24 @@ adsl <- adsl %>%
 dataset_vignette(adsl, display_vars = exprs(USUBJID, RANDDT))
 
 ## ----eval=TRUE----------------------------------------------------------------
+# Derive birth date from BRTHDTC
+adsl <- adsl %>%
+  derive_vars_dt(
+    new_vars_prefix = "BRTH",
+    dtc = BRTHDTC
+  )
+
+## ----eval=TRUE----------------------------------------------------------------
+adsl <- adsl %>%
+  derive_vars_aage(
+    start_date = BRTHDT,
+    end_date = RANDDT
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(adsl, display_vars = exprs(USUBJID, BRTHDT, RANDDT, AAGE, AAGEU))
+
+## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
   derive_vars_dt(
     new_vars_prefix = "DTH",
@@ -194,14 +212,6 @@ adsl <- adsl %>%
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
 dataset_vignette(adsl %>% filter(!is.na(DTHDT) | row_number() %% 50 == 0), display_vars = exprs(USUBJID, TRTEDT, DTHDTC, DTHDT, DTHFL))
-
-## ----eval=FALSE---------------------------------------------------------------
-# adsl <- adsl %>%
-#   derive_vars_dt(
-#     new_vars_prefix = "DTH",
-#     dtc = DTHDTC,
-#     date_imputation = "first"
-#   )
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
@@ -235,7 +245,7 @@ dataset_vignette(
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
-  select(-DTHCAUS) %>% # remove it before deriving it again
+  select(-DTHCAUS) %>% # Remove it before deriving it again
   derive_vars_extreme_event(
     by_vars = exprs(STUDYID, USUBJID),
     events = list(
@@ -351,7 +361,7 @@ dataset_vignette(
 
 ## ----eval=TRUE----------------------------------------------------------------
 adsl <- adsl %>%
-  select(-LSTALVDT) %>% # created in the previous call
+  select(-LSTALVDT) %>% # Created in the previous call
   derive_vars_extreme_event(
     by_vars = exprs(STUDYID, USUBJID),
     events = list(
@@ -409,7 +419,7 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
-# create lookup tables
+# Create lookup tables
 agegr1_lookup <- exprs(
   ~condition,           ~AGEGR1,
   AGE < 18,               "<18",
@@ -453,7 +463,7 @@ adsl <- adsl %>%
 # 
 # adsl %>%
 #   mutate(
-#     AGEGR1 = format_agegr1(AGE),
+#     AGEGR1 = format_agegr1(AAGE),
 #     REGION1 = format_region1(COUNTRY)
 #   )
 

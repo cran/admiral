@@ -1,3 +1,120 @@
+# admiral 1.4.0
+
+## New Features
+
+- Added experimental function `derive_var_nfrlt()` to derive `NFRLT` from timepoint
+and visit (e.g. `VISITDY` and `PCTPT`). (#2929)
+
+- Updated PK programming vignette to use new experimental functions for deriving
+`NFRLT`. (#2927)
+
+- Added experimental function `convert_xxtpt_to_hours()` to parse timepoint values
+(e.g. `PCTPT`, `EGTPT`, `VSTPT`) into hours. (#2916)
+
+- New experimental `ADAB` template script available `ad_adab.R` which creates Anti-drug 
+Antibody Analysis Dataset. (#2805)
+
+- Lab grading metadata for NCI-CTCAE version 6.0 is now available for both SI and US (Conventional) units 
+via `atoxgr_criteria_ctcv6` and `atoxgr_criteria_ctcv6_uscv`. This includes grading criteria for Creatinine 
+Clearance decreased. (#1858)
+
+- Lab grading metadata is now maintained in JSON format for all supported criteria (NCI-CTCAEv4, NCI-CTCAEv5, 
+NCI-CTCAEv6, and DAIDS) in both SI and US conventional unit systems, improving maintainability and readability. (#1858)
+
+## Updates of Existing Functions
+
+- The functions `derive_param_bmi()`, `derive_param_bsa()`,
+`derive_param_framingham()`, `derive_param_map()`, and `derive_param_qtc()` were
+updated such that they no longer fail if `{admiral}` is not loaded. (#2667)
+
+- `slice_derivation()` was updated such that it no longer fails if `args = NULL`
+is specified. (#2875)
+
+- `derive_summary_records()` now issues an error if a non summary function is
+used in `set_values_to` which results in multiple records per by group. (#2872)
+
+- `derive_summary_records()` was updated to allow constants to be provided under the 
+`constant_values` argument, which will be present in both summary and missing rows. (#2668)
+
+## Breaking Changes
+
+- In `derive_var_atoxgr_dir()`, the `abnormal_indicator` argument is deprecated and replaced with `low_indicator` 
+and `high_indicator` arguments. This change enables independent control of baseline range indicators for low and 
+high abnormalities, which is required for NCI-CTCAE version 6.0 criteria. The deprecated argument will continue 
+to work with a deprecation message until the beginning of 2027. (#1858)
+
+- The default value of `ignore_seconds_flag` is set to `TRUE`. (#2798)
+- `derive_var_merged_summary()` is deprecated and will be replaced by `derive_vars_merged_summary()`.
+    This is just a rename of the function to align with our programming conventions, i.e.
+    functions that can derive multiple variables have `_vars_` in the name rather than
+    `_var_`. (#2874)
+
+- The following function arguments are entering the next phase of the [deprecation process](https://pharmaverse.github.io/admiraldev/articles/programming_strategy.html#deprecation): 
+
+  **Phase 1 (message)**
+    
+  - `derive_var_atoxgr_dir(abnormal_indicator = )` is deprecated and replaced by the new `low_indicator` and 
+  `high_indicator` arguments for enhanced flexibility in lab grading. (#1858)
+  - `derive_var_merged_summary()` is deprecated and will be replaced by `derive_vars_merged_summary()`. (#2874)
+  
+  **Phase 2 (warning)**
+    
+  - `call_user_fun()` is deprecated and will have no replacement. (#2678)
+  - `derive_param_extreme_record()` is deprecated and replaced by `derive_extreme_event()`.
+  - `derive_var_dthcaus()` is deprecated and replaced by `derive_vars_extreme_event()`.
+  - `date_source()` is deprecated and replaced by `event()`.
+  - `dthcaus_source()` is deprecated and replaced by `event()`.
+  - `derive_var_extreme_dt()` and `derive_var_extreme_dtm()` are deprecated and replaced by     
+  `derive_vars_extreme_event()`.
+  - `get_summary_records()` is deprecated. Please use `derive_summary_records()` with the `dataset_add` 
+  argument and without the `dataset` argument.
+
+  **Phase 3 (error)**
+  
+  No functions or arguments in this Phase
+
+  **Phase 4 (removed)**
+    
+  No functions or arguments in this Phase
+    
+## Documentation
+
+- New experimental vignette "Creating an ADAB ADaM", which describes how to create
+an anti-drug antibody analysis dataset. (#2873)
+
+- The lab grading vignette has been updated with examples for NCI-CTCAE version 6.0 criteria, including 
+usage of the new `low_indicator` and `high_indicator` arguments. (#1858)
+
+- The "Ask AI" widget was added to the bottom right of each page. It enables users to ask questions about `{admiral}` and `{admiraldev}` 
+and receive answers from an LLM. It is trained on the documentation of both packages and provided by 
+[kapa.ai](https://docs.kapa.ai/kapa-for-open-source). (#2887)
+
+- The BDS Findings vignette was updated to move derivation of `ASEQ` after any new rows. (#2780)
+
+- `ADLBHY` template was updated to keep `PARAM` in final dataset. (#2804)
+
+- A link to the [{admiral} ecosystem](https://pharmaverse.org/e2eclinical/adam/) page was added to the README sidebar and main text. (#2881)
+
+- The ADSL template and vignette were updated to add derivation of analysis age (`AAGE`/`AAGEU`) using `derive_vars_aage()`. This includes deriving birth date (`BRTHDT`) from birth date character variable (`BRTHDTC`) using `derive_vars_dt()`. (#2584)
+
+- Standardized variable notation across documentation to use `--` for SDTM variables (e.g., `--DTC`) and `*` for ADaM variables (e.g., `*DTM`, `*DT`). (#2757)
+
+- For `derive_vars_dt()`, clarify `highest_imputation` definitions and expand date examples. (#2841)
+
+- The documentation was enhanced: (#2585)
+    - For `derive_locf_records()`, each example now has a title (which is also shown in the TOC) and a description, improving readability. (#2889)
+    - For `derive_vars_cat()`, each example now has a title (which is also shown in the TOC) and a description, improving readability. (#2701)
+
+## Various
+
+<details>
+<summary>Developer Notes</summary>
+- Updated the `{lintr}` preferences to use the shared `{admiraldev}` configurations. (#2863) and (#2913)
+- To reduce the size of the package: (#2944)
+    - The compression method in `data-raw/adlb_grading/atoxgr_sources.R` was updated to `"bzip2"` everywhere.
+    - The `admiral_adlb` dataset was updated so that it only contains the `"AST"`, `"ALT"` and `"BILI"` parameters.
+</details>
+
 # admiral 1.3.1
 
 ## Documentation
@@ -111,7 +228,7 @@ records. (#2683)
 
 - The following function arguments are entering the next phase of the [deprecation process](https://pharmaverse.github.io/admiraldev/articles/programming_strategy.html#deprecation): (#2487) (#2595)
 
-    **Phase 1 (message)**
+  **Phase 1 (message)**
 	
 	- `call_user_fun()` is deprecated and will have no replacement. (#2678)
 	- `derive_param_extreme_record()` is deprecated and replaced by `derive_extreme_event()`
@@ -123,17 +240,17 @@ records. (#2683)
   - `get_summary_records()` is deprecated. Please use `derive_summary_records()` with the `dataset_add` 
   argument and without the `dataset` argument.
   
-    **Phase 2 (warning)**
+  **Phase 2 (warning)**
     
-    No functions or arguments in this Phase
+  No functions or arguments in this Phase
 
-    **Phase 3 (error)**
+  **Phase 3 (error)**
     
-    No functions or arguments in this Phase
+  No functions or arguments in this Phase
 
-    **Phase 4 (removed)**
+  **Phase 4 (removed)**
     
-    No functions or arguments in this Phase
+  No functions or arguments in this Phase
 
 ## Documentation
 

@@ -168,6 +168,7 @@ Set a list of variables to some specified value for the new records
 \item RHS refers to the values to set to the variable. This can be a string, a
 symbol, a numeric value, an expression or NA. If summary functions are
 used, the values are summarized by the variables specified for \code{by_vars}.
+Any expression on the RHS must result in a single value per by group.
 }
 
 For example:
@@ -219,7 +220,7 @@ dataset is provided, a new dataset is created.
 \seealso{
 \code{\link[=derive_summary_records]{derive_summary_records()}}
 
-BDS-Findings Functions for adding Parameters/Records: 
+BDS-Findings Functions for adding Parameters/Records:
 \code{\link{default_qtc_paramcd}()},
 \code{\link{derive_expected_records}()},
 \code{\link{derive_extreme_event}()},

@@ -61,7 +61,7 @@ Otherwise, the \code{CRITyFL} variable is set to \code{"Y"} if the condition
 (\code{condition}) evaluates to \code{TRUE}, and to \code{NA} otherwise.
 
 \describe{
-\item{Permitted values}{\code{"TRUE"}, \code{"FALSE"}}
+\item{Permitted values}{\code{TRUE}, \code{FALSE}}
 \item{Default value}{\code{FALSE}}
 }}
 
@@ -71,7 +71,7 @@ If set to \code{TRUE}, the \code{CRITyFN} variable is created. It is set to \cod
 \code{CRITyFL == "Y"}, it set to \code{0} if \code{CRITyFL == "N"}, and to \code{NA} otherwise.
 
 \describe{
-\item{Permitted values}{\code{"TRUE"}, \code{"FALSE"}}
+\item{Permitted values}{\code{TRUE}, \code{FALSE}}
 \item{Default value}{\code{FALSE}}
 }}
 }
@@ -100,7 +100,7 @@ fulfilled and to \code{NA} otherwise if \code{CRITyFL} is populated with \code{"
 }
 }
 \seealso{
-BDS-Findings Functions that returns variable appended to dataset: 
+BDS-Findings Functions that returns variable appended to dataset:
 \code{\link{derive_basetype_records}()},
 \code{\link{derive_var_analysis_ratio}()},
 \code{\link{derive_var_anrind}()},
@@ -108,6 +108,7 @@ BDS-Findings Functions that returns variable appended to dataset:
 \code{\link{derive_var_atoxgr_dir}()},
 \code{\link{derive_var_base}()},
 \code{\link{derive_var_chg}()},
+\code{\link{derive_var_nfrlt}()},
 \code{\link{derive_var_ontrtfl}()},
 \code{\link{derive_var_pchg}()},
 \code{\link{derive_var_shift}()}

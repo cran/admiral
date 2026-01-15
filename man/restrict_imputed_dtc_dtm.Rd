@@ -2,7 +2,7 @@
 % Please edit documentation in R/derive_vars_dtm.R
 \name{restrict_imputed_dtc_dtm}
 \alias{restrict_imputed_dtc_dtm}
-\title{Restrict Imputed DTC date to Minimum/Maximum Dates}
+\title{Restrict Imputed \code{--DTC} date to Minimum/Maximum Dates}
 \usage{
 restrict_imputed_dtc_dtm(dtc, imputed_dtc, min_dates, max_dates)
 }
@@ -18,7 +18,7 @@ valid "missing" value for any component.
 \item{Default value}{none}
 }}
 
-\item{imputed_dtc}{The imputed DTC date
+\item{imputed_dtc}{The imputed \code{--DTC} date
 
 \describe{
 \item{Default value}{none}
@@ -38,8 +38,8 @@ For example
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{impute_dtc_dtm(
   "2020-11",
   min_dates = list(
-   ymd_hms("2020-12-06T12:12:12"),
-   ymd_hms("2020-11-11T11:11:11")
+   ymd_hm("2020-12-06T12:12"),
+   ymd_hm("2020-11-11T11:11")
   ),
   highest_imputation = "M"
 )
@@ -78,20 +78,20 @@ imputed. If only time is imputed, date variables do not affect the result.
 \value{
 \itemize{
 \item The last of the minimum dates (\code{min_dates}) which are in the range of the
-partial DTC date (\code{dtc})
+partial \code{--DTC} date (\code{dtc})
 \item The first of the maximum dates (\code{max_dates}) which are in the range of the
-partial DTC date (\code{dtc})
-\item \code{imputed_dtc} if the partial DTC date (\code{dtc}) is not in range of any of
+partial \code{--DTC} date (\code{dtc})
+\item \code{imputed_dtc} if the partial \code{--DTC} date (\code{dtc}) is not in range of any of
 the minimum or maximum dates.
 }
 }
 \description{
-Restrict Imputed DTC date to Minimum/Maximum Dates
+Restrict Imputed \code{--DTC} date to Minimum/Maximum Dates
 }
 \seealso{
 \code{\link[=impute_dtc_dtm]{impute_dtc_dtm()}}, \code{\link[=impute_dtc_dt]{impute_dtc_dt()}}
 
-Utilities used for date imputation: 
+Utilities used for date imputation:
 \code{\link{dt_level}()},
 \code{\link{dtm_level}()},
 \code{\link{get_imputation_target_date}()},

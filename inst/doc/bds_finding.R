@@ -505,22 +505,6 @@ advs <- mutate(advs, TRTP = TRT01P, TRTA = TRT01A)
 count(advs, TRTP, TRTA, TRT01P, TRT01A)
 
 ## ----eval=TRUE----------------------------------------------------------------
-advs <- derive_var_obs_number(
-  advs,
-  new_var = ASEQ,
-  by_vars = exprs(STUDYID, USUBJID),
-  order = exprs(PARAMCD, ADT, AVISITN, VISITNUM, ATPTN),
-  check_type = "error"
-)
-
-## ----eval=TRUE, echo=FALSE----------------------------------------------------
-dataset_vignette(
-  advs,
-  display_vars = exprs(USUBJID, PARAMCD, ADT, AVISITN, ATPTN, VISIT, ADT, ASEQ),
-  filter = USUBJID == "01-701-1015"
-)
-
-## ----eval=TRUE----------------------------------------------------------------
 avalcat_lookup <- exprs(
   ~PARAMCD,  ~condition,   ~AVALCAT1, ~AVALCA1N,
   "HEIGHT",  AVAL > 140,   ">140 cm",         1,
@@ -589,20 +573,6 @@ dataset_vignette(
   arrange(advs, USUBJID, AVISITN, ATPTN),
   display_vars = exprs(USUBJID, PARAMCD, AVAL, CHG, CRIT2, CRIT2FL, CRIT2FN),
   filter = PARAMCD == "SYSBP"
-)
-
-## ----eval=TRUE----------------------------------------------------------------
-advs <- advs %>%
-  derive_vars_merged(
-    dataset_add = select(adsl, !!!negate_vars(adsl_vars)),
-    by_vars = exprs(STUDYID, USUBJID)
-  )
-
-## ----eval=TRUE, echo=FALSE----------------------------------------------------
-dataset_vignette(
-  advs,
-  display_vars = exprs(USUBJID, RFSTDTC, RFENDTC, DTHDTC, DTHFL, AGE, AGEU),
-  filter = USUBJID == "01-701-1015"
 )
 
 ## ----eval=TRUE----------------------------------------------------------------
@@ -684,5 +654,35 @@ dataset_vignette(
   arrange(advs_ex3, USUBJID, VISIT, ATPT, PARAMCD),
   display_vars = exprs(USUBJID, PARAMCD, VISIT, ATPT, AVAL),
   filter = USUBJID == "01-701-1015" & PARAMCD %in% c("MAP2", "SYSBP", "DIABP")
+)
+
+## ----eval=TRUE----------------------------------------------------------------
+advs <- derive_var_obs_number(
+  advs,
+  new_var = ASEQ,
+  by_vars = exprs(STUDYID, USUBJID),
+  order = exprs(PARAMCD, ADT, AVISITN, VISITNUM, ATPTN),
+  check_type = "error"
+)
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(
+  advs,
+  display_vars = exprs(USUBJID, PARAMCD, ADT, AVISITN, ATPTN, VISIT, ADT, ASEQ),
+  filter = USUBJID == "01-701-1015"
+)
+
+## ----eval=TRUE----------------------------------------------------------------
+advs <- advs %>%
+  derive_vars_merged(
+    dataset_add = select(adsl, !!!negate_vars(adsl_vars)),
+    by_vars = exprs(STUDYID, USUBJID)
+  )
+
+## ----eval=TRUE, echo=FALSE----------------------------------------------------
+dataset_vignette(
+  advs,
+  display_vars = exprs(USUBJID, RFSTDTC, RFENDTC, DTHDTC, DTHFL, AGE, AGEU),
+  filter = USUBJID == "01-701-1015"
 )
 

@@ -45,7 +45,7 @@ otherwise \code{"15"} returned.
 }
 
 \code{"xxxx"} indicates that the component is undefined. If an undefined
-component occurs in the imputed DTC value, the imputed DTC value is set to
+component occurs in the imputed \code{--DTC} value, the imputed \code{--DTC} value is set to
 \code{NA_character_} in the imputation functions.
 }
 \examples{
@@ -73,7 +73,7 @@ print(target_custom)
 \seealso{
 \code{\link[=impute_dtc_dtm]{impute_dtc_dtm()}}, \code{\link[=impute_dtc_dt]{impute_dtc_dt()}}
 
-Utilities used for date imputation: 
+Utilities used for date imputation:
 \code{\link{dt_level}()},
 \code{\link{dtm_level}()},
 \code{\link{get_imputation_target_time}()},

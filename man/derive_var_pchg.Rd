@@ -41,7 +41,7 @@ derive_var_pchg(advs)
 \seealso{
 \code{\link[=derive_var_chg]{derive_var_chg()}}
 
-BDS-Findings Functions that returns variable appended to dataset: 
+BDS-Findings Functions that returns variable appended to dataset:
 \code{\link{derive_basetype_records}()},
 \code{\link{derive_var_analysis_ratio}()},
 \code{\link{derive_var_anrind}()},
@@ -49,6 +49,7 @@ BDS-Findings Functions that returns variable appended to dataset:
 \code{\link{derive_var_atoxgr_dir}()},
 \code{\link{derive_var_base}()},
 \code{\link{derive_var_chg}()},
+\code{\link{derive_var_nfrlt}()},
 \code{\link{derive_var_ontrtfl}()},
 \code{\link{derive_var_shift}()},
 \code{\link{derive_vars_crit_flag}()}
