@@ -870,7 +870,7 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
-#---- Derive Covariates ----
+# ---- Derive Covariates ----
 # Include numeric values for STUDYIDN, USUBJIDN, SEXN, RACEN etc.
 
 covar <- adsl %>%
@@ -942,7 +942,7 @@ dataset_vignette(
 )
 
 ## ----eval=TRUE, echo=TRUE-----------------------------------------------------
-#---- Derive additional baselines from VS and LB ----
+# ---- Derive additional baselines from VS and LB ----
 
 labsbl <- lb %>%
   filter(LBBLFL == "Y" & LBTESTCD %in% c("CREAT", "ALT", "AST", "BILI")) %>%
@@ -972,7 +972,7 @@ covar_vslb <- covar %>%
     BMIBL = compute_bmi(height = HTBL, weight = WTBL),
     BSABL = compute_bsa(
       height = HTBL,
-      weight = HTBL,
+      weight = WTBL,
       method = "Mosteller"
     ),
     # Derive CRCLBL and EGFRBL using new function

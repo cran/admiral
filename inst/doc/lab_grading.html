@@ -48,8 +48,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +61,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -1869,11 +1870,14 @@ deemed to have a low abnormal Baseline Value. Note: you can pass in
 multiple values, <code>abnormal_indicator = c(&quot;H&quot;, &quot;HIGH&quot;)</code></p>
 <p>Excluding “Creatinine increased”, for the other 4 terms, this means
 if <code>BNRIND</code> is abnormal then the grade is always one for the
-baseline observation. Additionally, for “Alkaline phosphatase increased”
-the baseline grade is always zero, as the value has to be above the
-baseline value to have a grade greater than zero. This is the
-conservative approach, some companies may not want the baseline
-observation graded at all, so would post-process, if necessary.</p>
+baseline observation. For “Creatinine increased” if <code>BNRIND</code>
+is abnormal then the grade could be zero, one or four, as grade 1 and 4
+are independent of <code>BNRIND</code>. Additionally, for “Alkaline
+phosphatase increased” the baseline grade is always zero, as the value
+has to be above the baseline value to have a grade greater than zero.
+This is the conservative approach, some companies may not want the
+baseline observation graded at all, so would post-process, if
+necessary.</p>
 </div>
 <div id="assumptions-made-when-grading-2" class="section level2">
 <h2>Assumptions made when grading</h2>
@@ -2058,14 +2062,14 @@ regardless of symptoms</td>
 <p><br></p>
 <p>Here is a complete list of all assumptions in the metadata for
 NCI-CTCAE-v6 <br></p>
-<table style="width:100%;">
+<table>
 <colgroup>
 <col width="6%" />
-<col width="21%" />
-<col width="21%" />
-<col width="23%" />
-<col width="11%" />
-<col width="15%" />
+<col width="17%" />
+<col width="18%" />
+<col width="19%" />
+<col width="9%" />
+<col width="28%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -2079,6 +2083,16 @@ NCI-CTCAE-v6 <br></p>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">Creatinine clearance decreased</td>
+<td align="left">-</td>
+<td align="left">26 - 49 ml/min</td>
+<td align="left">10 - 25 ml/min</td>
+<td align="left">-</td>
+<td align="left">Set grade to missing if AVAL &lt; 10. Report Grade 4 as
+Renal and urinary disorders: Acute kidney injury or Chronic kidney
+disease</td>
+</tr>
+<tr class="even">
 <td align="left">INR increased</td>
 <td align="left">&gt;1.2 - 1.5; &gt;1 - 1.5 x baseline if on
 anticoagulation; monitoring only indicated</td>
@@ -2089,7 +2103,7 @@ bleeding</td>
 <td align="left">-</td>
 <td align="left">Take worst case and assume “on anticoagulation”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Lipase increased</td>
 <td align="left">&gt;ULN - 1.5 x ULN</td>
 <td align="left">&gt;1.5 - 3.0 x ULN; &gt;3.0 - 5.0 x ULN and
@@ -2099,7 +2113,7 @@ ULN and asymptomatic</td>
 <td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
 <td align="left">Take worst case and assume “signs and symptoms”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Serum amylase increased</td>
 <td align="left">&gt;ULN - 1.5 x ULN</td>
 <td align="left">&gt;1.5 - 2.0 x ULN; &gt;2.0 - 5.0 x ULN and
@@ -2109,7 +2123,7 @@ symptoms; &gt;5.0 x ULN and asymptomatic</td>
 <td align="left">&gt;5.0 x ULN and with signs or symptoms</td>
 <td align="left">Take worst case and assume “signs and symptoms”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Hyperuricemia</td>
 <td align="left">&gt;ULN without physiologic consequences</td>
 <td align="left">-</td>
@@ -2118,7 +2132,7 @@ symptoms; &gt;5.0 x ULN and asymptomatic</td>
 <td align="left">Take worst case and assume “with physiologic
 consequences”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Hypokalemia</td>
 <td align="left">&lt;LLN - 3.0 mmol/L</td>
 <td align="left">Symptomatic with &lt;LLN - 3.0 mmol/L; intervention
@@ -2127,7 +2141,7 @@ indicated</td>
 <td align="left">&lt;2.5 mmol/L; life-threatening consequences</td>
 <td align="left">Take worst case and assume “symptomatic”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Hyponatremia</td>
 <td align="left">&lt;LLN - 130 mmol/L</td>
 <td align="left">125 - &lt;130 mmol/L and asymptomatic</td>
@@ -2225,15 +2239,15 @@ calculate age, see TERM = “Cholesterol, Fasting, High”: <br></p>
 <tbody>
 <tr class="odd">
 <td align="left">Cholesterol, Fasting, High</td>
-<td align="left">compute_duration(start_date = BRTHDT, end_date = LBDT,
+<td align="left">compute_duration(start_date = BRTHDT, end_date = ADT,
 trunc_out = TRUE, out_unit = “years”, add_one = FALSE, type =
-“interval”) &gt;= 18 | is.na(BRTHDT) | is.na(LBDT)</td>
+“interval”) &gt;= 18 | is.na(BRTHDT) | is.na(ADT)</td>
 </tr>
 <tr class="even">
 <td align="left">Cholesterol, Fasting, High</td>
-<td align="left">compute_duration(start_date = BRTHDT, end_date = LBDT,
+<td align="left">compute_duration(start_date = BRTHDT, end_date = ADT,
 trunc_out = TRUE, out_unit = “years”, add_one = FALSE, type =
-“interval”) &lt; 18 | is.na(BRTHDT) | is.na(LBDT)</td>
+“interval”) &lt; 18 | is.na(BRTHDT) | is.na(ADT)</td>
 </tr>
 </tbody>
 </table>
@@ -2261,23 +2275,23 @@ with age &lt;= 2 years and set grade to missing.</p>
 <tbody>
 <tr class="odd">
 <td align="left">LDL, Fasting, High</td>
-<td align="left">compute_duration(start_date = BRTHDT, end_date = LBDT,
+<td align="left">compute_duration(start_date = BRTHDT, end_date = ADT,
 trunc_out = TRUE, out_unit = “years”, add_one = FALSE, type =
-“interval”) &lt;= 2 | is.na(BRTHDT) | is.na(LBDT)</td>
+“interval”) &lt;= 2 | is.na(BRTHDT) | is.na(ADT)</td>
 <td align="left">NA_character_</td>
 </tr>
 <tr class="even">
 <td align="left">Absolute CD4+ Count, Low</td>
-<td align="left">compute_duration(start_date = BRTHDT, end_date = LBDT,
+<td align="left">compute_duration(start_date = BRTHDT, end_date = ADT,
 trunc_out = TRUE, out_unit = “years”, add_one = FALSE, type =
-“interval”) &lt;= 5 | is.na(BRTHDT) | is.na(LBDT)</td>
+“interval”) &lt;= 5 | is.na(BRTHDT) | is.na(ADT)</td>
 <td align="left">NA_character_</td>
 </tr>
 <tr class="odd">
 <td align="left">Absolute Lymphocyte Count, Low</td>
-<td align="left">compute_duration(start_date = BRTHDT, end_date = LBDT,
+<td align="left">compute_duration(start_date = BRTHDT, end_date = ADT,
 trunc_out = TRUE, out_unit = “years”, add_one = FALSE, type =
-“interval”) &lt;= 5 | is.na(BRTHDT) | is.na(LBDT)</td>
+“interval”) &lt;= 5 | is.na(BRTHDT) | is.na(ADT)</td>
 <td align="left">NA_character_</td>
 </tr>
 </tbody>

@@ -1,7 +1,27 @@
+# admiral 1.4.1
+
+## Updates of Existing Functions
+
+- Grading metadata amended to ensure the criteria is exactly the same across `SI` and `CV` units
+when the `UNIT_CHECK` is identical or missing for a particular `TERM`. This allows grading metadata
+to be combined across `SI` and `CV` units. Also, comment added about `"Creatinine Clearance"` and lab
+values less than 10 for `NCICTCAEv6`. `DAIDs` grading metadata updated to use `ADLB.ADT` instead of 
+`ADLB.LBDT` (#2958).
+
+## Documentation
+
+- `Lab Grading` vignette updated to add more clarity for `"Creatinine Increased"` and baseline visits. (#2958)
+
+- Fix typo in `compute_bsa()` in `ADPPK` template and vignette. (#2963)
+
 # admiral 1.4.0
 
 ## New Features
 
+- New vignette "Explore ADaM Templates" added under the "Get Started" section to allow users to peruse the `{admiral}`
+ADaM templates directly from the documentation website. (#2935)
+
+- Updated PK programming vignette to use new experimental functions for deriving `NFRLT` (#2927).
 - Added experimental function `derive_var_nfrlt()` to derive `NFRLT` from timepoint
 and visit (e.g. `VISITDY` and `PCTPT`). (#2929)
 

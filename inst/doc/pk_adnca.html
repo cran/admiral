@@ -48,8 +48,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +61,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -3778,7 +3779,7 @@ covariates. We will create numeric versions of many of our standard
 CDISC demographic variables including <code>STUDYIDN</code>,
 <code>USUBJIDN</code>, <code>SEXN</code>, <code>RACEN</code>, and
 <code>ETHNICN</code>.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co">#---- Derive Covariates ----</span></span>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># ---- Derive Covariates ----</span></span>
 <span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co"># Include numeric values for STUDYIDN, USUBJIDN, SEXN, RACEN etc.</span></span>
 <span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a></span>
 <span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>covar <span class="ot">&lt;-</span> adsl <span class="sc">%&gt;%</span></span>
@@ -4002,7 +4003,7 @@ calculate BMI and BSA from height and weight using
 calculate creatinine clearance <code>CRCLBL</code> and estimated
 glomerular filtration rate (eGFR) <code>EGFRBL</code> using
 <code>compute_egfr()</code> function.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co">#---- Derive additional baselines from VS and LB ----</span></span>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># ---- Derive additional baselines from VS and LB ----</span></span>
 <span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>labsbl <span class="ot">&lt;-</span> lb <span class="sc">%&gt;%</span></span>
 <span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="fu">filter</span>(LBBLFL <span class="sc">==</span> <span class="st">&quot;Y&quot;</span> <span class="sc">&amp;</span> LBTESTCD <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;CREAT&quot;</span>, <span class="st">&quot;ALT&quot;</span>, <span class="st">&quot;AST&quot;</span>, <span class="st">&quot;BILI&quot;</span>)) <span class="sc">%&gt;%</span></span>
@@ -4032,7 +4033,7 @@ glomerular filtration rate (eGFR) <code>EGFRBL</code> using
 <span id="cb24-28"><a href="#cb24-28" tabindex="-1"></a>    <span class="at">BMIBL =</span> <span class="fu">compute_bmi</span>(<span class="at">height =</span> HTBL, <span class="at">weight =</span> WTBL),</span>
 <span id="cb24-29"><a href="#cb24-29" tabindex="-1"></a>    <span class="at">BSABL =</span> <span class="fu">compute_bsa</span>(</span>
 <span id="cb24-30"><a href="#cb24-30" tabindex="-1"></a>      <span class="at">height =</span> HTBL,</span>
-<span id="cb24-31"><a href="#cb24-31" tabindex="-1"></a>      <span class="at">weight =</span> HTBL,</span>
+<span id="cb24-31"><a href="#cb24-31" tabindex="-1"></a>      <span class="at">weight =</span> WTBL,</span>
 <span id="cb24-32"><a href="#cb24-32" tabindex="-1"></a>      <span class="at">method =</span> <span class="st">&quot;Mosteller&quot;</span></span>
 <span id="cb24-33"><a href="#cb24-33" tabindex="-1"></a>    ),</span>
 <span id="cb24-34"><a href="#cb24-34" tabindex="-1"></a>    <span class="co"># Derive CRCLBL and EGFRBL using new function</span></span>

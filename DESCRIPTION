@@ -1,12 +1,12 @@
 Type: Package
 Package: admiral
 Title: ADaM in R Asset Library
-Version: 1.4.0
+Version: 1.4.1
 Authors@R: c(
     person("Ben", "Straub", , "ben.x.straub@gsk.com", role = c("aut", "cre")),
     person("Stefan", "Bundfuss", role = "aut",
            comment = c(ORCID = "0009-0005-0027-1198")),
-    person("Matt", "Bearham", role = "aut"),       
+    person("Matt", "Bearham", role = "aut"),
     person("Arianna", "Cascone", role = "aut",
            comment = c(ORCID = "0000-0001-5948-2831")),
     person("Kristin", "Dahnert", role = "aut"),
@@ -39,18 +39,18 @@ Imports: admiraldev (>= 1.4.0), cli (>= 3.6.2), dplyr (>= 1.1.1), hms
         (>= 0.5.3), lifecycle (>= 0.1.0), lubridate (>= 1.7.4),
         magrittr (>= 1.5), purrr (>= 0.3.3), rlang (>= 0.4.4), stringr
         (>= 1.4.0), tidyr (>= 1.0.2), tidyselect (>= 1.1.0)
-Suggests: diffdf, DT, htmltools, knitr, methods, pharmaversesdtm (>=
-        1.0.0), reactable, readxl, rmarkdown, testthat (>= 3.0.0),
+Suggests: diffdf, DT, here, htmltools, knitr, methods, pharmaversesdtm
+        (>= 1.0.0), reactable, readxl, rmarkdown, testthat (>= 3.0.0),
         tibble, withr
 VignetteBuilder: knitr
-Config/Needs/website: gert
+Config/Needs/website: gert, rmarkdown
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 RoxygenNote: 7.3.3
 NeedsCompilation: no
-Packaged: 2026-01-14 16:26:30 UTC; r590548
+Packaged: 2026-02-02 21:52:08 UTC; r590548
 Author: Ben Straub [aut, cre],
   Stefan Bundfuss [aut] (ORCID: <https://orcid.org/0009-0005-0027-1198>),
   Matt Bearham [aut],
@@ -67,4 +67,4 @@ Author: Ben Straub [aut, cre],
   GlaxoSmithKline LLC [cph, fnd]
 Maintainer: Ben Straub <ben.x.straub@gsk.com>
 Repository: CRAN
-Date/Publication: 2026-01-15 06:10:49 UTC
+Date/Publication: 2026-02-03 10:20:11 UTC
